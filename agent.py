@@ -62,7 +62,7 @@ Rules:
 - Proper title and meta description for SEO
 - H1 once, then H2/H3 headings
 - Include salary comparison table
-- End with FAQ section (3-5 questions)
+- End with FAQ section 3-5 questions
 - Add <div class='ad-slot'><!-- Ad --></div> at top, middle, bottom
 
 Use this HTML structure:
@@ -77,7 +77,7 @@ Use this HTML structure:
   <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-  <header><a href="../index.html"><h2>💰 SalaryBit</h2></a></header>
+  <header><a href="../index.html"><h2>SalaryBit</h2></a></header>
   <main class="article-container">
     <div class="ad-slot"><!-- Ad --></div>
     ARTICLE CONTENT HERE
@@ -85,13 +85,13 @@ Use this HTML structure:
     FAQ SECTION HERE
     <div class="ad-slot"><!-- Ad --></div>
   </main>
-  <footer><p>© 2025 SalaryBit.in | <a href="../index.html">Home</a></p></footer>
+  <footer><p>2025 SalaryBit.in | <a href="../index.html">Home</a></p></footer>
 </body>
 </html>
 
 Today's date: {datetime.now().strftime('%B %d, %Y')}"""
 
-   for attempt in range(3):
+    for attempt in range(3):
         try:
             response = model.generate_content(prompt)
             return response.text
@@ -112,12 +112,12 @@ def update_sitemap(articles):
 def run_agent():
     print(f"SalaryBit Agent | {datetime.now().strftime('%Y-%m-%d %H:%M')}")
     published = load_json("published_topics.json", [])
-    articles  = load_json("articles_list.json", [])
-    topic     = pick_topic(published)
-    html      = generate_article(topic)
-    slug      = make_slug(topic)
-    date_str  = datetime.now().strftime("%Y-%m-%d")
-    filename  = f"{slug}.html"
+    articles = load_json("articles_list.json", [])
+    topic = pick_topic(published)
+    html = generate_article(topic)
+    slug = make_slug(topic)
+    date_str = datetime.now().strftime("%Y-%m-%d")
+    filename = f"{slug}.html"
     os.makedirs("blog", exist_ok=True)
     with open(f"blog/{filename}", "w", encoding="utf-8") as f:
         f.write(html)

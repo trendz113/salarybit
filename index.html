@@ -3349,13 +3349,6 @@ async function submitContact(){
     }else{status.style.color='var(--rose)';status.textContent='Something went wrong. Please email us directly.';}
   }catch(e){status.style.color='var(--rose)';status.textContent='Network error. Please try again or email us directly.';}
 }
-</script>
-  <script>
-  fetch('chatbot.html')
-    .then(r => r.text())
-    .then(html => {
-      document.body.insertAdjacentHTML('beforeend', html);
-    });
-</script>
+</script> 
 </body>
 </html>

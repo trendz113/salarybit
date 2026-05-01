@@ -1,5 +1,6 @@
 import google.generativeai as genai
 import os
+import time
 import json
 from datetime import datetime
 
@@ -90,8 +91,14 @@ Use this HTML structure:
 
 Today's date: {datetime.now().strftime('%B %d, %Y')}"""
 
-    response = model.generate_content(prompt)
-    return response.text
+   for attempt in range(3):
+        try:
+            response = model.generate_content(prompt)
+            return response.text
+        except Exception as e:
+            print(f"Attempt {attempt+1} failed: {e}")
+            time.sleep(60)
+    raise Exception("Failed after 3 attempts")
 
 def update_sitemap(articles):
     urls = ['<url><loc>https://salarybit.in/</loc><priority>1.0</priority></url>']

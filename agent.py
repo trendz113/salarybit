@@ -5,7 +5,7 @@ import json
 from datetime import datetime
 
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-model = genai.GenerativeModel("gemini-2.0-flash")
+model = genai.GenerativeModel("gemini-2.5-flash-preview-04-17")
 
 TOPICS = [
     "TCS software engineer salary in India 2025",

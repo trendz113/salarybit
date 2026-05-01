@@ -1,8 +1,8 @@
 name: Daily Content Agent
 on:
   schedule:
-    - cron: '0 4 * * *'  # Runs 9:30 AM IST daily
-  workflow_dispatch:       # Run manually anytime
+    - cron: '0 4 * * *'
+  workflow_dispatch:
 
 jobs:
   generate-article:
@@ -20,7 +20,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install google-generativeai
+        run: pip install google-genai
 
       - name: Run AI Agent
         env:

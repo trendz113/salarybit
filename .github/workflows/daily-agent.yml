@@ -1,0 +1,36 @@
+name: Daily Content Agent
+on:
+  schedule:
+    - cron: '0 4 * * *'  # Runs 9:30 AM IST daily
+  workflow_dispatch:       # Run manually anytime
+
+jobs:
+  generate-article:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install google-generativeai
+
+      - name: Run AI Agent
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python agent.py
+
+      - name: Push new article
+        run: |
+          git config user.email "agent@salarybit.in"
+          git config user.name "SalaryBit Bot"
+          git add .
+          git diff --staged --quiet || git commit -m "New article - $(date '+%Y-%m-%d')"
+          git push

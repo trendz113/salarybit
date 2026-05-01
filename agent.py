@@ -5,7 +5,7 @@ import json
 from datetime import datetime
 
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-model = genai.GenerativeModel("gemini-2.5-flash-preview-04-17")
+model = genai.GenerativeModel("gemini-2.0-flash-lite")
 
 BLOG_FOLDER = "blog"
 PROCESSED_FILE = "processed_articles.json"

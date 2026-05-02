@@ -11,6 +11,7 @@ PROCESSED_FILE = "processed_articles.json"
 PUBLISHED_FILE = "published_topics.json"
 
 FILES_TO_CLEAN = [
+    # article1-8: old thin articles rejected by Google — rewrite first
     "article1-how-to-calculate-inhand-salary.html",
     "article2-old-vs-new-tax-regime.html",
     "article3-ctc-vs-gross-vs-net-salary.html",
@@ -19,10 +20,14 @@ FILES_TO_CLEAN = [
     "article6-hra-exemption-guide.html",
     "article7-how-to-negotiate-salary.html",
     "article8-new-labour-code-2026-salary-impact.html",
+    # other existing articles to improve
     "pan-complete.html",
     "layoff-survival-guide.html",
     "subscription-manager.html",
     "karnataka_dl_renewal_guide.html",
+    # agent-generated articles that may also be thin
+    "data-scientist-salary-in-india-2026.html",
+    "ias-officer-salary-and-perks-india.html",
 ]
 
 NEW_TOPICS = [

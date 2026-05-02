@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How I Renewed My Expired Driving Licence in Karnataka | A Real Experience Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark: #1a2e1a;
+      --green-mid: #2d5a2d;
+      --green-accent: #7ec87e;
+      --green-light: #eaf3de;
+      --green-text: #27500a;
+      --amber-light: #faeeda;
+      --amber-text: #412402;
+      --amber-border: #ef9f27;
+      --text-primary: #1c1c1a;
+      --text-secondary: #4a4a46;
+      --text-muted: #888780;
+      --bg: #f7f5f0;
+      --bg-card: #ffffff;
+      --border: rgba(0,0,0,0.1);
+      --border-light: rgba(0,0,0,0.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Source Serif 4', Georgia, serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.75;
+      font-size: 16px;
+      min-height: 100vh;
+    }
+
+    /* Top bar */
+    .topbar {
+      background: var(--green-dark);
+      padding: 0.75rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .topbar-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--green-accent);
+      letter-spacing: 0.03em;
+    }
+    .topbar-sep { color: rgba(255,255,255,0.2); font-size: 13px; }
+    .topbar-cat {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    /* Hero */
+    .hero {
+      background: var(--green-dark);
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: rgba(126,200,126,0.06);
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -100px; left: -60px;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .hero-inner { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; }
+
+    .hero-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--green-accent);
+      border: 1px solid rgba(126,200,126,0.35);
+      padding: 5px 16px;
+      border-radius: 30px;
+      margin-bottom: 1.75rem;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(26px, 4vw, 42px);
+      font-weight: 900;
+      line-height: 1.2;
+      color: #f0f7f0;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-sub {
+      font-size: 16px;
+      color: rgba(232,245,232,0.6);
+      font-style: italic;
+      max-width: 560px;
+      margin: 0 auto 2rem;
+      line-height: 1.7;
+    }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      font-size: 12px;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .hero-meta span { display: flex; align-items: center; gap: 6px; }
+
+    /* Main layout */
+    .main {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3.5rem 2rem 5rem;
+    }
+
+    /* Intro callout */
+    .intro-box {
+      border-left: 3px solid var(--green-mid);
+      background: #fff;
+      padding: 1.5rem 1.75rem;
+      border-radius: 0 12px 12px 0;
+      margin-bottom: 3rem;
+      font-size: 15.5px;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      font-style: italic;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.04);
+    }
+    .intro-box strong { color: var(--text-primary); font-style: normal; font-weight: 600; }
+
+    /* Section label */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--green-mid);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-light);
+    }
+
+    /* Documents grid */
+    .docs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 3.5rem;
+    }
+
+    .doc-card {
+      background: #fff;
+      border: 0.5px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .doc-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+      border-color: rgba(0,0,0,0.18);
+    }
+    .doc-card strong {
+      display: block;
+      font-size: 13px;
+      color: var(--text-primary);
+      font-weight: 700;
+      margin-bottom: 4px;
+      font-style: normal;
+      letter-spacing: 0.01em;
+    }
+    .doc-icon {
+      font-size: 22px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    /* Steps */
+    .steps { margin-bottom: 3.5rem; }
+
+    .step-card {
+      background: #fff;
+      border: 0.5px solid var(--border);
+      border-radius: 14px;
+      padding: 1.75rem 1.75rem 1.75rem 1.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .step-card:hover {
+      box-shadow: 0 6px 24px rgba(0,0,0,0.07);
+      transform: translateY(-1px);
+    }
+
+    .step-num {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--green-dark);
+      color: var(--green-accent);
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+
+    .step-body h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 19px;
+      font-weight: 700;
+      margin-bottom: 0.65rem;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .step-body p {
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+    }
+    .step-body p:last-child { margin-bottom: 0; }
+
+    .pill {
+      display: inline-block;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 0.65rem;
+      letter-spacing: 0.04em;
+      font-family: 'Source Serif 4', serif;
+    }
+    .pill-tip { background: var(--green-light); color: var(--green-text); }
+    .pill-warn { background: var(--amber-light); color: var(--amber-text); }
+    .pill-exp { background: #e6f1fb; color: #042c53; }
+
+    /* Cost box */
+    .cost-box {
+      background: var(--green-dark);
+      border-radius: 16px;
+      padding: 2.25rem 2.5rem;
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .cost-amount {
+      font-family: 'Playfair Display', serif;
+      font-size: 56px;
+      font-weight: 900;
+      color: var(--green-accent);
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .cost-right { flex: 1; min-width: 200px; }
+
+    .cost-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(232,245,232,0.45);
+      margin-bottom: 8px;
+    }
+
+    .cost-note {
+      font-size: 15px;
+      color: rgba(232,245,232,0.75);
+      line-height: 1.7;
+      font-style: italic;
+    }
+
+    .cost-breakdown {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .cost-item {
+      background: rgba(255,255,255,0.07);
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      font-size: 13px;
+      color: rgba(232,245,232,0.65);
+    }
+    .cost-item strong {
+      display: block;
+      color: rgba(232,245,232,0.9);
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    /* Alert box */
+    .alert-box {
+      border: 1px solid rgba(186,117,23,0.3);
+      border-left: 4px solid var(--amber-border);
+      background: var(--amber-light);
+      border-radius: 0 10px 10px 0;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 3rem;
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--amber-text);
+    }
+    .alert-box strong { font-weight: 700; display: block; margin-bottom: 6px; font-size: 15.5px; }
+
+    /* Timeline */
+    .timeline {
+      background: #fff;
+      border: 0.5px solid var(--border);
+      border-radius: 14px;
+      padding: 2rem 2rem 1.5rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .timeline h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--text-primary);
+    }
+
+    .tl-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 0.85rem 0;
+      border-bottom: 0.5px solid var(--border-light);
+    }
+    .tl-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .tl-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--green-accent);
+      flex-shrink: 0;
+      margin-top: 6px;
+      border: 2px solid var(--green-mid);
+    }
+
+    .tl-time {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--green-mid);
+      min-width: 80px;
+      padding-top: 2px;
+      letter-spacing: 0.04em;
+    }
+
+    .tl-desc {
+      font-size: 14.5px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    /* Verdict */
+    .verdict {
+      border-top: 2px solid var(--green-dark);
+      padding-top: 2.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .verdict h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 900;
+      margin-bottom: 1.25rem;
+      color: var(--text-primary);
+      line-height: 1.25;
+    }
+
+    .verdict p {
+      font-size: 15.5px;
+      line-height: 1.85;
+      color: var(--text-secondary);
+      margin-bottom: 1.1rem;
+    }
+    .verdict p:last-child { margin-bottom: 0; }
+
+    /* Key takeaways */
+    .takeaways {
+      background: var(--green-light);
+      border-radius: 14px;
+      padding: 1.75rem 2rem;
+      margin-bottom: 3rem;
+    }
+    .takeaways h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--green-text);
+      margin-bottom: 1rem;
+    }
+    .takeaway-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 0.5rem 0;
+      font-size: 14.5px;
+      color: var(--green-text);
+      line-height: 1.65;
+      border-bottom: 0.5px solid rgba(39,80,10,0.12);
+    }
+    .takeaway-item:last-child { border-bottom: none; }
+    .takeaway-item::before {
+      content: '✓';
+      font-weight: 700;
+      font-size: 13px;
+      color: #3b6d11;
+      flex-shrink: 0;
+      margin-top: 2px;
+      background: rgba(59,109,17,0.15);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    /* Footer */
+    .byline {
+      padding-top: 2rem;
+      border-top: 0.5px solid var(--border-light);
+      font-size: 13px;
+      color: var(--text-muted);
+      font-style: italic;
+      line-height: 1.7;
+    }
+
+    footer {
+      background: var(--green-dark);
+      padding: 2rem;
+      text-align: center;
+    }
+    footer p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.6;
+    }
+    footer a { color: var(--green-accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 600px) {
+      .hero { padding: 3.5rem 1.25rem 3rem; }
+      .main { padding: 2.5rem 1.25rem 4rem; }
+      .cost-box { gap: 1.5rem; padding: 1.75rem; }
+      .cost-amount { font-size: 42px; }
+      .step-card { gap: 1rem; padding: 1.25rem; }
+      .hero-meta { flex-direction: column; gap: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="topbar">
+    <span class="topbar-logo">DL Guide India</span>
+    <span class="topbar-sep">|</span>
+    <span class="topbar-cat">Karnataka RTO · Real Experience</span>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="hero-tag">First-hand experience · Karnataka RTO 2024–2026</div>
+      <h1>How I Renewed My Expired Driving Licence in Karnataka — And What You Should Actually Do</h1>
+      <p class="hero-sub">A practical, honest guide covering backlog entry errors, RTO visits, agents, driving test myths, costs, and timelines.</p>
+      <div class="hero-meta">
+        <span>📍 Karnataka, India</span>
+        <span>🕐 5 min read</span>
+        <span>📅 April 2026</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <div class="intro-box">
+      <strong>My situation:</strong> My driving licence was valid from 2004 to 2024. When it expired, I tried renewing it through the Parivahan online portal — but my records were missing from the system. The portal showed a "backlog entry required" error. After weeks of navigating the RTO, multiple visits, and finally going through a licensed agent, I got my renewed DL card within a month. Here is everything I went through and exactly what you should do if you are in the same situation.
+    </div>
+
+    <!-- Documents -->
+    <div class="section-label">Documents you will need</div>
+
+    <div class="docs-grid">
+      <div class="doc-card">
+        <span class="doc-icon">🪪</span>
+        <strong>Original DL</strong>
+        Expired driving licence — carry both original and a photocopy
+      </div>
+      <div class="doc-card">
+        <span class="doc-icon">🪪</span>
+        <strong>Aadhar Card</strong>
+        For address and identity proof (original + photocopy)
+      </div>
+      <div class="doc-card">
+        <span class="doc-icon">📷</span>
+        <strong>Passport Photos</strong>
+        2–4 recent passport-size photographs
+      </div>
+      <div class="doc-card">
+        <span class="doc-icon">📋</span>
+        <strong>Form 9</strong>
+        DL renewal application form (available at RTO or online)
+      </div>
+      <div class="doc-card">
+        <span class="doc-icon">🏥</span>
+        <strong>Medical Certificate</strong>
+        Form 1A required only if you are 40 years or older
+      </div>
+      <div class="doc-card">
+        <span class="doc-icon">🏠</span>
+        <strong>Address Proof</strong>
+        Utility bill, Aadhar, or ration card (if address differs from DL)
+      </div>
+    </div>
+
+    <!-- Steps -->
+    <div class="section-label">Step-by-step process</div>
+
+    <div class="steps">
+
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Start with the online portal — parivahan.gov.in</h3>
+          <p>Go to <strong>parivahan.gov.in → Driving Licence → DL Renewal</strong>. Enter your DL number, date of birth, and select Karnataka as your state. If your record is in the system, you can complete the entire renewal online — upload documents, pay the fee, and book an appointment slot if needed.</p>
+          <span class="pill pill-warn">⚠ Common problem for older licences</span>
+          <p>If your licence was issued before the digital records era (roughly pre-2005 for many Karnataka RTOs), your data may not exist in the system. The portal will display a <strong>"backlog entry required"</strong> or similar error. This is very common — do not panic and do not assume your licence is invalid.</p>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Visit your RTO office to submit the backlog data entry form</h3>
+          <p>When you get the backlog error, you must visit the issuing RTO in person. At the front desk, ask specifically for the <strong>backlog data entry form</strong> (also called legacy entry or manual migration form at some offices). Fill it carefully with all details exactly as they appear on your old licence — name, address, DL number, vehicle categories, dates.</p>
+          <span class="pill pill-tip">Tip</span>
+          <p>Carry your original expired DL, Aadhar card, and 2 passport photos for this visit. Once the RTO staff enter your data into the system, they will inform you to return or wait for an SMS — typically after about <strong>30 days</strong>, when your record should be visible in the online portal.</p>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Follow up if you do not receive any update</h3>
+          <p>Realistically, RTO offices across Karnataka are often overloaded and staff may not always process backlog entries promptly. If two to three weeks pass with no SMS and your record still does not appear online, do not just keep waiting. Visit the RTO and specifically ask which counter handles backlog data entry, and politely ask for a status update with your application reference.</p>
+          <span class="pill pill-exp">My experience</span>
+          <p>When I went back, the staff at the counter were not actively working on backlog files. This is when I decided to approach a licensed RTO agent outside the office — which turned out to be the right call.</p>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>Approach a licensed RTO agent if the RTO is unresponsive</h3>
+          <p>Licensed agents operate legally near most Karnataka RTO offices and are authorised to assist with applications. They know the internal process, which staff to approach, and how to follow up efficiently. For an expired DL renewal with a backlog issue, a good agent can handle the entire process — from data entry follow-up to form submission and payment.</p>
+          <span class="pill pill-tip">Critical fact to know</span>
+          <p><strong>No driving test is required for renewal of an existing driving licence,</strong> even if it has expired. This is confirmed under the Motor Vehicles Act. The driving test is only for first-time applicants for a fresh licence. The agent confirmed this immediately when I asked.</p>
+          <p>After engaging the agent, my DL renewal was processed within <strong>1 week</strong>. The physical smart card arrived by post approximately <strong>1 month later</strong>.</p>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h3>Download a temporary DL and wait for your physical card</h3>
+          <p>Once the renewal is approved, you can download a <strong>digitally signed temporary DL</strong> from parivahan.gov.in using your application number. This is a legally valid document to carry while your physical smart card is in transit — so you do not have to worry about being stopped without valid ID.</p>
+          <p>The physical laminated smart card DL is dispatched by India Post / Speed Post to your registered address. In Karnataka, this typically takes <strong>3 to 6 weeks</strong> from the date of approval. Track the dispatch status on the Parivahan portal or the India Post tracking site with the tracking number SMSed to you.</p>
+          <span class="pill pill-tip">Tip</span>
+          <p>Make sure your mobile number and address are correctly updated in the system before the renewal is processed, so you receive all SMS notifications and the card reaches you without issues.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline">
+      <h2>Realistic timeline at a glance</h2>
+      <div class="tl-row">
+        <div class="tl-dot"></div>
+        <div class="tl-time">Day 1</div>
+        <div class="tl-desc">Try online portal → encounter backlog entry error → visit RTO and submit backlog form</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-dot"></div>
+        <div class="tl-time">Day 7–10</div>
+        <div class="tl-desc">RTO promises SMS update in about 30 days; counter staff may be slow to process</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-dot"></div>
+        <div class="tl-time">Day 14–20</div>
+        <div class="tl-desc">If no update, approach a licensed RTO agent near the office with all documents</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-dot"></div>
+        <div class="tl-time">Within 1 week</div>
+        <div class="tl-desc">DL renewal processed and approved (no driving test needed); temporary DL available to download</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-dot"></div>
+        <div class="tl-time">Within 1 month</div>
+        <div class="tl-desc">Physical smart card DL delivered to your registered address by post</div>
+      </div>
+    </div>
+
+    <!-- Cost -->
+    <div class="section-label">What it cost</div>
+
+    <div class="cost-box">
+      <div class="cost-amount">₹5,000</div>
+      <div class="cost-right">
+        <div class="cost-label">Total amount paid (agent-assisted)</div>
+        <p class="cost-note">This covered official government fees plus the agent's full service charge for handling the backlog follow-up, form filing, and end-to-end processing.</p>
+        <div class="cost-breakdown">
+          <div class="cost-item">
+            <strong>~₹200–400</strong>
+            Official govt fee only
+          </div>
+          <div class="cost-item">
+            <strong>~₹4,600</strong>
+            Agent service charge
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alert -->
+    <div class="alert-box">
+      <strong>Is a driving test required for DL renewal in Karnataka?</strong>
+      No. For renewal of an existing driving licence — even one that has expired — there is absolutely no driving test requirement under the Motor Vehicles Act, 1988. A driving test is only required for first-time applicants obtaining a fresh licence. If any agent or RTO official tells you otherwise, they are misinformed. You can confidently decline and proceed with just the paperwork.
+    </div>
+
+    <!-- Takeaways -->
+    <div class="section-label">Key takeaways</div>
+
+    <div class="takeaways">
+      <h3>What to remember before you go</h3>
+      <div class="takeaway-item">Start at parivahan.gov.in — if the portal works for you, the online process is the cheapest and fastest route</div>
+      <div class="takeaway-item">A "backlog entry required" error is common for pre-2005 licences — it does not mean your licence is void</div>
+      <div class="takeaway-item">Visit your RTO in person to file the backlog form, and bring original DL, Aadhar, and passport photos</div>
+      <div class="takeaway-item">If the RTO is slow, a licensed agent near the office can get things done in about a week</div>
+      <div class="takeaway-item">No driving test needed for renewal — this is confirmed by law</div>
+      <div class="takeaway-item">Download a temporary DL from the portal immediately after approval — it is legally valid while you wait for the card</div>
+      <div class="takeaway-item">Government fee is under ₹400; agent fees vary — negotiate upfront and get a receipt</div>
+    </div>
+
+    <!-- Verdict -->
+    <div class="verdict">
+      <h2>Final word: what you should actually do</h2>
+      <p>Start with the online portal at parivahan.gov.in. If your renewal goes through online, you will save a lot of time and money. But if you get the backlog entry error — which is extremely common for older Karnataka licences — do not be discouraged. It simply means your old data needs to be digitised first.</p>
+      <p>Visit your RTO, submit the backlog form, and wait the prescribed period. If you find the office is not processing your application or you cannot afford to keep taking days off to follow up, a licensed RTO agent is a legitimate and effective option. They are not middlemen operating in the grey — they are authorised service providers, and they know how to navigate the system efficiently.</p>
+      <p>The whole renewal, despite the backlog complication, is not as difficult as it may seem at first. With the right approach, you can have a renewed driving licence in your hand within a month from start to finish.</p>
+    </div>
+
+    <div class="byline">
+      Based on a first-hand experience renewing a Karnataka driving licence (2004–2024 validity) in 2024–2026. Government processes, fees, and timelines may vary slightly depending on your RTO jurisdiction and individual circumstances. Always verify the latest fee structure at parivahan.gov.in or your local RTO.
+    </div>
+
+  </main>
+
+  <footer>
+    <p>This guide is based on a real experience and is shared for informational purposes only.<br>
+    For official information, visit <a href="https://parivahan.gov.in" target="_blank">parivahan.gov.in</a> or your local Karnataka RTO.</p>
+  </footer>
+
+</body>
+</html>

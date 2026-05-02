@@ -1,0 +1,2448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duplicate PAN Card: Real Story + Step-by-Step Resolver Tool | SalaryBit</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   BLOG STYLES
+   ============================================================ */
+
+  :root {
+    --ink: #1a1208;
+    --paper: #faf7f2;
+    --accent: #c8450a;
+    --muted: #7a6e5f;
+    --highlight: #fff3cd;
+    --border: #e0d8cc;
+    --warning-bg: #fff8f0;
+    --warning-border: #c8450a;
+    --tip-bg: #f0f7f0;
+    --tip-border: #2a7a3a;
+    --step-bg: #f4f0ea;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.8;
+    font-size: 18px;
+  }
+
+  /* Header */
+  .site-header {
+    background: var(--ink);
+    padding: 14px 40px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .site-logo {
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-decoration: none;
+  }
+  .site-logo span { color: var(--accent); }
+  .breadcrumb {
+    color: #aaa;
+    font-size: 13px;
+    margin-left: auto;
+    font-family: 'Source Serif 4', serif;
+  }
+
+  /* Hero */
+  .hero {
+    background: var(--ink);
+    padding: 64px 40px 56px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 400px; height: 100%;
+    background: radial-gradient(ellipse at top right, rgba(200,69,10,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .hero-tag {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 2px;
+    margin-bottom: 22px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.15;
+    margin-bottom: 20px;
+  }
+  .hero h1 em {
+    color: var(--accent);
+    font-style: normal;
+  }
+  .hero-meta {
+    color: #aaa;
+    font-size: 14px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .hero-meta span::before { content: '· '; color: var(--accent); }
+  .hero-meta span:first-child::before { content: ''; }
+
+  /* Article body */
+  .article-wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 56px 24px 80px;
+  }
+
+  .lead {
+    font-size: 20px;
+    font-weight: 300;
+    font-style: italic;
+    color: #3a3228;
+    border-left: 4px solid var(--accent);
+    padding-left: 24px;
+    margin-bottom: 40px;
+    line-height: 1.7;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 48px 0 16px;
+    line-height: 1.3;
+  }
+  h2::after {
+    content: '';
+    display: block;
+    width: 48px;
+    height: 3px;
+    background: var(--accent);
+    margin-top: 10px;
+  }
+
+  h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 32px 0 12px;
+    color: #2a2010;
+  }
+
+  p { margin-bottom: 20px; }
+
+  /* Warning box */
+  .box-warning {
+    background: var(--warning-bg);
+    border-left: 5px solid var(--warning-border);
+    padding: 20px 24px;
+    border-radius: 0 8px 8px 0;
+    margin: 28px 0;
+  }
+  .box-warning strong {
+    display: block;
+    color: var(--accent);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+  }
+
+  /* Tip box */
+  .box-tip {
+    background: var(--tip-bg);
+    border-left: 5px solid var(--tip-border);
+    padding: 20px 24px;
+    border-radius: 0 8px 8px 0;
+    margin: 28px 0;
+  }
+  .box-tip strong {
+    display: block;
+    color: #2a7a3a;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+  }
+
+  /* Steps */
+  .steps {
+    counter-reset: step;
+    margin: 28px 0;
+  }
+  .step {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+    background: var(--step-bg);
+    border-radius: 10px;
+    padding: 20px 22px;
+  }
+  .step-num {
+    counter-increment: step;
+    min-width: 42px;
+    height: 42px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .step-content { flex: 1; }
+  .step-content strong {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    font-size: 17px;
+  }
+  .step-content p { margin: 0; font-size: 16px; color: #4a4030; }
+
+  /* Checklist */
+  .checklist {
+    list-style: none;
+    margin: 16px 0 24px;
+    padding: 0;
+  }
+  .checklist li {
+    padding: 8px 0 8px 32px;
+    position: relative;
+    border-bottom: 1px dashed var(--border);
+    font-size: 17px;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* FAQ */
+  .faq-item {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .faq-q {
+    background: var(--step-bg);
+    padding: 16px 20px;
+    font-weight: 600;
+    font-size: 17px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .faq-q::after { content: '↓'; color: var(--accent); font-size: 18px; }
+  .faq-a {
+    padding: 16px 20px;
+    font-size: 16px;
+    color: #4a4030;
+    line-height: 1.7;
+    background: #fff;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Divider */
+  .divider {
+    text-align: center;
+    color: var(--accent);
+    font-size: 22px;
+    letter-spacing: 8px;
+    margin: 40px 0;
+    opacity: 0.5;
+  }
+
+  /* Highlight quote */
+  .pullquote {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-style: italic;
+    color: var(--accent);
+    text-align: center;
+    padding: 32px 24px;
+    margin: 40px 0;
+    border-top: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);
+    line-height: 1.5;
+  }
+
+  /* Contact table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+    margin: 20px 0;
+  }
+  th {
+    background: var(--ink);
+    color: #fff;
+    padding: 12px 16px;
+    text-align: left;
+    font-family: 'Source Serif 4', serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+  }
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: #f7f3ee; }
+
+  /* CTA */
+  .cta-block {
+    background: var(--ink);
+    color: #fff;
+    border-radius: 14px;
+    padding: 40px 36px;
+    text-align: center;
+    margin: 48px 0 0;
+  }
+  .cta-block h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: #fff;
+    margin: 0 0 12px;
+  }
+  .cta-block p { color: #ccc; font-size: 16px; margin-bottom: 24px; }
+  .cta-btn {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    padding: 14px 36px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: opacity 0.2s;
+  }
+  .cta-btn:hover { opacity: 0.85; }
+
+  /* Footer */
+  .article-footer {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 2px solid var(--border);
+    font-size: 14px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  /* Story block */
+  .story-block {
+    background: linear-gradient(135deg, #1a1208 0%, #2d1f0a 100%);
+    color: #f0ebe0;
+    border-radius: 14px;
+    padding: 36px 36px 28px;
+    margin: 0 0 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .story-block::before {
+    content: '"';
+    position: absolute;
+    top: -10px;
+    right: 24px;
+    font-family: 'Playfair Display', serif;
+    font-size: 160px;
+    color: rgba(200,69,10,0.15);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .story-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .story-block p {
+    color: #e0d8cc;
+    line-height: 1.85;
+    font-size: 17px;
+  }
+  .story-block strong { color: #fff; }
+  .story-block em { color: #f5c08a; font-style: italic; }
+
+  /* Timeline */
+  .timeline {
+    margin: 28px 0;
+    position: relative;
+    padding-left: 28px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--border));
+  }
+  .tl-item {
+    position: relative;
+    margin-bottom: 24px;
+    padding: 16px 18px;
+    background: var(--step-bg);
+    border-radius: 8px;
+    font-size: 16px;
+  }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -23px;
+    top: 20px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--paper);
+  }
+  .tl-item .tl-year {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .tl-item p { margin: 0; color: #4a4030; }
+  .tl-item.tl-win { background: #f0f7f0; }
+  .tl-item.tl-win::before { background: #2a7a3a; }
+  .tl-item.tl-win .tl-year { color: #2a7a3a; }
+
+
+    .hero { padding: 40px 20px; }
+    .article-wrap { padding: 36px 18px 60px; }
+    .step { flex-direction: column; gap: 12px; }
+    table { font-size: 14px; }
+    th, td { padding: 10px 12px; }
+  }
+
+
+/* ============================================================
+   TOOL STYLES  
+   ============================================================ */
+
+:root {
+  --ink: #0f0f0f;
+  --paper: #f8f6f1;
+  --surface: #ffffff;
+  --accent: #d4420a;
+  --accent-light: #fff0eb;
+  --success: #1a7a3c;
+  --success-light: #edf7f1;
+  --warn: #b45309;
+  --warn-light: #fffbeb;
+  --info: #1d4ed8;
+  --info-light: #eff6ff;
+  --muted: #6b6560;
+  --border: #e5e1d8;
+  --border-strong: #ccc8c0;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ---- TOP BAR ---- */
+.topbar {
+  background: var(--ink);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo { color: #fff; font-family: 'DM Serif Display', serif; font-size: 20px; text-decoration: none; }
+.logo span { color: var(--accent); }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.progress-pill {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.progress-fill-bar {
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 3px;
+  background: var(--accent);
+  transition: width 0.4s ease;
+  width: 0%;
+}
+
+/* ---- HERO ---- */
+.hero {
+  background: var(--ink);
+  padding: 48px 24px 56px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212,66,10,0.12) 0%, transparent 70%);
+  top: -200px; left: 50%; transform: translateX(-50%);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-block;
+  border: 1px solid rgba(212,66,10,0.6);
+  color: #ff8a60;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 5px 16px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+.hero h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(26px, 5vw, 48px);
+  color: #fff;
+  line-height: 1.2;
+  max-width: 700px;
+  margin: 0 auto 16px;
+}
+.hero h1 em { color: #ff7a45; font-style: normal; }
+.hero p {
+  color: #aaa;
+  font-size: 15px;
+  max-width: 500px;
+  margin: 0 auto 32px;
+}
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.hero-stat { text-align: center; }
+.hero-stat .num { font-family: 'DM Serif Display', serif; font-size: 28px; color: #fff; }
+.hero-stat .lbl { font-size: 11px; color: #888; letter-spacing: 1px; text-transform: uppercase; }
+
+/* ---- MAIN LAYOUT ---- */
+.main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 16px 80px;
+}
+
+/* ---- SITUATION PICKER ---- */
+.situation-section { margin-bottom: 28px; }
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.situation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+.sit-btn {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.sit-btn:hover { border-color: var(--accent); transform: translateY(-1px); box-shadow: var(--shadow); }
+.sit-btn.active { border-color: var(--accent); background: var(--accent-light); }
+.sit-btn.active::after {
+  content: '✓';
+  position: absolute;
+  top: 10px; right: 12px;
+  width: 20px; height: 20px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 20px;
+  text-align: center;
+}
+.sit-icon { font-size: 22px; margin-bottom: 8px; display: block; }
+.sit-title { font-weight: 600; font-size: 14px; color: var(--ink); margin-bottom: 4px; }
+.sit-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+/* ---- USER DETAILS FORM ---- */
+.details-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  margin-bottom: 24px;
+  display: none;
+}
+.details-card.visible { display: block; }
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.field input, .field select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  background: var(--paper);
+  color: var(--ink);
+  outline: none;
+  transition: border 0.2s;
+}
+.field input:focus, .field select:focus { border-color: var(--accent); }
+.field-hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* ---- PHASE NAV ---- */
+.phase-nav {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: 20px;
+  scrollbar-width: none;
+}
+.phase-nav::-webkit-scrollbar { display: none; }
+.phase-tab {
+  flex-shrink: 0;
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.phase-tab:hover { border-color: var(--accent); color: var(--accent); }
+.phase-tab.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+.phase-tab.done { background: var(--success-light); color: var(--success); border-color: var(--success); }
+
+/* ---- PHASE HEADER ---- */
+.phase-header {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding: 18px 22px;
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.phase-title { font-family: 'DM Serif Display', serif; font-size: 20px; }
+.phase-count { font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+/* ---- STEP CARD ---- */
+.step-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: none;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+.step-card:last-child { border-radius: 0 0 var(--radius) var(--radius); }
+.step-card.done { opacity: 0.65; }
+.step-card.done .step-body { display: none; }
+
+.step-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+  cursor: pointer;
+  user-select: none;
+}
+.step-header:hover { background: #faf9f7; }
+
+.step-check {
+  flex-shrink: 0;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.step-check.checked {
+  background: var(--success);
+  border-color: var(--success);
+}
+.step-check.checked::after {
+  content: '';
+  width: 10px; height: 7px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translateY(-1px);
+  display: block;
+}
+
+.step-num {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 4px;
+  flex-shrink: 0;
+  min-width: 18px;
+}
+.step-title-wrap { flex: 1; }
+.step-title {
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.4;
+}
+.step-card.done .step-title { text-decoration: line-through; color: var(--muted); }
+.step-subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.step-toggle { color: var(--muted); font-size: 18px; flex-shrink: 0; transition: transform 0.2s; }
+.step-card.open .step-toggle { transform: rotate(180deg); }
+
+/* ---- STEP BODY ---- */
+.step-body { border-top: 1px solid var(--border); }
+.step-body-inner { padding: 20px 22px 22px 62px; }
+
+.step-detail { font-size: 14px; color: #3a3530; line-height: 1.75; margin-bottom: 16px; white-space: pre-line; }
+
+/* ---- BOXES INSIDE STEPS ---- */
+.box {
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  font-size: 13.5px;
+  line-height: 1.65;
+}
+.box-warn { background: var(--warn-light); border-left: 3px solid var(--warn); }
+.box-info { background: var(--info-light); border-left: 3px solid var(--info); }
+.box-success { background: var(--success-light); border-left: 3px solid var(--success); }
+.box-accent { background: var(--accent-light); border-left: 3px solid var(--accent); }
+.box strong { display: block; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
+.box-warn strong { color: var(--warn); }
+.box-info strong { color: var(--info); }
+.box-success strong { color: var(--success); }
+.box-accent strong { color: var(--accent); }
+
+/* ---- DRAFT EMAIL ---- */
+.email-draft {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.email-header {
+  background: var(--ink);
+  color: #fff;
+  padding: 10px 16px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.email-header span { opacity: 0.7; }
+.copy-btn {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.copy-btn:hover { background: rgba(255,255,255,0.25); }
+.copy-btn.copied { background: var(--success); }
+.email-meta { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.email-meta div { margin-bottom: 4px; }
+.email-meta .label { color: var(--muted); display: inline-block; width: 60px; }
+.email-body {
+  padding: 14px 16px;
+  font-size: 13.5px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--ink);
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+/* ---- DOCUMENT CHECKLIST ---- */
+.doc-list { list-style: none; margin-bottom: 14px; }
+.doc-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--border);
+  font-size: 13.5px;
+}
+.doc-list li:last-child { border-bottom: none; }
+.doc-list li::before {
+  content: '□';
+  color: var(--accent);
+  font-size: 16px;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+
+/* ---- ACTION BUTTONS ---- */
+.step-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+.btn {
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #b5350a; }
+.btn-outline { background: transparent; border: 1.5px solid var(--border-strong); color: var(--ink); }
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+.btn-success { background: var(--success); color: #fff; }
+.btn-success:hover { background: #155a2e; }
+.btn-lg { padding: 13px 28px; font-size: 15px; border-radius: var(--radius); }
+
+/* ---- MARK DONE BUTTON ---- */
+.mark-done-btn {
+  width: 100%;
+  margin-top: 18px;
+  padding: 12px;
+  background: var(--success-light);
+  border: 1.5px dashed var(--success);
+  border-radius: var(--radius-sm);
+  color: var(--success);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+}
+.mark-done-btn:hover { background: var(--success); color: #fff; }
+
+/* ---- PHASE NAV BUTTONS ---- */
+.phase-nav-btns {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  gap: 12px;
+}
+
+/* ---- COMPLETION SCREEN ---- */
+.completion {
+  display: none;
+  text-align: center;
+  padding: 48px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-top: 20px;
+}
+.completion.visible { display: block; }
+.completion-icon {
+  width: 72px; height: 72px;
+  background: var(--success-light);
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+.completion h2 { font-family: 'DM Serif Display', serif; font-size: 28px; margin-bottom: 10px; }
+.completion p { color: var(--muted); max-width: 480px; margin: 0 auto 24px; }
+
+/* ---- CONTACT FOOTER ---- */
+.contact-strip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+.contact-avatar {
+  width: 48px; height: 48px;
+  background: var(--accent-light);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.contact-text { flex: 1; }
+.contact-text strong { display: block; font-size: 15px; margin-bottom: 2px; }
+.contact-text span { font-size: 13px; color: var(--muted); }
+.contact-email {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 9px 18px;
+  border: 1.5px solid var(--accent);
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+}
+.contact-email:hover { background: var(--accent); color: #fff; }
+
+/* ---- HIDDEN initially ---- */
+.tool-area { display: none; }
+.tool-area.visible { display: block; }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 600px) {
+  .hero { padding: 36px 16px 44px; }
+  .step-body-inner { padding: 16px 16px 18px 16px; }
+  .email-body { font-size: 13px; }
+  .phase-nav-btns { flex-direction: column; }
+  .phase-nav-btns .btn { width: 100%; text-align: center; }
+}
+
+/* ---- PROGRESS BAR ---- */
+.overall-progress {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  display: none;
+}
+.overall-progress.visible { display: block; }
+.op-top { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; }
+.op-bar { background: var(--border); border-radius: 4px; height: 8px; overflow: hidden; }
+.op-fill { height: 100%; background: var(--success); border-radius: 4px; transition: width 0.4s ease; }
+.phase-pills { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+.phase-pill { font-size: 11px; padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); }
+.phase-pill.done { background: var(--success-light); color: var(--success); border-color: var(--success); }
+.phase-pill.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+
+/* ============================================================
+   COMBINED / BRIDGE STYLES
+   ============================================================ */
+.section-divider {
+  background: #0f0f0f;
+  padding: 56px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.section-divider::before {
+  content: '';
+  position: absolute;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212,66,10,0.15) 0%, transparent 70%);
+  top: -200px; left: 50%; transform: translateX(-50%);
+  pointer-events: none;
+}
+.section-divider-inner { position: relative; }
+.section-divider-tag {
+  display: inline-block;
+  border: 1px solid rgba(212,66,10,0.5);
+  color: #ff8a60;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 5px 16px;
+  border-radius: 20px;
+  margin-bottom: 18px;
+  font-family: 'DM Sans', sans-serif;
+}
+.section-divider h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(24px, 4vw, 42px);
+  color: #fff;
+  margin-bottom: 14px;
+  line-height: 1.2;
+}
+.section-divider h2 em { color: #ff7a45; font-style: normal; }
+.section-divider p {
+  color: #aaa;
+  font-size: 15px;
+  max-width: 520px;
+  margin: 0 auto 28px;
+  font-family: 'DM Sans', sans-serif;
+}
+.scroll-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #d4420a;
+  color: #fff;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.2s;
+  cursor: pointer;
+  border: none;
+}
+.scroll-arrow:hover { opacity: 0.85; }
+
+/* Override body font conflict - blog wins for article, tool wins for tool */
+.tool-section * {
+  font-family: 'DM Sans', sans-serif;
+}
+.article-wrap * {
+  font-family: 'Source Serif 4', Georgia, serif;
+}
+/* But tool section headings */
+.tool-section h1, .tool-section h2 {
+  font-family: 'DM Serif Display', serif;
+}
+.tool-section h2::after { display: none; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     SHARED TOP NAV
+     ============================================================ -->
+<nav style="background:#0f0f0f; padding:13px 28px; display:flex; align-items:center; gap:16px; position:sticky; top:0; z-index:200;">
+  <a href="https://salarybit.in" style="color:#fff; font-family:'DM Serif Display',serif; font-size:20px; text-decoration:none;">Salary<span style="color:#d4420a;">Bit</span></a>
+  <div style="margin-left:auto; display:flex; gap:10px; align-items:center;">
+    <a href="#blog-section" style="color:#aaa; font-size:13px; text-decoration:none; font-family:'DM Sans',sans-serif; padding:5px 12px; border-radius:20px; border:1px solid #333;">📖 Read Story</a>
+    <a href="#tool-section" style="color:#fff; font-size:13px; text-decoration:none; font-family:'DM Sans',sans-serif; padding:5px 14px; border-radius:20px; background:#d4420a;">🛠 Use Tool</a>
+  </div>
+</nav>
+
+<!-- ============================================================
+     BLOG SECTION
+     ============================================================ -->
+<div id="blog-section">
+
+<section class="hero">
+  <div class="hero-inner">
+    <span class="hero-tag">Real Experience · PAN Card Guide · 2026</span>
+    <h1>I Spent <em>5 Years</em> Trying to Fix a Duplicate PAN Card. Here's What Finally Worked.</h1>
+    <div class="hero-meta">
+      <span>Tax &amp; Compliance</span>
+      <span>10 min read</span>
+      <span>Updated 2026</span>
+    </div>
+  </div>
+</section>
+
+<article class="article-wrap">
+
+  <p class="lead">
+    I spent nearly 5 years visiting the Income Tax office, filing grievances, and waiting for calls that never came. I had two PAN cards on my name and no one would help me fix it — until I finally sat in the office and refused to leave. This is my real story, and a guide so you don't have to go through the same ordeal.
+  </p>
+
+  <!-- REAL STORY SECTION -->
+  <div class="story-block">
+    <div class="story-label">📖 My Real Experience</div>
+
+    <p>
+      Like many people, I didn't even know I had two PAN cards until my name-change correction request was rejected by NSDL. Apparently, a second PAN existed in my name with a slightly different name format. That single rejection kicked off almost <strong>5 years of frustration</strong>.
+    </p>
+
+    <p>
+      I filed grievances online. I visited the Income Tax office — not once, not twice, but <strong>over 10 times</strong>. Each time I was told to wait, come back, or contact NSDL. Emails went unanswered. The grievance portal kept showing "Fully Resolved" but nothing actually changed on the ground. NSDL still saw the duplicate as active and refused to process my correction.
+    </p>
+
+    <p>
+      Finally, I decided enough was enough. I took a day off work, went to the Income Tax office, and calmly but firmly explained: <em>"It has been almost 5 years. I have had zero transactions on the second PAN. Why is this still not resolved?"</em> That direct conversation — sitting there in person and not leaving — changed everything.
+    </p>
+
+    <p>
+      They asked me to surrender the physical duplicate PAN card along with a cancellation letter. But I had lost the physical card. So I filed an <strong>FIR (First Information Report)</strong> — which you can now do entirely from your mobile phone through your state's online complaint portal. I mentioned the card was lost and attached the FIR copy along with my cancellation letter.
+    </p>
+
+    <p>
+      <strong>One week later</strong>, I got a call: <em>"Your duplicate PAN has been deleted. Come collect your documents."</em>
+    </p>
+
+    <p>
+      But the story didn't end there. I then contacted NSDL to process my pending name-change correction — my primary PAN had my name listed with only my first name while I wanted it corrected to include my full name. Even after the deletion, NSDL initially hesitated. A few weeks later, I received the email confirmation with my corrected e-PAN attached — the one from NSDL/Protean eGov saying my request had been processed and the e-PAN was ready to download (password: your date of birth in DDMMYYYY format).
+    </p>
+
+    <p>
+      <strong>Total time: nearly 5 years. What finally worked: showing up in person, staying firm, and having the FIR copy ready.</strong>
+    </p>
+  </div>
+
+  <h2>Why Do Duplicate PAN Cards Happen?</h2>
+  <p>
+    Duplicate PAN cards are more common than you might think. They typically occur when someone applies for a new PAN while an old one (perhaps applied for years ago, possibly with a different name spelling) already exists in the Income Tax Department's database. Sometimes the duplication happens due to clerical errors, name mismatches, or when someone moves and applies again thinking they lost their original PAN.
+  </p>
+  <p>
+    The system may not always flag duplicates immediately, but it <em>will</em> catch up — usually when you try to make a correction request or during a KYC check by a bank or employer. And when it does, you enter a bureaucratic loop that can — as I experienced — last for years.
+  </p>
+
+  <h2>The Real Timeline: What 5 Years Looks Like</h2>
+  <p>Here's an honest picture of how a duplicate PAN issue can drag on — and the key turning points:</p>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-year">Year 1 — Discovery</div>
+      <p>PAN correction/change request rejected by NSDL. Reason: a duplicate PAN exists in your name. Shock. Confusion. First visit to the Income Tax office.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">Years 1–3 — Grievance Loop</div>
+      <p>Multiple grievances filed on the e-filing portal. Resolution status shows "Fully Resolved" — but NSDL still sees the duplicate as active. 10+ office visits. Emails sent to ward office. No real progress.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">Year 4 — Escalation Attempt</div>
+      <p>Emails sent with CC to department helpdesk and NSDL. Grievance resolution letter obtained from the AO. NSDL still refuses to process the pending correction application.</p>
+    </div>
+    <div class="tl-item tl-win">
+      <div class="tl-year">Year 5 — The Breakthrough</div>
+      <p>Took a day off. Sat in the Income Tax office. Explained the situation firmly and calmly. They asked for the physical duplicate PAN card — which was lost. Filed an FIR online (via mobile) for the lost card. Submitted FIR copy + cancellation letter.</p>
+    </div>
+    <div class="tl-item tl-win">
+      <div class="tl-year">1 Week Later — Resolution</div>
+      <p>Received a phone call: "Your duplicate PAN is deleted. Come collect your documents." Followed up with NSDL. Name correction processed. e-PAN received via email from Protean eGov Technologies. ✅</p>
+    </div>
+  </div>
+
+  <div class="box-warning">
+    <strong>⚠ Legal Warning</strong>
+    Holding or using more than one PAN card is a violation of Section 139A of the Income Tax Act. It can attract a penalty of up to <strong>₹10,000</strong> under Section 272B. Even if the duplicate was issued by mistake, the responsibility to surrender it lies with you.
+  </div>
+
+  <h2>How to Know If You Have a Duplicate PAN</h2>
+  <p>You may discover a duplicate PAN in several ways:</p>
+  <ul class="checklist">
+    <li>Your PAN correction or change request was rejected by NSDL, citing another PAN in your name</li>
+    <li>You received a letter from the Income Tax PAN Services Unit (NSDL) about the issue</li>
+    <li>A bank or financial institution flags it during KYC verification</li>
+    <li>You notice two different PAN numbers assigned to your name when checking the e-filing portal</li>
+  </ul>
+
+  <div class="pullquote">
+    "Your PAN is your financial identity. Having two of them doesn't give you more power — it creates legal risk."
+  </div>
+
+  <h2>Step-by-Step: How to Surrender the Duplicate PAN</h2>
+  <p>Follow these steps carefully to resolve the issue legally and completely:</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <strong>Identify Which PAN to Keep</strong>
+        <p>Keep the PAN that has been used for filing returns, linked to your bank accounts, and Aadhaar. The other PAN — even if newer — should be surrendered. Most people prefer to retain their older, already-linked PAN.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <strong>Write a Cancellation/Surrender Letter to the Income Tax Department</strong>
+        <p>Draft a letter addressed to your jurisdictional Assessing Officer (AO). State clearly your name, address, the PAN you wish to retain, and the duplicate PAN you wish to cancel. Mention that all past transactions have been done under the PAN you wish to keep.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <strong>File a Grievance on the e-Filing Portal</strong>
+        <p>Log in to <strong>incometax.gov.in</strong>, go to the Grievance section, and submit a request for deletion of the duplicate PAN. Keep the acknowledgement number safe — you will need it for follow-ups with NSDL.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <strong>Don't Have the Duplicate PAN Card? File an FIR</strong>
+        <p>If the physical duplicate PAN card is lost, you don't need to find it. File an online FIR (First Information Report) through your state's police complaint portal — you can do this entirely from your mobile phone. State that the PAN card was lost. Attach the FIR copy with your cancellation letter. This is an accepted substitute.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <strong>Submit Physical Documents to Your AO's Office — And Stay There</strong>
+        <p>Submit your cancellation letter, copies of both PANs (or FIR if one is lost), identity proof, and affidavit. <strong>If you've been waiting months with no response, take a day off and sit in the office.</strong> Calmly explain the situation, mention exactly how long you've been waiting, and ask for a direct resolution. This personal, persistent approach is often what finally gets things moving.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-content">
+        <strong>Follow Up with NSDL</strong>
+        <p>Once the AO marks the duplicate PAN as deleted in the backend, inform NSDL with your grievance acknowledgement number and request them to proceed with any pending PAN correction applications linked to your primary PAN.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="box-tip">
+    <strong>💡 Hard-Won Tip (From Experience)</strong>
+    Always follow up in writing — email creates a paper trail. If your grievance shows "Fully Resolved" but NSDL still sees the duplicate as active, attach the AO's resolution letter when writing to NSDL. Also: don't expect the system to connect the dots automatically. The Income Tax Department and NSDL operate somewhat independently — you often have to manually bridge the two with documentation.
+  </div>
+
+  <h2>Step 2: Correcting Your Name on Your Primary PAN</h2>
+  <p>
+    Once the duplicate is deleted, you can finally apply for a name correction on your primary PAN. In my case, my primary PAN had only my first name while I wanted it to reflect my full name. This had to wait until the deletion was complete — attempting both together leads to rejection.
+  </p>
+  <p>Here's how to apply for a name correction once the duplicate is resolved:</p>
+  <ul class="checklist">
+    <li>Visit <strong>onlineservices.nsdl.com</strong> (now Protean eGov) or <strong>www.utiitsl.com</strong></li>
+    <li>Select "Changes or Corrections in existing PAN Data"</li>
+    <li>Fill in your correct name and upload supporting documents (Aadhaar, passport, voter ID)</li>
+    <li>Pay the applicable fee (approx. ₹110 for Indian address)</li>
+    <li>Note the acknowledgement number and track status online</li>
+  </ul>
+
+  <div class="box-tip">
+    <strong>📧 What to Expect When It's Done</strong>
+    Once your correction is processed, you will receive an email from NSDL/Protean eGov Technologies with your updated <strong>e-PAN attached</strong>. The subject will say your PAN change/correction request has been processed. The e-PAN PDF is password-protected — the password is your <strong>date of birth in DDMMYYYY format</strong>. If you also requested a physical card, it will be mailed to your address separately. The e-PAN also contains an Enhanced QR Code readable via a specific Android app (search "Enhanced QR Code Reader for PAN Card" on Google Play Store).
+  </div>
+
+  <div class="divider">✦ ✦ ✦</div>
+
+  <h2>Documents You Will Need</h2>
+  <p>Prepare all of the following before you start the process to avoid delays:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Document</th>
+        <th>Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Both PAN cards (copies)</td>
+        <td>To identify and surrender the duplicate</td>
+      </tr>
+      <tr>
+        <td>Aadhaar card (copy)</td>
+        <td>Identity & address proof</td>
+      </tr>
+      <tr>
+        <td>Notarized affidavit</td>
+        <td>Voluntary declaration of surrendering duplicate PAN</td>
+      </tr>
+      <tr>
+        <td>Grievance acknowledgement number</td>
+        <td>Reference for follow-ups with AO and NSDL</td>
+      </tr>
+      <tr>
+        <td>IT Department's grievance resolution letter</td>
+        <td>Proof that deletion was approved at department level</td>
+      </tr>
+      <tr>
+        <td>Written request / surrender letter</td>
+        <td>Formal communication to the Assessing Officer</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Key Contacts &amp; Portals</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Authority</th>
+        <th>Contact</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Income Tax e-Filing Portal</td>
+        <td>incometax.gov.in</td>
+      </tr>
+      <tr>
+        <td>NSDL PAN Services</td>
+        <td>onlineservices.nsdl.com | 020-27218082 | tininfo@nsdl.co.in</td>
+      </tr>
+      <tr>
+        <td>Aayakar Sampark Kendra (Helpline)</td>
+        <td>1800-180-1961 (Toll Free)</td>
+      </tr>
+      <tr>
+        <td>UTI Infrastructure (alternate PAN agency)</td>
+        <td>www.utiitsl.com</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Frequently Asked Questions</h2>
+
+  <div class="faq-item">
+    <div class="faq-q">Can I just ignore the duplicate PAN if I never use it?</div>
+    <div class="faq-a">No. Even if you never actively use the duplicate PAN, the Income Tax Department's records still show it as active against your name. This can cause issues with loan applications, ITR filing, and any financial KYC. You must formally surrender it.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Will I be penalized if the duplicate PAN was issued by mistake?</div>
+    <div class="faq-a">The law does not distinguish between intentional and accidental duplication. However, if you proactively surrender the duplicate without having used it for any transactions, the chances of a penalty being imposed are minimal. Prompt action is your best protection.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">How long does it take for the duplicate PAN to be deleted?</div>
+    <div class="faq-a">After filing a grievance, the AO typically resolves it within 30–60 working days. However, the backend update in NSDL's system may take additional time. Keep following up with both the AO and NSDL until the deletion is reflected in their records.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">What if NSDL keeps rejecting my correction application even after the AO resolved the grievance?</div>
+    <div class="faq-a">Write a formal email to NSDL (tininfo@nsdl.co.in) attaching the AO's grievance resolution letter. Also CC the Income Tax Department's email for your ward. If the issue persists, file a fresh grievance on the e-filing portal with all documentary evidence.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Can I do all of this online without visiting the tax office?</div>
+    <div class="faq-a">You can try — and you should start online. But from personal experience: if months are passing and nothing is happening, showing up in person is often the only thing that actually breaks the deadlock. Take a day off, go to your ward's Income Tax office, calmly explain your situation and the exact duration you've been waiting. It works in a way that emails and portal grievances sometimes simply don't.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">How do I file an FIR for a lost PAN card on my mobile?</div>
+    <div class="faq-a">Most states now offer online complaint portals through their police websites or apps (e.g., Karnataka Police — cybercrimesreporting.nic.in for lost documents). Select "Lost Property / Document", enter details about the lost PAN card (your PAN number, approximate date/place of loss), and submit. You'll receive an acknowledgement/FIR copy which you can download and print to submit to the Income Tax AO.</div>
+  </div>
+
+  <div class="box-tip">
+    <strong>✅ Key Lessons From 5 Years of Experience</strong>
+    <ul class="checklist" style="margin-top:10px;">
+      <li><strong>Do it in the right order:</strong> Delete duplicate PAN first → then apply for name correction</li>
+      <li><strong>Lost the duplicate PAN card?</strong> File an FIR online from your phone — it is accepted as a substitute</li>
+      <li><strong>Online grievances alone may not be enough</strong> — eventually visiting in person and being persistent is what works</li>
+      <li><strong>Grievance status "Fully Resolved" ≠ NSDL updated</strong> — you must separately follow up with NSDL with the resolution letter</li>
+      <li><strong>Once approved</strong>, expect an e-PAN email from Protean eGov with a PDF password-protected by your date of birth (DDMMYYYY)</li>
+    </ul>
+  </div>
+
+  <div class="cta-block">
+    <h3>Stay on Top of Your Tax &amp; Salary</h3>
+    <p>Get easy-to-follow guides on PAN, TDS, salary slips, and income tax — straight to your inbox.</p>
+    <a class="cta-btn" href="#">Visit SalaryBit.in →</a>
+  </div>
+
+  <footer class="article-footer">
+    <p>This article is for informational purposes only and does not constitute legal or tax advice. For personalised guidance, consult a qualified CA or tax professional.</p>
+    <p style="margin-top:8px;">© 2026 SalaryBit.in · All rights reserved</p>
+  </footer>
+
+</article>
+
+</div><!-- end #blog-section -->
+
+<!-- ============================================================
+     BRIDGE DIVIDER
+     ============================================================ -->
+<div class="section-divider">
+  <div class="section-divider-inner">
+    <div class="section-divider-tag">Interactive Tool Below</div>
+    <h2>Now Use the <em>Step-by-Step</em> Resolver</h2>
+    <p>Don't just read about it — use this tool to follow every exact step, check them off, and copy ready-made email drafts. Built so you miss nothing.</p>
+    <button class="scroll-arrow" onclick="document.getElementById('tool-section').scrollIntoView({behavior:'smooth'})">
+      🛠 Open the PAN Resolver Tool ↓
+    </button>
+  </div>
+</div>
+
+<!-- ============================================================
+     TOOL SECTION
+     ============================================================ -->
+<div id="tool-section" class="tool-section" style="background:#f8f6f1; padding-top: 0;">
+
+<!-- Tool Hero -->
+<section class="hero" style="padding:40px 24px 48px;">
+  <div class="hero-badge" style="display:inline-block; border:1px solid rgba(212,66,10,0.6); color:#ff8a60; font-size:11px; letter-spacing:2px; text-transform:uppercase; padding:5px 16px; border-radius:20px; margin-bottom:16px; font-family:'DM Sans',sans-serif;">Free Interactive Tool · 2026</div>
+  <h1 style="font-family:'DM Serif Display',serif; font-size:clamp(24px,4vw,44px); color:#fff; margin:0 auto 12px; max-width:680px; line-height:1.2;">PAN Card Issue Resolver — <em style="color:#ff7a45; font-style:normal;">Your Personal Checklist</em></h1>
+  <p style="color:#aaa; font-size:15px; max-width:500px; margin:0 auto; font-family:'DM Sans',sans-serif;">Select your situation, fill in your details once, check off steps, and copy pre-written emails for every stage.</p>
+  <div style="display:flex; justify-content:center; gap:28px; flex-wrap:wrap; margin-top:28px;">
+    <div style="text-align:center;"><div style="font-family:'DM Serif Display',serif; font-size:26px; color:#fff;">4</div><div style="font-size:11px; color:#888; letter-spacing:1px; text-transform:uppercase;">Situations covered</div></div>
+    <div style="text-align:center;"><div style="font-family:'DM Serif Display',serif; font-size:26px; color:#fff;">20+</div><div style="font-size:11px; color:#888; letter-spacing:1px; text-transform:uppercase;">Checkable steps</div></div>
+    <div style="text-align:center;"><div style="font-family:'DM Serif Display',serif; font-size:26px; color:#fff;">7</div><div style="font-size:11px; color:#888; letter-spacing:1px; text-transform:uppercase;">Email drafts ready</div></div>
+  </div>
+</section>
+
+<!-- Tool Main -->
+<div class="main">
+
+  <!-- SITUATION PICKER -->
+  <div class="situation-section">
+    <div class="section-label">Step 0 — Select your situation</div>
+    <div class="situation-grid">
+      <div class="sit-btn" onclick="selectSituation('have-card')">
+        <span class="sit-icon">🪪</span>
+        <div class="sit-title">I have both PAN cards</div>
+        <div class="sit-desc">Duplicate PAN card is physically with me</div>
+      </div>
+      <div class="sit-btn" onclick="selectSituation('lost-card')">
+        <span class="sit-icon">🔍</span>
+        <div class="sit-title">Duplicate PAN card is lost</div>
+        <div class="sit-desc">I don't have the physical duplicate card</div>
+      </div>
+      <div class="sit-btn" onclick="selectSituation('deleted')">
+        <span class="sit-icon">✅</span>
+        <div class="sit-title">Duplicate already deleted</div>
+        <div class="sit-desc">Need to fix name on my primary PAN</div>
+      </div>
+      <div class="sit-btn" onclick="selectSituation('nameonly')">
+        <span class="sit-icon">✏️</span>
+        <div class="sit-title">Name correction only</div>
+        <div class="sit-desc">No duplicate, just wrong name on my PAN</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- USER DETAILS FORM -->
+  <div class="details-card" id="details-card">
+    <div class="section-label">Your Details — used to auto-fill all email drafts</div>
+    <div class="details-grid">
+      <div class="field">
+        <label>Your Full Name (correct)</label>
+        <input type="text" id="f-name" placeholder="e.g. Rahul Sharma" oninput="refreshEmails()">
+      </div>
+      <div class="field">
+        <label>Primary PAN (to keep)</label>
+        <input type="text" id="f-pan1" placeholder="e.g. ABCDE1234F" oninput="refreshEmails()" style="text-transform:uppercase;">
+      </div>
+      <div class="field" id="f-pan2-wrap">
+        <label>Duplicate PAN (to delete)</label>
+        <input type="text" id="f-pan2" placeholder="e.g. FGHIJ5678K" oninput="refreshEmails()" style="text-transform:uppercase;">
+      </div>
+      <div class="field">
+        <label>Your Address</label>
+        <input type="text" id="f-addr" placeholder="e.g. 12, MG Road, Mumbai 400001" oninput="refreshEmails()">
+      </div>
+      <div class="field">
+        <label>Your Mobile</label>
+        <input type="text" id="f-mobile" placeholder="e.g. 9876543210" oninput="refreshEmails()">
+      </div>
+      <div class="field">
+        <label>IT Ward / AO Office</label>
+        <input type="text" id="f-ward" placeholder="e.g. Ward 1(1)(1), Mumbai" oninput="refreshEmails()">
+      </div>
+      <div class="field">
+        <label>Grievance Ack No. (if any)</label>
+        <input type="text" id="f-grievance" placeholder="e.g. 10012345" oninput="refreshEmails()">
+      </div>
+      <div class="field">
+        <label>FIR Number (if applicable)</label>
+        <input type="text" id="f-fir" placeholder="e.g. CR No. 123/2026" oninput="refreshEmails()">
+      </div>
+    </div>
+    <p class="field-hint" style="margin-top:8px;">⚠ All details stay in your browser only — nothing is sent anywhere.</p>
+  </div>
+
+  <!-- OVERALL PROGRESS -->
+  <div class="overall-progress" id="overall-progress">
+    <div class="op-top">
+      <span style="font-weight:600;">Your Progress</span>
+      <span id="op-text" style="color:var(--muted);">0 / 0 steps done</span>
+    </div>
+    <div class="op-bar"><div class="op-fill" id="op-fill" style="width:0%"></div></div>
+    <div class="phase-pills" id="op-pills"></div>
+  </div>
+
+  <!-- TOOL AREA -->
+  <div class="tool-area" id="tool-area">
+    <div class="section-label" id="phase-section-label">Steps</div>
+    <div class="phase-nav" id="phase-nav"></div>
+    <div id="phase-content"></div>
+    <div class="phase-nav-btns" id="phase-nav-btns"></div>
+  </div>
+
+  <!-- COMPLETION -->
+  <div class="completion" id="completion">
+    <div class="completion-icon">🎉</div>
+    <h2>All Steps Complete!</h2>
+    <p>You've followed every step in this process. Keep all acknowledgement numbers and emails safely stored. If NSDL still doesn't respond within 3 weeks, reach out to the AO again with all your documentation.</p>
+    <a href="mailto:support@salarybit.in?subject=PAN Issue Help" class="btn btn-primary btn-lg">Still stuck? Email for Help</a>
+  </div>
+
+  <!-- CONTACT STRIP -->
+  <div class="contact-strip">
+    <div class="contact-avatar">SB</div>
+    <div class="contact-text">
+      <strong>Need personal help? Reach out to SalaryBit</strong>
+      <span>Went through this for 5 years — happy to guide you through it</span>
+    </div>
+    <a href="mailto:support@salarybit.in?subject=Help with Duplicate PAN Issue" class="contact-email">📧 Email for Help</a>
+  </div>
+
+</div><!-- end .main -->
+</div><!-- end #tool-section -->
+
+<!-- SITE FOOTER -->
+<footer style="background:#0f0f0f; padding:28px 24px; text-align:center;">
+  <p style="font-family:'DM Sans',sans-serif; color:#666; font-size:13px;">This tool and article are for informational purposes only and do not constitute legal or tax advice.</p>
+  <p style="font-family:'DM Serif Display',serif; color:#fff; font-size:18px; margin-top:10px;">Salary<span style="color:#d4420a;">Bit</span>.in &nbsp;·&nbsp; <span style="color:#666; font-family:'DM Sans',sans-serif; font-size:13px;">© 2026 · All rights reserved</span></p>
+</footer>
+
+<script>
+// ---- DATA ----
+const v = (id) => {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() || ('[' + id.replace('f-','').toUpperCase() + ']') : '';
+};
+const name = () => v('f-name');
+const pan1 = () => document.getElementById('f-pan1').value.trim().toUpperCase() || '[PRIMARY PAN]';
+const pan2 = () => document.getElementById('f-pan2').value.trim().toUpperCase() || '[DUPLICATE PAN]';
+const addr = () => v('f-addr');
+const mobile = () => v('f-mobile');
+const ward = () => v('f-ward');
+const griev = () => v('f-grievance');
+const fir = () => v('f-fir');
+const today = () => new Date().toLocaleDateString('en-IN', {day:'2-digit', month:'long', year:'numeric'});
+
+// ---- EMAIL DRAFTS ----
+const emails = {
+  grievance_portal_msg: () => `Hello Team,
+
+I have two PAN Cards allotted on my name.
+
+Primary PAN (to retain): ${pan1()}
+Duplicate PAN (to delete): ${pan2()}
+Name: ${name()}
+Address: ${addr()}
+Mobile: ${mobile()}
+
+I request the deletion/deactivation of the duplicate PAN ${pan2()}. All income tax transactions, returns, and financial records have been maintained exclusively under my primary PAN ${pan1()}.
+
+I have never used the duplicate PAN for any transaction. I request you to please deactivate/delete the duplicate PAN and confirm the same so I can proceed with my pending correction application.
+
+Regards,
+${name()}`,
+
+  ao_letter: () => `Date: ${today()}
+
+To,
+The Income Tax Officer,
+${ward()},
+
+Subject: Request for Cancellation/Surrender of Duplicate PAN Card — ${pan2()}
+
+Dear Sir/Madam,
+
+I, ${name()}, residing at ${addr()}, am writing to formally request the cancellation and deactivation of a duplicate PAN card allotted on my name.
+
+Details:
+  Primary PAN (to retain): ${pan1()}
+  Duplicate PAN (to cancel): ${pan2()}
+  Grievance Acknowledgement No.: ${griev()}
+
+I wish to inform you that I have only one PAN number — ${pan1()} — which I use for all income tax purposes. The duplicate PAN ${pan2()} was allotted inadvertently and I have never used it for any financial transaction or tax filing.
+
+I hereby formally surrender the duplicate PAN ${pan2()} and request your office to:
+1. Cancel and deactivate PAN ${pan2()} in the Income Tax database
+2. Confirm this deletion to NSDL/Protean so my pending correction application for PAN ${pan1()} can be processed
+
+I have enclosed the following documents for your reference:
+- Copy of primary PAN card (${pan1()})
+- Copy of duplicate PAN card / FIR for lost card
+- Copy of Aadhaar card
+- Notarised affidavit (if applicable)
+
+I request you to kindly resolve this at the earliest. I am available at ${mobile()} for any clarification.
+
+Thanking you,
+Yours faithfully,
+
+${name()}
+Mobile: ${mobile()}
+Address: ${addr()}`,
+
+  ao_email: () => `To: [AO Ward Email — check incometax.gov.in]
+CC: ask@incometax.gov.in, tininfo@nsdl.co.in
+
+Subject: Urgent: Duplicate PAN Deletion Request — Primary PAN ${pan1()} | Grievance Ref: ${griev()}
+
+Dear Sir/Madam,
+
+I am writing to follow up on my grievance (Ref No: ${griev()}) filed for deletion of my duplicate PAN ${pan2()}.
+
+Details:
+  Name: ${name()}
+  Primary PAN: ${pan1()}
+  Duplicate PAN: ${pan2()}
+  Address: ${addr()}
+  Mobile: ${mobile()}
+
+Despite my grievance showing as "Fully Resolved" on the portal, NSDL still shows the duplicate PAN ${pan2()} as active in their system and is refusing to process my pending name correction application for ${pan1()}.
+
+I request your office to:
+1. Ensure PAN ${pan2()} is marked as DELETED/DEACTIVATED in the backend database
+2. Officially communicate this deletion to NSDL/Protean so they can proceed with my correction application
+
+I have been pursuing this matter since [DATE YOU STARTED]. I am enclosing the grievance resolution letter for your reference and kindly request urgent resolution.
+
+I am available at ${mobile()} for any clarification.
+
+Thanking you,
+${name()}
+Date: ${today()}`,
+
+  nsdl_email: () => `To: tininfo@nsdl.co.in
+CC: ask@incometax.gov.in
+
+Subject: Pending PAN Correction — ${pan1()} | Duplicate PAN ${pan2()} Deleted by IT Dept
+
+Dear NSDL/Protean Team,
+
+I am writing regarding my pending PAN correction application for PAN ${pan1()}.
+
+Name: ${name()}
+Primary PAN: ${pan1()}
+Duplicate PAN (deleted): ${pan2()}
+Address: ${addr()}
+Mobile: ${mobile()}
+Grievance Ref No: ${griev()}
+
+My correction application was earlier put on hold due to the existence of a duplicate PAN ${pan2()}. I wish to inform you that the Income Tax Department (${ward()}) has now formally resolved my grievance and the duplicate PAN ${pan2()} has been deleted/deactivated.
+
+I am attaching:
+1. Grievance Resolution Letter from the Income Tax Officer dated [DATE]
+2. IT Department acknowledgement of deletion
+
+I kindly request you to now proceed with my pending PAN correction application and update the name on PAN ${pan1()} to: ${name()}
+
+Please confirm receipt and let me know if any additional documents are required.
+
+Thanking you,
+${name()}
+Mobile: ${mobile()}
+Date: ${today()}`,
+
+  fir_email: () => `Subject: Lost PAN Card — FIR Filed | PAN ${pan2()}
+
+To Whom It May Concern,
+
+I, ${name()}, wish to inform that my duplicate PAN card bearing number ${pan2()} has been lost.
+
+I have filed an FIR for the lost card.
+FIR/Complaint Number: ${fir()}
+
+This letter is to accompany my formal request for cancellation of the above PAN, which I am submitting to the Income Tax Officer, ${ward()}.
+
+I confirm that I have never used PAN ${pan2()} for any financial transaction or tax filing. My primary PAN is ${pan1()} under which all my tax records are maintained.
+
+Regards,
+${name()}
+Address: ${addr()}
+Mobile: ${mobile()}
+Date: ${today()}`,
+
+  name_correction_cover: () => `To,
+NSDL/Protean eGov Technologies Limited,
+
+Subject: PAN Correction Request — Name Update for PAN ${pan1()}
+
+Dear Sir/Madam,
+
+I am submitting this application for a correction/change in my PAN data.
+
+PAN Number: ${pan1()}
+Current Name on PAN: [CURRENT WRONG NAME]
+Correct Name (as requested): ${name()}
+Date of Birth: [YOUR DOB]
+Address: ${addr()}
+Mobile: ${mobile()}
+
+I have enclosed the following documents as proof of correct name:
+- Aadhaar card showing name as ${name()}
+- [Any other document with correct name]
+
+I request you to kindly update the name on my PAN card to ${name()} and send the updated e-PAN to my registered email address.
+
+Thanking you,
+${name()}
+Mobile: ${mobile()}
+Date: ${today()}`,
+
+  escalation_email: () => `To: ask@incometax.gov.in
+CC: [AO Ward Email], tininfo@nsdl.co.in
+
+Subject: ESCALATION — Duplicate PAN Issue Unresolved for [X YEARS] | PAN ${pan1()}
+
+Dear Sir/Madam,
+
+I am writing to escalate a long-pending issue regarding my duplicate PAN card that remains unresolved despite multiple follow-ups.
+
+Name: ${name()}
+Primary PAN: ${pan1()}
+Duplicate PAN: ${pan2()}
+Address: ${addr()}
+Mobile: ${mobile()}
+Grievance No: ${griev()}
+
+Timeline of my attempts:
+- [DATE]: First visited the Income Tax office — redirected to NSDL
+- [DATE]: Filed online grievance (Ref: ${griev()})
+- [DATE]: Grievance marked "Fully Resolved" but no backend update done
+- [DATE]: Multiple emails sent — no response from NSDL or AO
+- [DATE]: Visited office [X] times — no action taken
+
+This prolonged delay has caused me significant hardship. I am unable to:
+- Complete my PAN name correction
+- Update financial KYC records
+
+I respectfully request URGENT intervention to:
+1. Permanently deactivate PAN ${pan2()} in all systems
+2. Direct NSDL to process my pending correction for PAN ${pan1()}
+3. Provide a written confirmation of deletion
+
+I am available at ${mobile()} at any time. I trust you will treat this matter with the urgency it deserves.
+
+Thanking you,
+${name()}
+Date: ${today()}`
+};
+
+// ---- PHASES DATA ----
+function getPhases(situation) {
+  if (situation === 'have-card') return [
+    {
+      title: '📋 File Grievance Online',
+      subtitle: 'Register your issue on the IT portal first',
+      steps: [
+        {
+          title: 'Log in to the Income Tax e-filing portal',
+          subtitle: 'incometax.gov.in — use your primary PAN',
+          detail: 'Go to https://www.incometax.gov.in and log in using your PRIMARY PAN number (the one you want to keep). If you forgot your password, use the "Forgot Password" option with your PAN and Aadhaar OTP.',
+          boxes: [{ type: 'info', title: 'Link to open', body: 'https://www.incometax.gov.in → Login → Dashboard' }],
+          docs: [],
+          emails: []
+        },
+        {
+          title: 'Submit a grievance for duplicate PAN deletion',
+          subtitle: 'Grievances → Submit Grievance → PAN category',
+          detail: 'After logging in:\n1. Go to "Grievances" menu → "Submit Grievance"\n2. Select Category: PAN\n3. Sub-category: Duplicate PAN\n4. Paste the message below into the description box\n5. Submit and SCREENSHOT the acknowledgement number immediately',
+          boxes: [{ type: 'warn', title: '⚠ Important', body: 'Screenshot and note your acknowledgement number — you will need it for every future follow-up with the AO and NSDL.' }],
+          docs: [],
+          emails: ['grievance_portal_msg']
+        },
+        {
+          title: 'Save the grievance acknowledgement number',
+          subtitle: 'Enter it in the "Your Details" form above',
+          detail: 'Enter the grievance acknowledgement number in the "Grievance Ack No." field in the form at the top of this page. It will auto-fill into all your email drafts going forward.\n\nAlso note:\n- Date of submission\n- Expected resolution date (usually shown on portal)',
+          boxes: [{ type: 'success', title: '✓ Done when', body: 'You have the acknowledgement number saved and entered in the form above.' }],
+          docs: [],
+          emails: []
+        }
+      ]
+    },
+    {
+      title: '📄 Prepare Your Documents',
+      subtitle: 'Get everything ready before visiting the office',
+      steps: [
+        {
+          title: 'Write the surrender/cancellation letter to the AO',
+          subtitle: 'Formal letter addressed to your Income Tax Ward',
+          detail: 'Use the draft below. Print it on plain paper, sign it, and keep 2 copies — one to submit, one for your records.\n\nFind your AO ward details at:\nhttps://www.incometax.gov.in → Know Your AO → Enter your PAN',
+          boxes: [],
+          docs: [],
+          emails: ['ao_letter']
+        },
+        {
+          title: 'Get a notarised affidavit',
+          subtitle: 'Visit any local notary — costs approx ₹100–₹200',
+          detail: 'Tell the notary you need an affidavit stating:\n\n"I, [NAME], am in possession of two PAN cards — [PAN1] and [PAN2] — both allotted in my name. I hereby voluntarily surrender PAN [PAN2] and declare that I have never used it for any financial transaction. I request its cancellation."\n\nGet it notarised and keep 2 copies.',
+          boxes: [{ type: 'info', title: '📍 Where to find a notary', body: 'Any district court premises or legal services market near you. Cost: ₹100–₹200 typically.' }],
+          docs: [],
+          emails: []
+        },
+        {
+          title: 'Collect all documents to carry',
+          subtitle: 'Prepare everything before your office visit',
+          detail: 'Print and organise the following in a folder:',
+          boxes: [],
+          docs: [
+            'Signed AO cancellation/surrender letter (printed, 2 copies)',
+            'Copy of PRIMARY PAN card (the one to keep)',
+            'Original + copy of DUPLICATE PAN card (the one to surrender)',
+            'Copy of Aadhaar card (identity proof)',
+            'Notarised affidavit (original + 1 copy)',
+            'Printout of grievance acknowledgement from portal',
+            'Printout of any previous IT letters you received'
+          ],
+          emails: []
+        }
+      ]
+    },
+    {
+      title: '🏛 Visit the AO Office',
+      subtitle: 'The most critical step — be calm but firm',
+      steps: [
+        {
+          title: 'Find your AO office address and timings',
+          subtitle: 'incometax.gov.in → Know Your AO',
+          detail: 'Before visiting:\n1. Go to https://www.incometax.gov.in → "Know Your AO" → enter your PAN\n2. Note the Ward number, building address, and officer name\n3. Offices are typically open Mon–Fri, 10am–5pm\n4. Avoid last working day of month (very busy)',
+          boxes: [{ type: 'warn', title: '💡 From experience', body: 'Go as early as possible — 10am when they open. Officers are more receptive in the morning than after lunch.' }],
+          docs: [],
+          emails: []
+        },
+        {
+          title: 'Present your case in person — stay calm and firm',
+          subtitle: 'This conversation is what finally gets things moving',
+          detail: 'When you sit down with the officer, say clearly:\n\n"Sir/Madam, I have been trying to resolve this duplicate PAN issue for [X months/years]. I have filed grievances on the portal (Ref: [GRIEVANCE NO]). The grievance shows resolved but NSDL still sees the duplicate as active. I have all my documents here. I need this to be resolved today — please guide me on what to submit."\n\nBe polite but persistent. Do not leave without:\n• Getting a submission receipt, OR\n• Getting a specific date for resolution, OR\n• Speaking to a senior officer if the first one cannot help',
+          boxes: [
+            { type: 'accent', title: '🔑 Key insight from 5 years of experience', body: 'The system will not fix itself. The breakthrough happens only when you show up in person, mention the exact duration you have been waiting, and make it clear you need a resolution that day — not a "come back next week."' },
+          ],
+          docs: [],
+          emails: []
+        },
+        {
+          title: 'Submit documents and get a stamped receipt',
+          subtitle: 'Do not leave without a stamped acknowledgement',
+          detail: 'Hand over:\n• Surrender letter (keep your signed copy)\n• Both PAN card copies\n• Aadhaar copy\n• Notarised affidavit\n• Grievance printout\n\nAsk: "Can you please stamp my copy of the surrender letter as acknowledgement of receipt?"\n\nNote the name and designation of the officer you spoke to. This is important for follow-up.',
+          boxes: [{ type: 'success', title: '✓ Done when', body: 'You have a stamped/signed receipt of your document submission, or a written commitment for resolution with a date.' }],
+          docs: [],
+          emails: []
+        }
+      ]
+    },
+    {
+      title: '📧 Follow Up by Email',
+      subtitle: 'Create a paper trail that cannot be ignored',
+      steps: [
+        {
+          title: 'Send the follow-up email to the AO ward',
+          subtitle: 'Do this the same day or next day after your visit',
+          detail: 'Find the AO ward email from incometax.gov.in → Know Your AO.\nSend the email below to the ward office email AND CC ask@incometax.gov.in and tininfo@nsdl.co.in.\n\nThis creates an official email trail that is much harder to ignore than a verbal conversation.',
+          boxes: [],
+          docs: [],
+          emails: ['ao_email']
+        },
+        {
+          title: 'If no response in 2 weeks — send escalation email',
+          subtitle: 'Escalate to the central helpdesk',
+          detail: 'If the AO\'s office has not responded within 2 weeks of your visit + email, send the escalation email below to ask@incometax.gov.in.\n\nThis goes to the central Income Tax helpdesk which can put pressure on the ward office to respond.',
+          boxes: [{ type: 'warn', title: '⚠ Escalation tip', body: 'In the escalation email, be very specific about dates — when you first visited, how many times, when you submitted documents. Specific dates make the complaint credible and hard to dismiss.' }],
+          docs: [],
+          emails: ['escalation_email']
+        }
+      ]
+    },
+    {
+      title: '🔗 Follow Up with NSDL',
+      subtitle: 'Once AO confirms deletion — push NSDL to process your correction',
+      steps: [
+        {
+          title: 'Call NSDL to check if duplicate is marked deleted',
+          subtitle: 'NSDL Helpline: 020-27218082',
+          detail: 'After ~1 week from your AO office visit, call NSDL:\nPhone: 020-27218082\nEmail: tininfo@nsdl.co.in\n\nAsk: "I had a duplicate PAN [PAN2] that the Income Tax Department has resolved for deletion. Can you please check if it is now showing as deactivated against my primary PAN [PAN1]?"\n\nNote the name of the person you spoke to and the date.',
+          boxes: [],
+          docs: [],
+          emails: []
+        },
+        {
+          title: 'Email NSDL with the AO resolution letter attached',
+          subtitle: 'This is the key document NSDL needs',
+          detail: 'Send the email below to tininfo@nsdl.co.in.\n\nAttach:\n• The Income Tax Department\'s grievance resolution letter\n• Your document submission receipt from the AO office\n• Your pending PAN correction application acknowledgement (if you have one)',
+          boxes: [],
+          docs: [],
+          emails: ['nsdl_email']
+        },
+        {
+          title: 'Apply for name correction on your primary PAN',
+          subtitle: 'Only do this after NSDL confirms the duplicate is deleted',
+          detail: '1. Go to: https://www.onlineservices.nsdl.com/paam/endUserRegisterContact.html\n2. Select "Changes or Corrections in existing PAN Data"\n3. Enter your primary PAN and proceed\n4. Fill in the correct name exactly as it should appear\n5. Upload supporting documents (Aadhaar, passport)\n6. Pay the fee (~₹110 for Indian address)\n7. Save the new acknowledgement number for tracking',
+          boxes: [{ type: 'info', title: '🔗 NSDL Portal Link', body: 'https://www.onlineservices.nsdl.com — Select "PAN" → "Apply"' }],
+          docs: [],
+          emails: ['name_correction_cover']
+        },
+        {
+          title: 'Wait for your corrected e-PAN by email',
+          subtitle: 'Usually 15–20 working days',
+          detail: 'Once your correction application is processed:\n\n• You will receive an email from Protean eGov Technologies with the e-PAN attached as a PDF\n• The PDF password is your DATE OF BIRTH in DDMMYYYY format\n  (Example: 15 Aug 1990 → password is 15081990)\n• Check your spam folder if you don\'t receive it\n• A physical PAN card will be mailed separately if you opted for it\n• Track your application at: https://tin.tin.nsdl.com/pantan/StatusTrack.html',
+          boxes: [{ type: 'success', title: '🎉 You are done!', body: 'Once you receive the updated e-PAN, update your details in bank accounts, Aadhaar (if mismatch), employer records, mutual funds, and insurance policies.' }],
+          docs: [],
+          emails: []
+        }
+      ]
+    }
+  ];
+
+  if (situation === 'lost-card') return [
+    {
+      title: '📱 File FIR for Lost PAN',
+      subtitle: 'Do this first — you can do it on your mobile',
+      steps: [
+        {
+          title: 'File an online FIR / complaint for the lost PAN card',
+          subtitle: 'State police portal — takes 10 minutes from your phone',
+          detail: 'Go to your state police\'s online complaint portal.\n\nFor Karnataka: https://psreporting.ksp.gov.in\nFor other states: Search "[State name] police online complaint lost document"\n\nSelect: "Lost Property / Documents"\nEnter details:\n• Document type: PAN Card\n• PAN number: Your DUPLICATE PAN number\n• Approximate date of loss\n• Approximate place of loss (e.g. "lost in bus / misplaced at home")\n\nSubmit → Download the FIR/complaint acknowledgement PDF\nPrint 2 copies.',
+          boxes: [{ type: 'info', title: '📱 You can do this on mobile', body: 'The entire FIR filing process can be done from your smartphone. You do not need to visit a police station for a lost document.' }],
+          docs: [],
+          emails: []
+        },
+        {
+          title: 'Note your FIR number and enter it above',
+          subtitle: 'Enter in the "FIR Number" field in the form above',
+          detail: 'Once you get the FIR/complaint reference number, enter it in the "FIR Number" field in the "Your Details" form at the top of this page. It will auto-fill into the relevant email drafts.',
+          boxes: [{ type: 'success', title: '✓ Done when', body: 'FIR is filed, FIR number is entered in the form, and you have a printed copy ready.' }],
+          docs: [],
+          emails: ['fir_email']
+        }
+      ]
+    },
+    {
+      title: '📋 File Grievance Online',
+      subtitle: 'Register on the IT portal with FIR details',
+      steps: [
+        {
+          title: 'Log in and submit a grievance on incometax.gov.in',
+          subtitle: 'Mention FIR number in your grievance',
+          detail: 'Go to https://www.incometax.gov.in → Login with your PRIMARY PAN.\nNavigate to: Grievances → Submit Grievance → Category: PAN → Duplicate PAN\n\nIn the description, paste the message below. Mention that you have filed an FIR for the lost card and include the FIR number.\n\nSave the acknowledgement number.',
+          boxes: [],
+          docs: [],
+          emails: ['grievance_portal_msg']
+        }
+      ]
+    },
+    {
+      title: '📄 Prepare Documents',
+      subtitle: 'Get everything ready for your office visit',
+      steps: [
+        {
+          title: 'Write the surrender/cancellation letter mentioning card is lost',
+          subtitle: 'Include FIR number in the letter',
+          detail: 'Use the draft below — it already includes the FIR reference. Print it, sign it, keep 2 copies.',
+          boxes: [],
+          docs: [],
+          emails: ['ao_letter']
+        },
+        {
+          title: 'Get a notarised affidavit',
+          subtitle: 'Must mention the card is lost AND the FIR number',
+          detail: 'Tell the notary the affidavit should state:\n\n"I, [NAME], had a duplicate PAN card [PAN2] allotted on my name which has been physically lost. I have filed FIR No. [FIR NO]. I hereby request cancellation of PAN [PAN2]. I declare I have never used it for any transaction. My valid PAN is [PAN1]."\n\nVisit any district court notary — cost ₹100–₹200.',
+          boxes: [],
+          docs: [],
+          emails: []
+        },
+        {
+          title: 'Collect all documents for your visit',
+          subtitle: 'You do not need the physical duplicate card',
+          detail: 'Organise in a folder:',
+          boxes: [{ type: 'success', title: '✓ Good news', body: 'You do NOT need the physical duplicate PAN card. The FIR copy is the accepted substitute.' }],
+          docs: [
+            'Signed AO cancellation letter (2 copies)',
+            'FIR / online complaint printout (2 copies)',
+            'Copy of PRIMARY PAN card only',
+            'Copy of Aadhaar card',
+            'Notarised affidavit mentioning lost card + FIR number',
+            'Grievance acknowledgement printout'
+          ],
+          emails: []
+        }
+      ]
+    },
+    {
+      title: '🏛 Visit AO Office',
+      subtitle: 'Show up in person — this is what breaks the deadlock',
+      steps: [
+        {
+          title: 'Find your AO office and visit in person',
+          subtitle: 'Bring all documents. Be calm but firm.',
+          detail: 'Find AO address: https://www.incometax.gov.in → Know Your AO\n\nWhen speaking to the officer:\n"Sir/Madam, I have two PANs on my name. The duplicate card [PAN2] is lost — I have filed an FIR [FIR NO]. I have all documents here for cancellation of the duplicate PAN. My grievance Ref No is [GRIEVANCE NO]. I have been trying to resolve this for [X time]. Can we please process the cancellation today?"\n\nDo NOT leave without a submission receipt.',
+          boxes: [{ type: 'accent', title: '💡 Key tip from real experience', body: 'State exactly how long you have been waiting. "I have been trying to resolve this for 2 years" hits harder than a vague follow-up. Officers respond to specific facts.' }],
+          docs: [],
+          emails: []
+        },
+        {
+          title: 'Submit documents and get stamped receipt',
+          subtitle: 'Get an office stamp on your copy before leaving',
+          detail: 'Submit all documents and insist on a stamped copy of your surrender letter as receipt. Note the officer\'s name and date. Follow up by email the same evening.',
+          boxes: [],
+          docs: [],
+          emails: ['ao_email']
+        }
+      ]
+    },
+    {
+      title: '🔗 Follow Up with NSDL',
+      subtitle: 'Push NSDL once AO confirms deletion',
+      steps: [
+        {
+          title: 'Wait 1 week then contact NSDL',
+          subtitle: '020-27218082 | tininfo@nsdl.co.in',
+          detail: 'Call NSDL and ask if the duplicate PAN is now marked as deleted. If not, send the email below with your AO resolution letter attached.',
+          boxes: [],
+          docs: [],
+          emails: ['nsdl_email']
+        },
+        {
+          title: 'Apply for name correction on your primary PAN',
+          subtitle: 'After NSDL confirms the duplicate is deleted',
+          detail: 'Visit: https://www.onlineservices.nsdl.com\nSelect "Changes or Corrections in existing PAN Data"\nFill in correct name, upload Aadhaar, pay ~₹110\nSave the acknowledgement number and track status online.',
+          boxes: [],
+          docs: [],
+          emails: ['name_correction_cover']
+        },
+        {
+          title: 'Receive corrected e-PAN by email',
+          subtitle: 'Password = your DOB in DDMMYYYY format',
+          detail: 'Protean eGov will email your corrected e-PAN as a password-protected PDF.\nPassword: your date of birth in DDMMYYYY format.\nExample: 15 Aug 1990 → 15081990\n\nCheck spam if not received within 3 weeks.\nTrack: https://tin.tin.nsdl.com/pantan/StatusTrack.html',
+          boxes: [{ type: 'success', title: '🎉 All done!', body: 'Update your new correct PAN name in all bank accounts, financial records, Aadhaar (if mismatch), and employer records.' }],
+          docs: [],
+          emails: []
+        }
+      ]
+    }
+  ];
+
+  if (situation === 'deleted') return [
+    {
+      title: '✅ Confirm Deletion in NSDL System',
+      subtitle: 'Make sure the duplicate is actually gone from NSDL records',
+      steps: [
+        {
+          title: 'Call NSDL to confirm the duplicate PAN is deactivated',
+          subtitle: 'NSDL Helpline: 020-27218082',
+          detail: 'Call NSDL at 020-27218082 and say:\n"My duplicate PAN [PAN2] was deleted by the Income Tax Department. Can you confirm if it is showing as deactivated/deleted in your system against my primary PAN [PAN1]?"\n\nNote the date and name of the person you spoke to.',
+          boxes: [{ type: 'warn', title: '⚠ Common problem', body: '"Fully Resolved" on the IT portal does NOT automatically update NSDL. You must verify separately with NSDL that their records are updated.' }],
+          docs: [],
+          emails: []
+        },
+        {
+          title: 'If NSDL still shows it active — send them the AO resolution letter',
+          subtitle: 'This email + letter is what forces NSDL to update',
+          detail: 'Email tininfo@nsdl.co.in with the IT Department\'s grievance resolution letter attached.\n\nThis is the critical document — it is official proof that the IT Department has already resolved the deletion. NSDL cannot ignore an official IT Department letter.',
+          boxes: [],
+          docs: [],
+          emails: ['nsdl_email']
+        }
+      ]
+    },
+    {
+      title: '📝 Apply for Name Correction',
+      subtitle: 'Once NSDL confirms deletion — apply online',
+      steps: [
+        {
+          title: 'Apply at NSDL / Protean portal for name correction',
+          subtitle: 'onlineservices.nsdl.com',
+          detail: '1. Go to: https://www.onlineservices.nsdl.com/paam/endUserRegisterContact.html\n2. Select "Changes or Corrections in existing PAN Data / Reprint"\n3. Enter your primary PAN and verify with OTP\n4. In the form, update the name field to your correct name\n5. Upload supporting documents\n6. Pay the fee (~₹110)\n7. Download acknowledgement slip',
+          boxes: [{ type: 'info', title: '📋 Supporting documents needed', body: 'Aadhaar card (name must match), passport or voter ID as secondary proof.' }],
+          docs: [],
+          emails: ['name_correction_cover']
+        },
+        {
+          title: 'Ensure your supporting documents show the EXACT correct name',
+          subtitle: 'Name on documents must match name you are requesting',
+          detail: 'NSDL will match your requested name against your submitted documents.\n\nIf Aadhaar shows "Deepak" but you want "Deepak Kumar", you may need to first update your Aadhaar name before applying for PAN correction — OR provide a stronger document like a passport that shows the full name.',
+          boxes: [{ type: 'warn', title: '⚠ Name mismatch is the #1 reason for rejection', body: 'The name you request on PAN must exactly match the name on your supporting documents.' }],
+          docs: [],
+          emails: []
+        }
+      ]
+    },
+    {
+      title: '📨 Track & Receive e-PAN',
+      subtitle: 'Final step — collect your corrected PAN',
+      steps: [
+        {
+          title: 'Track your application status',
+          subtitle: 'tin.tin.nsdl.com/pantan/StatusTrack.html',
+          detail: 'Use your 15-digit acknowledgement number to track at:\nhttps://tin.tin.nsdl.com/pantan/StatusTrack.html\n\nProcessing takes 15–20 working days normally.',
+          boxes: [],
+          docs: [],
+          emails: []
+        },
+        {
+          title: 'Receive and open your corrected e-PAN',
+          subtitle: 'Password = your date of birth in DDMMYYYY',
+          detail: 'You will receive an email from Protean eGov Technologies with the corrected e-PAN as a password-protected PDF.\n\nTo open the PDF:\nPassword = your date of birth in DDMMYYYY format\nExample: 15 August 1990 → 15081990\n\nCheck spam folder. If not received within 3 weeks, call NSDL at 020-27218082.',
+          boxes: [{ type: 'success', title: '🎉 Process complete!', body: 'Update your corrected PAN in: bank accounts, income tax portal profile, employer records, mutual funds, insurance, and Aadhaar (if needed).' }],
+          docs: [],
+          emails: []
+        }
+      ]
+    }
+  ];
+
+  if (situation === 'nameonly') return [
+    {
+      title: '📋 Check & Prepare',
+      subtitle: 'Confirm your situation before applying',
+      steps: [
+        {
+          title: 'Verify there is only ONE PAN on your name',
+          subtitle: 'Confirm via NSDL or incometax.gov.in',
+          detail: 'Before applying for name correction, confirm there is no duplicate PAN issue.\n\nCheck at incometax.gov.in → Login → Profile → PAN details\nOR\nCall NSDL: 020-27218082 and ask them to confirm only one PAN exists for your name and DOB.\n\nIf a duplicate PAN exists, use the "I have both PAN cards" or "Duplicate card is lost" flow instead.',
+          boxes: [{ type: 'warn', title: '⚠ Very important', body: 'If you apply for name correction while a duplicate PAN exists, your application will be rejected. Resolve the duplicate first.' }],
+          docs: [],
+          emails: []
+        },
+        {
+          title: 'Gather supporting documents for correct name',
+          subtitle: 'Documents must show EXACTLY the name you want on PAN',
+          detail: 'Required documents:\n• Aadhaar card showing your correct name (primary proof)\n• One of: Passport / Voter ID / Driving Licence / Birth Certificate (secondary proof)\n\nThe name on ALL documents must exactly match the name you are requesting on the PAN.',
+          boxes: [],
+          docs: [
+            'Aadhaar card (name must match requested PAN name)',
+            'Passport OR Voter ID OR Driving Licence',
+            'If name is different on Aadhaar — update Aadhaar first before applying'
+          ],
+          emails: []
+        }
+      ]
+    },
+    {
+      title: '💻 Apply Online at NSDL',
+      subtitle: 'Simple online process — takes 15 minutes',
+      steps: [
+        {
+          title: 'Go to the NSDL / Protean PAN correction portal',
+          subtitle: 'onlineservices.nsdl.com',
+          detail: '1. Open: https://www.onlineservices.nsdl.com/paam/endUserRegisterContact.html\n2. Select: "Changes or Corrections in existing PAN Data / Reprint of PAN Card"\n3. Select Applicant Type: Individual\n4. Click "Submit"\n5. Enter your existing PAN number and proceed',
+          boxes: [{ type: 'info', title: '🔗 Direct link', body: 'https://www.onlineservices.nsdl.com/paam/endUserRegisterContact.html' }],
+          docs: [],
+          emails: []
+        },
+        {
+          title: 'Fill the form — update name and personal details',
+          subtitle: 'Be very careful with spelling',
+          detail: 'In the online form:\n\n• Enter your correct full name EXACTLY as you want it to appear\n• Check the "Name" checkbox in the correction section to enable name editing\n• Enter date of birth (must match existing records)\n• Verify address — update if needed\n• Upload Aadhaar and secondary document\n• Choose physical card delivery if you want a new card mailed to you',
+          boxes: [{ type: 'warn', title: '⚠ Double-check the name spelling', body: 'Once submitted you cannot edit. Make sure capitalisation and spacing are exactly right. E.g. "DEEPAK KUMAR" not "DeepakKumar".' }],
+          docs: [],
+          emails: ['name_correction_cover']
+        },
+        {
+          title: 'Pay the fee and save acknowledgement',
+          subtitle: '~₹110 for Indian address | ~₹1,020 for overseas',
+          detail: 'Pay online using debit card, net banking, or UPI.\n\nAfter payment:\n• Download the acknowledgement slip (PDF)\n• Note your 15-digit acknowledgement number\n• Save the acknowledgement — you need it to track status\n\nYou will also receive a confirmation email.',
+          boxes: [],
+          docs: [],
+          emails: []
+        }
+      ]
+    },
+    {
+      title: '📨 Track & Receive',
+      subtitle: 'Wait and collect your corrected PAN',
+      steps: [
+        {
+          title: 'Track your application',
+          subtitle: 'Takes 15–20 working days usually',
+          detail: 'Track at: https://tin.tin.nsdl.com/pantan/StatusTrack.html\nEnter your 15-digit acknowledgement number.\n\nStatus stages:\n• Request received\n• Documents verified\n• PAN issued / dispatched\n\nIf status is stuck at "Documents pending" for over 2 weeks, call NSDL: 020-27218082',
+          boxes: [],
+          docs: [],
+          emails: []
+        },
+        {
+          title: 'Receive your corrected e-PAN by email',
+          subtitle: 'PDF password = DOB in DDMMYYYY format',
+          detail: 'An email from Protean eGov Technologies will arrive with the e-PAN PDF.\n\nTo open:\nPassword = Date of Birth in DDMMYYYY\nExample: 15 August 1990 → 15081990\n\nPhysical card (if opted) will be mailed by India Post.\nCheck spam folder if email not received within 3 weeks.',
+          boxes: [{ type: 'success', title: '🎉 Done! Next steps', body: 'Update your corrected PAN name in: all bank accounts, income tax profile, employer records, mutual fund KYC, insurance policies, and Aadhaar (if there is a mismatch).' }],
+          docs: [],
+          emails: []
+        }
+      ]
+    }
+  ];
+
+  return [];
+}
+
+// ---- STATE ----
+let currentSituation = null;
+let phases = [];
+let currentPhase = 0;
+let checked = {};
+
+function totalSteps() { return phases.reduce((a, p) => a + p.steps.length, 0); }
+function doneCount() { return Object.values(checked).filter(Boolean).length; }
+
+function selectSituation(s) {
+  currentSituation = s;
+  phases = getPhases(s);
+  currentPhase = 0;
+  checked = {};
+
+  document.querySelectorAll('.sit-btn').forEach((b, i) => {
+    b.classList.remove('active');
+  });
+  const btns = document.querySelectorAll('.sit-btn');
+  const idx = ['have-card','lost-card','deleted','nameonly'].indexOf(s);
+  if (idx >= 0) btns[idx].classList.add('active');
+
+  const dc = document.getElementById('details-card');
+  dc.classList.add('visible');
+  document.getElementById('f-pan2-wrap').style.display = (s === 'deleted' || s === 'nameonly') ? 'none' : 'block';
+
+  document.getElementById('overall-progress').classList.add('visible');
+  document.getElementById('tool-area').classList.add('visible');
+  document.getElementById('top-progress').style.display = 'block';
+  document.getElementById('completion').classList.remove('visible');
+
+  renderAll();
+  dc.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function renderAll() {
+  renderProgress();
+  renderPhaseNav();
+  renderPhaseContent();
+  renderPhaseNavBtns();
+}
+
+function renderProgress() {
+  const total = totalSteps();
+  const done = doneCount();
+  const pct = total ? Math.round(done / total * 100) : 0;
+  document.getElementById('op-text').textContent = done + ' / ' + total + ' steps done';
+  document.getElementById('op-fill').style.width = pct + '%';
+  document.getElementById('top-progress').textContent = done + ' / ' + total + ' done';
+  document.getElementById('top-bar').style.width = pct + '%';
+
+  const pills = document.getElementById('op-pills');
+  pills.innerHTML = phases.map((p, pi) => {
+    const pTotal = p.steps.length;
+    const pDone = p.steps.filter((_, si) => checked[pi + '-' + si]).length;
+    const cls = pDone === pTotal ? 'done' : pi === currentPhase ? 'active' : '';
+    return `<div class="phase-pill ${cls}" onclick="goToPhase(${pi})" style="cursor:pointer;">Phase ${pi+1}: ${pDone}/${pTotal}</div>`;
+  }).join('');
+
+  if (done === total && total > 0) {
+    document.getElementById('completion').classList.add('visible');
+  }
+}
+
+function renderPhaseNav() {
+  const nav = document.getElementById('phase-nav');
+  nav.innerHTML = phases.map((p, pi) => {
+    const pDone = p.steps.filter((_, si) => checked[pi + '-' + si]).length;
+    const allDone = pDone === p.steps.length;
+    const cls = allDone ? 'done' : pi === currentPhase ? 'active' : '';
+    return `<div class="phase-tab ${cls}" onclick="goToPhase(${pi})">${allDone ? '✓ ' : ''}Phase ${pi+1}</div>`;
+  }).join('');
+}
+
+function renderPhaseContent() {
+  const ph = phases[currentPhase];
+  const container = document.getElementById('phase-content');
+  let stepNum = 0;
+  for (let pi = 0; pi < currentPhase; pi++) stepNum += phases[pi].steps.length;
+
+  let html = `<div class="phase-header">
+    <div>
+      <div style="font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Phase ${currentPhase+1} of ${phases.length}</div>
+      <div class="phase-title">${ph.title}</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:2px;">${ph.subtitle}</div>
+    </div>
+    <div class="phase-count">${ph.steps.filter((_,si) => checked[currentPhase+'-'+si]).length} / ${ph.steps.length} done</div>
+  </div>`;
+
+  ph.steps.forEach((step, si) => {
+    const key = currentPhase + '-' + si;
+    const isDone = !!checked[key];
+    const isOpen = !isDone;
+    stepNum++;
+
+    html += `<div class="step-card ${isDone ? 'done' : ''} ${isOpen ? 'open' : ''}" id="sc-${key}">
+      <div class="step-header" onclick="toggleOpen('${key}')">
+        <div class="step-num">${stepNum}</div>
+        <div class="step-check ${isDone ? 'checked' : ''}" onclick="toggleDone(event,'${key}')"></div>
+        <div class="step-title-wrap">
+          <div class="step-title">${step.title}</div>
+          <div class="step-subtitle">${step.subtitle}</div>
+        </div>
+        <div class="step-toggle">⌄</div>
+      </div>`;
+
+    if (!isDone) {
+      html += `<div class="step-body"><div class="step-body-inner">`;
+      if (step.detail) html += `<div class="step-detail">${step.detail}</div>`;
+
+      step.boxes.forEach(b => {
+        html += `<div class="box box-${b.type}"><strong>${b.title}</strong>${b.body}</div>`;
+      });
+
+      if (step.docs.length > 0) {
+        html += `<div class="box box-info"><strong>📁 Documents to prepare / bring</strong></div><ul class="doc-list">`;
+        step.docs.forEach(d => { html += `<li>${d}</li>`; });
+        html += `</ul>`;
+      }
+
+      step.emails.forEach(ek => {
+        const draft = getEmailDraft(ek);
+        html += `<div class="email-draft">
+          <div class="email-header">
+            <span>📧 ${draft.label}</span>
+            <button class="copy-btn" onclick="copyEmail(event,'${ek}')">Copy</button>
+          </div>
+          <div class="email-meta">
+            ${draft.to ? `<div><span class="label">To:</span> ${draft.to}</div>` : ''}
+            ${draft.cc ? `<div><span class="label">CC:</span> ${draft.cc}</div>` : ''}
+            ${draft.subject ? `<div><span class="label">Subject:</span> ${draft.subject}</div>` : ''}
+          </div>
+          <div class="email-body" id="eb-${ek}">${escHtml(emails[ek]())}</div>
+        </div>`;
+      });
+
+      html += `<button class="mark-done-btn" onclick="markDone('${key}')">✓ Mark this step as done — move to next</button>`;
+      html += `</div></div>`;
+    }
+
+    html += `</div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function renderPhaseNavBtns() {
+  const btns = document.getElementById('phase-nav-btns');
+  let html = '';
+  if (currentPhase > 0) html += `<button class="btn btn-outline" onclick="goToPhase(${currentPhase-1})">← Previous Phase</button>`;
+  else html += `<div></div>`;
+  if (currentPhase < phases.length - 1) html += `<button class="btn btn-primary" onclick="goToPhase(${currentPhase+1})">Next Phase →</button>`;
+  else html += `<button class="btn btn-success" onclick="document.getElementById('completion').scrollIntoView({behavior:'smooth'})">View Summary ✓</button>`;
+  btns.innerHTML = html;
+}
+
+function getEmailDraft(key) {
+  const map = {
+    grievance_portal_msg: { label: 'Grievance Portal Message', to: 'Paste into incometax.gov.in grievance form' },
+    ao_letter: { label: 'Surrender / Cancellation Letter to AO', to: 'Income Tax Officer, [Your Ward]', subject: 'Request for Cancellation of Duplicate PAN' },
+    ao_email: { label: 'Follow-up Email to AO Ward', to: '[AO Ward Email]', cc: 'ask@incometax.gov.in, tininfo@nsdl.co.in', subject: `Duplicate PAN Deletion Request | PAN ${pan1()} | Grievance Ref: ${griev()}` },
+    nsdl_email: { label: 'Email to NSDL / Protean', to: 'tininfo@nsdl.co.in', cc: 'ask@incometax.gov.in', subject: `Pending PAN Correction — ${pan1()} | Duplicate Deleted` },
+    fir_email: { label: 'FIR Cover Letter for Lost PAN', to: 'Attach with AO submission' },
+    name_correction_cover: { label: 'Name Correction Cover Letter', to: 'NSDL / Protean eGov' },
+    escalation_email: { label: 'Escalation Email (use if no response in 2 weeks)', to: 'ask@incometax.gov.in', cc: '[AO Ward Email], tininfo@nsdl.co.in', subject: `ESCALATION — Duplicate PAN Unresolved | PAN ${pan1()}` }
+  };
+  return map[key] || { label: key };
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function toggleOpen(key) {
+  if (checked[key]) return;
+  const card = document.getElementById('sc-' + key);
+  card.classList.toggle('open');
+}
+
+function toggleDone(e, key) {
+  e.stopPropagation();
+  checked[key] = !checked[key];
+  renderAll();
+}
+
+function markDone(key) {
+  checked[key] = true;
+  // auto-open next step
+  const [pi, si] = key.split('-').map(Number);
+  const nextKey = pi + '-' + (si + 1);
+  renderAll();
+  // scroll to next step
+  setTimeout(() => {
+    const next = document.getElementById('sc-' + nextKey);
+    if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+function goToPhase(pi) {
+  currentPhase = pi;
+  renderAll();
+  document.getElementById('phase-nav').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function copyEmail(e, key) {
+  const btn = e.target;
+  const text = emails[key]();
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function refreshEmails() {
+  // re-render email bodies with updated values
+  Object.keys(emails).forEach(ek => {
+    const el = document.getElementById('eb-' + ek);
+    if (el) el.textContent = emails[ek]();
+  });
+  // also refresh meta subjects
+  renderPhaseContent();
+}
+</script>
+</body>
+</html>

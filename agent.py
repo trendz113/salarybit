@@ -1,10 +1,10 @@
-from google import genai
+from groq import Groq
 import os
 import time
 import json
 from datetime import datetime
 
-client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 BLOG_FOLDER = "blog"
 PROCESSED_FILE = "processed_articles.json"
@@ -60,17 +60,18 @@ def make_slug(topic):
     slug = "".join(c for c in slug if c.isalnum() or c == "-")
     return slug[:60]
 
-def call_gemini(prompt):
+def call_groq(prompt):
     for attempt in range(3):
         try:
-            response = client.models.generate_content(
-                model="gemini-2.0-flash",
-                contents=prompt
+            response = client.chat.completions.create(
+                model="llama3-8b-8192",
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=4000,
             )
-            return response.text
+            return response.choices[0].message.content
         except Exception as e:
             print(f"Attempt {attempt+1} failed: {e}")
-            time.sleep(60)
+            time.sleep(30)
     raise Exception("Failed after 3 attempts")
 
 def clean_existing_article():
@@ -144,7 +145,7 @@ Output ONLY valid HTML no markdown no explanation.
 
 Here is the existing article:
 {html_content}"""
-    improved = call_gemini(prompt)
+    improved = call_groq(prompt)
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(improved)
     processed.append(article_to_clean)
@@ -200,7 +201,7 @@ Use this HTML structure:
 </html>
 
 Today's date: {datetime.now().strftime('%B %d, %Y')}"""
-    html = call_gemini(prompt)
+    html = call_groq(prompt)
     slug = make_slug(topic)
     filename = f"{slug}.html"
     os.makedirs(BLOG_FOLDER, exist_ok=True)
@@ -229,7 +230,7 @@ def run_agent():
     print("=" * 40)
     print("TASK 1: Cleaning existing article...")
     clean_existing_article()
-    time.sleep(30)
+    time.sleep(10)
     print("TASK 2: Writing new article...")
     write_new_article()
     update_sitemap()

@@ -66,7 +66,7 @@ def call_groq(prompt):
             response = client.chat.completions.create(
                 model="llama3-70b-8192",
                 messages=[{"role": "user", "content": prompt}],
-                max_tokens=4000,
+                max_tokens=3000,
             )
             return response.choices[0].message.content
         except Exception as e:
@@ -92,30 +92,20 @@ def clean_existing_article():
         return
     print(f"Cleaning: {article_to_clean}")
     with open(filepath, "r", encoding="utf-8") as f:
-    html_content = f.read()
-html_content = html_content[:8000]
+        html_content = f.read()
+    html_content = html_content[:6000]
     prompt = f"""You are an SEO expert for salarybit.in — Indian salary and finance website.
 
 Clean and improve this HTML article:
 
-1. REMOVE ALL personal details:
-   - Real names of individuals
-   - Phone numbers
-   - Email addresses
-   - Home or office addresses
-   - Aadhaar card numbers
-   - PAN card numbers of real people
-   - Date of birth
-   - Bank account numbers
-   - Any other private personal information
+1. REMOVE ALL personal details like names, phone numbers, emails, addresses, Aadhaar numbers, PAN numbers, bank accounts.
 
 2. IMPROVE the content:
-   - Make it 1000-1500 words
+   - Make it 1000 words
    - Add proper SEO title and meta description
    - Add useful tables where relevant
-   - Add FAQ section at end with 3-5 questions
+   - Add FAQ section at end with 3 questions
    - Fix headings H1 once then H2 H3
-   - Add ad slot divs at top middle bottom
    - Write in simple English for Indian readers
 
 3. Use this exact HTML structure:
@@ -125,7 +115,7 @@ Clean and improve this HTML article:
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TITLE | SalaryBit</title>
-  <meta name="description" content="DESCRIPTION MAX 155 CHARS">
+  <meta name="description" content="DESCRIPTION">
   <link rel="canonical" href="https://salarybit.in/blog/{article_to_clean}">
   <link rel="stylesheet" href="../style.css">
 </head>
@@ -168,14 +158,14 @@ def write_new_article():
     prompt = f"""Write a complete SEO HTML article for salarybit.in about: {topic}
 
 Rules:
-- 1000-1500 words useful for Indian readers
+- 1000 words useful for Indian readers
 - Real salary numbers and tables
 - Output ONLY valid HTML no markdown
 - Proper title and meta description
 - H1 once then H2 H3 headings
 - Salary comparison table
-- FAQ section at end with 3-5 questions
-- Add ad slot divs at top middle bottom
+- FAQ section at end with 3 questions
+- Add div class ad-slot at top middle bottom
 
 Use this HTML structure:
 <!DOCTYPE html>

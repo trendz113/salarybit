@@ -1,1214 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Laid Off? Here's Exactly What To Do — Step by Step</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-<style>
-:root {
-  --cream: #faf7f2;
-  --paper: #f4f0e8;
-  --ink: #1a1714;
-  --ink2: #3d3830;
-  --ink3: #7a7265;
-  --red: #c0392b;
-  --red-soft: #fdf0ee;
-  --amber: #d97706;
-  --amber-soft: #fef7ec;
-  --green: #166534;
-  --green-soft: #f0fdf4;
-  --green-mid: #16a34a;
-  --blue: #1e3a8a;
-  --blue-soft: #eff6ff;
-  --border: #ddd8cf;
-  --step-w: 680px;
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-html { scroll-behavior: smooth; }
-
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--cream);
-  color: var(--ink);
-  line-height: 1.7;
-  font-size: 16px;
-}
-
-h1,h2,h3,h4 { font-family: 'Fraunces', serif; font-weight: 600; line-height: 1.2; }
-
-/* PROGRESS NAV */
-.sticky-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-  background: var(--ink); color: white;
-  padding: 0 1.5rem;
-  display: flex; align-items: center; gap: 1.5rem;
-  height: 52px;
-}
-.nav-logo { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 700; white-space: nowrap; }
-.nav-steps { display: flex; gap: 4px; flex: 1; overflow-x: auto; scrollbar-width: none; }
-.nav-steps::-webkit-scrollbar { display: none; }
-.nav-step {
-  display: flex; align-items: center; gap: 6px;
-  padding: 5px 12px; border-radius: 100px;
-  font-size: 0.72rem; font-weight: 500; white-space: nowrap;
-  cursor: pointer; border: 1px solid rgba(255,255,255,0.15);
-  color: rgba(255,255,255,0.5); transition: all 0.2s; text-decoration: none;
-}
-.nav-step .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.3); }
-.nav-step.active, .nav-step:hover { color: white; border-color: rgba(255,255,255,0.4); }
-.nav-step.done { color: #86efac; border-color: #166534; }
-.nav-step.done .dot { background: #86efac; }
-
-/* TOP BANNER */
-.crisis-banner {
-  background: var(--red); color: white;
-  padding: 5rem 2rem 4rem;
-  text-align: center;
-  position: relative; overflow: hidden;
-}
-.crisis-banner::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: repeating-linear-gradient(
-    -45deg,
-    transparent, transparent 20px,
-    rgba(0,0,0,0.04) 20px, rgba(0,0,0,0.04) 40px
-  );
-}
-.banner-content { position: relative; max-width: 640px; margin: 0 auto; }
-.crisis-badge {
-  display: inline-block;
-  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
-  padding: 5px 16px; border-radius: 100px;
-  font-size: 0.75rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
-  margin-bottom: 1.5rem;
-}
-.crisis-banner h1 {
-  font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700; margin-bottom: 1rem;
-  font-style: italic;
-}
-.crisis-banner p { font-size: 1.05rem; opacity: 0.88; margin-bottom: 2rem; }
-.crisis-note {
-  background: rgba(0,0,0,0.2); border-radius: 12px; padding: 1rem 1.5rem;
-  font-size: 0.9rem; text-align: left; border-left: 3px solid rgba(255,255,255,0.4);
-}
-
-/* PHASE WRAPPER */
-.phase {
-  border-top: 2px solid var(--border);
-  padding: 3.5rem 2rem;
-}
-.phase-inner { max-width: var(--step-w); margin: 0 auto; }
-
-.phase-label {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
-  padding: 4px 12px; border-radius: 100px; margin-bottom: 1.2rem;
-}
-.phase-label.emergency { background: #fef2f2; color: var(--red); border: 1px solid #fecaca; }
-.phase-label.stabilize { background: var(--amber-soft); color: var(--amber); border: 1px solid #fde68a; }
-.phase-label.survive { background: var(--blue-soft); color: var(--blue); border: 1px solid #bfdbfe; }
-.phase-label.grow { background: var(--green-soft); color: var(--green); border: 1px solid #bbf7d0; }
-
-.phase h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); margin-bottom: 0.5rem; }
-.phase .phase-subtitle { font-size: 1rem; color: var(--ink3); margin-bottom: 2rem; }
-
-/* STEP CARDS */
-.steps { display: flex; flex-direction: column; gap: 1px; }
-
-.step-card {
-  background: white; border: 1px solid var(--border); border-radius: 16px;
-  margin-bottom: 12px; overflow: hidden;
-  transition: box-shadow 0.2s;
-}
-.step-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
-
-.step-header {
-  display: flex; align-items: flex-start; gap: 1rem;
-  padding: 1.2rem 1.4rem; cursor: pointer; user-select: none;
-}
-.step-num {
-  width: 36px; height: 36px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Fraunces', serif; font-size: 0.9rem; font-weight: 700;
-  flex-shrink: 0;
-}
-.step-num.red { background: #fef2f2; color: var(--red); }
-.step-num.amber { background: var(--amber-soft); color: var(--amber); }
-.step-num.blue { background: var(--blue-soft); color: var(--blue); }
-.step-num.green { background: var(--green-soft); color: var(--green-mid); }
-
-.step-title-row { flex: 1; }
-.step-title { font-size: 1.05rem; font-weight: 500; margin-bottom: 2px; }
-.step-when { font-size: 0.75rem; color: var(--ink3); font-weight: 500; }
-.step-arrow { color: var(--ink3); font-size: 1.2rem; transition: transform 0.25s; flex-shrink: 0; margin-top: 6px; }
-.step-card.open .step-arrow { transform: rotate(180deg); }
-
-.step-body { display: none; padding: 0 1.4rem 1.4rem; border-top: 1px solid var(--border); }
-.step-card.open .step-body { display: block; }
-.step-body-inner { padding-top: 1rem; }
-
-/* CONTENT ELEMENTS */
-.do-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin: 0.8rem 0; }
-.do-list li {
-  display: flex; gap: 10px; align-items: flex-start;
-  background: var(--paper); border-radius: 10px; padding: 10px 12px;
-  font-size: 0.9rem; line-height: 1.5;
-}
-.do-list li::before { content: '→'; color: var(--ink3); flex-shrink: 0; margin-top: 1px; }
-.do-list li strong { display: block; font-weight: 500; color: var(--ink); }
-.do-list li span { color: var(--ink3); font-size: 0.82rem; }
-
-.warn-box {
-  background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px;
-  padding: 10px 14px; font-size: 0.85rem; color: #7f1d1d; margin: 0.8rem 0;
-}
-.info-box {
-  background: var(--blue-soft); border: 1px solid #bfdbfe; border-radius: 10px;
-  padding: 10px 14px; font-size: 0.85rem; color: #1e3a8a; margin: 0.8rem 0;
-}
-.good-box {
-  background: var(--green-soft); border: 1px solid #bbf7d0; border-radius: 10px;
-  padding: 10px 14px; font-size: 0.85rem; color: var(--green); margin: 0.8rem 0;
-}
-.amber-box {
-  background: var(--amber-soft); border: 1px solid #fde68a; border-radius: 10px;
-  padding: 10px 14px; font-size: 0.85rem; color: #78350f; margin: 0.8rem 0;
-}
-
-.sub-label { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink3); margin: 1rem 0 0.4rem; }
-
-/* CALCULATOR */
-.calc-box {
-  background: var(--paper); border: 1px solid var(--border); border-radius: 12px;
-  padding: 1.2rem; margin: 1rem 0;
-}
-.calc-box h4 { font-size: 0.9rem; margin-bottom: 1rem; font-family: 'DM Sans', sans-serif; font-weight: 500; }
-.calc-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.calc-row label { font-size: 0.82rem; color: var(--ink3); flex: 1; }
-.calc-row input[type=number] {
-  width: 120px; padding: 7px 10px; border-radius: 8px;
-  border: 1px solid var(--border); background: white; font-family: inherit; font-size: 0.9rem;
-  color: var(--ink); text-align: right;
-}
-.calc-row input[type=range] {
-  flex: 1; accent-color: var(--green-mid);
-}
-.calc-result {
-  margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);
-  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-}
-.c-stat { background: white; border-radius: 8px; padding: 10px 12px; }
-.c-stat .cl { font-size: 0.72rem; color: var(--ink3); margin-bottom: 2px; }
-.c-stat .cv { font-size: 1.1rem; font-weight: 500; font-family: 'Fraunces', serif; }
-.cv.red { color: var(--red); }
-.cv.green { color: var(--green-mid); }
-.cv.amber { color: var(--amber); }
-
-/* MONTH PLAN TABLE */
-.month-plan { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 1rem 0; }
-.month-row { display: grid; grid-template-columns: 100px 1fr 1fr; }
-.month-row.head { background: var(--ink); color: white; font-size: 0.78rem; font-weight: 500; }
-.month-row > div { padding: 10px 14px; border-right: 1px solid var(--border); font-size: 0.85rem; }
-.month-row > div:last-child { border-right: none; }
-.month-row:not(.head) { border-top: 1px solid var(--border); }
-.month-row:not(.head):nth-child(even) { background: var(--paper); }
-.month-tag { font-size: 0.7rem; font-weight: 500; }
-
-/* INVEST TABLE */
-.invest-table { width: 100%; border-collapse: collapse; margin: 0.8rem 0; font-size: 0.85rem; }
-.invest-table th { text-align: left; padding: 8px 12px; background: var(--ink); color: white; font-weight: 500; font-size: 0.78rem; }
-.invest-table th:first-child { border-radius: 8px 0 0 0; }
-.invest-table th:last-child { border-radius: 0 8px 0 0; }
-.invest-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
-.invest-table tr:nth-child(even) td { background: var(--paper); }
-.invest-table tr:last-child td { border-bottom: none; }
-.returns-chip {
-  display: inline-block; padding: 2px 8px; border-radius: 100px;
-  font-size: 0.72rem; font-weight: 500;
-}
-
-/* JOB SECTION */
-.job-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0.8rem 0; }
-@media(max-width:580px) { .job-grid { grid-template-columns: 1fr; } }
-.job-card {
-  background: white; border: 1px solid var(--border); border-radius: 12px;
-  padding: 1rem;
-}
-.job-card h4 { font-size: 0.9rem; margin-bottom: 0.4rem; font-family: 'DM Sans', sans-serif; font-weight: 500; }
-.job-card p { font-size: 0.82rem; color: var(--ink3); line-height: 1.5; }
-.job-card .jc-num { font-family: 'Fraunces', serif; font-size: 1.6rem; font-weight: 700; color: var(--ink3); }
-
-/* TRACKER */
-.tracker-wrap { background: var(--paper); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; margin: 1rem 0; }
-.tracker-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.tracker-row label { font-size: 0.85rem; flex: 1; }
-.tracker-row input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--green-mid); cursor: pointer; }
-.tracker-row.done label { text-decoration: line-through; color: var(--ink3); }
-.progress-bar-wrap { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 0.5rem; }
-.progress-bar-fill { height: 100%; background: var(--green-mid); border-radius: 3px; transition: width 0.4s; }
-
-/* PHASE OVERVIEW STRIP */
-.phase-strip {
-  background: var(--ink); color: white;
-  padding: 3rem 2rem; text-align: center;
-}
-.strip-inner { max-width: 800px; margin: 0 auto; }
-.strip-inner h2 { font-family: 'Fraunces', serif; font-size: 1.8rem; margin-bottom: 2rem; color: white; }
-.phase-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1px; }
-.phase-card-sm {
-  background: rgba(255,255,255,0.05); padding: 1.2rem 1rem;
-  border: 1px solid rgba(255,255,255,0.1); border-radius: 0;
-  text-align: left;
-}
-.phase-card-sm:first-child { border-radius: 12px 0 0 12px; }
-.phase-card-sm:last-child { border-radius: 0 12px 12px 0; }
-.pc-day { font-size: 0.7rem; opacity: 0.5; margin-bottom: 6px; letter-spacing: 0.06em; text-transform: uppercase; }
-.pc-title { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
-.pc-desc { font-size: 0.78rem; opacity: 0.6; line-height: 1.5; }
-
-/* MONTH BY MONTH INVEST */
-.invest-month { background: white; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 0.8rem 0; }
-.im-header { background: var(--ink); color: white; padding: 10px 16px; font-size: 0.82rem; font-weight: 500; display: flex; justify-content: space-between; }
-.im-body { padding: 1rem; }
-.im-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
-.im-row:last-child { border-bottom: none; }
-.im-name { font-size: 0.88rem; flex: 1; }
-.im-amt { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 600; white-space: nowrap; }
-.im-why { font-size: 0.75rem; color: var(--ink3); display: block; }
-.im-bar { height: 4px; border-radius: 2px; margin-top: 4px; }
-
-/* SIP CALC */
-.sip-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-@media(max-width:500px) { .sip-inputs { grid-template-columns: 1fr; } }
-.sip-field label { font-size: 0.78rem; color: var(--ink3); display: block; margin-bottom: 4px; }
-.sip-field input { width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); font-family: inherit; font-size: 0.95rem; }
-.sip-result-big { text-align: center; background: var(--green-soft); border: 1px solid #bbf7d0; border-radius: 12px; padding: 1.2rem; margin-top: 1rem; }
-.sip-corpus { font-family: 'Fraunces', serif; font-size: 2.4rem; font-weight: 700; color: var(--green); }
-.sip-sub { font-size: 0.82rem; color: var(--green); margin-top: 4px; }
-.sip-mini { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 0.8rem; }
-.sip-mini-cell { background: white; border-radius: 8px; padding: 8px 12px; }
-.sml { font-size: 0.72rem; color: var(--ink3); }
-.smv { font-size: 0.95rem; font-weight: 500; font-family: 'Fraunces', serif; }
-
-/* MINDSET SECTION */
-.mindset-cards { display: flex; flex-direction: column; gap: 8px; margin: 0.8rem 0; }
-.mindset-card {
-  display: flex; gap: 12px; align-items: flex-start;
-  background: white; border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.2rem;
-}
-.m-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
-.m-text h4 { font-size: 0.9rem; margin-bottom: 2px; font-family: 'DM Sans', sans-serif; font-weight: 500; }
-.m-text p { font-size: 0.82rem; color: var(--ink3); line-height: 1.5; }
-
-/* FOOTER */
-footer {
-  background: var(--ink2); color: rgba(255,255,255,0.5);
-  text-align: center; padding: 2rem 1rem; font-size: 0.82rem; line-height: 1.7;
-}
-footer strong { color: rgba(255,255,255,0.8); }
-
-/* ANIMATIONS */
-@keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-.banner-content { animation: fadeUp 0.7s ease both; }
-
-@media(max-width:600px) {
-  .sticky-nav { padding: 0 1rem; }
-  .phase { padding: 2.5rem 1rem; }
-  .month-row { grid-template-columns: 70px 1fr; }
-  .month-row > div:last-child { display: none; }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Guide to Surviving a Layoff in India | SalaryBit</title>
+  <meta name="description" content="Learn how to survive a layoff in India. Understand the steps to take, what to expect, and the best ways to handle financial stress.">
+  <link rel="canonical" href="https://salarybit.in/blog/layoff-survival-guide.html">
+  <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-
-<!-- STICKY NAV -->
-<nav class="sticky-nav">
-  <div class="nav-logo">Survive → Grow</div>
-  <div class="nav-steps">
-    <a class="nav-step" href="#phase0"><span class="dot"></span>Today</a>
-    <a class="nav-step" href="#phase1"><span class="dot"></span>Week 1</a>
-    <a class="nav-step" href="#phase2"><span class="dot"></span>Find Job</a>
-    <a class="nav-step" href="#phase3"><span class="dot"></span>Emergency Fund</a>
-    <a class="nav-step" href="#phase4"><span class="dot"></span>Month-by-Month</a>
-    <a class="nav-step" href="#phase5"><span class="dot"></span>Invest Smart</a>
-    <a class="nav-step" href="#phase6"><span class="dot"></span>Side Income</a>
-  </div>
-</nav>
-
-<!-- HERO BANNER -->
-<div class="crisis-banner" id="phase0">
-  <div class="banner-content">
-    <div class="crisis-badge">For India's salaried workforce</div>
-    <h1>"You're laid off."<br>Here's exactly what to do.</h1>
-    <p>Not inspiration. Not theory. A real, step-by-step plan — from today to financial stability. Follow in order.</p>
-    <div class="crisis-note">
-      <strong>Read this first:</strong> Most people panic and make costly mistakes in the first 72 hours. This guide tells you what to do, what NOT to do, and in what order. Bookmark this page. Share it with someone who needs it today.
+  <header>
+    <a href="../index.html"><h2>SalaryBit</h2></a>
+  </header>
+  <main class="article-container">
+    <div class="ad-slot">
+      <!-- Ad -->
     </div>
-  </div>
-</div>
-
-<!-- PHASE OVERVIEW -->
-<div class="phase-strip">
-  <div class="strip-inner">
-    <h2>Your recovery has 4 phases</h2>
-    <div class="phase-cards">
-      <div class="phase-card-sm">
-        <div class="pc-day">Day 1–3</div>
-        <div class="pc-title">Stop the bleeding</div>
-        <div class="pc-desc">Cut costs, protect your money, don't panic-spend</div>
-      </div>
-      <div class="phase-card-sm">
-        <div class="pc-day">Week 1–4</div>
-        <div class="pc-title">Find income fast</div>
-        <div class="pc-desc">Job hunt, freelance, side gigs — anything that pays</div>
-      </div>
-      <div class="phase-card-sm">
-        <div class="pc-day">Month 2–6</div>
-        <div class="pc-title">Build the buffer</div>
-        <div class="pc-desc">Emergency fund first, then start one SIP</div>
-      </div>
-      <div class="phase-card-sm">
-        <div class="pc-day">Month 7+</div>
-        <div class="pc-title">Build wealth</div>
-        <div class="pc-desc">Invest methodically, never go back to month-to-month</div>
+    <div class="crisis-banner">
+      <div class="banner-content">
+        <h1><i>The Unseen Reality of Layoffs: A Guide to Navigating Uncertainty</i></h1>
+        <p>Are you facing the possibility of a layoff, but not sure what to do? This article will take you through the best strategies for surviving a layoff in India.</p>
       </div>
     </div>
-  </div>
-</div>
-
-<!-- ===================== PHASE 1: CRISIS DAYS ===================== -->
-<section class="phase" id="phase1">
-<div class="phase-inner">
-  <div class="phase-label emergency">🔴 Phase 1 — Day 1 to Day 3</div>
-  <h2>Stop the bleeding. Right now.</h2>
-  <p class="phase-subtitle">Before you update LinkedIn. Before you call anyone. Do these things first.</p>
-
-  <div class="steps">
-
-    <div class="step-card" id="sc1">
-      <div class="step-header" onclick="toggleStep('sc1')">
-        <div class="step-num red">1</div>
-        <div class="step-title-row">
-          <div class="step-title">Count your exact money — right now</div>
-          <div class="step-when">⏰ Do this today, within 2 hours</div>
-        </div>
-        <div class="step-arrow">▾</div>
-      </div>
-      <div class="step-body">
-        <div class="step-body-inner">
-          <p style="font-size:0.9rem; margin-bottom:0.8rem;">Open every bank account, wallet, FD, and check if any salary is pending. Write the total on paper. This is your war chest.</p>
-          <ul class="do-list">
-            <li><div><strong>Bank accounts (savings + current)</strong><span>Add up every account — don't forget secondary accounts</span></div></li>
-            <li><div><strong>UPI wallets (PhonePe, Paytm, GPay)</strong><span>Even ₹200 there counts</span></div></li>
-            <li><div><strong>Fixed Deposits</strong><span>Note the maturity date and premature withdrawal penalty</span></div></li>
-            <li><div><strong>Pending salary / gratuity / notice pay</strong><span>Calculate what your employer still owes you — don't leave this on the table</span></div></li>
-            <li><div><strong>EPF balance</strong><span>Check on EPFO portal or Umang app — this is YOUR money</span></div></li>
-          </ul>
-
-          <div class="calc-box">
-            <h4>Quick cash position calculator</h4>
-            <div class="calc-row"><label>Savings account total</label><input type="number" id="cash-bank" value="80000" oninput="calcCash()"></div>
-            <div class="calc-row"><label>FDs (liquid / breakable)</label><input type="number" id="cash-fd" value="30000" oninput="calcCash()"></div>
-            <div class="calc-row"><label>Pending salary / dues</label><input type="number" id="cash-salary" value="20000" oninput="calcCash()"></div>
-            <div class="calc-row"><label>EPF balance</label><input type="number" id="cash-epf" value="50000" oninput="calcCash()"></div>
-            <div class="calc-result">
-              <div class="c-stat"><div class="cl">Total available</div><div class="cv green" id="cash-total">₹1,80,000</div></div>
-              <div class="c-stat"><div class="cl">Monthly need (enter below)</div><div class="cv" id="cash-months-val">— months</div></div>
-              <div class="c-stat"><div class="cl">Monthly expenses</div><input type="number" id="cash-monthly" value="50000" style="width:100%;padding:4px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:0.9rem;" oninput="calcCash()"></div>
-              <div class="c-stat"><div class="cl">Status</div><div class="cv" id="cash-status" style="font-size:0.85rem;">—</div></div>
-            </div>
+    <div class="c-landing-section">
+      <h2>Understanding the Reality of Layoffs</h2>
+      <p>A layoff, also known as job loss, can be a stressful and uncertain experience. In India, the number of layoffs has been increasing in recent years, affecting various sectors and industries.</p>
+      <p>According to a report by the Ministry of Labour and Employment, India saw a significant increase in layoffs in 2022, especially in the technology and manufacturing sectors.</p>
+    </div>
+    <div class="phase">
+      <h2>What to Do After a Layoff</h2>
+      <div class="phase-label stabilize">Phase 1: Stabilize Your Finances</div>
+      <p>The first phase after a layoff is to stabilize your finances. Create a budget that accounts for your reduced income, and prioritize essential expenses such as rent/mortgage, utilities, and groceries.</p>
+      <p>Review your savings, emergency fund, and credit score to determine your financial risk level.</p>
+      <p>Take steps to reduce your expenses, such as canceling subscription services, negotiating bills with service providers, and cutting back on discretionary spending.</p>
+    </div>
+    <div class="steps">
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-num red"></div>
+          <div class="step-title-row">
+            <h3>Step 1: Review Your Finances</h3>
+            <p>Calculate your essential expenses, income, and savings to determine your financial situation.</p>
           </div>
-          <div class="warn-box">⚠ Do NOT break FDs in the first week unless you have zero cash. Premature FD penalty is usually 1%. Check if you can survive without breaking them first.</div>
+          <div class="step-arrow"></div>
         </div>
-      </div>
-    </div>
-
-    <div class="step-card" id="sc2">
-      <div class="step-header" onclick="toggleStep('sc2')">
-        <div class="step-num red">2</div>
-        <div class="step-title-row">
-          <div class="step-title">Cut every non-essential expense — today</div>
-          <div class="step-when">⏰ Do this by end of Day 1</div>
-        </div>
-        <div class="step-arrow">▾</div>
-      </div>
-      <div class="step-body">
-        <div class="step-body-inner">
-          <p style="font-size:0.9rem; margin-bottom:0.8rem;">Every rupee you don't spend is a day you survive longer. Be ruthless. This is temporary. You can restore everything when income is back.</p>
-          <div class="sub-label">Cancel or pause immediately</div>
+        <div class="step-body">
           <ul class="do-list">
-            <li><div><strong>OTT subscriptions</strong><span>Netflix, Prime, Hotstar, Spotify — pause all. Save ₹1,500–₹3,000/month</span></div></li>
-            <li><div><strong>Gym / app subscriptions</strong><span>Pause, not cancel — many apps let you freeze for free</span></div></li>
-            <li><div><strong>Food delivery apps</strong><span>Cook at home. Saves ₹5,000–₹12,000/month for most families</span></div></li>
-            <li><div><strong>Impulse shopping</strong><span>Delete Amazon / Flipkart from your phone home screen. Seriously.</span></div></li>
-            <li><div><strong>Cabs / auto — switch to public transport</strong><span>Can save ₹3,000–₹8,000/month</span></div></li>
+            <li>Calculate your essential expenses, including rent/mortgage, utilities, and groceries.</li>
+            <li> Review your income and determine your reduced expenses.</li>
+            <li>Create a budget and prioritize essential expenses.</li>
           </ul>
-          <div class="sub-label">Do NOT cut these</div>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-num amber"></div>
+          <h3>Step 2: Build a Safety Net</h3>
+          <p>Create an emergency fund to cover 3-6 months of essential expenses.</p>
+          <div class="step-arrow"></div>
+        </div>
+        <div class="step-body">
+          <p>Create a budget and prioritize essential expenses.</p>
+          <p>Set up automatic transfers to your emergency fund.</p>
+          <p>Review your insurance policies and adjust as needed.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-num blue"></div>
+          <h3>Step 3: Develop a Long-Term Strategy</h3>
+          <p>Explore career options, update your resume and LinkedIn profile, and network with industry professionals.</p>
+          <div class="step-arrow"></div>
+        </div>
+        <div class="step-body">
           <ul class="do-list">
-            <li><div><strong>Home loan EMI</strong><span>Missing EMI damages your CIBIL score. Talk to bank FIRST — most offer 3-month moratorium on hardship</span></div></li>
-            <li><div><strong>Health insurance</strong><span>One medical emergency without insurance will wipe out everything</span></div></li>
-            <li><div><strong>Children's school fees</strong><span>Talk to school first — most have installment options during hardship</span></div></li>
-            <li><div><strong>Essential medicines</strong><span>Non-negotiable</span></div></li>
+            <li>Update your resume and LinkedIn profile.</li>
+            <li>Network with industry professionals.</li>
+            <li>Explore career options and consider upskilling or reskilling.</li>
           </ul>
-          <div class="amber-box">💡 <strong>Call your bank today</strong> if you have a home loan or personal loan. Ask specifically about the "loan restructuring" or "moratorium" option. They can pause EMI for 3 months without penalty. Don't be ashamed — they have teams for exactly this.</div>
         </div>
       </div>
     </div>
-
-    <div class="step-card" id="sc3">
-      <div class="step-header" onclick="toggleStep('sc3')">
-        <div class="step-num red">3</div>
-        <div class="step-title-row">
-          <div class="step-title">Tell your family the truth — now, not later</div>
-          <div class="step-when">⏰ Day 1 or 2</div>
-        </div>
-        <div class="step-arrow">▾</div>
-      </div>
-      <div class="step-body">
-        <div class="step-body-inner">
-          <p style="font-size:0.9rem; margin-bottom:0.8rem;">The biggest mistake people make: hiding the layoff from family for weeks. This leads to spending money you don't have to maintain a false normal. Your family's support is your biggest resource right now.</p>
-          <div class="mindset-cards">
-            <div class="mindset-card">
-              <div class="m-icon">👨‍👩‍👧</div>
-              <div class="m-text"><h4>Tell your spouse / partner first</h4><p>They need to adjust spending too. Two people cutting costs is twice as effective as one. You also need emotional support — don't carry this alone.</p></div>
-            </div>
-            <div class="mindset-card">
-              <div class="m-icon">👴</div>
-              <div class="m-text"><h4>Talk to your parents / dependents</h4><p>They may be able to reduce their dependency temporarily, or they may have resources you don't know about. Don't assume — ask.</p></div>
-            </div>
-            <div class="mindset-card">
-              <div class="m-icon">🤝</div>
-              <div class="m-text"><h4>Tell your close network you're looking</h4><p>70% of jobs are filled through referrals, not job portals. The people who know you can find you a job faster than any website.</p></div>
-            </div>
-          </div>
-          <div class="good-box">✓ You are not a failure. Layoffs are a business decision, not a performance review. The fastest path forward starts with honesty.</div>
-        </div>
-      </div>
+    <div class="c-landing-section">
+      <h2>Managing Financial Stress</h2>
+      <p>Layoffs can lead to significant financial stress. In India, the financial stress of a layoff can be exacerbated by factors such as:</p>
+      <table>
+        <tr>
+          <th>Factor</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>Reduced income</td>
+          <td>A layoff often results in reduced income, making it difficult to meet essential expenses.</td>
+        </tr>
+        <tr>
+          <td>Uncertainty</td>
+          <td>The uncertainty of a layoff can lead to increased stress and anxiety, making it difficult to manage finances.</td>
+        </tr>
+        <tr>
+          <td>High debt</td>
+          <td>In India, high debt can exacerbate financial stress, especially when combined with reduced income.</td>
+        </tr>
+      </table>
+      <h3>Strategies for Managing Financial Stress</h3>
+      <p>Here are some strategies for managing financial stress while facing a layoff:</p>
+      <ul>
+        <li>Communicate openly with your partner or family about financial concerns.</li>
+        <li>Consider seeking financial counseling or consulting a financial advisor.</li>
+        <li>Develop a realistic budget and prioritize essential expenses.</li>
+      </ul>
     </div>
-
-    <div class="step-card" id="sc4">
-      <div class="step-header" onclick="toggleStep('sc4')">
-        <div class="step-num red">4</div>
-        <div class="step-title-row">
-          <div class="step-title">Collect everything from your employer</div>
-          <div class="step-when">⏰ Day 1–3 (before access is revoked)</div>
-        </div>
-        <div class="step-arrow">▾</div>
-      </div>
-      <div class="step-body">
-        <div class="step-body-inner">
-          <ul class="do-list">
-            <li><div><strong>Relieving letter + Experience letter</strong><span>Mandatory for future employment. Chase HR if not given immediately.</span></div></li>
-            <li><div><strong>Last 3 months salary slips</strong><span>Required for loan applications and future employer verification</span></div></li>
-            <li><div><strong>Full & Final settlement details</strong><span>Includes pending salary, notice period pay, leave encashment, and gratuity</span></div></li>
-            <li><div><strong>EPF UAN number + transfer/withdrawal options</strong><span>You can withdraw EPF after 2 months of unemployment — check EPFO portal</span></div></li>
-            <li><div><strong>Your work samples / portfolio</strong><span>Download before laptop/email access is revoked</span></div></li>
-          </ul>
-          <div class="warn-box">⚠ If employer delays F&F beyond 45 days, you can file a complaint with the Labour Commissioner. This is your legal right — don't hesitate.</div>
-        </div>
-      </div>
+    <div class="ad-slot">
+      <!-- Ad -->
     </div>
-
-  </div>
-</div>
-</section>
-
-<!-- ===================== PHASE 2: FIND JOB ===================== -->
-<section class="phase" id="phase2" style="background:white;">
-<div class="phase-inner">
-  <div class="phase-label survive">🔵 Phase 2 — Week 1 to Month 2</div>
-  <h2>Find income as fast as possible.</h2>
-  <p class="phase-subtitle">Your only job right now is to get income back. Here's how to do it fast — in the right order.</p>
-
-  <div class="steps">
-
-    <div class="step-card" id="sc5">
-      <div class="step-header" onclick="toggleStep('sc5')">
-        <div class="step-num blue">5</div>
-        <div class="step-title-row">
-          <div class="step-title">Update your LinkedIn in 2 hours — not 2 days</div>
-          <div class="step-when">⏰ Day 1 of job search</div>
-        </div>
-        <div class="step-arrow">▾</div>
-      </div>
-      <div class="step-body">
-        <div class="step-body-inner">
-          <ul class="do-list">
-            <li><div><strong>Turn ON "Open to Work" (visible to recruiters only)</strong><span>Go to your profile → Open To → Finding a new job → Choose "Recruiters only" so current colleagues don't see</span></div></li>
-            <li><div><strong>Add your last role with measurable achievements</strong><span>Not "Managed team" — write "Led 8-member team that delivered ₹2Cr revenue project in 6 months"</span></div></li>
-            <li><div><strong>Write a 3-line headline with your top skills</strong><span>Example: "Senior Software Engineer | React, Node.js, AWS | 6 YOE | Open to roles in Bangalore / Remote"</span></div></li>
-            <li><div><strong>Get 3 recommendations from ex-colleagues</strong><span>Message them today. These take time — start early.</span></div></li>
-            <li><div><strong>Connect with 20 people in your target companies</strong><span>Include their hiring managers — a personal message gets 10x more response than a cold application</span></div></li>
-          </ul>
-          <div class="info-box">💬 <strong>Message template for your network:</strong> "Hey [Name], I wanted to let you know I'm exploring new opportunities after [Company] restructured. I'm looking for [Role] in [Industry]. If you hear of anything or know someone I should talk to, I'd be grateful. No pressure at all — just wanted to keep you in the loop."</div>
-        </div>
-      </div>
+    <div class="c-landing-section">
+      <h2>Conclusion</h2>
+      <p>Surviving a layoff in India requires a proactive and strategic approach. By understanding the reality of layoffs, stabilizing your finances, and managing financial stress, you can navigate this challenging period and emerge stronger.</p>
     </div>
-
-    <div class="step-card" id="sc6">
-      <div class="step-header" onclick="toggleStep('sc6')">
-        <div class="step-num blue">6</div>
-        <div class="step-title-row">
-          <div class="step-title">Apply to jobs — but in the right order</div>
-          <div class="step-when">⏰ Week 1 onwards, daily habit</div>
-        </div>
-        <div class="step-arrow">▾</div>
-      </div>
-      <div class="step-body">
-        <div class="step-body-inner">
-          <p style="font-size:0.9rem; margin-bottom:0.8rem;">Most people apply randomly. This wastes time. Apply in this priority order:</p>
-          <div class="job-grid">
-            <div class="job-card">
-              <div class="jc-num">1st</div>
-              <h4>Your personal network</h4>
-              <p>Former colleagues, managers, ex-classmates. Message 10 people today. 70% of jobs are filled through referrals.</p>
-            </div>
-            <div class="job-card">
-              <div class="jc-num">2nd</div>
-              <h4>LinkedIn Easy Apply</h4>
-              <p>Apply to 5–10 roles daily. Use filters: "Posted in last 24 hours", your city, your level. Quality over quantity.</p>
-            </div>
-            <div class="job-card">
-              <div class="jc-num">3rd</div>
-              <h4>Naukri.com / Instahire</h4>
-              <p>Update your resume every 3 days — it pushes you to the top of recruiter searches. Respond to recruiter messages within 1 hour.</p>
-            </div>
-            <div class="job-card">
-              <div class="jc-num">4th</div>
-              <h4>Company career pages</h4>
-              <p>Direct applications often bypass competition. Find 10 companies you want to work for and apply directly on their website.</p>
-            </div>
-          </div>
-
-          <div class="sub-label">Daily job search routine (3 hours)</div>
-          <ul class="do-list">
-            <li><div><strong>8–9 AM: Apply to 5 new roles</strong><span>Use a fresh mind. Customise the first line of your cover letter for each role.</span></div></li>
-            <li><div><strong>9–10 AM: Follow up on pending applications</strong><span>A polite follow-up after 5 days increases callback rate by 40%</span></div></li>
-            <li><div><strong>10–11 AM: Network outreach</strong><span>Send 5 personalised messages on LinkedIn. Comment on posts in your industry.</span></div></li>
-            <li><div><strong>Evening: Learn for 1 hour</strong><span>One skill improvement session daily — this comes up in interviews and keeps you sharp</span></div></li>
-          </ul>
-          <div class="amber-box">⏱ <strong>Realistic timeline:</strong> Average job search in India takes 6–12 weeks. Prepare mentally for this. If you get a job in 2 weeks, great. If it takes 10 weeks, you're still normal. This is why the emergency fund matters.</div>
-        </div>
-      </div>
+    <div class="faq">
+      <h2>FAQs</h2>
+      <ul>
+        <li><h3>What are the most common causes of layoffs in India?</h3>
+          <p>Layoffs in India are often caused by factors such as economic downturn, company restructuring, and technology advancements.</p>
+        </li>
+        <li><h3>What are the best ways to manage financial stress while facing a layoff?</h3>
+          <p>Communicate openly with your partner or family, consider seeking financial counseling, and develop a realistic budget.</p>
+        </li>
+        <li><h3>How long does it take to recover from a layoff?</h3>
+          <p>Recovery from a layoff can take several months to a few years, depending on factors such as job market conditions, industry, and individual circumstances.</p>
+        </li>
+      </ul>
     </div>
-
-    <div class="step-card" id="sc7">
-      <div class="step-header" onclick="toggleStep('sc7')">
-        <div class="step-num blue">7</div>
-        <div class="step-title-row">
-          <div class="step-title">Start earning something — anything — within Week 1</div>
-          <div class="step-when">⏰ Start Week 1, run parallel to job search</div>
-        </div>
-        <div class="step-arrow">▾</div>
-      </div>
-      <div class="step-body">
-        <div class="step-body-inner">
-          <p style="font-size:0.9rem; margin-bottom:0.8rem;">Even ₹5,000/month from a side source buys you precious runway. It also keeps your mind sharp and your confidence up. Start immediately — don't wait for the "right" opportunity.</p>
-          <div class="sub-label">Fast money (this week)</div>
-          <ul class="do-list">
-            <li><div><strong>Freelance your existing skill</strong><span>If you're a developer, designer, writer, accountant, HR — post on Fiverr, Upwork, Toptal, or LinkedIn. First gig is always the hardest.</span></div></li>
-            <li><div><strong>Sell unused items</strong><span>Old phone, gadgets, clothes on OLX / Facebook Marketplace. One weekend can raise ₹10,000–₹30,000</span></div></li>
-            <li><div><strong>Tutoring / teaching</strong><span>If you know any subject — school subjects, coding, English, music — start on Urban Pro, Vedantu, or local WhatsApp groups</span></div></li>
-          </ul>
-          <div class="sub-label">Medium-term gigs (week 2 onwards)</div>
-          <ul class="do-list">
-            <li><div><strong>Consulting / fractional work</strong><span>Offer 10 hours/week to small businesses in your field. Many companies need expertise but can't hire full-time.</span></div></li>
-            <li><div><strong>Content creation</strong><span>If you have expertise, start sharing it on LinkedIn / YouTube. Takes 3 months to build, but high value long-term.</span></div></li>
-            <li><div><strong>Delivery / gig work</strong><span>No shame in this. Swiggy, Zomato, Dunzo, Zepto — ₹15,000–₹25,000/month with flexible hours while you job search.</span></div></li>
-          </ul>
-          <div class="good-box">✓ Every rupee earned from a side gig directly extends your runway. ₹10,000/month side income = 2 extra months of survival time.</div>
-        </div>
-      </div>
+    <div class="ad-slot">
+      <!-- Ad -->
     </div>
-
-    <div class="step-card" id="sc8">
-      <div class="step-header" onclick="toggleStep('sc8')">
-        <div class="step-num blue">8</div>
-        <div class="step-title-row">
-          <div class="step-title">Ace the interviews — mindset and preparation</div>
-          <div class="step-when">⏰ As soon as interviews start</div>
-        </div>
-        <div class="step-arrow">▾</div>
-      </div>
-      <div class="step-body">
-        <div class="step-body-inner">
-          <ul class="do-list">
-            <li><div><strong>Prepare your "layoff story" — one sentence</strong><span>Be honest but brief: "The company did a restructuring round that impacted my team." Then move on. Don't over-explain.</span></div></li>
-            <li><div><strong>Research every company before interview</strong><span>Know their recent news, products, and challenges. 90% of candidates don't do this. It makes you memorable.</span></div></li>
-            <li><div><strong>Negotiate — don't accept the first offer</strong><span>Laid-off candidates often accept the first number out of fear. Always ask: "Is there flexibility on the base?" You'll regret not asking.</span></div></li>
-            <li><div><strong>Don't stop applying after one offer</strong><span>Keep applying until the offer letter is signed and the first salary is in your account. Verbal offers fall through.</span></div></li>
-          </ul>
-          <div class="warn-box">⚠ <strong>Don't accept a drastic salary cut out of panic.</strong> A 10–15% cut for the right role is ok. But taking a 40% cut just to "get something" often leads to resentment and job-hopping, which hurts your next negotiation. Hold firm when you can.</div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-</section>
-
-<!-- ===================== PHASE 3: EMERGENCY FUND ===================== -->
-<section class="phase" id="phase3">
-<div class="phase-inner">
-  <div class="phase-label stabilize">🟡 Phase 3 — Once income is back</div>
-  <h2>Build your Emergency Fund first. Nothing else.</h2>
-  <p class="phase-subtitle">Before stocks, before SIPs, before any investment — you need a buffer. This is the rule. No exceptions.</p>
-
-  <div class="steps">
-
-    <div class="step-card open" id="sc9">
-      <div class="step-header" onclick="toggleStep('sc9')">
-        <div class="step-num amber">9</div>
-        <div class="step-title-row">
-          <div class="step-title">What is an Emergency Fund and why does it come first?</div>
-          <div class="step-when">📖 Understand this before anything else</div>
-        </div>
-        <div class="step-arrow">▾</div>
-      </div>
-      <div class="step-body">
-        <div class="step-body-inner">
-          <p style="font-size:0.9rem; margin-bottom:0.8rem;">An emergency fund is cash that sits in a safe, accessible place — only to be used if you lose income or face a genuine emergency. It is not an investment. It does not need to earn high returns. It needs to be <strong>available within 24 hours</strong>.</p>
-          <div class="mindset-cards">
-            <div class="mindset-card">
-              <div class="m-icon">🎯</div>
-              <div class="m-text"><h4>Target: 6 months of essential expenses</h4><p>Not 6 months of your salary. 6 months of your ESSENTIAL expenses — rent, EMI, groceries, school, medicines. For most families this is ₹1.5L – ₹4L.</p></div>
-            </div>
-            <div class="mindset-card">
-              <div class="m-icon">🏦</div>
-              <div class="m-text"><h4>Where to keep it: Liquid Mutual Fund</h4><p>Not your savings account (you'll spend it). Not an FD (too slow to access). A liquid mutual fund gives 5.5–6.5% returns AND money is in your account within 1 business day.</p></div>
-            </div>
-            <div class="mindset-card">
-              <div class="m-icon">🔒</div>
-              <div class="m-text"><h4>Rule: Never invest this money in stocks/SIP</h4><p>This money has one job: protect you when things go wrong. If you put it in Nifty 50 and the market falls 30% the week you lose your job — you're in serious trouble.</p></div>
-            </div>
-          </div>
-
-          <div class="calc-box" style="margin-top:1rem;">
-            <h4>Calculate your 6-month emergency fund target</h4>
-            <div class="calc-row"><label>Rent / Housing</label><input type="number" id="ef-rent" value="20000" oninput="calcEF()"></div>
-            <div class="calc-row"><label>EMI (loan)</label><input type="number" id="ef-emi" value="15000" oninput="calcEF()"></div>
-            <div class="calc-row"><label>Groceries & utilities</label><input type="number" id="ef-grocery" value="8000" oninput="calcEF()"></div>
-            <div class="calc-row"><label>School fees</label><input type="number" id="ef-school" value="5000" oninput="calcEF()"></div>
-            <div class="calc-row"><label>Parents / dependents</label><input type="number" id="ef-parents" value="5000" oninput="calcEF()"></div>
-            <div class="calc-row"><label>Insurance premiums</label><input type="number" id="ef-ins" value="3000" oninput="calcEF()"></div>
-            <div class="calc-row"><label>Transport + medicines</label><input type="number" id="ef-other" value="4000" oninput="calcEF()"></div>
-            <div class="calc-result">
-              <div class="c-stat"><div class="cl">Monthly essential need</div><div class="cv" id="ef-monthly">₹60,000</div></div>
-              <div class="c-stat"><div class="cl">3-month target (minimum)</div><div class="cv amber" id="ef-3m">₹1,80,000</div></div>
-              <div class="c-stat"><div class="cl">6-month target (ideal)</div><div class="cv green" id="ef-6m">₹3,60,000</div></div>
-              <div class="c-stat"><div class="cl">If you save ₹10,000/month</div><div class="cv" id="ef-time">36 months</div></div>
-            </div>
-          </div>
-          <div class="info-box">💡 <strong>Best place to open a Liquid Mutual Fund:</strong> Groww, Paytm Money, Kuvera, or Zerodha Coin. Search for "Liquid Fund" — choose one from HDFC, SBI, or ICICI. Takes 5 minutes. Minimum investment is ₹100.</div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-</section>
-
-<!-- ===================== PHASE 4: MONTH BY MONTH PLAN ===================== -->
-<section class="phase" id="phase4" style="background:white;">
-<div class="phase-inner">
-  <div class="phase-label grow">🟢 Phase 4 — The Month-by-Month Plan</div>
-  <h2>Exactly where to put your money, each month.</h2>
-  <p class="phase-subtitle">Not theory. Not "it depends." Exactly what to do — in order — once your salary is back.</p>
-
-  <div class="steps">
-
-    <div class="step-card open" id="sc10">
-      <div class="step-header" onclick="toggleStep('sc10')">
-        <div class="step-num green">10</div>
-        <div class="step-title-row">
-          <div class="step-title">The exact allocation — Month 1 to Month 18</div>
-          <div class="step-when">📋 Follow this plan in order</div>
-        </div>
-        <div class="step-arrow">▾</div>
-      </div>
-      <div class="step-body">
-        <div class="step-body-inner">
-          <p style="font-size:0.9rem; margin-bottom:1rem;">Assume your take-home salary is ₹60,000/month. Adjust the percentages to your number. The <strong>order matters more than the amounts.</strong></p>
-
-          <div class="invest-month">
-            <div class="im-header"><span>Month 1–3 · Emergency Fund Priority (80% of savings go here)</span><span style="color:#86efac">Phase 1</span></div>
-            <div class="im-body">
-              <div class="im-row">
-                <div style="flex:1">
-                  <div class="im-name">Liquid Mutual Fund (Emergency Fund)</div>
-                  <span class="im-why">Park every spare rupee here. This is your safety net. Nothing else until you have 3 months covered.</span>
-                  <div class="im-bar" style="width:80%;background:#16a34a;"></div>
-                </div>
-                <div class="im-amt" style="color:var(--green-mid)">80%</div>
-              </div>
-              <div class="im-row">
-                <div style="flex:1">
-                  <div class="im-name">Nifty 50 Index Fund SIP</div>
-                  <span class="im-why">Start with just ₹500/month. The habit matters more than the amount right now.</span>
-                  <div class="im-bar" style="width:15%;background:#2563eb;"></div>
-                </div>
-                <div class="im-amt" style="color:#2563eb">15%</div>
-              </div>
-              <div class="im-row">
-                <div style="flex:1">
-                  <div class="im-name">Buffer / flexibility</div>
-                  <span class="im-why">For unexpected small costs. Don't spend this unless you have to.</span>
-                  <div class="im-bar" style="width:5%;background:#d97706;"></div>
-                </div>
-                <div class="im-amt" style="color:var(--amber)">5%</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="invest-month">
-            <div class="im-header"><span>Month 4–6 · Building the full 6-month buffer</span><span style="color:#fcd34d">Phase 2</span></div>
-            <div class="im-body">
-              <div class="im-row">
-                <div style="flex:1">
-                  <div class="im-name">Liquid MF (top up to reach 6-month target)</div>
-                  <span class="im-why">Keep going until you hit your 6-month target number. Non-negotiable.</span>
-                  <div class="im-bar" style="width:50%;background:#16a34a;"></div>
-                </div>
-                <div class="im-amt" style="color:var(--green-mid)">50%</div>
-              </div>
-              <div class="im-row">
-                <div style="flex:1">
-                  <div class="im-name">Nifty 50 Index Fund SIP (increase to ₹2,000–₹3,000)</div>
-                  <span class="im-why">Slightly more equity now that your emergency fund is growing.</span>
-                  <div class="im-bar" style="width:30%;background:#2563eb;"></div>
-                </div>
-                <div class="im-amt" style="color:#2563eb">30%</div>
-              </div>
-              <div class="im-row">
-                <div style="flex:1">
-                  <div class="im-name">ELSS (tax-saving fund) — if needed for 80C</div>
-                  <span class="im-why">If your employer doesn't fully use 80C deductions, start ELSS for tax saving + growth.</span>
-                  <div class="im-bar" style="width:15%;background:#7c3aed;"></div>
-                </div>
-                <div class="im-amt" style="color:#7c3aed">15%</div>
-              </div>
-              <div class="im-row">
-                <div style="flex:1">
-                  <div class="im-name">Buffer</div>
-                  <span class="im-why"></span>
-                  <div class="im-bar" style="width:5%;background:#d97706;"></div>
-                </div>
-                <div class="im-amt" style="color:var(--amber)">5%</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="invest-month">
-            <div class="im-header"><span>Month 7–12 · Emergency fund complete — now build wealth</span><span style="color:#86efac">Phase 3</span></div>
-            <div class="im-body">
-              <div class="im-row">
-                <div style="flex:1">
-                  <div class="im-name">Nifty 50 Index Fund SIP (increase to ₹5,000+)</div>
-                  <span class="im-why">Your emergency fund is done. Now redirect that money into long-term wealth. This is the game-changer.</span>
-                  <div class="im-bar" style="width:40%;background:#2563eb;"></div>
-                </div>
-                <div class="im-amt" style="color:#2563eb">40%</div>
-              </div>
-              <div class="im-row">
-                <div style="flex:1">
-                  <div class="im-name">ELSS Tax-Saving Fund</div>
-                  <span class="im-why">Save up to ₹46,800 in taxes while building wealth. Minimum 3-year lock-in per SIP instalment.</span>
-                  <div class="im-bar" style="width:20%;background:#7c3aed;"></div>
-                </div>
-                <div class="im-amt" style="color:#7c3aed">20%</div>
-              </div>
-              <div class="im-row">
-                <div style="flex:1">
-                  <div class="im-name">NPS (National Pension System)</div>
-                  <span class="im-why">Extra ₹50,000 tax deduction under 80CCD(1B). Invest for retirement — this money stays locked until 60.</span>
-                  <div class="im-bar" style="width:20%;background:#0891b2;"></div>
-                </div>
-                <div class="im-amt" style="color:#0891b2">20%</div>
-              </div>
-              <div class="im-row">
-                <div style="flex:1">
-                  <div class="im-name">Liquid MF top-up (maintain emergency fund)</div>
-                  <span class="im-why">Add a small amount each month — lifestyle inflation means your emergency fund target also grows.</span>
-                  <div class="im-bar" style="width:15%;background:#16a34a;"></div>
-                </div>
-                <div class="im-amt" style="color:var(--green-mid)">15%</div>
-              </div>
-              <div class="im-row">
-                <div style="flex:1">
-                  <div class="im-name">Buffer / flexible spending</div>
-                  <span class="im-why"></span>
-                  <div class="im-bar" style="width:5%;background:#d97706;"></div>
-                </div>
-                <div class="im-amt" style="color:var(--amber)">5%</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="invest-month">
-            <div class="im-header"><span>Month 13+ · Advanced: diversify and grow</span><span style="color:#c4b5fd">Phase 4 — Wealth building</span></div>
-            <div class="im-body">
-              <div class="im-row">
-                <div style="flex:1">
-                  <div class="im-name">Nifty 50 + Midcap 150 Index Funds (split 60/40)</div>
-                  <span class="im-why">Add small and midcap exposure for higher long-term returns. Nifty 50 is stability, midcap is growth engine.</span>
-                  <div class="im-bar" style="width:40%;background:#2563eb;"></div>
-                </div>
-                <div class="im-amt" style="color:#2563eb">40%</div>
-              </div>
-              <div class="im-row">
-                <div style="flex:1">
-                  <div class="im-name">ELSS (if still within 80C limit)</div>
-                  <span class="im-why"></span>
-                  <div class="im-bar" style="width:15%;background:#7c3aed;"></div>
-                </div>
-                <div class="im-amt" style="color:#7c3aed">15%</div>
-              </div>
-              <div class="im-row">
-                <div style="flex:1">
-                  <div class="im-name">NPS</div>
-                  <span class="im-why">Keep this consistent for retirement.</span>
-                  <div class="im-bar" style="width:15%;background:#0891b2;"></div>
-                </div>
-                <div class="im-amt" style="color:#0891b2">15%</div>
-              </div>
-              <div class="im-row">
-                <div style="flex:1">
-                  <div class="im-name">PPF (Public Provident Fund)</div>
-                  <span class="im-why">7.1% tax-free. Lock-in 15 years. Perfect for ultra-long-term goals — child education, retirement.</span>
-                  <div class="im-bar" style="width:15%;background:#0f766e;"></div>
-                </div>
-                <div class="im-amt" style="color:#0f766e">15%</div>
-              </div>
-              <div class="im-row">
-                <div style="flex:1">
-                  <div class="im-name">Direct stocks (only with surplus)</div>
-                  <span class="im-why">Only if you have knowledge + time to research. Max 10% of portfolio. Never use emergency money here.</span>
-                  <div class="im-bar" style="width:10%;background:#c0392b;"></div>
-                </div>
-                <div class="im-amt" style="color:var(--red)">10%</div>
-              </div>
-              <div class="im-row">
-                <div style="flex:1">
-                  <div class="im-name">Maintain emergency fund</div>
-                  <div class="im-bar" style="width:5%;background:#16a34a;"></div>
-                </div>
-                <div class="im-amt" style="color:var(--green-mid)">5%</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="warn-box">🚫 <strong>Never do these:</strong> Don't put emergency money in stocks. Don't take loans to invest. Don't do crypto until you have 12-month emergency fund + 2 years of investing experience. Don't "time the market" — just invest every month regardless of market levels.</div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-</section>
-
-<!-- ===================== PHASE 5: INVESTMENTS ===================== -->
-<section class="phase" id="phase5">
-<div class="phase-inner">
-  <div class="phase-label grow">🟢 Phase 5 — Investment Guide</div>
-  <h2>Every investment option, explained simply.</h2>
-  <p class="phase-subtitle">Ordered from safest to highest risk. Start from the top. Move down only when you're ready.</p>
-
-  <table class="invest-table">
-    <thead>
-      <tr>
-        <th>Investment</th>
-        <th>Returns</th>
-        <th>Risk</th>
-        <th>When to start</th>
-        <th>Minimum</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>Liquid Mutual Fund</strong><br><span style="font-size:0.78rem;color:var(--ink3)">Emergency fund home</span></td>
-        <td><span class="returns-chip" style="background:#dcfce7;color:#166534">5.5–6.5%</span></td>
-        <td><span class="returns-chip" style="background:#f0fdf4;color:#166534">Very Low</span></td>
-        <td>Month 1 — immediately</td>
-        <td>₹100</td>
-      </tr>
-      <tr>
-        <td><strong>Fixed Deposit</strong><br><span style="font-size:0.78rem;color:var(--ink3)">Safe, predictable</span></td>
-        <td><span class="returns-chip" style="background:#dcfce7;color:#166534">6.5–7.5%</span></td>
-        <td><span class="returns-chip" style="background:#f0fdf4;color:#166534">Very Low</span></td>
-        <td>Month 1 — secondary emergency fund</td>
-        <td>₹1,000</td>
-      </tr>
-      <tr>
-        <td><strong>EPF / VPF</strong><br><span style="font-size:0.78rem;color:var(--ink3)">Boost via employer</span></td>
-        <td><span class="returns-chip" style="background:#dcfce7;color:#166534">8.15% tax-free</span></td>
-        <td><span class="returns-chip" style="background:#f0fdf4;color:#166534">Very Low</span></td>
-        <td>Day 1 of employment — already running</td>
-        <td>Auto-deducted</td>
-      </tr>
-      <tr>
-        <td><strong>Nifty 50 Index Fund (SIP)</strong><br><span style="font-size:0.78rem;color:var(--ink3)">Best wealth creator long-term</span></td>
-        <td><span class="returns-chip" style="background:#dbeafe;color:#1e40af">12–14% CAGR</span></td>
-        <td><span class="returns-chip" style="background:#fef3c7;color:#92400e">Medium</span></td>
-        <td>Month 1 — even ₹500 to start the habit</td>
-        <td>₹100/month</td>
-      </tr>
-      <tr>
-        <td><strong>ELSS (Tax Saving Fund)</strong><br><span style="font-size:0.78rem;color:var(--ink3)">80C + wealth growth</span></td>
-        <td><span class="returns-chip" style="background:#dbeafe;color:#1e40af">12–15% CAGR</span></td>
-        <td><span class="returns-chip" style="background:#fef3c7;color:#92400e">Medium</span></td>
-        <td>Month 3 onwards — once emergency fund growing</td>
-        <td>₹500/month</td>
-      </tr>
-      <tr>
-        <td><strong>PPF (Public Provident Fund)</strong><br><span style="font-size:0.78rem;color:var(--ink3)">Tax-free, 15-year lock</span></td>
-        <td><span class="returns-chip" style="background:#dcfce7;color:#166534">7.1% tax-free</span></td>
-        <td><span class="returns-chip" style="background:#f0fdf4;color:#166534">Very Low</span></td>
-        <td>Month 6+ — only for long-term money</td>
-        <td>₹500/year</td>
-      </tr>
-      <tr>
-        <td><strong>NPS (Pension)</strong><br><span style="font-size:0.78rem;color:var(--ink3)">Extra ₹50K tax deduction</span></td>
-        <td><span class="returns-chip" style="background:#dbeafe;color:#1e40af">9–12% CAGR</span></td>
-        <td><span class="returns-chip" style="background:#fef3c7;color:#92400e">Medium</span></td>
-        <td>Month 6+ — retirement money only</td>
-        <td>₹500/month</td>
-      </tr>
-      <tr>
-        <td><strong>Midcap / Flexicap MF</strong><br><span style="font-size:0.78rem;color:var(--ink3)">Higher growth, more volatile</span></td>
-        <td><span class="returns-chip" style="background:#dbeafe;color:#1e40af">13–16% CAGR</span></td>
-        <td><span class="returns-chip" style="background:#fef9c3;color:#713f12">Medium-High</span></td>
-        <td>Month 12+ — after solid foundation built</td>
-        <td>₹500/month</td>
-      </tr>
-      <tr>
-        <td><strong>Direct Stocks</strong><br><span style="font-size:0.78rem;color:var(--ink3)">High risk, high effort</span></td>
-        <td><span class="returns-chip" style="background:#fee2e2;color:#991b1b">Unpredictable</span></td>
-        <td><span class="returns-chip" style="background:#fee2e2;color:#991b1b">High</span></td>
-        <td>Only with surplus + knowledge — never emergency money</td>
-        <td>Price of 1 share</td>
-      </tr>
-      <tr>
-        <td><strong>Crypto</strong><br><span style="font-size:0.78rem;color:var(--ink3)">Extreme volatility</span></td>
-        <td><span class="returns-chip" style="background:#fee2e2;color:#991b1b">Unpredictable</span></td>
-        <td><span class="returns-chip" style="background:#fee2e2;color:#991b1b">Very High</span></td>
-        <td>Only if you've completed all steps above AND can afford to lose 100%</td>
-        <td>Any</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <!-- SIP CALCULATOR -->
-  <div class="step-card" id="sc11" style="margin-top:1.5rem;">
-    <div class="step-header" onclick="toggleStep('sc11')">
-      <div class="step-num green">SIP</div>
-      <div class="step-title-row">
-        <div class="step-title">SIP calculator — see what ₹1,000/month becomes</div>
-        <div class="step-when">Calculate your wealth</div>
-      </div>
-      <div class="step-arrow">▾</div>
-    </div>
-    <div class="step-body">
-      <div class="step-body-inner">
-        <div class="sip-inputs">
-          <div class="sip-field"><label>Monthly SIP (₹)</label><input type="number" id="sip-amt" value="3000" oninput="calcSIP()"></div>
-          <div class="sip-field"><label>Duration (years)</label><input type="number" id="sip-yr" value="10" min="1" max="40" oninput="calcSIP()"></div>
-          <div class="sip-field"><label>Expected return (%)</label><input type="number" id="sip-rate" value="12" step="0.5" oninput="calcSIP()"></div>
-          <div class="sip-field"><label>Benchmark (FD at 7%)</label><input type="number" disabled value="7" style="opacity:0.5;"></div>
-        </div>
-        <div class="sip-result-big">
-          <div style="font-size:0.85rem; color:var(--green); margin-bottom:4px;">Your total corpus</div>
-          <div class="sip-corpus" id="sip-corpus">₹6,98,017</div>
-          <div class="sip-sub" id="sip-extra">vs ₹5,22,148 in FD — you earn ₹1,75,869 extra by choosing SIP</div>
-        </div>
-        <div class="sip-mini">
-          <div class="sip-mini-cell"><div class="sml">Total invested</div><div class="smv" id="sip-inv">₹3,60,000</div></div>
-          <div class="sip-mini-cell"><div class="sml">Wealth created</div><div class="smv" id="sip-gain" style="color:var(--green-mid)">₹3,38,017</div></div>
-          <div class="sip-mini-cell"><div class="sml">Return multiple</div><div class="smv" id="sip-mult">1.94x</div></div>
-          <div class="sip-mini-cell"><div class="sml">Your money works for you</div><div class="smv" id="sip-pct" style="color:var(--green-mid)">48% gains</div></div>
-        </div>
-        <div class="info-box" style="margin-top:0.8rem;">💡 <strong>Best index funds to start with:</strong> Nifty 50 Index Fund — UTI, HDFC, or SBI have the lowest expense ratios. Open on Groww or Kuvera. Takes 10 minutes and ₹100.</div>
-      </div>
-    </div>
-  </div>
-
-</div>
-</section>
-
-<!-- ===================== PHASE 6: SIDE INCOME ===================== -->
-<section class="phase" id="phase6" style="background:white;">
-<div class="phase-inner">
-  <div class="phase-label grow">🟢 Phase 6 — Never depend on one income again</div>
-  <h2>Build side income while working your main job.</h2>
-  <p class="phase-subtitle">The goal: at least 20–30% of your expenses covered by non-salary sources. This is your real insurance.</p>
-
-  <div class="steps">
-    <div class="step-card" id="sc12">
-      <div class="step-header" onclick="toggleStep('sc12')">
-        <div class="step-num green">11</div>
-        <div class="step-title-row">
-          <div class="step-title">The side income hierarchy — start here</div>
-          <div class="step-when">📋 Build in this order</div>
-        </div>
-        <div class="step-arrow">▾</div>
-      </div>
-      <div class="step-body">
-        <div class="step-body-inner">
-          <ul class="do-list">
-            <li><div><strong>Level 1: Sell your existing skill (Freelancing)</strong><span>If you're in tech, finance, marketing, HR, law — people will pay for your expertise by the hour. Start on Fiverr, Upwork, or LinkedIn. ₹500–₹5,000 per hour depending on skill. Even 5 hours a month = meaningful money.</span></div></li>
-            <li><div><strong>Level 2: Teach what you know (Tutoring / Courses)</strong><span>School subjects, coding, spoken English, music, fitness, cooking. Urban Pro, Vedantu, or YouTube. One recorded course earns forever. Start with live classes — easier and faster.</span></div></li>
-            <li><div><strong>Level 3: Content and audience (LinkedIn / YouTube)</strong><span>Share your professional expertise publicly. Slow to start — 6–12 months. But high value: consulting leads, job offers, inbound opportunities. Start posting 3x per week today.</span></div></li>
-            <li><div><strong>Level 4: Productize (Digital products / tools)</strong><span>Templates, ebooks, tools, Notion setups in your area of expertise. Sold once, earns repeatedly. Requires Level 3 audience first.</span></div></li>
-          </ul>
-          <div class="good-box">✓ <strong>The rule:</strong> Start Level 1 immediately. It generates income within days. Levels 2–4 are built over months and years. All four together make a layoff financially inconvenient — not catastrophic.</div>
-          <div class="sub-label">Mindset shifts that will change your financial life</div>
-          <div class="mindset-cards">
-            <div class="mindset-card">
-              <div class="m-icon">💡</div>
-              <div class="m-text"><h4>"Every salary hike — invest 50% of the raise"</h4><p>If your salary goes from ₹60K to ₹70K, your lifestyle increases by ₹5K and investments increase by ₹5K. This is how wealth is actually built — not from salary, from saving the increases.</p></div>
-            </div>
-            <div class="mindset-card">
-              <div class="m-icon">📅</div>
-              <div class="m-text"><h4>"Pay yourself first — SIP on Day 1 of salary"</h4><p>Set your SIP date to 1st or 2nd of the month. Savings happen automatically, before you have a chance to spend. This one habit beats every budgeting trick.</p></div>
-            </div>
-            <div class="mindset-card">
-              <div class="m-icon">🔁</div>
-              <div class="m-text"><h4>"Review every 6 months, not every 6 days"</h4><p>Checking your portfolio weekly causes anxiety and bad decisions. Set a calendar reminder for every April and October. Review, rebalance if needed. Otherwise — don't touch it.</p></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- FINAL CHECKLIST -->
-  <div style="margin-top:2.5rem; background:var(--paper); border:1px solid var(--border); border-radius:16px; padding:1.5rem;">
-    <h3 style="font-size:1.2rem; margin-bottom:0.3rem;">Your complete financial readiness checklist</h3>
-    <p style="font-size:0.85rem; color:var(--ink3); margin-bottom:1rem;">Check off each step as you complete it. This is your real financial security plan.</p>
-
-    <div class="progress-bar-wrap" style="margin-bottom:1rem;">
-      <div class="progress-bar-fill" id="main-prog" style="width:0%"></div>
-    </div>
-    <div id="prog-txt" style="font-size:0.82rem; color:var(--ink3); margin-bottom:1.2rem;">0 of 15 completed</div>
-
-    <div class="tracker-wrap" style="background:white;">
-      <div class="tracker-row"><input type="checkbox" onchange="updateProg()"><label>I know my exact monthly essential expenses</label></div>
-      <div class="tracker-row"><input type="checkbox" onchange="updateProg()"><label>I have opened a Liquid Mutual Fund account (Groww / Kuvera)</label></div>
-      <div class="tracker-row"><input type="checkbox" onchange="updateProg()"><label>I have started putting money in Liquid MF for emergency fund</label></div>
-      <div class="tracker-row"><input type="checkbox" onchange="updateProg()"><label>I have 1 month of expenses saved in Liquid MF</label></div>
-      <div class="tracker-row"><input type="checkbox" onchange="updateProg()"><label>I have 3 months of expenses saved (minimum safety)</label></div>
-      <div class="tracker-row"><input type="checkbox" onchange="updateProg()"><label>I have 6 months of expenses saved (target achieved)</label></div>
-      <div class="tracker-row"><input type="checkbox" onchange="updateProg()"><label>I have started a Nifty 50 Index Fund SIP (any amount)</label></div>
-      <div class="tracker-row"><input type="checkbox" onchange="updateProg()"><label>I have ELSS started for tax saving under 80C</label></div>
-      <div class="tracker-row"><input type="checkbox" onchange="updateProg()"><label>I have health insurance independent of my employer</label></div>
-      <div class="tracker-row"><input type="checkbox" onchange="updateProg()"><label>I have term life insurance (if I have dependents)</label></div>
-      <div class="tracker-row"><input type="checkbox" onchange="updateProg()"><label>My LinkedIn is updated and I have "Open to Work" set up</label></div>
-      <div class="tracker-row"><input type="checkbox" onchange="updateProg()"><label>I have explored at least one freelance / side income option</label></div>
-      <div class="tracker-row"><input type="checkbox" onchange="updateProg()"><label>I am learning one skill outside my current job</label></div>
-      <div class="tracker-row"><input type="checkbox" onchange="updateProg()"><label>I have automated my SIP (set to auto-debit on salary day)</label></div>
-      <div class="tracker-row"><input type="checkbox" onchange="updateProg()"><label>I have a calendar reminder to review investments every 6 months</label></div>
-    </div>
-    <div id="prog-verdict" style="margin-top:1rem; font-size:0.88rem; color:var(--ink3); padding:10px 14px; border-radius:10px; background:var(--paper); border:1px solid var(--border);">Complete the checklist above to see your readiness level.</div>
-  </div>
-
-</div>
-</section>
-
-<footer>
-  <p><strong>MoneyShield India</strong> — built for India's salaried workforce</p>
-  <p style="margin-top:6px;">This is educational content, not SEBI-registered financial advice. Always verify with a qualified financial advisor before investing large amounts. All figures are illustrative.</p>
-  <p style="margin-top:6px;">Share this with someone who needs it. It's free. It always will be.</p>
-</footer>
-
-<script>
-// Toggle step cards
-function toggleStep(id) {
-  const card = document.getElementById(id);
-  card.classList.toggle('open');
-}
-
-// Cash calculator
-function calcCash() {
-  const total = (+v('cash-bank'))+(+v('cash-fd'))+(+v('cash-salary'))+(+v('cash-epf'));
-  const monthly = +v('cash-monthly') || 50000;
-  const months = monthly > 0 ? (total/monthly).toFixed(1) : '—';
-  document.getElementById('cash-total').textContent = fmt(total);
-  document.getElementById('cash-months-val').textContent = months + ' months';
-  const el = document.getElementById('cash-status');
-  const m = parseFloat(months);
-  if (m >= 6) { el.textContent = '✓ Safe buffer'; el.className = 'cv green'; }
-  else if (m >= 3) { el.textContent = '⚡ Partial safety'; el.className = 'cv amber'; }
-  else { el.textContent = '⚠ High risk'; el.className = 'cv red'; }
-}
-
-// Emergency fund calculator
-function calcEF() {
-  const m = (+v('ef-rent'))+(+v('ef-emi'))+(+v('ef-grocery'))+(+v('ef-school'))+(+v('ef-parents'))+(+v('ef-ins'))+(+v('ef-other'));
-  document.getElementById('ef-monthly').textContent = fmt(m);
-  document.getElementById('ef-3m').textContent = fmt(m*3);
-  document.getElementById('ef-6m').textContent = fmt(m*6);
-  const months = Math.ceil((m*6)/10000);
-  document.getElementById('ef-time').textContent = months + ' months';
-}
-
-// SIP calculator
-function calcSIP() {
-  const P = +v('sip-amt') || 3000;
-  const r = (+v('sip-rate') || 12)/100/12;
-  const t = (+v('sip-yr') || 10)*12;
-  const fv = P*((Math.pow(1+r,t)-1)/r)*(1+r);
-  const inv = P*t;
-  const fdR = 0.07/12;
-  const fdFv = P*((Math.pow(1+fdR,t)-1)/fdR)*(1+fdR);
-  const gain = fv-inv;
-  document.getElementById('sip-corpus').textContent = fmt(fv);
-  document.getElementById('sip-inv').textContent = fmt(inv);
-  document.getElementById('sip-gain').textContent = fmt(gain);
-  document.getElementById('sip-mult').textContent = (fv/inv).toFixed(2)+'x';
-  document.getElementById('sip-pct').textContent = Math.round((gain/fv)*100)+'% gains';
-  document.getElementById('sip-extra').textContent = `vs ${fmt(fdFv)} in FD — you earn ${fmt(fv-fdFv)} extra by choosing SIP`;
-}
-
-// Progress checklist
-function updateProg() {
-  const boxes = document.querySelectorAll('.tracker-wrap input[type=checkbox]');
-  const done = [...boxes].filter(b=>b.checked).length;
-  const pct = Math.round((done/boxes.length)*100);
-  document.getElementById('main-prog').style.width = pct+'%';
-  document.getElementById('prog-txt').textContent = done+' of '+boxes.length+' completed';
-  const v2 = document.getElementById('prog-verdict');
-  if (done >= 12) { v2.textContent = '✓ You are layoff-ready. A job loss would be inconvenient — not catastrophic. Keep building.'; v2.style.background='#f0fdf4'; v2.style.color='#166534'; v2.style.border='1px solid #bbf7d0'; }
-  else if (done >= 7) { v2.textContent = '⚡ Good progress. Keep going — the most impactful steps are the emergency fund and the SIP. Focus there.'; v2.style.background=var_amber_soft; v2.style.color='#78350f'; v2.style.border='1px solid #fde68a'; }
-  else if (done > 0) { v2.textContent = '📍 Started. Every step you check off reduces your financial risk. One item per week and you\'ll be safe in 3 months.'; v2.style.background='#eff6ff'; v2.style.color='#1e3a8a'; v2.style.border='1px solid #bfdbfe'; }
-  boxes.forEach(b => {
-    b.parentElement.classList.toggle('done', b.checked);
-  });
-}
-
-const var_amber_soft = '#fef7ec';
-
-function v(id) { const el = document.getElementById(id); return el ? el.value : 0; }
-function fmt(n) { return '₹'+Math.round(n).toLocaleString('en-IN'); }
-
-// Init
-calcCash(); calcEF(); calcSIP();
-
-// Highlight nav on scroll
-const sections = ['phase0','phase1','phase2','phase3','phase4','phase5','phase6'];
-const navLinks = document.querySelectorAll('.nav-step');
-window.addEventListener('scroll', () => {
-  let cur = '';
-  sections.forEach(id => {
-    const el = document.getElementById(id);
-    if (el && window.scrollY >= el.offsetTop - 100) cur = id;
-  });
-  navLinks.forEach((a, i) => {
-    a.classList.toggle('active', a.getAttribute('href') === '#'+cur);
-  });
-});
-</script>
+  </main>
+  <footer>
+    <p>2026 SalaryBit.in | <a href="../index.html">Home</a></p>
+  </footer>
 </body>
 </html>

@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>e-Khata QR Decoder — SalaryBit</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<style>
+:root {
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --surface2: #1a1a1a;
+  --border: #222222;
+  --border2: #2e2e2e;
+  --green: #00e676;
+  --green-dim: #00e67620;
+  --green-mid: #00e67640;
+  --text: #f0f0f0;
+  --text2: #888;
+  --text3: #555;
+  --blue: #4fc3f7;
+  --amber: #ffb74d;
+  --red: #ef5350;
+  --font: 'Syne', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 48px 48px;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+}
+.glow-orb {
+  position: fixed;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #00e67610 0%, transparent 70%);
+  top: -200px; left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 0;
+}
+.wrap { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 0 20px; }
+
+/* TEST MODE BANNER */
+.test-banner {
+  background: #ff980015;
+  border: 1px solid #ff980040;
+  border-radius: 10px;
+  padding: 10px 16px;
+  margin-top: 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: #ffb74d;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.test-banner::before {
+  content: '⚠';
+  font-size: 14px;
+}
+.test-banner b { color: #ffd54f; }
+
+header {
+  padding: 28px 0 0;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.logo { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; color: var(--text); }
+.logo span { color: var(--green); }
+.badge-live {
+  font-family: var(--mono); font-size: 10px;
+  padding: 3px 10px; border-radius: 20px;
+  border: 1px solid #ff9800;
+  color: #ff9800; background: #ff980015;
+  display: flex; align-items: center; gap: 6px;
+}
+.badge-live::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: #ff9800;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.hero { padding: 72px 0 48px; text-align: center; }
+.hero-tag {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em;
+  color: var(--green); text-transform: uppercase;
+  margin-bottom: 20px; display: block;
+}
+.hero h1 {
+  font-size: clamp(36px, 6vw, 58px);
+  font-weight: 800; line-height: 1.1;
+  letter-spacing: -1.5px; margin-bottom: 18px;
+}
+.hero h1 em { color: var(--green); font-style: normal; }
+.hero p { font-size: 16px; color: var(--text2); line-height: 1.6; max-width: 480px; margin: 0 auto 36px; }
+.price-pill {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 100px; padding: 8px 20px 8px 12px;
+  font-size: 13px; color: var(--text2); margin-bottom: 16px;
+}
+.price-pill strong { color: var(--green); font-size: 18px; font-weight: 700; }
+
+.steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 48px; }
+.step { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 16px; text-align: center; }
+.step-num { font-family: var(--mono); font-size: 11px; color: var(--green); margin-bottom: 8px; display: block; }
+.step-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.step-sub { font-size: 12px; color: var(--text3); }
+
+.main-card { background: var(--surface); border: 1px solid var(--border2); border-radius: 16px; overflow: hidden; margin-bottom: 48px; }
+.card-top { padding: 20px 24px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.card-top h2 { font-size: 15px; font-weight: 700; }
+.card-top span { font-family: var(--mono); font-size: 11px; color: var(--text3); }
+.card-body { padding: 24px; }
+
+.upload-zone {
+  border: 1.5px dashed var(--border2);
+  border-radius: 12px; padding: 40px 20px;
+  text-align: center; cursor: pointer;
+  transition: all 0.2s; background: var(--surface2); position: relative;
+}
+.upload-zone:hover, .upload-zone.drag { border-color: var(--green); background: var(--green-dim); }
+.upload-zone.has-file { border-color: var(--green); background: var(--green-dim); }
+.uz-icon { font-size: 36px; margin-bottom: 12px; }
+.uz-main { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.uz-sub { font-size: 12px; color: var(--text3); }
+.uz-filename { font-family: var(--mono); font-size: 12px; color: var(--green); margin-top: 8px; }
+
+.pay-btn {
+  width: 100%; margin-top: 16px; padding: 16px; border-radius: 12px;
+  background: var(--green); color: #0a0a0a;
+  font-family: var(--font); font-size: 15px; font-weight: 800;
+  border: none; cursor: pointer; transition: all 0.2s; letter-spacing: -0.3px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.pay-btn:hover { background: #00ff80; transform: translateY(-1px); }
+.pay-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+.pay-btn .price-tag { background: #0a0a0a20; border-radius: 6px; padding: 2px 10px; font-size: 13px; }
+
+/* Test card hint */
+.test-hint {
+  margin-top: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+  line-height: 1.8;
+}
+.test-hint b { color: var(--amber); }
+
+.status-bar {
+  margin-top: 14px; padding: 12px 16px; border-radius: 10px; font-size: 13px;
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface2); border: 1px solid var(--border); color: var(--text2);
+}
+.spinner {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 2px solid var(--border2); border-top-color: var(--green);
+  animation: spin 0.6s linear infinite; flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.result-wrap { margin-top: 20px; }
+.result-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--green-dim); border: 1px solid var(--green);
+  border-radius: 10px 10px 0 0;
+}
+.result-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); display: flex; align-items: center; gap: 8px; }
+.copy-btn {
+  font-family: var(--mono); font-size: 11px; padding: 4px 14px; border-radius: 20px;
+  border: 1px solid var(--green); background: transparent; color: var(--green);
+  cursor: pointer; font-weight: 500; transition: all 0.15s;
+}
+.copy-btn:hover { background: var(--green-mid); }
+.copy-btn.copied { background: var(--green); color: #0a0a0a; }
+.result-body { background: var(--surface2); border: 1px solid var(--border2); border-top: none; border-radius: 0 0 10px 10px; padding: 16px; }
+.raw-string { font-family: var(--mono); font-size: 11.5px; color: var(--text2); word-break: break-all; line-height: 1.85; white-space: pre-wrap; }
+.doc-part { color: var(--blue); font-weight: 600; }
+.sep-part { color: var(--amber); font-weight: 700; }
+.sig-part { color: #aaa; }
+.result-meta { display: flex; gap: 16px; flex-wrap: wrap; font-family: var(--mono); font-size: 11px; color: var(--text3); margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+.result-meta b { color: var(--text2); }
+
+.qr-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+.qr-tab { font-size: 12px; padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; font-family: var(--font); transition: all 0.15s; }
+.qr-tab.active { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+
+.error-box { margin-top: 14px; padding: 14px 16px; background: #ef535015; border: 1px solid #ef535040; border-radius: 10px; font-size: 13px; color: #ef9a9a; line-height: 1.6; }
+
+.trust-row { display: flex; align-items: center; justify-content: center; gap: 24px; padding: 20px 0; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.trust-item { font-family: var(--mono); font-size: 11px; color: var(--text3); display: flex; align-items: center; gap: 6px; }
+.trust-item::before { content: '✓'; color: var(--green); font-weight: 700; }
+
+.faq { margin-bottom: 60px; }
+.faq h3 { font-size: 13px; font-weight: 700; color: var(--text2); margin-bottom: 16px; letter-spacing: 0.05em; text-transform: uppercase; }
+.faq-item { border-bottom: 1px solid var(--border); padding: 14px 0; }
+.faq-q { font-size: 14px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+.faq-q span { color: var(--text3); font-size: 16px; transition: transform 0.2s; }
+.faq-q.open span { transform: rotate(45deg); }
+.faq-a { font-size: 13px; color: var(--text2); line-height: 1.7; margin-top: 10px; display: none; }
+.faq-a.open { display: block; }
+
+footer { border-top: 1px solid var(--border); padding: 24px 0; text-align: center; font-size: 12px; color: var(--text3); font-family: var(--mono); }
+footer a { color: var(--text3); text-decoration: none; }
+
+@media (max-width: 600px) {
+  .steps { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 32px; }
+}
+</style>
+</head>
+<body>
+
+<div class="glow-orb"></div>
+
+<div class="wrap">
+
+  <header>
+    <div class="logo">salary<span>bit</span></div>
+    <!-- Badge shows TEST MODE in test, LIVE in production -->
+    <div class="badge-live" id="modeBadge">Test Mode</div>
+  </header>
+
+  <!-- Test mode warning banner — remove this entire div when going live -->
+  <div class="test-banner" id="testBanner">
+    <span><b>TEST MODE</b> — Payments are simulated. No real money is charged. Remove this banner before going live.</span>
+  </div>
+
+  <section class="hero">
+    <span class="hero-tag">e-Khata · BBMP · BBSCC · Any Govt. PDF</span>
+    <h1>Decode Your<br/><em>QR String</em> Instantly</h1>
+    <p>Upload any government PDF — we extract and decode the embedded QR string in seconds.</p>
+    <div class="price-pill">
+      <strong>₹49</strong> per decode · instant result
+    </div>
+  </section>
+
+  <div class="steps">
+    <div class="step">
+      <span class="step-num">01</span>
+      <div class="step-title">Upload PDF</div>
+      <div class="step-sub">e-Khata, BBMP, any govt. document</div>
+    </div>
+    <div class="step">
+      <span class="step-num">02</span>
+      <div class="step-title">Pay ₹49</div>
+      <div class="step-sub">UPI · Cards · Net Banking</div>
+    </div>
+    <div class="step">
+      <span class="step-num">03</span>
+      <div class="step-title">Get QR String</div>
+      <div class="step-sub">Exact raw string — copy instantly</div>
+    </div>
+  </div>
+
+  <div class="main-card">
+    <div class="card-top">
+      <h2>QR String Extractor</h2>
+      <span>Powered by server-side QR decode</span>
+    </div>
+    <div class="card-body">
+
+      <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileIn').click()">
+        <div class="uz-icon">📄</div>
+        <div class="uz-main" id="uzMain">Click to upload your PDF</div>
+        <div class="uz-sub">or drag &amp; drop · PDF files only</div>
+        <div class="uz-filename" id="uzFilename"></div>
+      </div>
+      <input type="file" id="fileIn" accept=".pdf,application/pdf" style="display:none" onchange="handleFile(this)"/>
+
+      <button class="pay-btn" id="payBtn" onclick="startPayment()" disabled>
+        <span>Upload PDF to Continue</span>
+      </button>
+
+      <!-- Test card details — visible only in test mode, remove when live -->
+      <div class="test-hint" id="testHint">
+        <b>Test card details:</b><br/>
+        Card: <b>4111 1111 1111 1111</b> · Expiry: any future date · CVV: any 3 digits<br/>
+        UPI: <b>success@razorpay</b> · OTP: <b>1234</b> (if asked)
+      </div>
+
+      <div id="statusArea"></div>
+      <div id="resultArea"></div>
+
+    </div>
+
+    <div class="trust-row">
+      <div class="trust-item">Secure payment via Razorpay</div>
+      <div class="trust-item">No data stored</div>
+      <div class="trust-item">Instant delivery</div>
+      <div class="trust-item">Works on all govt. PDFs</div>
+    </div>
+  </div>
+
+  <div class="faq">
+    <h3>Common Questions</h3>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">What is the QR string used for? <span>+</span></div>
+      <div class="faq-a">The QR string (e.g. <code style="font-family:var(--mono);font-size:12px;">2933699+++MIIB/AYJKoZIhvc...</code>) is a PKCS#7 digital signature embedded in government documents like e-Khata. It is used to verify document authenticity and is required by certain legal and banking processes.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">Which PDFs does this work on? <span>+</span></div>
+      <div class="faq-a">This tool works on e-Khata documents issued by BBMP, BBSCC, and other Karnataka municipal corporations. It supports any government PDF with embedded image-based QR codes.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">Is my document data safe? <span>+</span></div>
+      <div class="faq-a">Your PDF is processed in memory only and is never stored on any server. Once the QR string is extracted and returned to you, the file is discarded immediately.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">What if the QR is not found? <span>+</span></div>
+      <div class="faq-a">If our system cannot decode the QR from your PDF, you will receive a full refund within 24 hours. Contact us at support@salarybit.in.</div>
+    </div>
+  </div>
+
+  <footer>
+    © 2026 SalaryBit · <a href="mailto:support@salarybit.in">support@salarybit.in</a> · All payments secured by Razorpay
+  </footer>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CONFIG — Update these two values only
+// ═══════════════════════════════════════════════════════════
+const CONFIG = {
+  // Step 1: Deploy backend to Vercel, paste the URL here
+  backendUrl: 'https://YOUR-BACKEND.vercel.app',
+
+  // Step 2: Paste your Razorpay KEY ID here
+  // TEST:  starts with rzp_test_  ← use this now
+  // LIVE:  starts with rzp_live_  ← switch when ready
+  razorpayKey: 'rzp_test_XXXXXXXXXXXXXXXX',
+
+  // Step 3: Set to false when going live
+  isTestMode: true,
+};
+// ═══════════════════════════════════════════════════════════
+
+// Show/hide test UI based on config
+if (!CONFIG.isTestMode) {
+  document.getElementById('testBanner').style.display = 'none';
+  document.getElementById('testHint').style.display = 'none';
+  document.getElementById('modeBadge').textContent = 'Service Live';
+  document.getElementById('modeBadge').style.borderColor = 'var(--green)';
+  document.getElementById('modeBadge').style.color = 'var(--green)';
+  document.getElementById('modeBadge').style.background = 'var(--green-dim)';
+  // Re-add pulse dot for live mode
+  document.getElementById('modeBadge').style.setProperty('--dot-bg', 'var(--green)');
+}
+
+const PRICE_PAISE = 4900; // ₹49
+let uploadedFile = null;
+
+// Drag & drop
+const dz = document.getElementById('dropZone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('drag');
+  const f = e.dataTransfer.files[0];
+  if (f) loadFile(f);
+});
+
+function handleFile(inp) { if (inp.files[0]) loadFile(inp.files[0]); }
+
+function loadFile(f) {
+  if (!f.name.toLowerCase().endsWith('.pdf')) {
+    showError('Please upload a PDF file only.');
+    return;
+  }
+  uploadedFile = f;
+  dz.classList.add('has-file');
+  document.getElementById('uzMain').textContent = 'PDF ready ✓';
+  document.getElementById('uzFilename').textContent = f.name + ' · ' + (f.size / 1024).toFixed(1) + ' KB';
+  const btn = document.getElementById('payBtn');
+  btn.innerHTML = `<span>Pay ₹49 &amp; Decode QR</span><span class="price-tag">₹49</span>`;
+  btn.disabled = false;
+  document.getElementById('statusArea').innerHTML = '';
+  document.getElementById('resultArea').innerHTML = '';
+}
+
+async function startPayment() {
+  if (!uploadedFile) return;
+
+  // Guard: check backend URL is configured
+  if (CONFIG.backendUrl.includes('YOUR-BACKEND')) {
+    showError('Backend not configured yet. Deploy your Vercel backend first and update backendUrl in CONFIG.');
+    return;
+  }
+
+  // Guard: check Razorpay key is configured
+  if (CONFIG.razorpayKey.includes('XXXXXXXX')) {
+    showError('Razorpay key not set. Add your rzp_test_ key to CONFIG.razorpayKey.');
+    return;
+  }
+
+  showStatus('Creating payment order...');
+  document.getElementById('payBtn').disabled = true;
+
+  try {
+    // Step 1: Create order on backend
+    const orderRes = await fetch(CONFIG.backendUrl + '/api/create-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: PRICE_PAISE })
+    });
+
+    if (!orderRes.ok) {
+      const errText = await orderRes.text();
+      throw new Error('Backend error: ' + errText);
+    }
+
+    const order = await orderRes.json();
+    if (!order.order_id) throw new Error('No order_id returned from backend.');
+
+    showStatus('Opening payment window...');
+
+    // Step 2: Open Razorpay checkout
+    const options = {
+      key: CONFIG.razorpayKey,
+      amount: order.amount,
+      currency: 'INR',
+      name: 'SalaryBit',
+      description: 'e-Khata QR String Decode',
+      order_id: order.order_id,
+      theme: { color: '#00e676' },
+      handler: async function(response) {
+        // Payment successful — verify and decode
+        showStatus('Payment confirmed! Extracting QR string...');
+        await verifyAndDecode(response);
+      },
+      modal: {
+        ondismiss: function() {
+          document.getElementById('payBtn').disabled = false;
+          document.getElementById('payBtn').innerHTML = `<span>Pay ₹49 &amp; Decode QR</span><span class="price-tag">₹49</span>`;
+          showStatus('');
+        }
+      }
+    };
+
+    new Razorpay(options).open();
+
+  } catch (err) {
+    document.getElementById('payBtn').disabled = false;
+    document.getElementById('payBtn').innerHTML = `<span>Pay ₹49 &amp; Decode QR</span><span class="price-tag">₹49</span>`;
+    showError('Payment failed: ' + err.message);
+  }
+}
+
+async function verifyAndDecode(paymentResponse) {
+  try {
+    showStatus('Verifying payment & scanning PDF for QR codes...');
+
+    const formData = new FormData();
+    formData.append('pdf', uploadedFile);
+    formData.append('razorpay_order_id', paymentResponse.razorpay_order_id);
+    formData.append('razorpay_payment_id', paymentResponse.razorpay_payment_id);
+    formData.append('razorpay_signature', paymentResponse.razorpay_signature);
+
+    const res = await fetch(CONFIG.backendUrl + '/api/verify-and-decode', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error('Server error: ' + errText);
+    }
+
+    const result = await res.json();
+
+    if (result.success && result.qr_strings && result.qr_strings.length > 0) {
+      showStatus('');
+      renderResult(result.qr_strings);
+    } else {
+      showError(result.error || 'QR not found in this PDF. A full refund will be processed within 24 hours. Email support@salarybit.in with your payment ID: ' + paymentResponse.razorpay_payment_id);
+    }
+
+  } catch (err) {
+    showError('Decode error: ' + err.message + '<br/>If payment was charged, contact support@salarybit.in with payment ID: ' + (paymentResponse.razorpay_payment_id || 'unknown'));
+  }
+}
+
+function renderResult(qrStrings) {
+  let html = '';
+
+  if (qrStrings.length > 1) {
+    html += `<div class="qr-tabs">`;
+    qrStrings.forEach((q, i) => {
+      html += `<button class="qr-tab ${i === 0 ? 'active' : ''}" onclick="switchTab(${i})" id="tab-${i}">QR ${i + 1} · ${q.label}</button>`;
+    });
+    html += `</div>`;
+  }
+
+  qrStrings.forEach((q, i) => {
+    const parts = q.value.split('+++');
+    const docPart = parts.length >= 2 ? parts[0] : '';
+    const sepPart = parts.length >= 2 ? '+++' : '';
+    const sigPart = parts.length >= 2 ? parts.slice(1).join('+++') : q.value;
+
+    html += `
+    <div class="result-wrap" id="result-${i}" style="${i > 0 ? 'display:none' : ''}">
+      <div class="result-header">
+        <div class="result-label">✅ QR String Decoded ${qrStrings.length > 1 ? `· QR ${i + 1}` : ''}</div>
+        <button class="copy-btn" id="cpbtn-${i}" onclick="copyText(${i}, ${JSON.stringify(q.value)})">Copy</button>
+      </div>
+      <div class="result-body">
+        <div class="raw-string"><span class="doc-part">${esc(docPart)}</span><span class="sep-part">${esc(sepPart)}</span><span class="sig-part">${esc(sigPart)}</span></div>
+        <div class="result-meta">
+          <div>Length: <b>${q.value.length} chars</b></div>
+          ${docPart ? `<div>Doc No.: <b>${esc(docPart)}</b></div>` : ''}
+          <div>Page: <b>${q.page}</b></div>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('resultArea').innerHTML = html;
+  window._qrStrings = qrStrings;
+}
+
+function switchTab(idx) {
+  document.querySelectorAll('.result-wrap').forEach((el, i) => {
+    el.style.display = i === idx ? 'block' : 'none';
+  });
+  document.querySelectorAll('.qr-tab').forEach((el, i) => {
+    el.classList.toggle('active', i === idx);
+  });
+}
+
+function copyText(idx, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('cpbtn-' + idx);
+    btn.textContent = 'Copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+  });
+}
+
+function showStatus(msg) {
+  document.getElementById('statusArea').innerHTML = msg
+    ? `<div class="status-bar"><div class="spinner"></div>${msg}</div>` : '';
+}
+
+function showError(msg) {
+  document.getElementById('statusArea').innerHTML = `<div class="error-box">${msg}</div>`;
+  document.getElementById('payBtn').disabled = !uploadedFile;
+  if (uploadedFile) {
+    document.getElementById('payBtn').innerHTML = `<span>Try Again — Pay ₹49</span><span class="price-tag">₹49</span>`;
+  }
+}
+
+function toggleFAQ(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+function esc(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+</script>
+</body>
+</html>

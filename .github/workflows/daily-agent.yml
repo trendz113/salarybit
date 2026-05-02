@@ -32,5 +32,5 @@ jobs:
           git config user.email "agent@salarybit.in"
           git config user.name "SalaryBit Bot"
           git add .
-          git diff --staged --quiet || git commit -m "New article - $(date '+%Y-%m-%d')"
+          git diff --staged --quiet || git commit -m "New article: $(date '+%Y-%m-%d') [skip ci]"
           git push

@@ -64,7 +64,7 @@ def call_groq(prompt):
     for attempt in range(3):
         try:
             response = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+                model="llama3-70b-8192",
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=4000,
             )
@@ -92,7 +92,8 @@ def clean_existing_article():
         return
     print(f"Cleaning: {article_to_clean}")
     with open(filepath, "r", encoding="utf-8") as f:
-        html_content = f.read()
+    html_content = f.read()
+html_content = html_content[:8000]
     prompt = f"""You are an SEO expert for salarybit.in — Indian salary and finance website.
 
 Clean and improve this HTML article:

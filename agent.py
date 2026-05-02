@@ -11,6 +11,14 @@ PROCESSED_FILE = "processed_articles.json"
 PUBLISHED_FILE = "published_topics.json"
 
 FILES_TO_CLEAN = [
+    "article1-how-to-calculate-inhand-salary.html",
+    "article2-old-vs-new-tax-regime.html",
+    "article3-ctc-vs-gross-vs-net-salary.html",
+    "article4-how-to-read-salary-slip.html",
+    "article5-epf-pf-guide.html",
+    "article6-hra-exemption-guide.html",
+    "article7-how-to-negotiate-salary.html",
+    "article8-new-labour-code-2026-salary-impact.html",
     "pan-complete.html",
     "layoff-survival-guide.html",
     "subscription-manager.html",

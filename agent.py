@@ -201,6 +201,28 @@ Today's date: {datetime.now().strftime('%B %d, %Y')}"""
     published.append(topic)
     save_json(PUBLISHED_FILE, published)
     print(f"Saved: {filename}")
+    return topic, filename
+
+def update_blog_index(title, filename):
+    filepath = "blog/index.html"
+    if not os.path.exists(filepath):
+        print("blog/index.html not found!")
+        return
+    with open(filepath, "r", encoding="utf-8") as f:
+        content = f.read()
+    new_card = f"""<a href="https://salarybit.in/blog/{filename}">
+        <div class="article-card">
+            <h3>{title}</h3>
+            <span>{datetime.now().strftime('%B %Y')}</span>
+        </div>
+    </a>"""
+    if "<!-- NEW-ARTICLES -->" in content:
+        content = content.replace("<!-- NEW-ARTICLES -->", f"<!-- NEW-ARTICLES -->\n    {new_card}")
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.write(content)
+        print(f"Blog index updated: {title}")
+    else:
+        print("Add <!-- NEW-ARTICLES --> comment to blog/index.html!")
 
 def update_sitemap():
     articles = []
@@ -223,7 +245,9 @@ def run_agent():
     clean_existing_article()
     time.sleep(10)
     print("TASK 2: Writing new article...")
-    write_new_article()
+    topic, filename = write_new_article()
+    print("TASK 3: Updating blog index...")
+    update_blog_index(topic, filename)
     update_sitemap()
     print("=" * 40)
     print("Done!")

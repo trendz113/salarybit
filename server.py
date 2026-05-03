@@ -1,24 +1,27 @@
 import os
 import hmac
 import hashlib
+import json
 import tempfile
-import ctypes
-import io
 import razorpay
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import fitz  # PyMuPDF
 from PIL import Image
+import ctypes
+import ctypes.util
 
-# Help pyzbar find zbar shared library on Railway/nix
-for lib in ['libzbar.so.0', '/root/.nix-profile/lib/libzbar.so.0', '/usr/lib/libzbar.so.0']:
+# Help pyzbar find zbar on Railway/nix
+try:
+    ctypes.CDLL('libzbar.so.0')
+except:
     try:
-        ctypes.CDLL(lib)
-        break
+        ctypes.CDLL('/root/.nix-profile/lib/libzbar.so.0')
     except:
-        continue
+        pass
 
 from pyzbar.pyzbar import decode
+import io
 
 app = Flask(__name__)
 CORS(app)
@@ -27,7 +30,7 @@ rzp = razorpay.Client(
     auth=(os.environ.get("RAZORPAY_KEY_ID"), os.environ.get("RAZORPAY_KEY_SECRET"))
 )
 
-
+# ── CREATE ORDER ──────────────────────────────────────────
 @app.route("/api/create-order", methods=["POST", "OPTIONS"])
 def create_order():
     if request.method == "OPTIONS":
@@ -40,7 +43,7 @@ def create_order():
         })
         return jsonify({
             "order_id": order["id"],
-            "amount": order["amount"],
+            "amount":   order["amount"],
             "currency": order["currency"],
         })
     except Exception as e:
@@ -48,6 +51,7 @@ def create_order():
         return jsonify({"error": str(e)}), 500
 
 
+# ── VERIFY PAYMENT + DECODE QR ───────────────────────────
 @app.route("/api/verify-and-decode", methods=["POST", "OPTIONS"])
 def verify_and_decode():
     if request.method == "OPTIONS":
@@ -98,81 +102,87 @@ def verify_and_decode():
     })
 
 
+# ── QR DECODE LOGIC ───────────────────────────────────────
 def decode_qr_from_pdf(pdf_path):
+    # FIX 1: Skip images larger than 500x500 — those are property photos,
+    # not QR codes. Loading + upscaling them causes the SIGKILL OOM crash.
+    MAX_PIXELS  = 500 * 500   # anything bigger is not a QR code
+    MIN_SIZE    = 50          # anything smaller can't be a QR code
+    MAX_SCALED  = 1200        # cap upscaled dimension to stay in memory
+
     doc = fitz.open(pdf_path)
     results = []
     seen = set()
 
+    # FIX 2: Removed duplicate loop and fixed indentation
     print(f"PDF opened: {doc.page_count} pages")
 
     for page_num in range(doc.page_count):
-        page = doc[page_num]
-
-        # Method 1: Extract embedded images
+        page     = doc[page_num]
         img_list = page.get_images(full=True)
-        print(f"Page {page_num+1}: {len(img_list)} embedded images")
+        print(f"Page {page_num + 1}: {len(img_list)} embedded images")
 
         for img_info in img_list:
-            xref = img_info[0]
-            try:
-                base_img = doc.extract_image(xref)
-                img = Image.open(io.BytesIO(base_img["image"]))
-                print(f"  Image size: {img.width}x{img.height}")
+            xref     = img_info[0]
+            base_img = doc.extract_image(xref)
+            iw       = base_img["width"]
+            ih       = base_img["height"]
 
-                for scale in [1, 2, 4, 8, 12]:
-                    w = img.width * scale
-                    h = img.height * scale
-                    scaled = img.resize((w, h), Image.NEAREST)
-                    found = decode(scaled)
-                    if found:
-                        for qr in found:
-                            decoded = qr.data.decode("utf-8", errors="replace")
-                            print(f"  QR found at scale {scale}: {decoded[:50]}")
-                            if "+++" in decoded and decoded not in seen:
-                                seen.add(decoded)
-                                parts = decoded.split("+++", 1)
-                                results.append({
-                                    "value": decoded,
-                                    "doc_number": parts[0],
-                                    "page": page_num + 1,
-                                    "label": f"Page {page_num + 1}"
-                                })
-                        break
+            print(f"  Image size: {iw}x{ih}")
 
-            except Exception as e:
-                print(f"  Image error: {e}")
+            # FIX 1: Skip large images (property photos, backgrounds)
+            if iw * ih > MAX_PIXELS:
+                print(f"  → SKIPPED (too large, not a QR code)")
                 continue
 
-        # Method 2: Render page as high-res image and scan
-        if not results:
-            try:
-                mat = fitz.Matrix(4, 4)  # 4x zoom = ~288 DPI
-                pix = page.get_pixmap(matrix=mat)
-                img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
-                print(f"Page {page_num+1} rendered: {img.width}x{img.height}")
+            # Skip tiny images that can't be QR codes
+            if iw < MIN_SIZE or ih < MIN_SIZE:
+                print(f"  → SKIPPED (too small)")
+                continue
 
+            try:
+                img = Image.open(io.BytesIO(base_img["image"]))
+
+                decoded = None
+
+                # Try at original size first
                 found = decode(img)
                 if found:
-                    for qr in found:
-                        decoded = qr.data.decode("utf-8", errors="replace")
-                        print(f"  Rendered QR found: {decoded[:50]}")
-                        if "+++" in decoded and decoded not in seen:
-                            seen.add(decoded)
-                            parts = decoded.split("+++", 1)
-                            results.append({
-                                "value": decoded,
-                                "doc_number": parts[0],
-                                "page": page_num + 1,
-                                "label": f"Page {page_num + 1}"
-                            })
+                    decoded = found[0].data.decode("utf-8", errors="replace")
+                else:
+                    # Upscale small QR images — capped to MAX_SCALED
+                    for scale in [4, 8, 12]:
+                        new_w = min(iw * scale, MAX_SCALED)
+                        new_h = min(ih * scale, MAX_SCALED)
+                        scaled = img.resize((new_w, new_h), Image.NEAREST)
+                        found  = decode(scaled)
+                        del scaled  # free memory immediately
+                        if found:
+                            decoded = found[0].data.decode("utf-8", errors="replace")
+                            break
+
+                del img  # free memory immediately
+
+                if decoded and "+++" in decoded and decoded not in seen:
+                    seen.add(decoded)
+                    parts = decoded.split("+++", 1)
+                    results.append({
+                        "value":      decoded,
+                        "doc_number": parts[0],
+                        "page":       page_num + 1,
+                        "label":      f"Page {page_num + 1}"
+                    })
+                    print(f"  → DECODED: {decoded[:60]}...")
+
             except Exception as e:
-                print(f"  Render error: {e}")
+                print(f"  Image decode error: {e}")
+                continue
 
     doc.close()
-    print(f"Total QR results: {len(results)}")
     return results
 
 
+# ── HEALTH CHECK ──────────────────────────────────────────
 @app.route("/", methods=["GET"])
 def health():
     return jsonify({"status": "ok", "service": "SalaryBit QR Decoder"})

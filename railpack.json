@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schema.railpack.com",
+  "packages": {
+    "python": "3.12"
+  },
+  "buildAptPackages": [
+    "libzbar0"
+  ],
+  "deploy": {
+    "aptPackages": [
+      "libzbar0"
+    ]
+  }
+}

@@ -4,7 +4,7 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const formidable = require('formidable');
+const { IncomingForm } = require('formidable');
 
 function ensureDeps() {
   try {
@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   // Parse multipart form
-  const form = formidable({ maxFileSize: 10 * 1024 * 1024 });
+  const form = new IncomingForm({ maxFileSize: 10 * 1024 * 1024 });
   let fields, files;
   try {
     [fields, files] = await form.parse(req);

@@ -6,4 +6,4 @@ aptPkgs = ["python3-pip"]
 cmds = ["pip3 install -r requirements.txt --break-system-packages"]
 
 [start]
-cmd = "gunicorn server:app --bind 0.0.0.0:$PORT --workers 2 --timeout 60"
+cmd = "python3 -m gunicorn server:app --bind 0.0.0.0:$PORT --workers 2 --timeout 60"

@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["zbar"]
+nixPkgs = ["zbar", "python3"]
 
 [phases.install]
 cmds = [

@@ -1,18 +1,11 @@
 // api/verify-and-decode.js
+// Pure Node.js QR decode — no Python required, works on Vercel
+
 const crypto = require('crypto');
-const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const { IncomingForm } = require('formidable');
-
-function ensureDeps() {
-  try {
-    execSync('python3 -c "import fitz, pyzbar"', { stdio: 'ignore' });
-  } catch {
-    execSync('pip install pymupdf pyzbar pillow --quiet', { stdio: 'ignore' });
-  }
-}
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -22,7 +15,7 @@ module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  // Parse multipart form
+  // ── STEP 1: Parse multipart form ──
   const form = new IncomingForm({ maxFileSize: 10 * 1024 * 1024 });
   let fields, files;
   try {
@@ -40,7 +33,7 @@ module.exports = async (req, res) => {
     return res.status(400).json({ success: false, error: 'Missing required fields.' });
   }
 
-  // Verify Razorpay signature
+  // ── STEP 2: Verify Razorpay signature ──
   const body = orderId + '|' + paymentId;
   const expected = crypto
     .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
@@ -51,84 +44,101 @@ module.exports = async (req, res) => {
     return res.status(400).json({ success: false, error: 'Payment verification failed.' });
   }
 
-  // Decode QR from PDF
-  const tmpPdf    = path.join(os.tmpdir(), `pdf_${Date.now()}.pdf`);
-  const tmpOut    = path.join(os.tmpdir(), `out_${Date.now()}.json`);
-  const scriptPath = path.join(os.tmpdir(), `qr_decode_${Date.now()}.py`);
+  // ── STEP 3: Decode QR from PDF using Node.js only ──
+  const tmpPdf = path.join(os.tmpdir(), `pdf_${Date.now()}.pdf`);
 
   try {
     fs.copyFileSync(pdfFile.filepath, tmpPdf);
-    ensureDeps();
 
-    const pyScript = `
-import fitz, json, sys
-from PIL import Image
-from pyzbar.pyzbar import decode
-import io
+    const { fromPath } = require('pdf2pic');
+    const Jimp = require('jimp');
+    const jsQR = require('jsqr');
+    const pdfParse = require('pdf-parse');
 
-pdf_path = sys.argv[1]
-out_path  = sys.argv[2]
+    // Get page count
+    const pdfBuffer = fs.readFileSync(tmpPdf);
+    const pdfData = await pdfParse(pdfBuffer);
+    const pageCount = Math.min(pdfData.numpages, 10);
 
-doc = fitz.open(pdf_path)
-results = []
-
-for page_num in range(doc.page_count):
-    page = doc[page_num]
-    img_list = page.get_images(full=True)
-
-    for img_info in img_list:
-        xref = img_info[0]
-        base_img = doc.extract_image(xref)
-        img = Image.open(io.BytesIO(base_img["image"]))
-
-        decoded = None
-        for scale in [1, 4, 8, 12]:
-            w = img.width * scale
-            h = img.height * scale
-            scaled = img.resize((w, h), Image.NEAREST)
-            found = decode(scaled)
-            if found:
-                decoded = found[0].data.decode("utf-8", errors="replace")
-                break
-
-        if decoded and "+++" in decoded:
-            parts = decoded.split("+++", 1)
-            results.append({
-                "value": decoded,
-                "doc_number": parts[0],
-                "page": page_num + 1,
-                "label": f"Page {page_num + 1}"
-            })
-
-with open(out_path, "w") as f:
-    json.dump(results, f)
-`;
-
-    fs.writeFileSync(scriptPath, pyScript);
-    execSync(`python3 ${scriptPath} ${tmpPdf} ${tmpOut}`, { timeout: 30000 });
-
-    const qrStrings = JSON.parse(fs.readFileSync(tmpOut, 'utf-8'));
-
-    // Cleanup all temp files
-    [tmpPdf, tmpOut, scriptPath, pdfFile.filepath].forEach(f => {
-      try { fs.unlinkSync(f); } catch {}
+    // Convert each page to image then scan for QR
+    const convert = fromPath(tmpPdf, {
+      density: 200,
+      saveFilename: `page_${Date.now()}`,
+      savePath: os.tmpdir(),
+      format: 'png',
+      width: 1200,
+      height: 1600,
     });
 
-    if (qrStrings.length === 0) {
+    const results = [];
+
+    for (let pageNum = 1; pageNum <= pageCount; pageNum++) {
+      let imgPath = null;
+      try {
+        const result = await convert(pageNum, { responseType: 'image' });
+        imgPath = result.path;
+
+        // Try multiple scales — small QRs need upscaling to decode
+        for (const scale of [1, 2, 3]) {
+          const image = await Jimp.read(imgPath);
+          if (scale > 1) image.scale(scale);
+          image.grayscale();
+
+          const { data, width, height } = image.bitmap;
+          const rgba = new Uint8ClampedArray(width * height * 4);
+          for (let i = 0; i < width * height; i++) {
+            rgba[i * 4]     = data[i * 4];
+            rgba[i * 4 + 1] = data[i * 4 + 1];
+            rgba[i * 4 + 2] = data[i * 4 + 2];
+            rgba[i * 4 + 3] = data[i * 4 + 3];
+          }
+
+          const decoded = jsQR(rgba, width, height, {
+            inversionAttempts: 'attemptBoth',
+          });
+
+          if (decoded && decoded.data && decoded.data.includes('+++')) {
+            const value = decoded.data;
+            const parts = value.split('+++');
+            results.push({
+              value,
+              doc_number: parts[0],
+              page: pageNum,
+              label: `Page ${pageNum}`,
+            });
+            break;
+          }
+        }
+      } catch (pageErr) {
+        console.error(`Page ${pageNum} error:`, pageErr.message);
+      } finally {
+        if (imgPath && fs.existsSync(imgPath)) {
+          try { fs.unlinkSync(imgPath); } catch {}
+        }
+      }
+    }
+
+    // Cleanup
+    try { fs.unlinkSync(tmpPdf); } catch {}
+    try { fs.unlinkSync(pdfFile.filepath); } catch {}
+
+    if (results.length === 0) {
       return res.status(200).json({
         success: false,
-        error: 'No QR code found in this PDF. A refund will be processed within 24 hours.'
+        error: 'No QR code found in this PDF. A refund will be processed within 24 hours.',
       });
     }
 
     return res.status(200).json({
       success: true,
-      qr_strings: qrStrings,
-      count: qrStrings.length
+      qr_strings: results,
+      count: results.length,
     });
 
   } catch (err) {
-    [tmpPdf, tmpOut, scriptPath].forEach(f => { try { fs.unlinkSync(f); } catch {} });
+    try { fs.unlinkSync(tmpPdf); } catch {}
+    try { fs.unlinkSync(pdfFile.filepath); } catch {}
+    console.error('verify-and-decode error:', err);
     return res.status(500).json({ success: false, error: 'Decode failed: ' + err.message });
   }
 };

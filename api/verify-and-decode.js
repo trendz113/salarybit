@@ -60,17 +60,20 @@ module.exports = async (req, res) => {
     const pdfData = await pdfParse(pdfBuffer);
     const pageCount = Math.min(pdfData.numpages, 10);
 
-    // Convert each page to image then scan for QR
+    // FIX 1: Render at lower density — QR codes decode fine at 150 DPI.
+    // Original 200 DPI at 1200x1600 was loading the 3264x1836 property
+    // photo fully into RAM and causing SIGKILL (OOM).
     const convert = fromPath(tmpPdf, {
-      density: 200,
+      density: 150,           // was 200
       saveFilename: `page_${Date.now()}`,
       savePath: os.tmpdir(),
       format: 'png',
-      width: 1200,
-      height: 1600,
+      width: 800,             // was 1200
+      height: 1100,           // was 1600
     });
 
     const results = [];
+    const seen = new Set(); // FIX 2: deduplicate QR strings across pages
 
     for (let pageNum = 1; pageNum <= pageCount; pageNum++) {
       let imgPath = null;
@@ -78,8 +81,9 @@ module.exports = async (req, res) => {
         const result = await convert(pageNum, { responseType: 'image' });
         imgPath = result.path;
 
-        // Try multiple scales — small QRs need upscaling to decode
-        for (const scale of [1, 2, 3]) {
+        // FIX 3: Remove scale=3 — Jimp.scale(3) on 800x1100 = 2400x3300
+        // = ~30MB RAM per page = OOM. Scale 1 and 2 are enough for QR decode.
+        for (const scale of [1, 2]) { // was [1, 2, 3]
           const image = await Jimp.read(imgPath);
           if (scale > 1) image.scale(scale);
           image.grayscale();
@@ -92,21 +96,23 @@ module.exports = async (req, res) => {
             rgba[i * 4 + 2] = data[i * 4 + 2];
             rgba[i * 4 + 3] = data[i * 4 + 3];
           }
+          image.bitmap.data = null; // FIX 4: release bitmap from memory immediately
 
           const decoded = jsQR(rgba, width, height, {
             inversionAttempts: 'attemptBoth',
           });
 
-          if (decoded && decoded.data && decoded.data.includes('+++')) {
+          if (decoded && decoded.data && !seen.has(decoded.data)) {
+            seen.add(decoded.data);
             const value = decoded.data;
-            const parts = value.split('+++');
+            const parts = value.includes('+++') ? value.split('+++') : [value, ''];
             results.push({
               value,
               doc_number: parts[0],
               page: pageNum,
               label: `Page ${pageNum}`,
             });
-            break;
+            // FIX 5: Don't break — e-Khata has 2 QR codes on same page
           }
         }
       } catch (pageErr) {

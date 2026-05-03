@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Decode e-Khata QR String in India 2026 | SalaryBit</title>
+  <meta name="description" content="Step-by-step guide to decode the QR string in your BBMP or BBSCC e-Khata document. Learn what the QR string means, why banks need it, and how to extract it instantly online.">
+  <link rel="canonical" href="https://salarybit.in/blog/how-to-decode-ekhata-qr-string.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8336334158316485" crossorigin="anonymous"></script>
+  <meta property="og:title" content="How to Decode e-Khata QR String in India 2026 | SalaryBit">
+  <meta property="og:description" content="Step-by-step guide to decode the QR string in your BBMP or BBSCC e-Khata document.">
+  <meta property="og:url" content="https://salarybit.in/blog/how-to-decode-ekhata-qr-string.html">
+  <meta property="og:type" content="article">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type":"Question","name":"What is the QR string in e-Khata?","acceptedAnswer":{"@type":"Answer","text":"The QR string in e-Khata is a PKCS#7 digital signature embedded as a QR code. It starts with your document number followed by +++ and a long Base64-encoded signature. It proves your document was issued by an authorised government officer."}},
+      {"@type":"Question","name":"Why do banks ask for the e-Khata QR string?","acceptedAnswer":{"@type":"Answer","text":"Banks require the QR string to verify your e-Khata is genuine before approving home loans or property transactions. The string contains a cryptographic digital signature that proves the document was issued by a real government official."}},
+      {"@type":"Question","name":"How do I decode the QR code in my e-Khata PDF?","acceptedAnswer":{"@type":"Answer","text":"Upload your e-Khata PDF to SalaryBit's e-Khata QR Decoder at salarybit.in/qr-decoder.html. Pay ₹49, and the tool extracts and displays the exact QR string instantly."}},
+      {"@type":"Question","name":"Can I decode the e-Khata QR code for free using Google Lens?","acceptedAnswer":{"@type":"Answer","text":"Standard QR scanner apps including Google Lens typically cannot decode the small, dense, image-based QR codes in e-Khata PDFs. Server-side processing with upscaling is required to decode them reliably."}},
+      {"@type":"Question","name":"Is my e-Khata data safe when I upload it?","acceptedAnswer":{"@type":"Answer","text":"Yes. Your PDF is processed in server memory only and is never stored permanently. Once the QR string is extracted, the file is immediately deleted."}}
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ink: #1a1a2e;
+      --ink2: #2d2d4a;
+      --ink3: #4a4a6a;
+      --mist: #7b7b9d;
+      --pale: #eeeef6;
+      --snow: #f7f7fc;
+      --white: #fff;
+      --accent: #5b6af0;
+      --accent-bg: rgba(91,106,240,.08);
+      --teal: #0ea5a0;
+      --teal-bg: rgba(14,165,160,.08);
+      --amber: #d97706;
+      --border: #e2e2f0;
+      --shadow: 0 1px 4px rgba(26,26,46,.06), 0 4px 16px rgba(26,26,46,.08);
+      --r: 12px;
+      --body: 'DM Sans', sans-serif;
+      --display: 'DM Serif Display', serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--body); background: var(--snow); color: var(--ink); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+    /* ── NAV ── */
+    nav {
+      background: rgba(247,247,252,.97);
+      backdrop-filter: blur(20px);
+      position: sticky; top: 0; z-index: 100;
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem; height: 52px;
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: 100%;
+    }
+    .nav-brand { font-family: var(--display); font-size: 17px; color: var(--ink); text-decoration: none; }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-links a { font-size: 12px; font-weight: 500; color: var(--mist); padding: 5px 10px; border-radius: 6px; text-decoration: none; transition: .15s; }
+    .nav-links a:hover { color: var(--ink); background: var(--pale); }
+    .nav-links a.active { color: var(--accent); background: var(--accent-bg); }
+
+    /* ── LAYOUT ── */
+    .page { max-width: 1160px; margin: 0 auto; padding: 2rem 1.5rem; display: grid; grid-template-columns: 1fr 300px; gap: 2rem; align-items: start; }
+    @media (max-width: 900px) { .page { grid-template-columns: 1fr; } .sidebar { display: none; } }
+
+    /* ── ARTICLE ── */
+    article { background: var(--white); border: 1px solid var(--border); border-radius: 18px; padding: 2.5rem; box-shadow: var(--shadow); }
+
+    /* Hero image */
+    .hero-img { width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 2rem; }
+
+    /* Meta */
+    .article-meta { display: flex; align-items: center; gap: 1rem; font-size: 12px; color: var(--mist); margin-bottom: 1.25rem; flex-wrap: wrap; }
+    .meta-tag { background: var(--teal-bg); color: var(--teal); border: 1px solid rgba(14,165,160,.2); padding: 3px 10px; border-radius: 20px; font-weight: 600; font-size: 11px; }
+
+    /* Typography */
+    h1 { font-family: var(--display); font-size: clamp(24px, 4vw, 36px); color: var(--ink); line-height: 1.2; margin-bottom: 1.25rem; letter-spacing: -.02em; }
+    h2 { font-family: var(--display); font-size: clamp(18px, 3vw, 24px); color: var(--ink); margin: 2rem 0 .875rem; padding-bottom: .5rem; border-bottom: 2px solid var(--pale); }
+    h3 { font-size: 15px; font-weight: 700; color: var(--ink2); margin: 1.5rem 0 .5rem; }
+    p { font-size: 15px; color: var(--ink3); margin-bottom: 1rem; line-height: 1.75; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    ul, ol { margin: .75rem 0 1rem 1.5rem; }
+    li { font-size: 15px; color: var(--ink3); line-height: 1.9; }
+    strong { color: var(--ink); font-weight: 700; }
+
+    /* Code block */
+    .code-block { background: var(--ink); border-radius: 10px; padding: 1.25rem 1.5rem; margin: 1.25rem 0; overflow-x: auto; }
+    .code-block code { font-family: 'Courier New', monospace; font-size: 12px; color: #a5f3fc; line-height: 1.9; white-space: pre-wrap; word-break: break-all; }
+    .code-part-doc { color: #818cf8; font-weight: 700; }
+    .code-part-sep { color: #fb923c; font-weight: 700; }
+    .code-part-sig { color: #a5f3fc; }
+
+    /* Steps */
+    .steps-grid { display: grid; gap: 1rem; margin: 1.25rem 0; }
+    .step-card { display: flex; gap: 1rem; align-items: flex-start; background: var(--snow); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; }
+    .step-num { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); color: #fff; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .step-content h4 { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+    .step-content p { font-size: 13px; color: var(--mist); margin: 0; }
+
+    /* Info boxes */
+    .info-box { display: flex; gap: .875rem; padding: 1rem 1.25rem; border-radius: 10px; margin: 1.25rem 0; font-size: 13px; line-height: 1.6; }
+    .info-box.blue { background: var(--accent-bg); border: 1px solid rgba(91,106,240,.2); color: var(--accent); }
+    .info-box.teal { background: var(--teal-bg); border: 1px solid rgba(14,165,160,.2); color: var(--teal); }
+    .info-box.amber { background: rgba(217,119,6,.08); border: 1px solid rgba(217,119,6,.2); color: var(--amber); }
+    .info-box-icon { font-size: 18px; flex-shrink: 0; }
+
+    /* CTA */
+    .cta-box { background: linear-gradient(135deg, var(--ink) 0%, var(--ink2) 100%); border-radius: 14px; padding: 1.75rem; margin: 2rem 0; text-align: center; position: relative; overflow: hidden; }
+    .cta-box::before { content: ''; position: absolute; top: -40px; right: -40px; width: 150px; height: 150px; border-radius: 50%; background: rgba(91,106,240,.15); pointer-events: none; }
+    .cta-box h3 { font-family: var(--display); font-size: 22px; color: #fff; margin-bottom: .5rem; }
+    .cta-box p { font-size: 13px; color: rgba(255,255,255,.55); margin-bottom: 1.25rem; }
+    .cta-btn { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--accent), var(--teal)); color: #fff; font-family: var(--body); font-size: 15px; font-weight: 700; padding: 13px 28px; border-radius: 10px; text-decoration: none; transition: .2s; }
+    .cta-btn:hover { opacity: .9; transform: translateY(-1px); text-decoration: none; }
+    .cta-price { background: rgba(255,255,255,.15); border-radius: 6px; padding: 2px 10px; font-size: 13px; }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 13px; }
+    th { background: var(--pale); color: var(--ink); font-weight: 700; padding: .625rem 1rem; text-align: left; border-bottom: 2px solid var(--border); }
+    td { padding: .625rem 1rem; border-bottom: 1px solid var(--pale); color: var(--ink3); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--snow); }
+
+    /* AdSense slots */
+    .ad-slot { background: var(--pale); border: 1px dashed var(--border); border-radius: 10px; padding: 1.5rem; text-align: center; font-size: 11px; color: var(--mist); margin: 1.75rem 0; min-height: 100px; display: flex; align-items: center; justify-content: center; }
+
+    /* FAQ */
+    .faq-section { margin-top: 2rem; }
+    .faq-section h2 { margin-top: 0; }
+    details { border: 1px solid var(--border); border-radius: 10px; margin-bottom: .75rem; overflow: hidden; }
+    details[open] { border-color: var(--accent); }
+    summary { font-size: 14px; font-weight: 600; color: var(--ink); padding: 1rem 1.25rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; list-style: none; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: '+'; font-size: 18px; color: var(--mist); transition: .2s; }
+    details[open] summary::after { content: '×'; color: var(--accent); }
+    details p { padding: .875rem 1.25rem 1rem; font-size: 14px; color: var(--ink3); border-top: 1px solid var(--pale); margin: 0; }
+
+    /* Sidebar */
+    .sidebar { position: sticky; top: 72px; }
+    .sidebar-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; box-shadow: var(--shadow); margin-bottom: 1rem; }
+    .sidebar-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--mist); margin-bottom: 1rem; }
+    .toc-link { display: block; font-size: 13px; color: var(--ink3); padding: .375rem 0; border-left: 2px solid var(--border); padding-left: .875rem; margin-bottom: .25rem; text-decoration: none; transition: .15s; }
+    .toc-link:hover { color: var(--accent); border-color: var(--accent); }
+    .sidebar-ad { background: var(--pale); border: 1px dashed var(--border); border-radius: 10px; min-height: 250px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--mist); }
+
+    /* Footer */
+    footer { background: var(--ink); color: rgba(255,255,255,.4); text-align: center; font-size: 12px; padding: 2rem 1.5rem; margin-top: 3rem; }
+    footer a { color: rgba(255,255,255,.4); text-decoration: none; }
+    footer a:hover { color: #fff; }
+    footer .footer-links { display: flex; gap: 1.5rem; justify-content: center; margin-bottom: .75rem; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="https://salarybit.in/" class="nav-brand">SalaryBit</a>
+  <div class="nav-links">
+    <a href="https://salarybit.in/">Home</a>
+    <a href="https://salarybit.in/qr-decoder.html">QR Decoder</a>
+    <a href="https://salarybit.in/blog/" class="active">Blog</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- ── ARTICLE ── -->
+  <article>
+
+    <!-- Hero SVG Image -->
+    <div class="hero-img">
+      <svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%">
+        <defs>
+          <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#1a1a2e"/>
+            <stop offset="100%" style="stop-color:#2d2d4a"/>
+          </linearGradient>
+          <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#5b6af0;stop-opacity:.6"/>
+            <stop offset="100%" style="stop-color:#0ea5a0;stop-opacity:.3"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Background -->
+        <rect width="760" height="320" fill="url(#bg)"/>
+
+        <!-- Grid lines -->
+        <g stroke="rgba(255,255,255,.04)" stroke-width="1">
+          <line x1="0" y1="40" x2="760" y2="40"/>
+          <line x1="0" y1="80" x2="760" y2="80"/>
+          <line x1="0" y1="120" x2="760" y2="120"/>
+          <line x1="0" y1="160" x2="760" y2="160"/>
+          <line x1="0" y1="200" x2="760" y2="200"/>
+          <line x1="0" y1="240" x2="760" y2="240"/>
+          <line x1="0" y1="280" x2="760" y2="280"/>
+          <line x1="80" y1="0" x2="80" y2="320"/>
+          <line x1="160" y1="0" x2="160" y2="320"/>
+          <line x1="240" y1="0" x2="240" y2="320"/>
+          <line x1="320" y1="0" x2="320" y2="320"/>
+          <line x1="400" y1="0" x2="400" y2="320"/>
+          <line x1="480" y1="0" x2="480" y2="320"/>
+          <line x1="560" y1="0" x2="560" y2="320"/>
+          <line x1="640" y1="0" x2="640" y2="320"/>
+        </g>
+
+        <!-- Glow orb -->
+        <ellipse cx="560" cy="120" rx="180" ry="140" fill="url(#glow)" opacity=".4"/>
+
+        <!-- QR Code graphic (left side) -->
+        <g transform="translate(60, 60)">
+          <!-- QR outer border -->
+          <rect x="0" y="0" width="160" height="160" rx="12" fill="rgba(255,255,255,.06)" stroke="rgba(91,106,240,.4)" stroke-width="1.5"/>
+          <!-- QR position squares -->
+          <rect x="12" y="12" width="44" height="44" rx="4" fill="none" stroke="rgba(91,106,240,.8)" stroke-width="3"/>
+          <rect x="18" y="18" width="32" height="32" rx="2" fill="rgba(91,106,240,.5)"/>
+          <rect x="24" y="24" width="20" height="20" rx="1" fill="rgba(91,106,240,.9)"/>
+
+          <rect x="104" y="12" width="44" height="44" rx="4" fill="none" stroke="rgba(91,106,240,.8)" stroke-width="3"/>
+          <rect x="110" y="18" width="32" height="32" rx="2" fill="rgba(91,106,240,.5)"/>
+          <rect x="116" y="24" width="20" height="20" rx="1" fill="rgba(91,106,240,.9)"/>
+
+          <rect x="12" y="104" width="44" height="44" rx="4" fill="none" stroke="rgba(91,106,240,.8)" stroke-width="3"/>
+          <rect x="18" y="110" width="32" height="32" rx="2" fill="rgba(91,106,240,.5)"/>
+          <rect x="24" y="116" width="20" height="20" rx="1" fill="rgba(91,106,240,.9)"/>
+
+          <!-- QR data dots -->
+          <g fill="rgba(14,165,160,.7)">
+            <rect x="68" y="12" width="8" height="8" rx="1"/><rect x="80" y="12" width="8" height="8" rx="1"/>
+            <rect x="68" y="24" width="8" height="8" rx="1"/><rect x="92" y="24" width="8" height="8" rx="1"/>
+            <rect x="80" y="36" width="8" height="8" rx="1"/><rect x="92" y="36" width="8" height="8" rx="1"/>
+            <rect x="68" y="48" width="8" height="8" rx="1"/><rect x="80" y="48" width="8" height="8" rx="1"/>
+            <rect x="68" y="68" width="8" height="8" rx="1"/><rect x="92" y="68" width="8" height="8" rx="1"/>
+            <rect x="80" y="80" width="8" height="8" rx="1"/><rect x="68" y="80" width="8" height="8" rx="1"/>
+            <rect x="92" y="80" width="8" height="8" rx="1"/><rect x="80" y="92" width="8" height="8" rx="1"/>
+            <rect x="68" y="104" width="8" height="8" rx="1"/><rect x="92" y="104" width="8" height="8" rx="1"/>
+            <rect x="104" y="68" width="8" height="8" rx="1"/><rect x="116" y="68" width="8" height="8" rx="1"/>
+            <rect x="128" y="68" width="8" height="8" rx="1"/><rect x="140" y="68" width="8" height="8" rx="1"/>
+            <rect x="104" y="80" width="8" height="8" rx="1"/><rect x="128" y="80" width="8" height="8" rx="1"/>
+            <rect x="116" y="92" width="8" height="8" rx="1"/><rect x="140" y="92" width="8" height="8" rx="1"/>
+            <rect x="104" y="104" width="8" height="8" rx="1"/><rect x="128" y="116" width="8" height="8" rx="1"/>
+            <rect x="116" y="128" width="8" height="8" rx="1"/><rect x="140" y="128" width="8" height="8" rx="1"/>
+            <rect x="104" y="140" width="8" height="8" rx="1"/><rect x="128" y="140" width="8" height="8" rx="1"/>
+          </g>
+
+          <!-- Scan line animation effect -->
+          <rect x="0" y="0" width="160" height="3" rx="1" fill="rgba(14,165,160,.6)" opacity=".8">
+            <animateTransform attributeName="transform" type="translate" values="0,0;0,157;0,0" dur="3s" repeatCount="indefinite"/>
+          </rect>
+
+          <!-- Verified badge -->
+          <circle cx="140" cy="140" r="18" fill="#0ea5a0"/>
+          <text x="140" y="145" text-anchor="middle" font-size="14" fill="white">✓</text>
+        </g>
+
+        <!-- Arrow connecting QR to string -->
+        <g>
+          <line x1="232" y1="140" x2="280" y2="140" stroke="rgba(91,106,240,.6)" stroke-width="2" stroke-dasharray="6,4"/>
+          <polygon points="280,135 290,140 280,145" fill="rgba(91,106,240,.6)"/>
+        </g>
+
+        <!-- Decoded string display (right side) -->
+        <g transform="translate(298, 60)">
+          <rect x="0" y="0" width="400" height="200" rx="12" fill="rgba(0,0,0,.4)" stroke="rgba(14,165,160,.3)" stroke-width="1.5"/>
+
+          <!-- Terminal header -->
+          <rect x="0" y="0" width="400" height="36" rx="12" fill="rgba(14,165,160,.15)"/>
+          <rect x="0" y="24" width="400" height="12" fill="rgba(14,165,160,.15)"/>
+          <circle cx="20" cy="18" r="5" fill="#ef5350" opacity=".7"/>
+          <circle cx="36" cy="18" r="5" fill="#ffa726" opacity=".7"/>
+          <circle cx="52" cy="18" r="5" fill="#66bb6a" opacity=".7"/>
+          <text x="200" y="23" text-anchor="middle" font-family="monospace" font-size="11" fill="rgba(255,255,255,.4)">QR String Decoded ✓</text>
+
+          <!-- String content -->
+          <text x="16" y="60" font-family="monospace" font-size="10.5" fill="#818cf8" font-weight="bold">2933699</text>
+          <text x="76" y="60" font-family="monospace" font-size="10.5" fill="#fb923c" font-weight="bold">+++</text>
+          <text x="100" y="60" font-family="monospace" font-size="10.5" fill="#a5f3fc">MIIB/AYJKoZIhvcNAQcc</text>
+          <text x="16" y="78" font-family="monospace" font-size="10.5" fill="#a5f3fc">oIIB7TCCAekCAQExDzAN</text>
+          <text x="16" y="96" font-family="monospace" font-size="10.5" fill="#a5f3fc">BglghkgBZQMEAgEFADAL</text>
+          <text x="16" y="114" font-family="monospace" font-size="10.5" fill="#a5f3fc">BgkqhkiG9w0BBwGgggFT</text>
+          <text x="16" y="132" font-family="monospace" font-size="10.5" fill="#a5f3fc">MIIBTzCB96ADAgECAgEB</text>
+          <text x="16" y="150" font-family="monospace" font-size="10.5" fill="rgba(165,243,252,.5)">MDANBgkqhkiG9w0BAQsF...</text>
+
+          <!-- Copy button -->
+          <rect x="290" y="162" width="96" height="28" rx="6" fill="rgba(91,106,240,.8)"/>
+          <text x="338" y="180" text-anchor="middle" font-family="monospace" font-size="11" fill="white" font-weight="bold">Copy String</text>
+
+          <!-- Length indicator -->
+          <text x="16" y="180" font-family="monospace" font-size="10" fill="rgba(255,255,255,.3)">Length: 847 chars · Page 2</text>
+        </g>
+
+        <!-- Title text -->
+        <text x="60" y="262" font-family="Georgia, serif" font-size="15" fill="rgba(255,255,255,.9)" font-weight="bold">e-Khata QR String Decoder</text>
+        <text x="60" y="282" font-family="Georgia, serif" font-size="12" fill="rgba(255,255,255,.4)">BBMP · BBSCC · Karnataka Govt. Documents</text>
+
+        <!-- Price badge -->
+        <rect x="560" y="256" width="140" height="40" rx="20" fill="rgba(14,165,160,.2)" stroke="rgba(14,165,160,.4)" stroke-width="1.5"/>
+        <text x="630" y="272" text-anchor="middle" font-family="Georgia, serif" font-size="11" fill="rgba(255,255,255,.5)">One-time payment</text>
+        <text x="630" y="288" text-anchor="middle" font-family="Georgia, serif" font-size="16" fill="#0ea5a0" font-weight="bold">₹49 per decode</text>
+      </svg>
+    </div>
+
+    <!-- Meta -->
+    <div class="article-meta">
+      <span class="meta-tag">e-Khata Guide</span>
+      <span>Updated May 2026</span>
+      <span>8 min read</span>
+      <span>Bangalore · Karnataka</span>
+    </div>
+
+    <h1>How to Decode the QR String in Your e-Khata Document (2026 Guide)</h1>
+
+    <p>If you have received your e-Khata from BBMP or BBSCC and a bank, lawyer, or property registrar has asked you for the <strong>QR string</strong>, you are not alone. Thousands of Bangalore property owners face the same confusion every year. The QR code printed on your e-Khata contains a digital signature string that most standard QR scanner apps cannot read — and this guide explains exactly what it is, why you need it, and how to extract it in under two minutes.</p>
+
+    <!-- AdSense — top of article -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px" data-ad-client="ca-pub-8336334158316485" data-ad-slot="auto" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <h2>What Is the e-Khata QR String?</h2>
+
+    <p>Every e-Khata document issued by BBMP or BBSCC contains one or more QR codes embedded as images in the PDF. Unlike a typical QR code that links to a website, these QR codes store a <strong>PKCS#7 digital signature</strong> — a cryptographic proof that the document was issued by an authorised government officer.</p>
+
+    <p>When decoded, the QR string looks like this:</p>
+
+    <div class="code-block">
+      <code><span class="code-part-doc">2933699</span><span class="code-part-sep">+++</span><span class="code-part-sig">MIIB/AYJKoZIhvcNAQcCoIIB7TCCAekCAQExDzANBglghkgBZQMEAgEF
+ADALBgkqhkiG9w0BBwGgggFTMIIBTzCB96ADAgEC...</span></code>
+    </div>
+
+    <p>The string has two parts separated by <strong>+++</strong>:</p>
+
+    <ul>
+      <li><strong>Before +++</strong> — The Khata number (e.g. 2933699)</li>
+      <li><strong>After +++</strong> — The Base64-encoded PKCS#7 digital signature of the issuing Revenue Officer</li>
+    </ul>
+
+    <div class="info-box teal">
+      <span class="info-box-icon">🔐</span>
+      <span>This signature proves that a real government official with a valid Digital Signature Certificate (DSC) issued your e-Khata. It cannot be forged.</span>
+    </div>
+
+    <h2>Why Do Banks and Lawyers Ask for the QR String?</h2>
+
+    <p>When you apply for a home loan, initiate a property sale, or submit documents for mutation, banks and legal professionals need to verify that your e-Khata is authentic. Simply printing or scanning the PDF is not enough — anyone can create a fake PDF.</p>
+
+    <table>
+      <tr><th>Bank / Institution</th><th>Why They Need It</th></tr>
+      <tr><td>SBI, HDFC, ICICI, Axis</td><td>Home loan document verification</td></tr>
+      <tr><td>Property lawyers</td><td>Title verification before sale</td></tr>
+      <tr><td>Sub-registrar office</td><td>Mutation and transfer processing</td></tr>
+      <tr><td>BBMP / BDA</td><td>Cross-verification of property records</td></tr>
+    </table>
+
+    <h2>Why Normal QR Scanners Cannot Read It</h2>
+
+    <p>This is the most common problem people face. You open Google Lens, a QR scanner app, or WhatsApp camera — and nothing happens. There are three reasons:</p>
+
+    <ul>
+      <li><strong>The QR code is very small</strong> — Often only 100×100 pixels in the PDF. Standard apps cannot resolve enough detail.</li>
+      <li><strong>It is image-based, not vector</strong> — The QR is embedded as a compressed image, not a crisp vector graphic.</li>
+      <li><strong>The string is very long</strong> — PKCS#7 signatures are hundreds of characters, creating extremely dense QR pixel patterns.</li>
+    </ul>
+
+    <div class="info-box amber">
+      <span class="info-box-icon">⚠️</span>
+      <span>The solution is to extract the raw QR image directly from the PDF, upscale it 4x–12x using nearest-neighbour interpolation, and decode it with a professional library. This is exactly what SalaryBit's QR Decoder does.</span>
+    </div>
+
+    <!-- AdSense — mid article -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px" data-ad-client="ca-pub-8336334158316485" data-ad-slot="auto" data-ad-format="rectangle" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <h2>How to Decode Your e-Khata QR String — Step by Step</h2>
+
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Open the QR Decoder</h4>
+          <p>Go to <a href="https://salarybit.in/qr-decoder.html">salarybit.in/qr-decoder.html</a> on any device — mobile or desktop. No login required.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Upload Your e-Khata PDF</h4>
+          <p>Click the upload area or drag and drop your e-Khata PDF. Your file is never stored — it is processed in memory only.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Pay ₹49</h4>
+          <p>One-time payment via UPI (GPay, PhonePe, Paytm), debit card, credit card, or net banking. Secured by Razorpay.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Copy Your QR String</h4>
+          <p>The full QR string appears on screen instantly. Click Copy to copy it. If your e-Khata has two QR codes, both are shown with tabs.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-box">
+      <h3>Decode Your e-Khata QR String Now</h3>
+      <p>Works on BBMP, BBSCC, and all Karnataka municipal e-Khata PDFs. No login. Result in seconds.</p>
+      <a href="https://salarybit.in/qr-decoder.html" class="cta-btn">
+        Get QR String <span class="cta-price">₹49</span>
+      </a>
+    </div>
+
+    <h2>Which e-Khata Documents Are Supported?</h2>
+
+    <ul>
+      <li>BBMP e-Khata (Bruhat Bengaluru Mahanagara Palike)</li>
+      <li>BBSCC e-Khata (Bruhat Bengaluru Smart City Limited)</li>
+      <li>e-Khata issued through the Karnataka Kaveri 2.0 portal</li>
+      <li>Any government PDF with embedded image-based QR codes containing digital signatures</li>
+    </ul>
+
+    <h2>What If the QR Code Is Not Found?</h2>
+
+    <p>In rare cases, a PDF may not contain a readable QR code — for example if it was printed and scanned, or is an older document. If the QR string cannot be extracted, SalaryBit provides a <strong>full refund within 24 hours</strong>. Contact <a href="mailto:support@salarybit.in">support@salarybit.in</a> with your payment ID.</p>
+
+    <h2>Is My Document Data Safe?</h2>
+
+    <div class="info-box blue">
+      <span class="info-box-icon">🛡️</span>
+      <span>Your PDF is processed entirely in server memory. It is never written to disk permanently, never stored in a database, and never shared with any third party. Once the QR string is returned to you, the temporary file is deleted immediately.</span>
+    </div>
+
+    <!-- AdSense — bottom of article -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px" data-ad-client="ca-pub-8336334158316485" data-ad-slot="auto" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <div class="cta-box">
+      <h3>Ready to Get Your QR String?</h3>
+      <p>Thousands of Bangalore property owners use this tool every month. Fast, secure, and reliable.</p>
+      <a href="https://salarybit.in/qr-decoder.html" class="cta-btn">
+        Decode Now <span class="cta-price">₹49</span>
+      </a>
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq-section">
+      <h2>Frequently Asked Questions</h2>
+
+      <details>
+        <summary>What is the QR string in e-Khata?</summary>
+        <p>The QR string is a PKCS#7 digital signature embedded as a QR code in your property document. It starts with your Khata number followed by +++ and a long Base64-encoded signature that proves your document was issued by an authorised government officer.</p>
+      </details>
+
+      <details>
+        <summary>Why do banks ask for the e-Khata QR string?</summary>
+        <p>Banks require the QR string to verify that your e-Khata is genuine before approving home loans or property transactions. The cryptographic signature in the string proves the document was issued by a real government official with a valid Digital Signature Certificate.</p>
+      </details>
+
+      <details>
+        <summary>How do I decode the QR code in my e-Khata PDF?</summary>
+        <p>Upload your e-Khata PDF to <a href="https://salarybit.in/qr-decoder.html">SalaryBit's e-Khata QR Decoder</a>. Pay ₹49 via UPI or card, and the tool extracts and displays the exact QR string from your document within seconds.</p>
+      </details>
+
+      <details>
+        <summary>Can I decode the e-Khata QR code for free using Google Lens?</summary>
+        <p>Standard QR scanner apps including Google Lens typically cannot decode the small, dense QR codes in e-Khata PDFs. The codes contain very long PKCS#7 signature strings at low resolution, requiring server-side processing with image upscaling to decode reliably.</p>
+      </details>
+
+      <details>
+        <summary>Is my e-Khata data safe when I upload it?</summary>
+        <p>Yes. Your PDF is processed in server memory only and is never stored permanently. Once the QR string is extracted and returned to you, the file is immediately deleted. SalaryBit never stores your document or shares it with any third party.</p>
+      </details>
+    </div>
+
+  </article>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Quick Decode</div>
+      <a href="https://salarybit.in/qr-decoder.html" style="display:block;background:linear-gradient(135deg,var(--ink),var(--ink2));border-radius:10px;padding:1.25rem;text-align:center;text-decoration:none">
+        <div style="font-size:32px;margin-bottom:.5rem">🔍</div>
+        <div style="font-family:var(--display);font-size:16px;color:#fff;margin-bottom:.25rem">e-Khata QR Decoder</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:1rem">BBMP · BBSCC · Karnataka</div>
+        <div style="background:linear-gradient(135deg,var(--accent),var(--teal));color:#fff;font-size:13px;font-weight:700;padding:10px;border-radius:8px">Decode Now — ₹49</div>
+      </a>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Table of Contents</div>
+      <a href="#" class="toc-link">What is the QR String?</a>
+      <a href="#" class="toc-link">Why Banks Need It</a>
+      <a href="#" class="toc-link">Why Scanners Fail</a>
+      <a href="#" class="toc-link">Step by Step Guide</a>
+      <a href="#" class="toc-link">Supported Documents</a>
+      <a href="#" class="toc-link">FAQ</a>
+    </div>
+
+    <!-- Sidebar AdSense -->
+    <div class="sidebar-card" style="padding:0;overflow:hidden">
+      <div class="sidebar-ad">
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px" data-ad-client="ca-pub-8336334158316485" data-ad-slot="auto" data-ad-format="rectangle" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Also on SalaryBit</div>
+      <a href="https://salarybit.in/#calculator" style="display:flex;align-items:center;gap:.75rem;padding:.625rem 0;border-bottom:1px solid var(--pale);text-decoration:none">
+        <span style="font-size:20px">💰</span>
+        <span style="font-size:13px;color:var(--ink3)">In-Hand Salary Calculator</span>
+      </a>
+      <a href="https://salarybit.in/#tax-regime" style="display:flex;align-items:center;gap:.75rem;padding:.625rem 0;border-bottom:1px solid var(--pale);text-decoration:none">
+        <span style="font-size:20px">📋</span>
+        <span style="font-size:13px;color:var(--ink3)">Old vs New Tax Regime</span>
+      </a>
+      <a href="https://salarybit.in/#home-loan" style="display:flex;align-items:center;gap:.75rem;padding:.625rem 0;text-decoration:none">
+        <span style="font-size:20px">🏠</span>
+        <span style="font-size:13px;color:var(--ink3)">Home Loan EMI Calculator</span>
+      </a>
+    </div>
+
+  </aside>
+
+</div>
+
+<footer>
+  <div class="footer-links">
+    <a href="https://salarybit.in/">Home</a>
+    <a href="https://salarybit.in/qr-decoder.html">QR Decoder</a>
+    <a href="https://salarybit.in/blog/">Blog</a>
+    <a href="mailto:support@salarybit.in">Support</a>
+  </div>
+  <p>&copy; 2026 SalaryBit.in — India's complete salary &amp; financial intelligence platform</p>
+</footer>
+
+</body>
+</html>

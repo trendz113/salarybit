@@ -1,9 +1,11 @@
 [phases.setup]
-nixPkgs = ["zbar", "python312"]
-aptPkgs = ["python3-pip"]
+nixPkgs = ["zbar"]
 
 [phases.install]
-cmds = ["pip3 install -r requirements.txt --break-system-packages"]
+cmds = [
+  "python3 -m venv /app/venv",
+  "/app/venv/bin/pip install -r requirements.txt"
+]
 
 [start]
-cmd = "python3 -m gunicorn server:app --bind 0.0.0.0:$PORT --workers 2 --timeout 60"
+cmd = "/app/venv/bin/gunicorn server:app --bind 0.0.0.0:$PORT --workers 2 --timeout 60"

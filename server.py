@@ -8,6 +8,16 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import fitz  # PyMuPDF
 from PIL import Image
+import ctypes
+import ctypes.util
+# Help pyzbar find zbar on Railway/nix
+try:
+    ctypes.CDLL('libzbar.so.0')
+except:
+    try:
+        ctypes.CDLL('/root/.nix-profile/lib/libzbar.so.0')
+    except:
+        pass
 from pyzbar.pyzbar import decode
 import io
 
@@ -102,7 +112,11 @@ def decode_qr_from_pdf(pdf_path):
     doc = fitz.open(pdf_path)
     results = []
     seen = set()
-
+print(f"PDF pages: {doc.page_count}")
+for page_num in range(doc.page_count):
+    page = doc[page_num]
+    img_list = page.get_images(full=True)
+    print(f"Page {page_num+1}: {len(img_list)} images found")
     for page_num in range(doc.page_count):
         page = doc[page_num]
         img_list = page.get_images(full=True)

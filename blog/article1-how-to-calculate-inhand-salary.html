@@ -1,99 +1,841 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>How to Calculate In-Hand Salary in India (FY 2026-27) | SalaryBit</title>
-  <meta name="description" content="Learn exactly how to calculate your in-hand salary in India for FY 2026-27. Understand CTC, deductions, PF, TDS, and what actually reaches your bank account.">
-  <link rel="canonical" href="https://salarybit.in/blog/article1-how-to-calculate-inhand-salary.html">
-  <link rel="stylesheet" href="../style.css">
-  <meta property="og:title" content="How to Calculate In-Hand Salary in India (FY 2026-27) | SalaryBit">
-  <meta property="og:description" content="Learn exactly how to calculate your in-hand salary in India for FY 2026-27. Understand CTC, deductions, PF, TDS, and what actually reaches your bank account.">
-  <meta property="og:url" content="https://salarybit.in/blog/article1-how-to-calculate-inhand-salary.html">
-  <meta property="og:type" content="article">
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {"@type":"Question","name":"What is the difference between CTC and in-hand salary?","acceptedAnswer":{"@type":"Answer","text":"CTC (Cost to Company) is the total annual cost your employer incurs for employing you, including your salary, allowances, benefits, and employer contributions to PF and other funds. In-hand salary, on the other hand, is the actual amount credited to your bank account every month after all deductions."}},
-      {"@type":"Question","name":"How is in-hand salary calculated in India?","acceptedAnswer":{"@type":"Answer","text":"In-hand salary is calculated by subtracting employee deductions, such as PF, professional tax, and TDS, from the gross salary. The gross salary is calculated by subtracting employer PF, gratuity, and other benefits from the CTC."}},
-      {"@type":"Question","name":"What are the factors that affect in-hand salary?","acceptedAnswer":{"@type":"Answer","text":"Factors that affect in-hand salary include the tax regime chosen, salary structure, city of work, and employer-specific benefits. Additionally, the choice of tax regime, either the Old Regime or the New Regime, can significantly impact the in-hand salary."}},
-      {"@type":"Question","name":"How can I increase my in-hand salary?","acceptedAnswer":{"@type":"Answer","text":"To increase your in-hand salary, you can optimize your salary structure by maximizing tax-exempt allowances, choose the right tax regime, and consider other benefits such as HRA, LTA, and food coupons."}},
-      {"@type":"Question","name":"What is the typical in-hand salary range for a ₹12 LPA CTC?","acceptedAnswer":{"@type":"Answer","text":"The typical in-hand salary range for a ₹12 LPA CTC can vary between ₹68,000–₹72,000/month, depending on the tax regime, city of work, and employer-specific benefits."}}
-    ]
-  }
-  </script>
+  <meta name="description" content="Learn exactly how to calculate your in-hand salary in India for FY 2026-27. Understand CTC, deductions, PF, TDS, and what actually reaches your bank account."/>
+  <link rel="canonical" href="https://salarybit.in/blog/how-to-calculate-inhand-salary"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --ink: #0f1923;
+      --ink-soft: #3d4f5f;
+      --ink-muted: #8896a4;
+      --paper: #f5f3ef;
+      --surface: #ffffff;
+      --rupee: #1b6ca8;
+      --rupee-light: #e8f2fb;
+      --gold: #c8860a;
+      --gold-light: #fef8ec;
+      --green: #1a7a52;
+      --green-light: #e8f6f0;
+      --red: #c0392b;
+      --border: #e2ddd7;
+      --shadow-sm: 0 1px 4px rgba(15,25,35,0.06);
+      --shadow-md: 0 4px 24px rgba(15,25,35,0.10);
+      --shadow-lg: 0 12px 48px rgba(15,25,35,0.14);
+      --radius: 10px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.8;
+      font-size: 17px;
+    }
+
+    a { color: var(--rupee); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ───── NAV ───── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: 58px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    }
+    .nav-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+    .nav-brand span { color: #f0b429; }
+    .nav-links { display: flex; gap: 24px; }
+    .nav-links a { color: rgba(255,255,255,0.72); font-size: 0.875rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; text-decoration: none; }
+
+    /* ───── TOP ADSENSE ───── */
+    .ad-banner {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 10px 24px;
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .ad-banner-label { font-weight: 600; }
+    .ad-slot {
+      background: #f0ece6;
+      border: 2px dashed #c9c3bb;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink-muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      gap: 8px;
+    }
+    .ad-slot-top { width: 100%; max-width: 728px; height: 90px; margin: 0 auto; }
+    .ad-slot-inline { width: 100%; height: 280px; margin: 36px 0; }
+    .ad-slot-sidebar { width: 100%; height: 600px; }
+    .ad-slot-sidebar-sm { width: 100%; height: 250px; }
+    .ad-icon { font-size: 1.1rem; opacity: 0.5; }
+
+    /* ───── HERO IMAGE ───── */
+    .hero-image-wrapper {
+      position: relative;
+      overflow: hidden;
+      height: 420px;
+      background: var(--ink);
+    }
+    .hero-image-wrapper svg {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      inset: 0;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(10,20,35,0.45) 0%, rgba(10,20,35,0.80) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 40px 24px 48px;
+      text-align: center;
+    }
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--gold);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 18px;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.7rem, 4vw, 2.8rem);
+      font-weight: 800;
+      color: #fff;
+      max-width: 760px;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.70);
+    }
+    .hero-meta span { display: flex; align-items: center; gap: 5px; }
+
+    /* ───── LAYOUT ───── */
+    .page-wrapper {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 40px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .page-wrapper { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+    }
+
+    /* ───── ARTICLE ───── */
+    article {
+      background: var(--surface);
+      border-radius: 16px;
+      box-shadow: var(--shadow-md);
+      padding: 52px 56px;
+      border: 1px solid var(--border);
+    }
+    @media (max-width: 640px) { article { padding: 28px 20px; } }
+
+    .article-intro {
+      font-size: 1.12rem;
+      color: var(--ink-soft);
+      line-height: 1.85;
+      border-left: 4px solid var(--gold);
+      padding-left: 20px;
+      margin-bottom: 36px;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 48px 0 16px;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    h2::before {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 28px;
+      background: var(--rupee);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    h3 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 28px 0 10px;
+      letter-spacing: -0.01em;
+    }
+    p { margin-bottom: 18px; color: var(--ink-soft); }
+    p strong { color: var(--ink); }
+    ul, ol { margin: 12px 0 22px 22px; }
+    li { margin-bottom: 10px; color: var(--ink-soft); }
+    li strong { color: var(--ink); }
+
+    /* ───── CALLOUT ───── */
+    .callout {
+      display: flex;
+      gap: 14px;
+      background: var(--gold-light);
+      border: 1px solid #f0d080;
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      margin: 28px 0;
+    }
+    .callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+    .callout-body { flex: 1; }
+    .callout strong { color: var(--gold); display: block; margin-bottom: 4px; }
+    .callout p { margin: 0; color: #7a5c0a; font-size: 0.95rem; }
+
+    .callout.info {
+      background: var(--rupee-light);
+      border-color: #a8ccec;
+    }
+    .callout.info strong { color: var(--rupee); }
+    .callout.info p { color: #1a4a6e; }
+
+    /* ───── TABLE ───── */
+    .table-wrapper {
+      overflow-x: auto;
+      margin: 24px 0;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.93rem; }
+    thead tr { background: var(--ink); }
+    th {
+      color: #fff;
+      padding: 13px 18px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    td { padding: 12px 18px; border-bottom: 1px solid var(--border); color: var(--ink-soft); }
+    tr:nth-child(even) td { background: #faf8f5; }
+    tr:last-child td { border-bottom: none; font-weight: 600; color: var(--ink); background: var(--gold-light); }
+
+    /* ───── FORMULA BOX ───── */
+    .formula-box {
+      background: #0f1923;
+      border-radius: var(--radius);
+      margin: 28px 0;
+      overflow: hidden;
+    }
+    .formula-header {
+      background: #1b2d3e;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .formula-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .formula-dot.r { background: #ff5f56; }
+    .formula-dot.y { background: #ffbd2e; }
+    .formula-dot.g { background: #27c93f; }
+    .formula-label {
+      margin-left: 8px;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.4);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .formula-content {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.92rem;
+      color: #a8f0c6;
+      padding: 24px 28px;
+      line-height: 2;
+    }
+    .formula-content .comment { color: #4a6a7a; }
+    .formula-content .value { color: #ffd080; }
+    .formula-content .op { color: #ff9070; }
+
+    /* ───── CTA BOX ───── */
+    .cta-box {
+      background: linear-gradient(135deg, var(--rupee) 0%, #0d4a82 100%);
+      border-radius: 16px;
+      padding: 40px 36px;
+      text-align: center;
+      margin: 48px 0 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-box::before {
+      content: '₹';
+      position: absolute;
+      font-family: 'Playfair Display', serif;
+      font-size: 200px;
+      right: -20px;
+      top: -40px;
+      color: rgba(255,255,255,0.05);
+      line-height: 1;
+    }
+    .cta-box h3 {
+      font-family: 'Playfair Display', serif;
+      color: #fff;
+      margin: 0 0 10px;
+      font-size: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+    .cta-box p { margin: 0 0 24px; color: rgba(255,255,255,0.78); font-size: 0.95rem; }
+    .cta-btn {
+      display: inline-block;
+      background: var(--gold);
+      color: #fff;
+      padding: 13px 32px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.97rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,0.3); text-decoration: none; }
+
+    /* ───── SIDEBAR ───── */
+    .sidebar { display: flex; flex-direction: column; gap: 24px; }
+
+    .sidebar-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .sidebar-card-title {
+      background: var(--ink);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 10px 16px;
+    }
+    .sidebar-card-body { padding: 16px; }
+
+    .toc-list { list-style: none; margin: 0; padding: 0; }
+    .toc-list li { margin: 0; }
+    .toc-list a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      font-size: 0.87rem;
+      color: var(--ink-soft);
+      border-bottom: 1px solid var(--border);
+      transition: color 0.2s;
+    }
+    .toc-list li:last-child a { border-bottom: none; }
+    .toc-list a:hover { color: var(--rupee); text-decoration: none; }
+    .toc-num {
+      width: 22px;
+      height: 22px;
+      background: var(--rupee-light);
+      color: var(--rupee);
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .quick-fact {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .quick-fact:last-child { border-bottom: none; padding-bottom: 0; }
+    .quick-fact-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .quick-fact-label { color: var(--ink-muted); font-size: 0.75rem; display: block; }
+    .quick-fact-val { color: var(--ink); font-weight: 600; }
+
+    /* ───── FOOTER ───── */
+    footer {
+      background: var(--ink);
+      color: rgba(255,255,255,0.55);
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.82rem;
+      line-height: 1.7;
+    }
+    footer a { color: rgba(255,255,255,0.7); }
+
+    /* ───── SECTION IDs ───── */
+    section { margin-bottom: 4px; }
+  </style>
 </head>
 <body>
-  <header>
-    <nav>
-      <a href="https://salarybit.in/index.html"><strong>SalaryBit</strong></a>
-      <a href="https://salarybit.in/index.html#calculator">Salary Calculator</a>
-      <a href="https://salarybit.in/blog/">Blog</a>
-    </nav>
-  </header>
-  <main class="article-container">
+
+<!-- NAVIGATION -->
+<nav>
+  <a href="https://salarybit.in" class="nav-brand">Salary<span>Bit</span></a>
+  <div class="nav-links">
+    <a href="https://salarybit.in">Calculator</a>
+    <a href="https://salarybit.in/blog">Blog</a>
+    <a href="https://salarybit.in/about">About</a>
+  </div>
+</nav>
+
+<!-- TOP LEADERBOARD AD (728×90) -->
+<div class="ad-banner">
+  <span class="ad-banner-label">Advertisement</span>
+  <!-- ADSENSE: Replace below with your AdSense leaderboard unit -->
+  <div class="ad-slot ad-slot-top">
+    <span class="ad-icon">📢</span>
+    Google AdSense — Leaderboard (728×90)
+  </div>
+</div>
+
+<!-- HERO IMAGE (SVG-generated, Indian salary/finance theme) -->
+<div class="hero-image-wrapper">
+  <svg viewBox="0 0 1200 420" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#0a1622"/>
+        <stop offset="100%" style="stop-color:#0f2d4a"/>
+      </linearGradient>
+      <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#1b6ca8;stop-opacity:0.9"/>
+        <stop offset="100%" style="stop-color:#0d4a82;stop-opacity:0.9"/>
+      </linearGradient>
+      <linearGradient id="barGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" style="stop-color:#f0b429"/>
+        <stop offset="100%" style="stop-color:#c8860a"/>
+      </linearGradient>
+      <linearGradient id="barGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" style="stop-color:#1a7a52"/>
+        <stop offset="100%" style="stop-color:#0f5538"/>
+      </linearGradient>
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+        <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1200" height="420" fill="url(#bgGrad)"/>
+
+    <!-- Grid lines -->
+    <g opacity="0.06" stroke="#6090b0" stroke-width="1">
+      <line x1="0" y1="70" x2="1200" y2="70"/>
+      <line x1="0" y1="140" x2="1200" y2="140"/>
+      <line x1="0" y1="210" x2="1200" y2="210"/>
+      <line x1="0" y1="280" x2="1200" y2="280"/>
+      <line x1="0" y1="350" x2="1200" y2="350"/>
+    </g>
+
+    <!-- Decorative circles -->
+    <circle cx="980" cy="60" r="180" fill="none" stroke="#1b6ca8" stroke-width="1" opacity="0.18"/>
+    <circle cx="980" cy="60" r="120" fill="none" stroke="#1b6ca8" stroke-width="1" opacity="0.14"/>
+    <circle cx="980" cy="60" r="60"  fill="none" stroke="#1b6ca8" stroke-width="1" opacity="0.10"/>
+
+    <!-- Salary breakdown bar chart (left side) -->
+    <!-- CTC Bar -->
+    <rect x="80" y="130" width="64" height="220" rx="6" fill="url(#barGrad)" opacity="0.9"/>
+    <text x="112" y="120" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#f0b429" font-weight="600">₹12L CTC</text>
+
+    <!-- Gross Bar -->
+    <rect x="174" y="178" width="64" height="172" rx="6" fill="#1b6ca8" opacity="0.85"/>
+    <text x="206" y="168" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#6ab4e8" font-weight="600">Gross</text>
+
+    <!-- In-Hand Bar -->
+    <rect x="268" y="214" width="64" height="136" rx="6" fill="url(#barGrad2)" opacity="0.9"/>
+    <text x="300" y="204" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#4ec98a" font-weight="600">In-Hand</text>
+
+    <!-- Deductions Bar -->
+    <rect x="362" y="282" width="64" height="68" rx="6" fill="#c0392b" opacity="0.75"/>
+    <text x="394" y="272" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#e87070" font-weight="600">Deductions</text>
+
+    <!-- X axis -->
+    <line x1="60" y1="352" x2="460" y2="352" stroke="#3a5060" stroke-width="1.5"/>
+
+    <!-- Floating salary card -->
+    <rect x="530" y="90" width="280" height="170" rx="14" fill="url(#cardGrad)" opacity="0.95" filter="url(#glow)"/>
+    <text x="550" y="122" font-family="DM Sans,sans-serif" font-size="11" fill="rgba(255,255,255,0.6)" font-weight="600" letter-spacing="2">MONTHLY BREAKDOWN</text>
+    <line x1="550" y1="132" x2="790" y2="132" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+    <text x="550" y="155" font-family="DM Sans,sans-serif" font-size="12" fill="rgba(255,255,255,0.65)">Gross Salary</text>
+    <text x="790" y="155" text-anchor="end" font-family="DM Sans,sans-serif" font-size="12" fill="#fff" font-weight="600">₹76,667</text>
+    <text x="550" y="178" font-family="DM Sans,sans-serif" font-size="12" fill="rgba(255,255,255,0.65)">PF Deduction</text>
+    <text x="790" y="178" text-anchor="end" font-family="DM Sans,sans-serif" font-size="12" fill="#ff9070" font-weight="600">− ₹4,800</text>
+    <text x="550" y="201" font-family="DM Sans,sans-serif" font-size="12" fill="rgba(255,255,255,0.65)">Professional Tax</text>
+    <text x="790" y="201" text-anchor="end" font-family="DM Sans,sans-serif" font-size="12" fill="#ff9070" font-weight="600">− ₹200</text>
+    <text x="550" y="224" font-family="DM Sans,sans-serif" font-size="12" fill="rgba(255,255,255,0.65)">TDS</text>
+    <text x="790" y="224" text-anchor="end" font-family="DM Sans,sans-serif" font-size="12" fill="#ff9070" font-weight="600">− ₹2,417</text>
+    <line x1="550" y1="232" x2="790" y2="232" stroke="rgba(255,255,255,0.25)" stroke-width="1" stroke-dasharray="4,3"/>
+    <text x="550" y="250" font-family="DM Sans,sans-serif" font-size="13" fill="#4ec98a" font-weight="700">In-Hand Salary</text>
+    <text x="790" y="250" text-anchor="end" font-family="DM Sans,sans-serif" font-size="15" fill="#4ec98a" font-weight="800">₹69,250</text>
+
+    <!-- Rupee symbol large decorative -->
+    <text x="860" y="340" font-family="Playfair Display,serif" font-size="240" fill="rgba(255,255,255,0.03)" font-weight="800">₹</text>
+
+    <!-- Percentage pill -->
+    <rect x="530" y="282" width="120" height="44" rx="22" fill="rgba(240,180,41,0.15)" stroke="#f0b429" stroke-width="1"/>
+    <text x="590" y="299" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#f0b429" font-weight="600" letter-spacing="1">TAKE-HOME</text>
+    <text x="590" y="316" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" fill="#f0b429" font-weight="800">≈ 69%</text>
+
+    <rect x="668" y="282" width="148" height="44" rx="22" fill="rgba(30,122,82,0.15)" stroke="#1a7a52" stroke-width="1"/>
+    <text x="742" y="299" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#4ec98a" font-weight="600" letter-spacing="1">OF YOUR CTC</text>
+    <text x="742" y="316" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" fill="#4ec98a" font-weight="800">₹12 LPA</text>
+  </svg>
+
+  <div class="hero-overlay">
+    <div class="hero-tag">📊 Salary Guide · FY 2026–27</div>
+    <h1 class="hero-title">How to Calculate Your In-Hand Salary in India</h1>
+    <div class="hero-meta">
+      <span>📅 Updated April 2026</span>
+      <span>⏱ 8 min read</span>
+      <span>👤 SalaryBit Team</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="page-wrapper">
+
+  <!-- ARTICLE -->
+  <main>
     <article>
-      <div class="article-meta">
-        <span>Updated May 03, 2026</span>
-        <span>10 min read</span>
-      </div>
-      <div class="ad-slot"><!-- Ad --></div>
-      <h1>Introduction to In-Hand Salary Calculation in India</h1>
-      <p>Every salaried employee in India faces a significant gap between their Cost to Company (CTC) and their actual in-hand salary. Understanding this gap is crucial for budgeting, tax planning, and salary negotiations. According to <a href="https://www.ambitionbox.com/">AmbitionBox</a>, the average salary for a software engineer in India is around ₹15 lakhs per annum, with an in-hand salary ranging from ₹10 lakhs to ₹12 lakhs per annum. In this article, we will break down the steps to calculate your in-hand salary in India for the financial year 2026-27.</p>
-      <h2>CTC vs. In-Hand Salary: What's the Difference?</h2>
-      <p>CTC (Cost to Company) is the total annual cost your employer incurs for employing you, including your salary, allowances, benefits, and employer contributions to PF and other funds. In-hand salary, on the other hand, is the actual amount credited to your bank account every month after all deductions. According to <a href="https://www.glassdoor.co.in/">Glassdoor</a>, the average CTC for a software engineer in India is around ₹18 lakhs per annum, while the in-hand salary is around ₹12 lakhs per annum.</p>
-      <table>
-        <tr><th>Component</th><th>Typical % of Basic</th><th>Taxable?</th></tr>
-        <tr><td>Basic Salary</td><td>40–50% of CTC</td><td>Fully taxable</td></tr>
-        <tr><td>House Rent Allowance (HRA)</td><td>40–50% of Basic</td><td>Partially exempt (Old Regime)</td></tr>
-        <tr><td>Special Allowance</td><td>Variable</td><td>Fully taxable</td></tr>
-        <tr><td>Leave Travel Allowance (LTA)</td><td>Variable</td><td>Exempt with claims</td></tr>
-        <tr><td>Employer PF Contribution</td><td>12% of Basic</td><td>Not in hand (goes to PF)</td></tr>
-        <tr><td>Performance Bonus</td><td>Variable</td><td>Fully taxable</td></tr>
-        <tr><td>Gratuity Provision</td><td>4.81% of Basic</td><td>Exempt on retirement</td></tr>
-      </table>
-      <h2>Factors Affecting In-Hand Salary</h2>
-      <p>Several factors can affect your in-hand salary, including the tax regime chosen, salary structure, city of work, and employer-specific benefits. The choice of tax regime, either the Old Regime or the New Regime, can significantly impact the in-hand salary. According to <a href="https://www.payscale.com/">PayScale</a>, the average salary for a software engineer in India can vary significantly based on the city of work, with cities like Bangalore and Pune offering higher salaries than other cities.</p>
-      <p>The salary structure also plays a crucial role in determining the in-hand salary. A salary structure with a higher proportion of tax-exempt allowances, such as HRA and LTA, can result in a higher in-hand salary. Additionally, employer-specific benefits, such as medical insurance and meal vouchers, can also impact the in-hand salary.</p>
-      <h2>Practical Tips to Increase Your In-Hand Salary</h2>
-      <p>To increase your in-hand salary, you can optimize your salary structure by maximizing tax-exempt allowances, choose the right tax regime, and consider other benefits such as HRA, LTA, and food coupons. You can also negotiate with your employer to include more tax-exempt allowances in your salary structure. According to <a href="https://www.ambitionbox.com/">AmbitionBox</a>, employees who negotiate their salary structure can increase their in-hand salary by up to 10%.</p>
-      <p>Another way to increase your in-hand salary is to choose the right tax regime. The Old Regime and the New Regime have different tax rates and deductions, and choosing the right regime can result in a higher in-hand salary. You can use <a href="https://salarybit.in/#calculator">SalaryBit's calculator</a> to compare both regimes and determine which one is more beneficial for you.</p>
-      <div class="ad-slot"><!-- Ad --></div>
-      <div class="calculator-cta">
-        <h3>Calculate Your In-Hand Salary</h3>
-        <p>Use SalaryBit's free calculator to find your exact take-home pay.</p>
-        <a href="https://salarybit.in/#calculator" class="cta-button">Calculate Now — Free</a>
-      </div>
-      <div class="ad-slot"><!-- Ad --></div>
-      <section class="faq-section">
-        <h2>Frequently Asked Questions</h2>
-        <details>
-          <summary>What is the difference between CTC and in-hand salary?</summary>
-          <p>CTC (Cost to Company) is the total annual cost your employer incurs for employing you, including your salary, allowances, benefits, and employer contributions to PF and other funds. In-hand salary, on the other hand, is the actual amount credited to your bank account every month after all deductions.</p>
-        </details>
-        <details>
-          <summary>How is in-hand salary calculated in India?</summary>
-          <p>In-hand salary is calculated by subtracting employee deductions, such as PF, professional tax, and TDS, from the gross salary. The gross salary is calculated by subtracting employer PF, gratuity, and other benefits from the CTC.</p>
-        </details>
-        <details>
-          <summary>What are the factors that affect in-hand salary?</summary>
-          <p>Factors that affect in-hand salary include the tax regime chosen, salary structure, city of work, and employer-specific benefits. Additionally, the choice of tax regime, either the Old Regime or the New Regime, can significantly impact the in-hand salary.</p>
-        </details>
-        <details>
-          <summary>How can I increase my in-hand salary?</summary>
-          <p>To increase your in-hand salary, you can optimize your salary structure by maximizing tax-exempt allowances, choose the right tax regime, and consider other benefits such as HRA, LTA, and food coupons.</p>
-        </details>
-        <details>
-          <summary>What is the typical in-hand salary range for a ₹12 LPA CTC?</summary>
-          <p>The typical in-hand salary range for a ₹12 LPA CTC can vary between ₹68,000–₹72,000/month, depending on the tax regime, city of work, and employer-specific benefits.</p>
-        </details>
+
+      <p class="article-intro">
+        Your offer letter says ₹12 LPA — but your bank account tells a very different story each month. The gap between CTC and actual take-home salary can be surprisingly large. Here's exactly how to decode it.
+      </p>
+
+      <section id="ctc-vs-inhand">
+        <h2>1. What Is CTC vs. In-Hand Salary?</h2>
+        <p><strong>CTC (Cost to Company)</strong> is the total annual cost your employer incurs for employing you — including your salary, allowances, benefits, and employer contributions to PF and other funds.</p>
+        <p><strong>In-Hand Salary</strong> (also called Take-Home or Net Salary) is the actual amount credited to your bank account every month after all deductions.</p>
+        <div class="callout">
+          <div class="callout-icon">💡</div>
+          <div class="callout-body">
+            <strong>Key Insight</strong>
+            <p>In-hand salary is typically <strong>65%–80% of your CTC</strong>, depending on your salary structure, tax regime, and applicable deductions.</p>
+          </div>
+        </div>
       </section>
+
+      <section id="salary-structure">
+        <h2>2. Understanding Your Salary Structure</h2>
+        <p>A typical Indian salary structure includes the following components:</p>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Component</th><th>Typical % of Basic</th><th>Taxable?</th></tr></thead>
+            <tbody>
+              <tr><td>Basic Salary</td><td>40–50% of CTC</td><td>Fully taxable</td></tr>
+              <tr><td>House Rent Allowance (HRA)</td><td>40–50% of Basic</td><td>Partially exempt (Old Regime)</td></tr>
+              <tr><td>Special Allowance</td><td>Variable</td><td>Fully taxable</td></tr>
+              <tr><td>Leave Travel Allowance (LTA)</td><td>Variable</td><td>Exempt with claims</td></tr>
+              <tr><td>Employer PF Contribution</td><td>12% of Basic</td><td>Not in hand (goes to PF)</td></tr>
+              <tr><td>Performance Bonus</td><td>Variable</td><td>Fully taxable</td></tr>
+              <tr><td>Gratuity Provision</td><td>4.81% of Basic</td><td>Exempt on retirement</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="formula">
+        <h2>3. The In-Hand Salary Formula</h2>
+        <div class="formula-box">
+          <div class="formula-header">
+            <div class="formula-dot r"></div>
+            <div class="formula-dot y"></div>
+            <div class="formula-dot g"></div>
+            <span class="formula-label">salary-calculator.js</span>
+          </div>
+          <div class="formula-content">
+<span class="comment">// Core Formula</span>
+In-Hand Salary <span class="op">=</span> Gross Salary <span class="op">−</span> Employee PF <span class="op">−</span> Professional Tax <span class="op">−</span> TDS
+
+<span class="comment">// Where:</span>
+Gross Salary     <span class="op">=</span> CTC <span class="op">−</span> Employer PF <span class="op">−</span> Gratuity <span class="op">−</span> Other Benefits
+Employee PF      <span class="op">=</span> <span class="value">12%</span> of Basic Salary (capped at ₹<span class="value">1,800</span>/month)
+Professional Tax <span class="op">=</span> ₹<span class="value">200</span>/month (varies by state)
+TDS              <span class="op">=</span> Based on income tax slab and declared regime
+          </div>
+        </div>
+      </section>
+
+      <!-- INLINE AD (336×280 or responsive) -->
+      <div style="text-align:center; font-size: 0.72rem; color: #8896a4; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:6px;">Advertisement</div>
+      <!-- ADSENSE: Replace below with your AdSense inline rectangle unit -->
+      <div class="ad-slot ad-slot-inline">
+        <span class="ad-icon">📢</span>
+        Google AdSense — Large Rectangle (336×280) or Responsive
+      </div>
+
+      <section id="example">
+        <h2>4. Step-by-Step Calculation Example</h2>
+        <p>Let's calculate the in-hand salary for someone with a CTC of <strong>₹12,00,000 per annum</strong> under the New Tax Regime.</p>
+
+        <h3>Step 1: Break Down the CTC</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Component</th><th>Annual (₹)</th><th>Monthly (₹)</th></tr></thead>
+            <tbody>
+              <tr><td>Basic Salary</td><td>4,80,000</td><td>40,000</td></tr>
+              <tr><td>HRA</td><td>1,92,000</td><td>16,000</td></tr>
+              <tr><td>Special Allowance</td><td>3,48,000</td><td>29,000</td></tr>
+              <tr><td>Employer PF (12% of Basic)</td><td>57,600</td><td>4,800</td></tr>
+              <tr><td>Gratuity</td><td>23,077</td><td>1,923</td></tr>
+              <tr><td><strong>Total CTC</strong></td><td><strong>12,00,677</strong></td><td><strong>~1,00,056</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Step 2: Calculate Gross Salary</h3>
+        <p>Gross Salary = CTC − Employer PF − Gratuity = ₹12,00,677 − ₹57,600 − ₹23,077 = <strong>₹9,20,000 per annum</strong> (₹76,667/month)</p>
+
+        <h3>Step 3: Calculate Employee Deductions</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Deduction</th><th>Annual (₹)</th><th>Monthly (₹)</th></tr></thead>
+            <tbody>
+              <tr><td>Employee PF (12% of Basic)</td><td>57,600</td><td>4,800</td></tr>
+              <tr><td>Professional Tax</td><td>2,400</td><td>200</td></tr>
+              <tr><td>TDS (New Regime, approx.)</td><td>29,000</td><td>2,417</td></tr>
+              <tr><td><strong>Total Deductions</strong></td><td><strong>89,000</strong></td><td><strong>7,417</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Step 4: In-Hand Salary</h3>
+        <p>Monthly In-Hand = ₹76,667 − ₹7,417 = <strong>~₹69,250/month</strong></p>
+
+        <div class="callout info">
+          <div class="callout-icon">ℹ️</div>
+          <div class="callout-body">
+            <strong>Note</strong>
+            <p>For a ₹12 LPA CTC, the typical in-hand salary ranges between ₹68,000–₹72,000/month depending on your tax regime, city of work, and employer-specific benefits.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="tax-regime">
+        <h2>5. Old Regime vs New Regime: Which Gives More In-Hand?</h2>
+        <p>Your choice of tax regime significantly affects your monthly take-home. Under the <strong>Old Regime</strong>, you can claim deductions (HRA, 80C, 80D, LTA etc.) to reduce taxable income. Under the <strong>New Regime</strong>, tax rates are lower but most deductions are removed.</p>
+        <ul>
+          <li>If you have a home loan, HRA exemption, and max out 80C — <strong>Old Regime</strong> is usually better below ₹15 LPA.</li>
+          <li>If you have fewer investments or deductions — <strong>New Regime</strong> typically gives more in-hand.</li>
+          <li>Above ₹15 LPA, the New Regime's lower slab rates often win even with deductions.</li>
+        </ul>
+      </section>
+
+      <section id="not-inhand">
+        <h2>6. What Is NOT Part of In-Hand Salary</h2>
+        <p>Many components of CTC never reach your bank account:</p>
+        <ul>
+          <li><strong>Employer PF contribution</strong> — Goes into your EPF account, accessible on resignation or retirement.</li>
+          <li><strong>Gratuity</strong> — Paid only after 5+ years of continuous service.</li>
+          <li><strong>Medical Insurance Premium</strong> — Paid by employer directly to insurer.</li>
+          <li><strong>Meal vouchers or gadget allowances</strong> — Given in kind, not cash.</li>
+        </ul>
+      </section>
+
+      <!-- INLINE AD 2 (responsive) -->
+      <div style="text-align:center; font-size: 0.72rem; color: #8896a4; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:6px;">Advertisement</div>
+      <!-- ADSENSE: Replace below with your second AdSense inline unit -->
+      <div class="ad-slot ad-slot-inline">
+        <span class="ad-icon">📢</span>
+        Google AdSense — In-Article / Responsive Unit
+      </div>
+
+      <section id="tips">
+        <h2>7. Tips to Increase Your In-Hand Salary</h2>
+        <ol>
+          <li><strong>Optimise your salary structure</strong> — Ask HR to maximise tax-exempt allowances like HRA, LTA, and food coupons.</li>
+          <li><strong>Choose the right tax regime</strong> — Use SalaryBit's calculator to compare both regimes for your exact CTC.</li>
+          <li><strong>Declare HRA exemption correctly</strong> — If you pay rent, ensure you submit rent receipts to your employer.</li>
+          <li><strong>Submit investment proofs on time</strong> — Missed declarations lead to higher TDS deductions.</li>
+          <li><strong>Consider voluntary PF opt-out</strong> — If your basic exceeds ₹15,000/month, you may be able to opt out of EPF (check eligibility).</li>
+        </ol>
+      </section>
+
+      <section id="faq">
+        <h2>8. Frequently Asked Questions</h2>
+
+        <h3>Is professional tax deducted in all states?</h3>
+        <p>No. Professional tax is a state-level levy and is not applicable everywhere. States like Maharashtra, Karnataka, West Bengal, and Andhra Pradesh deduct it. States like Delhi, UP, and Rajasthan do not have professional tax.</p>
+
+        <h3>Is TDS deducted every month?</h3>
+        <p>Yes. Your employer estimates your annual tax liability at the start of the financial year and deducts TDS proportionally each month. If you change jobs or have other income, you may need to reconcile via your ITR.</p>
+
+        <h3>Does a bonus affect my in-hand salary?</h3>
+        <p>A performance bonus is fully taxable. When paid out, your employer deducts TDS at your applicable rate, so your net bonus amount will be lower than the gross figure stated in your offer letter.</p>
+
+        <h3>Can I negotiate my salary structure?</h3>
+        <p>Yes! Many employers allow flexibility in structuring allowances. You can request a higher HRA, add food allowances, or include reimbursement components — all of which reduce your taxable income legally.</p>
+      </section>
+
+      <!-- CTA -->
+      <div class="cta-box">
+        <h3>Calculate Your Exact In-Hand Salary</h3>
+        <p>Enter your CTC and salary breakup into SalaryBit's free calculator and get an instant, accurate breakdown — no login required.</p>
+        <a href="https://salarybit.in" class="cta-btn">Try the Calculator →</a>
+      </div>
+
     </article>
   </main>
-  <footer>
-    <p>&copy; 2026 SalaryBit.in | <a href="https://salarybit.in/index.html">Home</a> | <a href="https://salarybit.in/blog/">Blog</a></p>
-  </footer>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <!-- Table of Contents -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">📋 Table of Contents</div>
+      <div class="sidebar-card-body">
+        <ul class="toc-list">
+          <li><a href="#ctc-vs-inhand"><span class="toc-num">1</span> CTC vs. In-Hand Salary</a></li>
+          <li><a href="#salary-structure"><span class="toc-num">2</span> Salary Structure</a></li>
+          <li><a href="#formula"><span class="toc-num">3</span> The Formula</a></li>
+          <li><a href="#example"><span class="toc-num">4</span> Step-by-Step Example</a></li>
+          <li><a href="#tax-regime"><span class="toc-num">5</span> Old vs New Regime</a></li>
+          <li><a href="#not-inhand"><span class="toc-num">6</span> What's NOT In-Hand</a></li>
+          <li><a href="#tips"><span class="toc-num">7</span> Tips to Increase Take-Home</a></li>
+          <li><a href="#faq"><span class="toc-num">8</span> FAQs</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Quick Facts -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">⚡ Quick Facts</div>
+      <div class="sidebar-card-body">
+        <div class="quick-fact">
+          <div class="quick-fact-icon">💰</div>
+          <div>
+            <span class="quick-fact-label">Typical take-home range</span>
+            <span class="quick-fact-val">65% – 80% of CTC</span>
+          </div>
+        </div>
+        <div class="quick-fact">
+          <div class="quick-fact-icon">🏦</div>
+          <div>
+            <span class="quick-fact-label">Employee PF</span>
+            <span class="quick-fact-val">12% of Basic (max ₹1,800/mo)</span>
+          </div>
+        </div>
+        <div class="quick-fact">
+          <div class="quick-fact-icon">🗺️</div>
+          <div>
+            <span class="quick-fact-label">Professional Tax</span>
+            <span class="quick-fact-val">~₹200/month (state-specific)</span>
+          </div>
+        </div>
+        <div class="quick-fact">
+          <div class="quick-fact-icon">📅</div>
+          <div>
+            <span class="quick-fact-label">Gratuity vesting</span>
+            <span class="quick-fact-val">After 5 years of service</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar Ad (300×600) -->
+    <div>
+      <div style="text-align:center; font-size: 0.72rem; color: #8896a4; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:6px;">Advertisement</div>
+      <!-- ADSENSE: Replace below with your sidebar skyscraper unit -->
+      <div class="ad-slot ad-slot-sidebar">
+        <span style="text-align:center">
+          <span class="ad-icon" style="font-size:1.6rem; display:block; margin-bottom:8px">📢</span>
+          Google AdSense<br>Half Page / Skyscraper<br>(300×600)
+        </span>
+      </div>
+    </div>
+
+    <!-- Sidebar Ad 2 (300×250) -->
+    <div>
+      <div style="text-align:center; font-size: 0.72rem; color: #8896a4; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:6px;">Advertisement</div>
+      <!-- ADSENSE: Replace below with your sidebar rectangle unit -->
+      <div class="ad-slot ad-slot-sidebar-sm">
+        <span style="text-align:center">
+          <span class="ad-icon" style="font-size:1.4rem; display:block; margin-bottom:6px">📢</span>
+          Google AdSense<br>Medium Rectangle<br>(300×250)
+        </span>
+      </div>
+    </div>
+
+  </aside>
+
+</div>
+
+<!-- FOOTER AD (728×90) -->
+<div class="ad-banner" style="border-top: 1px solid var(--border); border-bottom:none;">
+  <span class="ad-banner-label">Advertisement</span>
+  <!-- ADSENSE: Replace below with your footer leaderboard unit -->
+  <div class="ad-slot ad-slot-top">
+    <span class="ad-icon">📢</span>
+    Google AdSense — Footer Leaderboard (728×90)
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 <strong style="color:rgba(255,255,255,0.7)">SalaryBit</strong> · <a href="https://salarybit.in">salarybit.in</a></p>
+  <p style="margin-top:6px">For informational purposes only. Consult a qualified CA for personalised tax advice.</p>
+</footer>
+
 </body>
 </html>

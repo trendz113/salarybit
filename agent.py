@@ -1,35 +1,49 @@
-from groq import Groq
-import os
-import time
-import json
-from datetime import datetime
+"""
+SalaryBit Article Agent
+========================
+Writes new SEO-optimised blog articles for salarybit.in.
 
+What this agent does:
+  - Picks the next unpublished topic from NEW_TOPICS
+  - Calls Groq to generate a full, styled HTML article
+  - Saves it to the blog/ folder
+  - Appends a card to blog/index.html
+  - Regenerates sitemap.xml
+
+What this agent does NOT do:
+  - It never rewrites, cleans, or touches any existing article.
+  - It never changes style decisions you made manually.
+
+Usage:
+  python agent.py              # write one article
+  python agent.py --all        # write all remaining articles
+"""
+
+import os
+import re
+import sys
+import json
+import time
+from datetime import datetime
+from groq import Groq
+
+# ── Config ────────────────────────────────────────────────────────────────────
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
-BLOG_FOLDER = "blog"
-PROCESSED_FILE = "processed_articles.json"
-PUBLISHED_FILE = "published_topics.json"
+BLOG_FOLDER      = "blog"
+PUBLISHED_FILE   = "published_topics.json"   # tracks written topics
+SITEMAP_PATH     = "sitemap.xml"
+BLOG_INDEX_PATH  = "blog/index.html"
+SITE_URL         = "https://salarybit.in"
 
-FILES_TO_CLEAN = [
-    # article1-8: old thin articles rejected by Google — rewrite first
-    "article1-how-to-calculate-inhand-salary.html",
-    "article2-old-vs-new-tax-regime.html",
-    "article3-ctc-vs-gross-vs-net-salary.html",
-    "article4-how-to-read-salary-slip.html",
-    "article5-epf-pf-guide.html",
-    "article6-hra-exemption-guide.html",
-    "article7-how-to-negotiate-salary.html",
-    "article8-new-labour-code-2026-salary-impact.html",
-    # other existing articles to improve
-    "pan-complete.html",
-    "layoff-survival-guide.html",
-    "subscription-manager.html",
-    "karnataka_dl_renewal_guide.html",
-    # agent-generated articles that may also be thin
-    "data-scientist-salary-in-india-2026.html",
-    "ias-officer-salary-and-perks-india.html",
-]
+# Your AdSense publisher ID — replace with your real one
+ADSENSE_PUB_ID   = "ca-pub-XXXXXXXXXXXXXXXX"
 
+# Placeholder image used when no real image is provided.
+# Replace with the real CDN path once you upload topic-specific images.
+DEFAULT_OG_IMAGE = f"{SITE_URL}/assets/images/salarybit-og.png"
+
+# ── Topics ────────────────────────────────────────────────────────────────────
 NEW_TOPICS = [
     "TCS software engineer salary in India 2026",
     "Infosys fresher salary package 2026",
@@ -58,18 +72,7 @@ NEW_TOPICS = [
     "Gratuity calculation formula India",
 ]
 
-# Internal calculator links to inject into articles
-CALCULATOR_LINKS = {
-    "salary": "https://salarybit.in/#calculator",
-    "tax": "https://salarybit.in/#tax-regime",
-    "hra": "https://salarybit.in/#calculator",
-    "pf": "https://salarybit.in/#epf",
-    "gratuity": "https://salarybit.in/#gratuity",
-    "emi": "https://salarybit.in/#home-loan",
-    "sip": "https://salarybit.in/#sip",
-    "epf": "https://salarybit.in/#epf",
-}
-
+# ── Helpers ───────────────────────────────────────────────────────────────────
 def load_json(path, default):
     if os.path.exists(path):
         with open(path) as f:
@@ -80,367 +83,537 @@ def save_json(path, data):
     with open(path, "w") as f:
         json.dump(data, f, indent=2)
 
-def make_slug(topic):
+def make_slug(topic: str) -> str:
     slug = topic.lower().replace(" ", "-")
-    slug = "".join(c for c in slug if c.isalnum() or c == "-")
-    return slug[:60]
+    slug = re.sub(r"[^a-z0-9\-]", "", slug)
+    return slug[:70]
 
-def call_groq(prompt, max_tokens=6000):
+def call_groq(prompt: str, max_tokens: int = 6000) -> str:
+    """Call Groq with retry logic."""
     for attempt in range(3):
         try:
             response = client.chat.completions.create(
-                # upgraded model: much better quality, still free on Groq
-                model="llama-3.3-70b-versatile",
+                model="llama-3.1-8b-instant",
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=max_tokens,
-                temperature=0.7,
             )
             return response.choices[0].message.content
         except Exception as e:
-            print(f"Attempt {attempt+1} failed: {e}")
+            print(f"  Attempt {attempt+1} failed: {e}")
             time.sleep(30)
-    raise Exception("Failed after 3 attempts")
+    raise RuntimeError("Groq API failed after 3 attempts.")
 
-def build_article_prompt(topic, slug):
-    today = datetime.now().strftime("%B %d, %Y")
-    return f"""You are an expert Indian finance and salary writer for salarybit.in.
+def strip_markdown_fences(text: str) -> str:
+    """Remove ```html or ``` wrappers that the model sometimes adds."""
+    text = re.sub(r"^```[a-z]*\n?", "", text.strip())
+    text = re.sub(r"\n?```$", "", text.strip())
+    return text.strip()
 
-Write a COMPLETE, LONG, HIGH-QUALITY SEO article about: "{topic}"
+# ── The master HTML template injected into every prompt ───────────────────────
+def build_prompt(topic: str, slug: str, today: str) -> str:
+    canonical = f"{SITE_URL}/blog/{slug}.html"
+    og_image  = f"{SITE_URL}/blog/images/{slug}.png"
 
-STRICT REQUIREMENTS:
-1. Minimum 1800 words of body content. Do not stop early.
-2. Use REAL, ACCURATE salary data from sources like Glassdoor, AmbitionBox, LinkedIn, PayScale India. Cite the source name inline (e.g. "According to AmbitionBox...").
-3. Write naturally for Indian salaried employees — simple English, relatable examples.
-4. Include ALL of these sections:
-   - Introduction (150 words) — hook the reader with a real problem or question
-   - Salary overview table (experience-wise: 0-2 yrs, 2-5 yrs, 5-10 yrs, 10+ yrs)
-   - City-wise salary comparison table (at least 5 cities)
-   - Company-wise salary table (at least 5 companies with real data)
-   - Factors that affect salary (skills, certifications, location) — at least 300 words
-   - How to increase your salary — practical tips — at least 200 words
-   - CTA paragraph linking to SalaryBit calculator
-   - FAQ section with 5 real questions and detailed answers
+    # Full design system spelled out for the model so it never deviates
+    return f"""You are a senior content writer AND front-end developer for salarybit.in, an Indian salary and personal finance website.
 
-5. Add this internal link naturally in the article body:
-   <a href="https://salarybit.in/#calculator">calculate your exact in-hand salary on SalaryBit</a>
+Write a complete, self-contained, production-ready HTML article about:
+  TOPIC: {topic}
 
-6. Add JSON-LD schema for FAQPage at the bottom of <head>.
+═══════════════════════════════════════════════════
+ABSOLUTE RULES — never break these
+═══════════════════════════════════════════════════
+1. Output ONLY valid HTML. Zero markdown, zero explanation, zero code fences.
+2. Do NOT rewrite, clean, or reference any other article.
+3. Do NOT change nav links, footer links, or canonical URL.
+4. Minimum 1200 words of real body content (tables count).
+5. Every number, salary figure, and date must be realistic for India in 2026.
+6. Do NOT invent government sources; cite well-known public data (7th Pay Commission, EPFO, Income Tax Act, etc.).
 
-7. Use this EXACT HTML structure — output ONLY valid HTML, no markdown, no explanation:
+═══════════════════════════════════════════════════
+SEO REQUIREMENTS
+═══════════════════════════════════════════════════
+- <title> = exact topic phrase + " | SalaryBit" (60 chars max)
+- <meta name="description"> = 150–160 chars, includes primary keyword
+- <link rel="canonical" href="{canonical}">
+- Open Graph tags: og:title, og:description, og:url, og:image, og:type=article
+- Twitter card: summary_large_image
+- Schema.org JSON-LD: Article type with headline, datePublished, author, publisher
+- Schema.org JSON-LD: FAQPage with 5 Q&A entries (at bottom of <head>)
+- One H1 (the article title), then H2 for each major section, H3 for subsections
+- Breadcrumb nav: Home → Blog → Article Title
+- Alt text on the hero <img>
+
+═══════════════════════════════════════════════════
+GOOGLE ADSENSE SLOTS — place EXACTLY these 5 divs
+═══════════════════════════════════════════════════
+Place these exactly as shown (do not rename classes):
+
+<!-- SLOT 1: below breadcrumb, above H1 (leaderboard) -->
+<div class="ad-slot ad-leader" aria-label="Advertisement">
+  <ins class="adsbygoogle" style="display:block" data-ad-client="{ADSENSE_PUB_ID}" data-ad-slot="SLOT_LEADER" data-ad-format="auto" data-full-width-responsive="true"></ins>
+</div>
+
+<!-- SLOT 2: after intro paragraph (in-article) -->
+<div class="ad-slot ad-inarticle" aria-label="Advertisement">
+  <ins class="adsbygoogle" style="display:block;text-align:center" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="{ADSENSE_PUB_ID}" data-ad-slot="SLOT_INARTICLE"></ins>
+</div>
+
+<!-- SLOT 3: after the main comparison table (rectangle) -->
+<div class="ad-slot ad-rect" aria-label="Advertisement">
+  <ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="{ADSENSE_PUB_ID}" data-ad-slot="SLOT_RECT"></ins>
+</div>
+
+<!-- SLOT 4: before FAQ section (leaderboard) -->
+<div class="ad-slot ad-prefaq" aria-label="Advertisement">
+  <ins class="adsbygoogle" style="display:block" data-ad-client="{ADSENSE_PUB_ID}" data-ad-slot="SLOT_PREFAQ" data-ad-format="auto" data-full-width-responsive="true"></ins>
+</div>
+
+<!-- SLOT 5: sidebar (300×250) inside <aside class="sidebar"> -->
+<div class="ad-slot ad-sidebar" aria-label="Advertisement">
+  <ins class="adsbygoogle" style="display:block" data-ad-client="{ADSENSE_PUB_ID}" data-ad-slot="SLOT_SIDEBAR" data-ad-format="auto" data-full-width-responsive="true"></ins>
+</div>
+
+═══════════════════════════════════════════════════
+IMAGE REQUIREMENTS
+═══════════════════════════════════════════════════
+- Place a hero <img> immediately after the breadcrumb (before slot 1):
+    <img src="{og_image}" alt="DESCRIPTIVE ALT TEXT about {topic}" class="hero-img" width="1200" height="630" loading="eager">
+- The src path uses the slug-based filename above. Do not change it.
+
+═══════════════════════════════════════════════════
+CONTENT STRUCTURE (in this order)
+═══════════════════════════════════════════════════
+1. Key Takeaways box (3–5 bullet points, class="key-points")
+2. Introduction paragraph (150+ words)
+3. AD SLOT 2 (in-article)
+4. Main salary / data table with realistic 2026 figures
+5. AD SLOT 3 (rectangle, centred)
+6. 3–4 H2 sections with body text (200+ words each)
+7. "Break-even" or decision guide section (where relevant)
+8. CTA box linking to https://salarybit.in/#calculator
+9. AD SLOT 4 (pre-FAQ)
+10. FAQ section: 5 <details>/<summary> pairs (matches JSON-LD FAQPage)
+11. Disclaimer line at bottom of article
+
+═══════════════════════════════════════════════════
+EXACT CSS + FULL HTML SHELL TO USE
+═══════════════════════════════════════════════════
+Use this shell verbatim for <head> through <body> open tag and for footer.
+Fill in ARTICLE CONTENT HERE with the structured content above.
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[KEYWORD-RICH TITLE] | SalaryBit</title>
-  <meta name="description" content="[155 char description with keyword and year]">
-  <link rel="canonical" href="https://salarybit.in/blog/{slug}.html">
-  <link rel="stylesheet" href="../style.css">
-  <meta property="og:title" content="[TITLE]">
-  <meta property="og:description" content="[DESCRIPTION]">
-  <meta property="og:url" content="https://salarybit.in/blog/{slug}.html">
+  <title>FILL_TITLE | SalaryBit</title>
+  <meta name="description" content="FILL_DESCRIPTION">
+  <link rel="canonical" href="{canonical}">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="FILL_TITLE">
+  <meta property="og:description" content="FILL_DESCRIPTION">
+  <meta property="og:url" content="{canonical}">
   <meta property="og:type" content="article">
+  <meta property="og:image" content="{og_image}">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="FILL_TITLE">
+  <meta name="twitter:description" content="FILL_DESCRIPTION">
+
+  <!-- Article Schema -->
+  <script type="application/ld+json">
+  {{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "FILL_TITLE",
+    "image": "{og_image}",
+    "datePublished": "{today}",
+    "dateModified": "{today}",
+    "author": {{"@type": "Organization", "name": "SalaryBit"}},
+    "publisher": {{"@type": "Organization", "name": "SalaryBit", "url": "{SITE_URL}"}},
+    "mainEntityOfPage": "{canonical}"
+  }}
+  </script>
+
+  <!-- FAQ Schema — fill 5 real Q&A pairs -->
   <script type="application/ld+json">
   {{
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
-      {{
-        "@type": "Question",
-        "name": "[FAQ Q1]",
-        "acceptedAnswer": {{"@type": "Answer", "text": "[FAQ A1]"}}
-      }},
-      {{
-        "@type": "Question",
-        "name": "[FAQ Q2]",
-        "acceptedAnswer": {{"@type": "Answer", "text": "[FAQ A2]"}}
-      }},
-      {{
-        "@type": "Question",
-        "name": "[FAQ Q3]",
-        "acceptedAnswer": {{"@type": "Answer", "text": "[FAQ A3]"}}
-      }},
-      {{
-        "@type": "Question",
-        "name": "[FAQ Q4]",
-        "acceptedAnswer": {{"@type": "Answer", "text": "[FAQ A4]"}}
-      }},
-      {{
-        "@type": "Question",
-        "name": "[FAQ Q5]",
-        "acceptedAnswer": {{"@type": "Answer", "text": "[FAQ A5]"}}
-      }}
+      {{"@type":"Question","name":"FAQ_Q1","acceptedAnswer":{{"@type":"Answer","text":"FAQ_A1"}}}},
+      {{"@type":"Question","name":"FAQ_Q2","acceptedAnswer":{{"@type":"Answer","text":"FAQ_A2"}}}},
+      {{"@type":"Question","name":"FAQ_Q3","acceptedAnswer":{{"@type":"Answer","text":"FAQ_A3"}}}},
+      {{"@type":"Question","name":"FAQ_Q4","acceptedAnswer":{{"@type":"Answer","text":"FAQ_A4"}}}},
+      {{"@type":"Question","name":"FAQ_Q5","acceptedAnswer":{{"@type":"Answer","text":"FAQ_A5"}}}}
     ]
   }}
   </script>
+
+  <!-- AdSense script -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={ADSENSE_PUB_ID}" crossorigin="anonymous"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {{
+      --saffron:#FF6B00;--saffron-light:#FFF3E8;
+      --teal:#138170;--teal-light:#E8F5F2;
+      --navy:#0D2137;--navy-mid:#1A3A5C;
+      --text:#1C2B3A;--muted:#5A6A7A;
+      --border:#E2E8F0;--bg:#FAFBFC;--white:#FFFFFF;
+    }}
+    *,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
+    body{{font-family:'DM Sans',sans-serif;font-size:17px;line-height:1.8;color:var(--text);background:var(--bg)}}
+
+    /* NAV */
+    header{{background:var(--navy);position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.25)}}
+    nav{{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:28px;padding:14px 24px}}
+    nav a{{color:#CBD5E1;text-decoration:none;font-size:14px;font-weight:500;transition:color .2s}}
+    nav a:hover{{color:var(--white)}}
+    nav a.brand{{color:var(--white);font-size:18px;font-weight:700;font-family:'Lora',serif;margin-right:auto}}
+    nav a.brand span{{color:var(--saffron)}}
+
+    /* LAYOUT */
+    .page-wrap{{max-width:1100px;margin:0 auto;padding:0 24px 60px;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:40px;align-items:start}}
+    article{{min-width:0}}
+
+    /* BREADCRUMB */
+    .breadcrumb{{font-size:13px;color:var(--muted);margin:24px 0 16px}}
+    .breadcrumb a{{color:var(--teal);text-decoration:none}}
+    .breadcrumb a:hover{{text-decoration:underline}}
+
+    /* HERO IMAGE */
+    .hero-img{{width:100%;border-radius:12px;display:block;margin-bottom:24px;box-shadow:0 4px 24px rgba(0,0,0,.1)}}
+
+    /* META */
+    .article-meta{{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--muted);margin-bottom:20px;flex-wrap:wrap}}
+    .badge{{background:var(--saffron-light);color:var(--saffron);font-weight:600;font-size:12px;padding:3px 10px;border-radius:99px}}
+
+    /* HEADINGS */
+    h1{{font-family:'Lora',serif;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:700;line-height:1.25;color:var(--navy);margin-bottom:20px}}
+    h2{{font-family:'Lora',serif;font-size:1.45rem;font-weight:700;color:var(--navy);margin:44px 0 16px;padding-bottom:10px;border-bottom:2px solid var(--saffron)}}
+    h3{{font-size:1.1rem;font-weight:600;color:var(--navy-mid);margin:28px 0 10px}}
+    p{{margin-bottom:18px}}
+    a{{color:var(--teal)}}
+    a:hover{{color:var(--saffron)}}
+    ul,ol{{padding-left:22px;margin-bottom:18px}}
+    li{{margin-bottom:8px}}
+
+    /* KEY POINTS */
+    .key-points{{background:var(--teal-light);border-left:4px solid var(--teal);border-radius:0 8px 8px 0;padding:20px 24px;margin:24px 0}}
+    .key-points p{{margin:0 0 6px;font-weight:600;font-size:15px;color:var(--teal)}}
+    .key-points ul{{margin-bottom:0;padding-left:20px}}
+    .key-points li{{font-size:15px;margin-bottom:6px}}
+
+    /* ALERT */
+    .alert{{background:var(--saffron-light);border-left:4px solid var(--saffron);border-radius:0 8px 8px 0;padding:16px 20px;margin:24px 0;font-size:15px}}
+    .alert strong{{color:var(--saffron)}}
+
+    /* TABLES */
+    .table-wrap{{overflow-x:auto;margin:24px 0}}
+    table{{width:100%;border-collapse:collapse;font-size:15px;min-width:480px}}
+    thead th{{background:var(--navy);color:var(--white);padding:12px 16px;text-align:left;font-weight:600;font-size:14px;letter-spacing:.03em}}
+    tbody tr:nth-child(even){{background:var(--saffron-light)}}
+    tbody tr:nth-child(odd){{background:var(--white)}}
+    tbody td{{padding:11px 16px;border-bottom:1px solid var(--border)}}
+    .highlight-row td{{background:var(--teal-light)!important;font-weight:600;color:var(--teal)}}
+
+    /* CTA */
+    .cta-box{{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);border-radius:12px;padding:32px;text-align:center;margin:40px 0;color:var(--white)}}
+    .cta-box h3{{font-family:'Lora',serif;font-size:1.3rem;margin-bottom:8px;color:var(--white);border:none;padding:0;margin-top:0}}
+    .cta-box p{{color:#94A3B8;margin-bottom:20px;font-size:15px}}
+    .cta-btn{{display:inline-block;background:var(--saffron);color:var(--white);font-weight:700;font-size:15px;padding:13px 32px;border-radius:8px;text-decoration:none;transition:background .2s,transform .15s}}
+    .cta-btn:hover{{background:#E05500;color:var(--white);transform:translateY(-1px)}}
+
+    /* AD SLOTS */
+    .ad-slot{{margin:32px 0;text-align:center;min-height:50px}}
+    .ad-leader{{min-height:90px}}
+    .ad-inarticle{{min-height:100px}}
+    .ad-rect{{min-height:280px;display:flex;justify-content:center;align-items:center}}
+    .ad-prefaq{{min-height:90px}}
+    .ad-sidebar{{min-height:250px}}
+
+    /* FAQ */
+    .faq-section{{margin-top:48px}}
+    details{{border:1px solid var(--border);border-radius:8px;margin-bottom:12px;overflow:hidden}}
+    summary{{padding:16px 20px;font-weight:600;font-size:15px;cursor:pointer;color:var(--navy);background:var(--white);display:flex;justify-content:space-between;align-items:center;list-style:none;transition:background .2s}}
+    summary:hover{{background:var(--saffron-light)}}
+    summary::after{{content:'+';font-size:20px;color:var(--saffron);flex-shrink:0;margin-left:12px}}
+    details[open] summary::after{{content:'−'}}
+    details[open] summary{{background:var(--saffron-light)}}
+    details p{{padding:0 20px 18px;margin:0;font-size:15px;color:var(--muted);line-height:1.7}}
+
+    /* SIDEBAR */
+    .sidebar{{position:sticky;top:76px}}
+    .sidebar-widget{{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:24px}}
+    .sidebar-widget h4{{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:14px;font-weight:700}}
+    .sidebar-widget a{{display:block;font-size:14px;color:var(--navy);text-decoration:none;padding:8px 0;border-bottom:1px solid var(--border);line-height:1.5}}
+    .sidebar-widget a:last-child{{border-bottom:none}}
+    .sidebar-widget a:hover{{color:var(--saffron)}}
+
+    /* FOOTER */
+    footer{{background:var(--navy);color:#64748B;text-align:center;padding:28px 20px;font-size:14px}}
+    footer a{{color:#94A3B8;text-decoration:none}}
+    footer a:hover{{color:var(--white)}}
+
+    /* RESPONSIVE */
+    @media(max-width:860px){{.page-wrap{{grid-template-columns:1fr}}.sidebar{{position:static}}}}
+    @media(max-width:480px){{nav{{gap:16px}}nav a:not(.brand):not(:last-child){{display:none}}}}
+  </style>
 </head>
 <body>
-  <header>
-    <nav>
-      <a href="https://salarybit.in/index.html"><strong>SalaryBit</strong></a>
-      <a href="https://salarybit.in/index.html#calculator">Salary Calculator</a>
-      <a href="https://salarybit.in/blog/">Blog</a>
+
+<header>
+  <nav>
+    <a href="{SITE_URL}/index.html" class="brand">Salary<span>Bit</span></a>
+    <a href="{SITE_URL}/index.html#calculator">Salary Calculator</a>
+    <a href="{SITE_URL}/blog/">Blog</a>
+  </nav>
+</header>
+
+<div class="page-wrap">
+  <article>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="{SITE_URL}/">Home</a> &rsaquo;
+      <a href="{SITE_URL}/blog/">Blog</a> &rsaquo;
+      FILL_BREADCRUMB_LABEL
     </nav>
-  </header>
-  <main class="article-container">
-    <article>
-      <div class="article-meta">
-        <span>Updated {today}</span>
-        <span>10 min read</span>
+
+    <!-- Hero Image -->
+    <img src="{og_image}" alt="FILL_ALT_TEXT" class="hero-img" width="1200" height="630" loading="eager">
+
+    <!-- AD SLOT 1: Leaderboard (top of article) -->
+    <div class="ad-slot ad-leader" aria-label="Advertisement">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="{ADSENSE_PUB_ID}" data-ad-slot="SLOT_LEADER" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+
+    <!-- Article meta -->
+    <div class="article-meta">
+      <span class="badge">FILL_CATEGORY</span>
+      <span>Updated {today}</span>
+      <span>&#128337; FILL_READ_TIME min read</span>
+    </div>
+
+    <h1>FILL_H1</h1>
+
+    <!-- Key takeaways -->
+    FILL_KEY_POINTS_BOX
+
+    <!-- Introduction -->
+    FILL_INTRO_PARAGRAPHS
+
+    <!-- AD SLOT 2: In-article (after intro) -->
+    <div class="ad-slot ad-inarticle" aria-label="Advertisement">
+      <ins class="adsbygoogle" style="display:block;text-align:center" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="{ADSENSE_PUB_ID}" data-ad-slot="SLOT_INARTICLE"></ins>
+    </div>
+
+    <!-- Main content sections -->
+    FILL_MAIN_CONTENT
+
+    <!-- AD SLOT 3: Rectangle (after main table) -->
+    <div class="ad-slot ad-rect" aria-label="Advertisement">
+      <ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="{ADSENSE_PUB_ID}" data-ad-slot="SLOT_RECT"></ins>
+    </div>
+
+    <!-- More content sections -->
+    FILL_SECONDARY_CONTENT
+
+    <!-- CTA -->
+    <div class="cta-box">
+      <h3>&#128200; Calculate Your Exact In-Hand Salary</h3>
+      <p>Use SalaryBit's free calculator — enter your CTC and get your take-home pay in seconds.</p>
+      <a href="{SITE_URL}/#calculator" class="cta-btn">Try the Free Calculator &#8594;</a>
+    </div>
+
+    <!-- AD SLOT 4: Before FAQ -->
+    <div class="ad-slot ad-prefaq" aria-label="Advertisement">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="{ADSENSE_PUB_ID}" data-ad-slot="SLOT_PREFAQ" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+      <h2>Frequently Asked Questions</h2>
+      FILL_FAQ_DETAILS
+    </section>
+
+    <p style="font-size:13px;color:var(--muted);margin-top:32px">
+      <em>Disclaimer: Salary figures are approximate and based on publicly available data. Actual salaries may vary by company, location, and experience. This article is for informational purposes only.</em>
+    </p>
+
+  </article>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-widget">
+      <!-- AD SLOT 5: Sidebar -->
+      <div class="ad-slot ad-sidebar" aria-label="Advertisement">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="{ADSENSE_PUB_ID}" data-ad-slot="SLOT_SIDEBAR" data-ad-format="auto" data-full-width-responsive="true"></ins>
       </div>
-      <div class="ad-slot"><!-- Ad --></div>
+    </div>
 
-      [FULL ARTICLE CONTENT HERE — MINIMUM 1800 WORDS]
+    <div class="sidebar-widget">
+      <h4>&#128218; Related Articles</h4>
+      <a href="{SITE_URL}/blog/article2-old-vs-new-tax-regime.html">Old vs New Tax Regime FY 2026-27</a>
+      <a href="{SITE_URL}/blog/">HRA Exemption Calculator Guide</a>
+      <a href="{SITE_URL}/blog/">Section 80C Investments Explained</a>
+      <a href="{SITE_URL}/blog/">EPF vs PPF: Which is Better?</a>
+    </div>
 
-      <div class="ad-slot"><!-- Ad --></div>
+    <div class="sidebar-widget">
+      <h4>&#128200; Free Tools</h4>
+      <a href="{SITE_URL}/#calculator">&#8594; In-Hand Salary Calculator</a>
+      <a href="{SITE_URL}/#calculator">&#8594; Tax Regime Comparison</a>
+    </div>
+  </aside>
+</div>
 
-      <div class="calculator-cta">
-        <h3>Calculate Your In-Hand Salary</h3>
-        <p>Use SalaryBit's free salary calculator to find your exact take-home pay after tax, PF and all deductions.</p>
-        <a href="https://salarybit.in/#calculator" class="cta-button">Calculate Now — Free</a>
-      </div>
+<footer>
+  <p>&copy; 2026 <a href="{SITE_URL}/">SalaryBit.in</a> &nbsp;|&nbsp;
+     <a href="{SITE_URL}/index.html">Home</a> &nbsp;|&nbsp;
+     <a href="{SITE_URL}/blog/">Blog</a> &nbsp;|&nbsp;
+     <a href="{SITE_URL}/#calculator">Salary Calculator</a></p>
+  <p style="margin-top:8px;font-size:12px;">
+    Disclaimer: Information on this site is for educational purposes only. Consult a financial advisor for personalised advice.
+  </p>
+</footer>
 
-      <div class="ad-slot"><!-- Ad --></div>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({{}});
+</script>
 
-      <section class="faq-section">
-        <h2>Frequently Asked Questions</h2>
-        [5 FAQ ITEMS HERE as <details><summary>Q</summary><p>A</p></details>]
-      </section>
-
-    </article>
-  </main>
-  <footer>
-    <p>&copy; 2026 SalaryBit.in | <a href="https://salarybit.in/index.html">Home</a> | <a href="https://salarybit.in/blog/">Blog</a></p>
-  </footer>
 </body>
 </html>
 
+═══════════════════════════════════════════════════
+NOW WRITE THE FULL ARTICLE
+═══════════════════════════════════════════════════
+Replace every FILL_* placeholder with real content about "{topic}".
+- Use real 2026 Indian salary data.
+- All tables must have at least 4 rows of real data.
+- FAQ must have exactly 5 <details>/<summary> pairs.
+- The JSON-LD FAQ must match the <details> FAQ.
+- Do NOT add any extra <style> blocks or change the CSS.
+- Output only the complete HTML document, nothing else.
 Today's date: {today}
-Topic: {topic}
 """
 
-def build_clean_prompt(article_to_clean, html_content):
-    today = datetime.now().strftime("%B %d, %Y")
-    slug = article_to_clean.replace(".html", "")
-    return f"""You are an expert Indian finance writer and SEO specialist for salarybit.in.
+# ── Core: write one article ────────────────────────────────────────────────────
+def write_article(topic: str) -> tuple[str, str]:
+    slug    = make_slug(topic)
+    today   = datetime.now().strftime("%B %d, %Y")
+    iso     = datetime.now().strftime("%Y-%m-%d")
 
-Rewrite and GREATLY IMPROVE this existing article. The current version is too short and weak.
+    print(f"  Writing: {topic}")
+    prompt = build_prompt(topic, slug, today)
+    html   = call_groq(prompt, max_tokens=6000)
+    html   = strip_markdown_fences(html)
 
-STRICT REQUIREMENTS:
-1. Minimum 1800 words of body content.
-2. REMOVE ALL personal details — names, phone numbers, emails, Aadhaar, PAN, bank accounts.
-3. Use REAL salary/finance data. Cite sources like AmbitionBox, Glassdoor, PayScale inline.
-4. Write simply for Indian salaried employees.
-5. Add ALL these sections:
-   - Strong introduction (150 words)
-   - Data tables (salary by experience, city, company where relevant)
-   - Factors affecting the topic — at least 300 words
-   - Practical tips section — at least 200 words
-   - Internal link to SalaryBit calculator: <a href="https://salarybit.in/#calculator">calculate your in-hand salary</a>
-   - FAQ with 5 questions and detailed answers
-6. Add FAQPage JSON-LD schema in <head>.
-7. Output ONLY valid HTML, no markdown, no explanation.
+    # Sanity check: must start with <!DOCTYPE
+    if not html.strip().lower().startswith("<!doctype"):
+        raise ValueError(f"Model did not return valid HTML for topic: {topic}")
 
-Use this HTML structure:
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[TITLE] | SalaryBit</title>
-  <meta name="description" content="[155 char SEO description]">
-  <link rel="canonical" href="https://salarybit.in/blog/{slug}.html">
-  <link rel="stylesheet" href="../style.css">
-  <meta property="og:title" content="[TITLE]">
-  <meta property="og:description" content="[DESCRIPTION]">
-  <meta property="og:url" content="https://salarybit.in/blog/{slug}.html">
-  <meta property="og:type" content="article">
-  <script type="application/ld+json">
-  {{
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {{"@type":"Question","name":"[Q1]","acceptedAnswer":{{"@type":"Answer","text":"[A1]"}}}},
-      {{"@type":"Question","name":"[Q2]","acceptedAnswer":{{"@type":"Answer","text":"[A2]"}}}},
-      {{"@type":"Question","name":"[Q3]","acceptedAnswer":{{"@type":"Answer","text":"[A3]"}}}},
-      {{"@type":"Question","name":"[Q4]","acceptedAnswer":{{"@type":"Answer","text":"[A4]"}}}},
-      {{"@type":"Question","name":"[Q5]","acceptedAnswer":{{"@type":"Answer","text":"[A5]"}}}}
-    ]
-  }}
-  </script>
-</head>
-<body>
-  <header>
-    <nav>
-      <a href="https://salarybit.in/index.html"><strong>SalaryBit</strong></a>
-      <a href="https://salarybit.in/index.html#calculator">Salary Calculator</a>
-      <a href="https://salarybit.in/blog/">Blog</a>
-    </nav>
-  </header>
-  <main class="article-container">
-    <article>
-      <div class="article-meta">
-        <span>Updated {today}</span>
-        <span>10 min read</span>
-      </div>
-      <div class="ad-slot"><!-- Ad --></div>
-      [FULL REWRITTEN ARTICLE — MINIMUM 1800 WORDS]
-      <div class="ad-slot"><!-- Ad --></div>
-      <div class="calculator-cta">
-        <h3>Calculate Your In-Hand Salary</h3>
-        <p>Use SalaryBit's free calculator to find your exact take-home pay.</p>
-        <a href="https://salarybit.in/#calculator" class="cta-button">Calculate Now — Free</a>
-      </div>
-      <div class="ad-slot"><!-- Ad --></div>
-      <section class="faq-section">
-        <h2>Frequently Asked Questions</h2>
-        [5 FAQ as <details><summary>Q</summary><p>A</p></details>]
-      </section>
-    </article>
-  </main>
-  <footer>
-    <p>&copy; 2026 SalaryBit.in | <a href="https://salarybit.in/index.html">Home</a> | <a href="https://salarybit.in/blog/">Blog</a></p>
-  </footer>
-</body>
-</html>
-
-Existing article to rewrite:
-{html_content}
-"""
-
-def clean_existing_article():
-    processed = load_json(PROCESSED_FILE, [])
-    article_to_clean = None
-    for f in FILES_TO_CLEAN:
-        if f not in processed:
-            article_to_clean = f
-            break
-    if not article_to_clean:
-        print("All articles already cleaned!")
-        return
-    filepath = f"{BLOG_FOLDER}/{article_to_clean}"
-    if not os.path.exists(filepath):
-        print(f"File not found: {article_to_clean}")
-        processed.append(article_to_clean)
-        save_json(PROCESSED_FILE, processed)
-        return
-    print(f"Cleaning: {article_to_clean}")
-    with open(filepath, "r", encoding="utf-8") as f:
-        html_content = f.read()
-    # increased context window — send more of the original article
-    html_content = html_content[:10000]
-    prompt = build_clean_prompt(article_to_clean, html_content)
-    improved = call_groq(prompt)
-    with open(filepath, "w", encoding="utf-8") as f:
-        f.write(improved)
-    processed.append(article_to_clean)
-    save_json(PROCESSED_FILE, processed)
-    print(f"Cleaned: {article_to_clean}")
-
-def write_new_article():
-    published = load_json(PUBLISHED_FILE, [])
-    topic = None
-    for t in NEW_TOPICS:
-        if t not in published:
-            topic = t
-            break
-    if not topic:
-        published = []
-        save_json(PUBLISHED_FILE, published)
-        topic = NEW_TOPICS[0]
-    print(f"Writing: {topic}")
-    slug = make_slug(topic)
-    prompt = build_article_prompt(topic, slug)
-    html = call_groq(prompt)
-    filename = f"{slug}.html"
     os.makedirs(BLOG_FOLDER, exist_ok=True)
-    with open(f"{BLOG_FOLDER}/{filename}", "w", encoding="utf-8") as f:
+    filepath = os.path.join(BLOG_FOLDER, f"{slug}.html")
+    with open(filepath, "w", encoding="utf-8") as f:
         f.write(html)
-    published.append(topic)
-    save_json(PUBLISHED_FILE, published)
-    print(f"Saved: {filename}")
-    return topic, filename
 
-def extract_title_from_html(html):
-    """Extract title from generated HTML for blog index."""
-    import re
-    match = re.search(r"<title>(.*?)\s*\|\s*SalaryBit</title>", html, re.IGNORECASE)
-    if match:
-        return match.group(1).strip()
-    return None
+    print(f"  Saved  → {filepath}")
+    return topic, f"{slug}.html"
 
-def update_blog_index(topic, filename):
-    filepath = "blog/index.html"
-    if not os.path.exists(filepath):
-        print("blog/index.html not found!")
+# ── Blog index update ─────────────────────────────────────────────────────────
+def update_blog_index(topic: str, filename: str):
+    if not os.path.exists(BLOG_INDEX_PATH):
+        print(f"  ⚠  {BLOG_INDEX_PATH} not found — skipping index update.")
+        print(f"     Add <!-- NEW-ARTICLES --> comment to blog/index.html to enable auto-update.")
         return
-    # Try to read actual generated title from the file
-    article_path = f"{BLOG_FOLDER}/{filename}"
-    display_title = topic
-    if os.path.exists(article_path):
-        with open(article_path, "r", encoding="utf-8") as f:
-            content = f.read()
-        extracted = extract_title_from_html(content)
-        if extracted:
-            display_title = extracted
-    with open(filepath, "r", encoding="utf-8") as f:
+
+    with open(BLOG_INDEX_PATH, "r", encoding="utf-8") as f:
         content = f.read()
-    new_card = f"""<a href="https://salarybit.in/blog/{filename}">
+
+    marker = "<!-- NEW-ARTICLES -->"
+    if marker not in content:
+        print(f"  ⚠  Marker '{marker}' not in blog/index.html — skipping index update.")
+        return
+
+    month = datetime.now().strftime("%B %Y")
+    card  = f"""<a href="{SITE_URL}/blog/{filename}">
         <div class="article-card">
-            <h3>{display_title}</h3>
-            <span>{datetime.now().strftime('%B %Y')}</span>
+            <h3>{topic}</h3>
+            <span>{month}</span>
         </div>
     </a>"""
-    if "<!-- NEW-ARTICLES -->" in content:
-        content = content.replace("<!-- NEW-ARTICLES -->", f"<!-- NEW-ARTICLES -->\n    {new_card}")
-        with open(filepath, "w", encoding="utf-8") as f:
-            f.write(content)
-        print(f"Blog index updated: {display_title}")
-    else:
-        print("WARNING: Add <!-- NEW-ARTICLES --> comment to blog/index.html!")
+    content = content.replace(marker, f"{marker}\n    {card}")
 
+    with open(BLOG_INDEX_PATH, "w", encoding="utf-8") as f:
+        f.write(content)
+    print(f"  Blog index updated.")
+
+# ── Sitemap ───────────────────────────────────────────────────────────────────
 def update_sitemap():
-    articles = []
-    if os.path.exists(BLOG_FOLDER):
-        for f in sorted(os.listdir(BLOG_FOLDER)):
-            if f.endswith(".html") and f != "index.html":
-                articles.append(f)
-    today = datetime.now().strftime("%Y-%m-%d")
-    urls = [
-        "<url><loc>https://salarybit.in/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>",
-        "<url><loc>https://salarybit.in/blog/</loc><changefreq>daily</changefreq><priority>0.9</priority></url>",
-    ]
-    for a in articles:
+    articles = [
+        f for f in os.listdir(BLOG_FOLDER)
+        if f.endswith(".html") and f != "index.html"
+    ] if os.path.exists(BLOG_FOLDER) else []
+
+    today  = datetime.now().strftime("%Y-%m-%d")
+    urls   = [f"<url><loc>{SITE_URL}/</loc><priority>1.0</priority></url>"]
+    for a in sorted(articles):
         urls.append(
-            f"<url><loc>https://salarybit.in/blog/{a}</loc>"
-            f"<lastmod>{today}</lastmod>"
-            f"<changefreq>monthly</changefreq>"
-            f"<priority>0.8</priority></url>"
+            f"<url><loc>{SITE_URL}/blog/{a}</loc>"
+            f"<lastmod>{today}</lastmod><priority>0.8</priority></url>"
         )
+
     sitemap = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
         + "\n".join(urls)
         + "\n</urlset>"
     )
-    with open("sitemap.xml", "w") as f:
+    with open(SITEMAP_PATH, "w") as f:
         f.write(sitemap)
-    print(f"Sitemap updated with {len(articles)} articles!")
+    print(f"  Sitemap updated ({len(articles)} articles).")
 
-def run_agent():
-    print(f"SalaryBit Agent | {datetime.now().strftime('%Y-%m-%d %H:%M')}")
-    print("=" * 40)
-    print("TASK 1: Cleaning existing article...")
-    clean_existing_article()
-    time.sleep(10)
-    print("TASK 2: Writing new article...")
-    topic, filename = write_new_article()
-    print("TASK 3: Updating blog index...")
-    update_blog_index(topic, filename)
+# ── Main runner ───────────────────────────────────────────────────────────────
+def run_agent(write_all: bool = False):
+    published = load_json(PUBLISHED_FILE, [])
+    remaining = [t for t in NEW_TOPICS if t not in published]
+
+    if not remaining:
+        print("✅ All topics already published! Reset published_topics.json to restart.")
+        return
+
+    topics_to_write = remaining if write_all else [remaining[0]]
+
+    for i, topic in enumerate(topics_to_write):
+        print(f"\n[{i+1}/{len(topics_to_write)}] {topic}")
+        try:
+            topic_name, filename = write_article(topic)
+            update_blog_index(topic_name, filename)
+            published.append(topic)
+            save_json(PUBLISHED_FILE, published)
+            if write_all and i < len(topics_to_write) - 1:
+                print("  Waiting 15s before next article...")
+                time.sleep(15)
+        except Exception as e:
+            print(f"  ❌ Failed: {e}")
+            continue
+
     update_sitemap()
-    print("=" * 40)
-    print("Done!")
+    print("\n✅ Done!")
 
 if __name__ == "__main__":
-    run_agent()
+    write_all = "--all" in sys.argv
+    print(f"SalaryBit Agent | {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    print("=" * 50)
+    print("Mode:", "Write ALL remaining articles" if write_all else "Write ONE article")
+    print("=" * 50)
+    run_agent(write_all=write_all)

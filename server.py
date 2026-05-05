@@ -323,12 +323,26 @@ def vc_verify_payment():
     ).hexdigest()
     if expected != signature:
         return jsonify({"ok": False, "error": "Payment verification failed"}), 400
-    record = vc_orders.get(order_id)
-    if not record: return jsonify({"ok": False, "error": "Order not found"}), 404
-    if record["paid"]: return jsonify({"ok": True, "alreadySent": True})
-    record["paid"] = True
+    # Fetch order details directly from Razorpay — no memory needed
     try:
-        vc_send_report_email(record["email"], record["vehicleNumber"], record["vehicleData"])
+        order  = rzp.order.fetch(order_id)
+        reg_no = order.get("notes", {}).get("vehicleNumber", "")
+        email  = order.get("notes", {}).get("email", "")
+    except Exception as e:
+        print(f"vc_fetch_order error: {e}")
+        return jsonify({"ok": False, "error": "Could not fetch order details"}), 500
+
+    if not reg_no or not email:
+        return jsonify({"ok": False, "error": "Missing vehicle or email in order"}), 400
+
+    try:
+        data = vc_fetch_vehicle(reg_no)
+    except Exception as e:
+        print(f"vc_fetch_vehicle error: {e}")
+        return jsonify({"ok": False, "error": "Could not fetch vehicle data"}), 502
+
+    try:
+        vc_send_report_email(email, reg_no, data)
         return jsonify({"ok": True, "message": "Report sent to your email"})
     except Exception as e:
         print(f"vc_email error: {e}")

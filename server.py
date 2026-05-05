@@ -376,7 +376,11 @@ def vc_verify_payment():
     order_id   = (body or {}).get("razorpay_order_id", "")
     payment_id = (body or {}).get("razorpay_payment_id", "")
     signature  = (body or {}).get("razorpay_signature", "")
+    email      = (body or {}).get("email", "")
+    phone      = (body or {}).get("phone", "")
+    vehicle_no = (body or {}).get("vehicleNumber", "")
 
+    # Verify signature
     msg      = f"{order_id}|{payment_id}"
     expected = hmac.new(
         os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
@@ -386,15 +390,27 @@ def vc_verify_payment():
     if expected != signature:
         return jsonify({"ok": False, "error": "Payment verification failed"}), 400
 
+    # Try in-memory first, fallback to re-fetching vehicle data
     record = vc_orders.get(order_id)
-    if not record:
-        return jsonify({"ok": False, "error": "Order not found"}), 404
-    if record["paid"]:
-        return jsonify({"ok": True, "alreadySent": True})
+    if record:
+        email      = record["email"]
+        phone      = record["phone"]
+        vehicle_no = record["vehicleNumber"]
+        data       = record["vehicleData"]
+    else:
+        # Server restarted — re-fetch vehicle data using order notes
+        try:
+            order      = rzp.order.fetch(order_id)
+            notes      = order.get("notes", {})
+            vehicle_no = notes.get("vehicleNumber", vehicle_no)
+            email      = notes.get("email", email)
+            data       = vc_fetch_vehicle(vehicle_no)
+        except Exception as e:
+            print(f"vc re-fetch error: {e}")
+            return jsonify({"ok": False, "error": "Order not found. Contact support with payment ID."}), 404
 
-    record["paid"] = True
     try:
-        vc_send_report_email(record["email"], record["vehicleNumber"], record["vehicleData"])
+        vc_send_report_email(email, vehicle_no, data)
         return jsonify({"ok": True, "message": "Report sent to your email"})
     except Exception as e:
         print(f"vc_email error: {e}")

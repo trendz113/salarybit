@@ -27,7 +27,7 @@ except:
 from pyzbar.pyzbar import decode
 import io
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static")
 CORS(app)
 
 rzp = razorpay.Client(

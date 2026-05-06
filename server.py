@@ -1,16 +1,14 @@
 import os
 import hmac
 import hashlib
-import json
 import tempfile
 import requests
 import razorpay
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import fitz  # PyMuPDF
+import fitz
 from PIL import Image
 import ctypes
-import ctypes.util
 
 try:
     ctypes.CDLL('libzbar.so.0')
@@ -114,10 +112,17 @@ def health():
 #  VAHANCLEAR
 # ════════════════════════════════════════════════════════════
 
+def clean(val, fallback="—"):
+    """Return fallback if value is None, empty string, or the string 'null'."""
+    if val is None or str(val).strip().lower() in ("", "null", "none", "n/a"):
+        return fallback
+    return str(val).strip()
+
+
 def vc_fetch_vehicle(reg_no):
     res = requests.post(
         "https://sandbox.surepass.app/api/v1/rc/rc-full",
-        # PRODUCTION: "https://kyc-api.surepass.app/api/v1/rc/rc-full"
+        # PRODUCTION → "https://kyc-api.surepass.app/api/v1/rc/rc-full"
         json={"id_number": reg_no},
         headers={"Authorization": f"Bearer {os.environ.get('SUREPASS_TOKEN', '')}"},
         timeout=10
@@ -128,38 +133,47 @@ def vc_fetch_vehicle(reg_no):
 
 def vc_build_preview(data):
     def mask(name):
-        if not name: return "••••••"
-        parts = name.split()
+        n = clean(name, "")
+        if not n:
+            return "••••••"
+        parts = n.split()
         return parts[0][0] + "•••• " + (parts[1][0] + "••••" if len(parts) > 1 else "")
+
     has_hypo = bool(data.get("hypothecation_details"))
     return {
-        "regNo":        data.get("registration_number", "—"),
-        "vehicleClass": data.get("vehicle_category", "—"),
-        "make":         data.get("maker_description", "—"),
+        "regNo":        clean(data.get("registration_number")),
+        "vehicleClass": clean(data.get("vehicle_category")),
+        "make":         clean(data.get("maker_description")),
         "ownerName":    mask(data.get("owner_name", "")),
         "hasHypo":      has_hypo,
-        "challanCount": data.get("challan_count", "?"),
+        "challanCount": clean(data.get("challan_count"), "0"),
     }
 
 
 def vc_build_report(data, reg_no):
-    """Full report as dict — sent as JSON to frontend to render on screen."""
     has_hypo = bool(data.get("hypothecation_details"))
     hypo     = data.get("hypothecation_details") or {}
+
+    # Build model string cleanly
+    make  = clean(data.get("maker_description"))
+    model = clean(data.get("model"), "")
+    make_model = f"{make} {model}".strip() if model else make
+
     return {
         "regNo":             reg_no,
-        "ownerName":         data.get("owner_name", "—"),
-        "make":              data.get("maker_description", "—"),
-        "model":             data.get("model", "—"),
-        "vehicleCategory":   data.get("vehicle_category", "—"),
-        "fuelType":          data.get("fuel_description", "—"),
-        "regDate":           data.get("registration_date", "—"),
-        "insuranceUpto":     data.get("insurance_upto", "—"),
-        "pucUpto":           data.get("pucc_upto", "—"),
-        "challanCount":      data.get("challan_count", "—"),
+        "ownerName":         clean(data.get("owner_name")),
+        "makeModel":         make_model,
+        "vehicleCategory":   clean(data.get("vehicle_category")),
+        "fuelType":          clean(data.get("fuel_description")),
+        "regDate":           clean(data.get("registration_date")),
+        "insuranceUpto":     clean(data.get("insurance_upto")),
+        "pucUpto":           clean(data.get("pucc_upto")),
+        "challanCount":      clean(data.get("challan_count"), "0"),
+        "colour":            clean(data.get("colour")),
+        "ownerCount":        clean(data.get("owner_count"), "1"),
         "hasHypo":           has_hypo,
-        "financerName":      hypo.get("financier_name", "None") if has_hypo else "None",
-        "hypothecationDate": hypo.get("hypothecation_date", "—") if has_hypo else "—",
+        "financerName":      clean(hypo.get("financier_name")) if has_hypo else "None",
+        "hypothecationDate": clean(hypo.get("hypothecation_date")) if has_hypo else "—",
     }
 
 
@@ -212,7 +226,6 @@ def vc_verify_payment():
     signature  = (body or {}).get("razorpay_signature", "")
     vehicle_no = (body or {}).get("vehicleNumber", "")
 
-    # Verify signature
     msg      = f"{order_id}|{payment_id}"
     expected = hmac.new(
         os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
@@ -221,7 +234,6 @@ def vc_verify_payment():
     if expected != signature:
         return jsonify({"ok": False, "error": "Payment verification failed"}), 400
 
-    # Get data from memory or re-fetch
     record = vc_orders.get(order_id)
     if record:
         data       = record["vehicleData"]

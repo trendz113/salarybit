@@ -3,133 +3,127 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VahanClear — Vehicle RC Report & Hypothecation Check</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <title>VahanClear — Vehicle RC Report</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <style>
     :root {
-      --bg:      #f5f3ee;
-      --bg2:     #edeae3;
-      --ink:     #12100e;
-      --ink2:    #4a4540;
-      --ink3:    #8a8278;
-      --gold:    #c8860a;
-      --gold-bg: #fdf3dd;
-      --red:     #c0392b;
-      --red-bg:  #fdecea;
-      --green:   #1a7a4a;
-      --green-bg:#e8f5ee;
-      --border:  #d8d3ca;
-      --white:   #ffffff;
-      --radius:  10px;
-      --mono:    'JetBrains Mono', monospace;
-      --display: 'Syne', sans-serif;
-      --body:    'DM Sans', sans-serif;
+      --bg:#f5f3ee; --bg2:#edeae3; --ink:#12100e; --ink2:#4a4540; --ink3:#8a8278;
+      --gold:#c8860a; --gold-bg:#fdf3dd; --red:#c0392b; --red-bg:#fdecea;
+      --green:#1a7a4a; --green-bg:#e8f5ee; --border:#d8d3ca; --white:#ffffff;
+      --radius:10px; --mono:'JetBrains Mono',monospace; --display:'Syne',sans-serif; --body:'DM Sans',sans-serif;
     }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--ink);font-family:var(--body);min-height:100vh}
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { background: var(--bg); color: var(--ink); font-family: var(--body); min-height: 100vh; }
+    .nav{background:var(--ink);padding:16px 32px;display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{font-family:var(--display);font-size:20px;font-weight:800;color:var(--gold);text-decoration:none}
+    .nav-logo span{color:#fff}
+    .nav-tag{font-size:11px;color:#888;font-family:var(--mono);letter-spacing:1px}
 
-    .nav { background: var(--ink); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
-    .nav-logo { font-family: var(--display); font-size: 20px; font-weight: 800; color: var(--gold); letter-spacing: -0.3px; text-decoration: none; }
-    .nav-logo span { color: #fff; }
-    .nav-tag { font-size: 11px; color: #888; font-family: var(--mono); letter-spacing: 1px; }
-    .nav-back { font-size: 13px; color: #aaa; text-decoration: none; font-family: var(--mono); transition: color .15s; }
-    .nav-back:hover { color: var(--gold); }
+    .hero{max-width:620px;margin:0 auto;padding:48px 24px 0;text-align:center}
+    .hero-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:12px}
+    .hero h1{font-family:var(--display);font-size:38px;font-weight:800;line-height:1.1;margin-bottom:12px}
+    .hero h1 em{font-style:normal;color:var(--gold)}
+    .hero p{font-size:15px;color:var(--ink2);line-height:1.65;max-width:460px;margin:0 auto 28px}
+    .price-badge{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;padding:8px 18px;border-radius:40px;font-size:14px;font-weight:600;margin-bottom:28px}
+    .price-badge .amt{font-family:var(--display);font-size:20px;color:var(--gold)}
 
-    .hero { max-width: 640px; margin: 0 auto; padding: 56px 24px 0; text-align: center; }
-    .hero-eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; margin-bottom: 14px; }
-    .hero h1 { font-family: var(--display); font-size: 42px; font-weight: 800; line-height: 1.08; color: var(--ink); margin-bottom: 14px; }
-    .hero h1 em { font-style: normal; color: var(--gold); }
-    .hero p { font-size: 16px; color: var(--ink2); line-height: 1.65; max-width: 480px; margin: 0 auto 36px; }
+    .search-wrap{max-width:520px;margin:0 auto 12px}
+    .search-row{display:flex;gap:10px;background:var(--white);border:2px solid var(--ink);border-radius:var(--radius);padding:6px 6px 6px 18px;box-shadow:4px 4px 0 var(--ink)}
+    .search-row input{flex:1;border:none;outline:none;font-family:var(--mono);font-size:18px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:var(--ink);background:transparent}
+    .search-row input::placeholder{color:var(--border);letter-spacing:2px;font-size:14px}
+    .btn-check{background:var(--ink);color:#fff;border:none;padding:12px 22px;border-radius:6px;font-family:var(--display);font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;transition:.15s}
+    .btn-check:hover{background:#2a2520}
+    .btn-check:disabled{opacity:.4;cursor:not-allowed}
 
-    .price-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: #fff; padding: 8px 18px; border-radius: 40px; font-size: 14px; font-weight: 600; margin-bottom: 32px; }
-    .price-badge .amt { font-family: var(--display); font-size: 20px; color: var(--gold); }
+    .hint{font-size:12px;color:var(--ink3);margin-bottom:36px}
+    .pills{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:40px}
+    .pill{background:var(--white);border:1px solid var(--border);border-radius:30px;padding:5px 13px;font-size:12px;color:var(--ink2)}
+    .pill b{color:var(--ink)}
 
-    .search-wrap { max-width: 540px; margin: 0 auto 16px; }
-    .search-row { display: flex; gap: 10px; background: var(--white); border: 2px solid var(--ink); border-radius: var(--radius); padding: 6px 6px 6px 18px; box-shadow: 4px 4px 0 var(--ink); }
-    .search-row input { flex: 1; border: none; outline: none; font-family: var(--mono); font-size: 18px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--ink); background: transparent; }
-    .search-row input::placeholder { color: var(--border); letter-spacing: 2px; font-size: 15px; }
-    .btn-check { background: var(--ink); color: #fff; border: none; padding: 12px 24px; border-radius: 6px; font-family: var(--display); font-size: 14px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: background .15s, transform .1s; }
-    .btn-check:hover { background: #2a2520; }
-    .btn-check:active { transform: scale(.97); }
-    .btn-check:disabled { opacity: .4; cursor: not-allowed; }
+    .divider{height:1px;background:var(--border);max-width:620px;margin:0 auto 28px}
+    #result-area{max-width:620px;margin:0 auto;padding:0 24px 80px}
 
-    .hint { font-size: 12px; color: var(--ink3); margin-bottom: 48px; }
+    /* Preview card */
+    .preview-card{background:var(--white);border:1.5px solid var(--ink);border-radius:var(--radius);overflow:hidden;box-shadow:4px 4px 0 var(--ink);animation:up .3s ease}
+    @keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
-    .pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 48px; }
-    .pill { background: var(--white); border: 1px solid var(--border); border-radius: 30px; padding: 6px 14px; font-size: 13px; color: var(--ink2); }
-    .pill b { color: var(--ink); }
+    .card-header{background:var(--ink);padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+    .card-reg{font-family:var(--mono);font-size:17px;color:#fff;letter-spacing:2px}
+    .hypo-badge{padding:5px 12px;border-radius:30px;font-size:12px;font-weight:600}
+    .hypo-active{background:var(--red-bg);color:var(--red);border:1px solid #f5c6c2}
+    .hypo-clear{background:var(--green-bg);color:var(--green);border:1px solid #b8e0cb}
 
-    .divider { height: 1px; background: var(--border); max-width: 640px; margin: 0 auto 32px; }
+    .preview-grid{display:grid;grid-template-columns:1fr 1fr}
+    .p-cell{padding:13px 16px;border-bottom:1px solid var(--bg2)}
+    .p-cell:nth-child(odd){border-right:1px solid var(--bg2)}
+    .p-label{font-size:10px;font-family:var(--mono);color:var(--ink3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+    .p-value{font-size:14px;font-weight:600;color:var(--ink)}
+    .p-value.blur{filter:blur(5px);user-select:none;color:var(--ink3)}
 
-    #result-area { max-width: 640px; margin: 0 auto; padding: 0 24px 80px; }
+    .challan-row{padding:13px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bg2);background:var(--bg)}
+    .challan-label{font-size:13px;color:var(--ink2)}
+    .challan-val{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--ink)}
 
-    .preview-card { background: var(--white); border: 1.5px solid var(--ink); border-radius: var(--radius); overflow: hidden; box-shadow: 4px 4px 0 var(--ink); animation: slideUp .35s ease forwards; }
-    @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    .unlock-box{padding:20px 18px;background:var(--gold-bg);border-top:1.5px solid #e8c56a}
+    .unlock-title{font-family:var(--display);font-size:16px;font-weight:700;margin-bottom:12px}
+    .unlock-list{margin-bottom:18px}
+    .unlock-list li{font-size:13px;color:var(--ink2);padding:3px 0;list-style:none}
+    .unlock-list li::before{content:"✓ ";color:var(--green);font-weight:700}
 
-    .card-header { background: var(--ink); padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
-    .card-header-reg { font-family: var(--mono); font-size: 18px; font-weight: 500; color: #fff; letter-spacing: 2px; }
-    .hypo-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 30px; font-size: 12px; font-weight: 600; }
-    .hypo-active { background: var(--red-bg); color: var(--red); border: 1px solid #f5c6c2; }
-    .hypo-clear  { background: var(--green-bg); color: var(--green); border: 1px solid #b8e0cb; }
+    .btn-pay{width:100%;background:var(--gold);color:#fff;border:none;padding:14px;border-radius:8px;font-family:var(--display);font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(200,134,10,.3);transition:.15s}
+    .btn-pay:hover{background:#b07509}
+    .btn-pay:disabled{opacity:.5;cursor:not-allowed}
+    .pay-note{font-size:11px;color:var(--ink3);text-align:center;margin-top:8px}
 
-    .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
-    .preview-cell { padding: 14px 18px; border-bottom: 1px solid var(--bg2); }
-    .preview-cell:nth-child(odd) { border-right: 1px solid var(--bg2); }
-    .preview-cell-label { font-size: 11px; font-family: var(--mono); color: var(--ink3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
-    .preview-cell-value { font-size: 15px; font-weight: 600; color: var(--ink); }
-    .preview-cell-value.blurred { filter: blur(5px); user-select: none; color: var(--ink3); }
+    /* Full report */
+    .report-card{background:var(--white);border:1.5px solid var(--green);border-radius:var(--radius);overflow:hidden;box-shadow:4px 4px 0 var(--green);animation:up .3s ease}
+    .report-header{background:var(--ink);padding:18px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .report-reg{font-family:var(--mono);font-size:20px;color:#fff;letter-spacing:2px}
+    .report-badge{padding:6px 14px;border-radius:30px;font-size:13px;font-weight:700}
 
-    .challan-row { padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--bg2); }
-    .challan-label { font-size: 13px; color: var(--ink2); }
-    .challan-count { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--ink); }
+    .report-grid{display:grid;grid-template-columns:1fr 1fr}
+    .r-cell{padding:14px 16px;border-bottom:1px solid var(--bg2)}
+    .r-cell:nth-child(odd){border-right:1px solid var(--bg2)}
+    .r-label{font-size:10px;font-family:var(--mono);color:var(--ink3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+    .r-value{font-size:14px;font-weight:600;color:var(--ink)}
 
-    .unlock-section { padding: 20px 18px; background: var(--gold-bg); border-top: 1.5px solid #e8c56a; }
-    .unlock-title { font-family: var(--display); font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 12px; }
-    .unlock-items { list-style: none; margin-bottom: 18px; }
-    .unlock-items li { font-size: 13px; color: var(--ink2); padding: 3px 0; }
-    .unlock-items li::before { content: "✓ "; color: var(--green); font-weight: 700; }
+    .hypo-section{margin:16px;padding:14px 16px;border-radius:8px}
+    .hypo-section.active{background:#fff3cd;border:1px solid #ffc107}
+    .hypo-section.clear{background:var(--green-bg);border:1px solid #b8e0cb}
+    .hypo-section h3{font-size:14px;font-weight:700;margin-bottom:6px}
+    .hypo-section p{font-size:13px;line-height:1.6}
 
-    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-    .field-row input { width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-family: var(--body); font-size: 14px; color: var(--ink); background: var(--white); outline: none; transition: border-color .15s; }
-    .field-row input:focus { border-color: var(--gold); }
-    .field-row input::placeholder { color: var(--ink3); }
+    .bank-draft{margin:0 16px 16px;padding:16px;background:var(--bg);border:1px solid var(--border);border-radius:8px}
+    .bank-draft h3{font-size:14px;font-weight:700;margin-bottom:10px;color:var(--ink)}
+    .draft-box{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:14px;font-family:var(--mono);font-size:12px;line-height:1.9;white-space:pre-wrap;color:var(--ink2)}
 
-    .btn-pay { width: 100%; background: var(--gold); color: #fff; border: none; padding: 14px 24px; border-radius: 8px; font-family: var(--display); font-size: 16px; font-weight: 700; cursor: pointer; transition: background .15s, transform .1s; box-shadow: 0 2px 8px rgba(200,134,10,.3); }
-    .btn-pay:hover { background: #b07509; }
-    .btn-pay:active { transform: scale(.98); }
-    .btn-pay:disabled { opacity: .5; cursor: not-allowed; }
-    .pay-note { font-size: 11px; color: var(--ink3); text-align: center; margin-top: 8px; }
+    .steps-section{margin:0 16px 16px;padding:16px;background:#eef6ff;border:1px solid #c0d8f5;border-radius:8px}
+    .steps-section h3{font-size:14px;font-weight:700;margin-bottom:10px;color:var(--ink)}
+    .steps-section ol{padding-left:18px}
+    .steps-section li{font-size:13px;color:var(--ink2);line-height:2;padding:1px 0}
+    .tip{font-size:12px;color:var(--ink3);margin-top:8px;background:var(--white);padding:10px 12px;border-radius:6px}
 
-    .success-card { background: var(--white); border: 1.5px solid var(--green); border-radius: var(--radius); padding: 32px 24px; text-align: center; box-shadow: 4px 4px 0 var(--green); animation: slideUp .35s ease forwards; }
-    .success-icon { font-size: 48px; margin-bottom: 12px; }
-    .success-title { font-family: var(--display); font-size: 22px; font-weight: 700; color: var(--green); margin-bottom: 8px; }
-    .success-msg { font-size: 15px; color: var(--ink2); line-height: 1.6; }
+    .download-row{padding:16px;display:flex;gap:10px}
+    .btn-download{flex:1;background:var(--ink);color:#fff;border:none;padding:12px;border-radius:8px;font-family:var(--display);font-size:14px;font-weight:700;cursor:pointer;transition:.15s}
+    .btn-download:hover{background:#2a2520}
+    .btn-share{flex:1;background:var(--white);color:var(--ink);border:1.5px solid var(--ink);padding:12px;border-radius:8px;font-family:var(--display);font-size:14px;font-weight:700;cursor:pointer;transition:.15s}
+    .btn-share:hover{background:var(--bg2)}
 
-    .error-msg { background: var(--red-bg); border: 1px solid #f5c6c2; border-radius: 8px; padding: 14px 18px; font-size: 14px; color: var(--red); margin-bottom: 16px; animation: slideUp .2s ease forwards; }
+    .error-msg{background:var(--red-bg);border:1px solid #f5c6c2;border-radius:8px;padding:14px 18px;font-size:14px;color:var(--red);animation:up .2s ease}
 
-    .how-section { max-width: 640px; margin: 0 auto 64px; padding: 0 24px; }
-    .how-title { font-family: var(--display); font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 24px; text-align: center; }
-    .steps-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .step-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 20px 16px; text-align: center; }
-    .step-num { font-family: var(--mono); font-size: 28px; font-weight: 500; color: var(--gold); margin-bottom: 8px; }
-    .step-title { font-family: var(--display); font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
-    .step-desc { font-size: 12px; color: var(--ink3); line-height: 1.5; }
+    .footer{background:var(--ink);padding:20px 32px;text-align:center;font-size:12px;color:#666;margin-top:40px}
+    .footer a{color:var(--gold);text-decoration:none}
 
-    .footer { background: var(--ink); padding: 24px 32px; text-align: center; font-size: 12px; color: #666; }
-    .footer a { color: var(--gold); text-decoration: none; }
+    .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+    @keyframes spin{to{transform:rotate(360deg)}}
 
-    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; vertical-align: middle; margin-right: 6px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    @media (max-width: 540px) {
-      .hero h1 { font-size: 30px; }
-      .steps-row { grid-template-columns: 1fr; }
-      .field-row { grid-template-columns: 1fr; }
-      .preview-grid { grid-template-columns: 1fr; }
-      .preview-cell:nth-child(odd) { border-right: none; }
+    @media(max-width:540px){
+      .hero h1{font-size:28px}
+      .preview-grid,.report-grid{grid-template-columns:1fr}
+      .p-cell:nth-child(odd),.r-cell:nth-child(odd){border-right:none}
+      .download-row{flex-direction:column}
     }
   </style>
 </head>
@@ -138,21 +132,24 @@
 <nav class="nav">
   <a href="/" class="nav-logo">Vahan<span>Clear</span></a>
   <span class="nav-tag">by salarybit.in</span>
-  <a href="/" class="nav-back">← Back to SalaryBit</a>
 </nav>
 
 <section class="hero">
   <div class="hero-eyebrow">Vehicle RC Report</div>
   <h1>Know your RC<br><em>before you sell.</em></h1>
-  <p>Check hypothecation status, insurance, PUC & pending challans instantly. Get the full report on your email.</p>
+  <p>Hypothecation status, insurance, PUC & challans — full report shown instantly on screen after payment.</p>
   <div class="price-badge">Full Report for just <span class="amt">₹80</span></div>
+
   <div class="search-wrap">
     <div class="search-row">
-      <input id="reg-input" type="text" placeholder="MH12AB1234" maxlength="11" autocomplete="off" spellcheck="false"/>
+      <input id="reg-input" type="text" placeholder="KA01AB1234" maxlength="11" autocomplete="off" spellcheck="false"
+        oninput="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'').toUpperCase()"
+        onkeydown="if(event.key==='Enter')doPreview()"/>
       <button class="btn-check" id="btn-check" onclick="doPreview()">Check RC</button>
     </div>
   </div>
-  <div class="hint">Enter your vehicle registration number as printed on RC · e.g. KA01AB1234</div>
+  <div class="hint">Enter registration number as printed on RC · e.g. KA01AB1234</div>
+
   <div class="pills">
     <div class="pill"><b>Owner Name</b> (full)</div>
     <div class="pill"><b>Hypothecation</b> status</div>
@@ -160,256 +157,274 @@
     <div class="pill"><b>PUC</b> validity</div>
     <div class="pill"><b>Pending Challans</b></div>
     <div class="pill"><b>NOC draft</b> email</div>
-    <div class="pill"><b>Step-by-step</b> removal guide</div>
+    <div class="pill"><b>Removal guide</b></div>
   </div>
 </section>
 
 <div class="divider"></div>
 <div id="result-area"></div>
 
-<section class="how-section">
-  <div class="how-title">How it works</div>
-  <div class="steps-row">
-    <div class="step-card">
-      <div class="step-num">01</div>
-      <div class="step-title">Enter RC Number</div>
-      <div class="step-desc">Type your vehicle registration number and click Check RC</div>
-    </div>
-    <div class="step-card">
-      <div class="step-num">02</div>
-      <div class="step-title">See Free Preview</div>
-      <div class="step-desc">Instantly see vehicle class, make & hypothecation flag for free</div>
-    </div>
-    <div class="step-card">
-      <div class="step-num">03</div>
-      <div class="step-title">Pay ₹80, Get Report</div>
-      <div class="step-desc">Full report with NOC draft & removal guide sent to your email instantly</div>
-    </div>
-  </div>
-</section>
-
 <footer class="footer">
-  VahanClear · <a href="/">salarybit.in</a> · Data sourced from VAHAN via SurePass ·
+  VahanClear · <a href="/">salarybit.in</a> · Data from VAHAN via SurePass ·
   <a href="mailto:support@salarybit.in">support@salarybit.in</a>
 </footer>
 
 <script>
-  const API_BASE     = "https://web-production-456eb.up.railway.app";
-  const RAZORPAY_KEY = "rzp_live_SkoJJRRIJozPe2";
+const API_BASE     = "https://web-production-456eb.up.railway.app";
+const RAZORPAY_KEY = "rzp_live_SkoJJRRIJozPe2";
 
-  let currentRegNo = "";
-  let currentEmail = "";
-  let currentPhone = "";
+let currentRegNo = "";
 
-  // ── STEP 1: FREE PREVIEW ─────────────────────────────
-  async function doPreview() {
-    const regNo = document.getElementById("reg-input").value.trim().toUpperCase();
-    if (!regNo) { showError("Please enter a vehicle registration number."); return; }
+// ── STEP 1: PREVIEW ──────────────────────────────────────
+async function doPreview() {
+  const regNo = document.getElementById("reg-input").value.trim().toUpperCase();
+  if (!regNo || regNo.length < 6) { showError("Please enter a valid registration number."); return; }
 
-    const btn = document.getElementById("btn-check");
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span>Checking…';
-    document.getElementById("result-area").innerHTML = "";
+  const btn = document.getElementById("btn-check");
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Checking…';
+  document.getElementById("result-area").innerHTML = "";
 
-    try {
-      const res  = await fetch(`${API_BASE}/api/vc/preview`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ vehicleNumber: regNo })
-      });
-      const data = await res.json();
-      if (!data.ok) { showError(data.error || "Could not fetch vehicle data."); return; }
-      currentRegNo = regNo;
-      renderPreview(data.preview, regNo);
-    } catch (e) {
-      showError("Network error. Please try again.");
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = "Check RC";
-    }
+  try {
+    const res  = await fetch(`${API_BASE}/api/vc/preview`, {
+      method: "POST", headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ vehicleNumber: regNo })
+    });
+    const data = await res.json();
+    if (!data.ok) { showError(data.error || "Could not fetch vehicle data."); return; }
+    currentRegNo = regNo;
+    renderPreview(data.preview);
+  } catch(e) {
+    showError("Network error. Please try again.");
+  } finally {
+    btn.disabled = false; btn.innerHTML = "Check RC";
   }
+}
 
-  // ── STEP 2: RENDER PREVIEW CARD ──────────────────────
-  function renderPreview(p, regNo) {
-    const hypoHTML = p.hasHypo
-      ? `<span class="hypo-badge hypo-active">⚠ Hypothecation Active</span>`
-      : `<span class="hypo-badge hypo-clear">✓ RC Clear</span>`;
-    const challans = p.challanCount === "?" ? "—" : p.challanCount;
+// ── STEP 2: RENDER BLURRED PREVIEW ───────────────────────
+function renderPreview(p) {
+  const hypoHTML = p.hasHypo
+    ? `<span class="hypo-badge hypo-active">⚠ Hypothecation Active</span>`
+    : `<span class="hypo-badge hypo-clear">✓ RC Clear</span>`;
 
-    document.getElementById("result-area").innerHTML = `
-      <div class="preview-card">
-        <div class="card-header">
-          <span class="card-header-reg">${regNo}</span>
-          ${hypoHTML}
-        </div>
-        <div class="preview-grid">
-          <div class="preview-cell">
-            <div class="preview-cell-label">Vehicle Class</div>
-            <div class="preview-cell-value">${p.vehicleClass || "—"}</div>
-          </div>
-          <div class="preview-cell">
-            <div class="preview-cell-label">Make</div>
-            <div class="preview-cell-value">${p.make || "—"}</div>
-          </div>
-          <div class="preview-cell">
-            <div class="preview-cell-label">Owner Name</div>
-            <div class="preview-cell-value">${p.ownerName}</div>
-          </div>
-          <div class="preview-cell">
-            <div class="preview-cell-label">Model</div>
-            <div class="preview-cell-value blurred">••••••</div>
-          </div>
-          <div class="preview-cell">
-            <div class="preview-cell-label">Insurance Expiry</div>
-            <div class="preview-cell-value blurred">••/••/••••</div>
-          </div>
-          <div class="preview-cell">
-            <div class="preview-cell-label">PUC Validity</div>
-            <div class="preview-cell-value blurred">••/••/••••</div>
-          </div>
-        </div>
-        <div class="challan-row">
-          <span class="challan-label">⚡ Pending Challans</span>
-          <span class="challan-count">${challans}</span>
-        </div>
-        <div class="unlock-section">
-          <div class="unlock-title">Unlock Full Report — ₹80</div>
-          <ul class="unlock-items">
-            <li>Complete owner name & model details</li>
-            <li>Insurance & PUC expiry dates</li>
-            <li>Registration date & fuel type</li>
-            ${p.hasHypo
-              ? "<li>Financer name & NOC email draft</li><li>Step-by-step hypothecation removal guide</li>"
-              : "<li>Clear RC certificate — ready to sell</li>"}
-          </ul>
-          <div class="field-row">
-            <input type="email" id="vc-email" placeholder="Email for report" />
-            <input type="tel"   id="vc-phone" placeholder="Phone (optional)" maxlength="10"/>
-          </div>
-          <button class="btn-pay" id="btn-pay" onclick="doCreateOrder()">
-            Get Full Report — ₹80
-          </button>
-          <div class="pay-note">🔒 Secure payment via Razorpay · Report delivered instantly to your email</div>
-        </div>
-      </div>`;
+  document.getElementById("result-area").innerHTML = `
+    <div class="preview-card">
+      <div class="card-header">
+        <span class="card-reg">${currentRegNo}</span>
+        ${hypoHTML}
+      </div>
+      <div class="preview-grid">
+        <div class="p-cell"><div class="p-label">Vehicle Class</div><div class="p-value">${p.vehicleClass}</div></div>
+        <div class="p-cell"><div class="p-label">Make</div><div class="p-value">${p.make}</div></div>
+        <div class="p-cell"><div class="p-label">Owner Name</div><div class="p-value">${p.ownerName}</div></div>
+        <div class="p-cell"><div class="p-label">Model</div><div class="p-value blur">••••••</div></div>
+        <div class="p-cell"><div class="p-label">Insurance Expiry</div><div class="p-value blur">••/••/••••</div></div>
+        <div class="p-cell"><div class="p-label">PUC Validity</div><div class="p-value blur">••/••/••••</div></div>
+      </div>
+      <div class="challan-row">
+        <span class="challan-label">⚡ Pending Challans</span>
+        <span class="challan-val">${p.challanCount === "?" ? "—" : p.challanCount}</span>
+      </div>
+      <div class="unlock-box">
+        <div class="unlock-title">🔒 Unlock Full Report — ₹80</div>
+        <ul class="unlock-list">
+          <li>Complete owner name & model</li>
+          <li>Insurance & PUC expiry dates</li>
+          <li>Registration date & fuel type</li>
+          ${p.hasHypo
+            ? "<li>Financer name & NOC email draft</li><li>Step-by-step removal guide</li>"
+            : "<li>Clear RC certificate — ready to sell</li>"}
+          <li>Report shown instantly on screen + downloadable</li>
+        </ul>
+        <button class="btn-pay" id="btn-pay" onclick="doCreateOrder()">
+          Get Full Report — ₹80
+        </button>
+        <div class="pay-note">🔒 Razorpay · UPI, Cards, NetBanking · No email needed</div>
+      </div>
+    </div>`;
 
-    document.getElementById("result-area").scrollIntoView({ behavior: "smooth", block: "start" });
-  }
+  document.getElementById("result-area").scrollIntoView({behavior:"smooth", block:"start"});
+}
 
-  // ── STEP 3: CREATE ORDER ─────────────────────────────
-  async function doCreateOrder() {
-    const email = document.getElementById("vc-email").value.trim();
-    const phone = document.getElementById("vc-phone").value.trim();
+// ── STEP 3: CREATE ORDER ──────────────────────────────────
+async function doCreateOrder() {
+  const btn = document.getElementById("btn-pay");
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Creating order…';
 
-    if (!email || !email.includes("@")) {
-      alert("Please enter a valid email address to receive your report.");
+  try {
+    const res  = await fetch(`${API_BASE}/api/vc/create-order`, {
+      method: "POST", headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ vehicleNumber: currentRegNo })
+    });
+    const data = await res.json();
+    if (!data.ok) {
+      alert(data.error || "Could not create order. Try again.");
+      btn.disabled = false; btn.innerHTML = "Get Full Report — ₹80";
       return;
     }
+    openRazorpay(data.orderId, data.amount);
+  } catch(e) {
+    alert("Network error. Please try again.");
+    btn.disabled = false; btn.innerHTML = "Get Full Report — ₹80";
+  }
+}
 
-    // Save globally so verifyPayment can use them
-    currentEmail = email;
-    currentPhone = phone;
-
-    const btn = document.getElementById("btn-pay");
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span>Creating order…';
-
-    try {
-      const res  = await fetch(`${API_BASE}/api/vc/create-order`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ vehicleNumber: currentRegNo, email, phone })
-      });
-      const data = await res.json();
-      if (!data.ok) {
-        alert(data.error || "Could not create order. Please try again.");
-        btn.disabled = false;
-        btn.innerHTML = "Get Full Report — ₹80";
-        return;
+// ── STEP 4: RAZORPAY ─────────────────────────────────────
+function openRazorpay(orderId, amount) {
+  new Razorpay({
+    key:         RAZORPAY_KEY,
+    amount:      amount,
+    currency:    "INR",
+    name:        "VahanClear",
+    description: `RC Report — ${currentRegNo}`,
+    order_id:    orderId,
+    theme:       { color: "#c8860a" },
+    handler: async function(response) {
+      await verifyPayment(response);
+    },
+    modal: {
+      ondismiss: function() {
+        const btn = document.getElementById("btn-pay");
+        if (btn) { btn.disabled = false; btn.innerHTML = "Get Full Report — ₹80"; }
       }
-      openRazorpay(data.orderId, data.amount, email, phone);
-    } catch (e) {
-      alert("Network error. Please try again.");
-      btn.disabled = false;
-      btn.innerHTML = "Get Full Report — ₹80";
     }
-  }
+  }).open();
+}
 
-  // ── STEP 4: OPEN RAZORPAY ────────────────────────────
-  function openRazorpay(orderId, amount, email, phone) {
-    const options = {
-      key:         RAZORPAY_KEY,
-      amount:      amount,
-      currency:    "INR",
-      name:        "VahanClear",
-      description: `RC Report — ${currentRegNo}`,
-      order_id:    orderId,
-      prefill:     { email, contact: phone },
-      theme:       { color: "#c8860a" },
-      handler: async function(response) {
-        await verifyPayment(response);
-      },
-      modal: {
-        ondismiss: function() {
-          const btn = document.getElementById("btn-pay");
-          if (btn) { btn.disabled = false; btn.innerHTML = "Get Full Report — ₹80"; }
-        }
-      }
-    };
-    new Razorpay(options).open();
-  }
+// ── STEP 5: VERIFY → SHOW REPORT ─────────────────────────
+async function verifyPayment(response) {
+  document.getElementById("result-area").innerHTML = `
+    <div style="text-align:center;padding:40px 24px;color:var(--ink2)">
+      <span class="spinner" style="border-top-color:var(--gold);border-color:rgba(200,134,10,.2);width:28px;height:28px;border-width:3px"></span>
+      <p style="margin-top:14px;font-size:15px">Fetching your report…</p>
+    </div>`;
 
-  // ── STEP 5: VERIFY PAYMENT ───────────────────────────
-  async function verifyPayment(response) {
-    try {
-      const res  = await fetch(`${API_BASE}/api/vc/verify-payment`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          razorpay_order_id:   response.razorpay_order_id,
-          razorpay_payment_id: response.razorpay_payment_id,
-          razorpay_signature:  response.razorpay_signature,
-          email:         currentEmail,
-          phone:         currentPhone,
-          vehicleNumber: currentRegNo,
-        })
-      });
-      const data = await res.json();
-      if (data.ok) {
-        showSuccess();
-      } else {
-        alert(data.error || "Something went wrong. Contact support@salarybit.in");
-      }
-    } catch (e) {
-      alert("Network error after payment. Email support@salarybit.in with your payment ID.");
-    }
-  }
-
-  // ── SUCCESS ──────────────────────────────────────────
-  function showSuccess() {
-    document.getElementById("result-area").innerHTML = `
-      <div class="success-card">
-        <div class="success-icon">📬</div>
-        <div class="success-title">Report Sent!</div>
-        <div class="success-msg">
-          Your full RC report for <b>${currentRegNo}</b> has been sent to <b>${currentEmail}</b>.<br><br>
-          Check your inbox (and spam folder, just in case).<br>
-          Questions? <a href="mailto:support@salarybit.in" style="color:var(--green);">support@salarybit.in</a>
-        </div>
-      </div>`;
-    document.getElementById("result-area").scrollIntoView({ behavior: "smooth" });
-  }
-
-  // ── ERROR ────────────────────────────────────────────
-  function showError(msg) {
-    document.getElementById("result-area").innerHTML = `<div class="error-msg">⚠ ${msg}</div>`;
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("reg-input").addEventListener("keydown", e => {
-      if (e.key === "Enter") doPreview();
+  try {
+    const res  = await fetch(`${API_BASE}/api/vc/verify-payment`, {
+      method: "POST", headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({
+        razorpay_order_id:   response.razorpay_order_id,
+        razorpay_payment_id: response.razorpay_payment_id,
+        razorpay_signature:  response.razorpay_signature,
+        vehicleNumber:       currentRegNo,
+      })
     });
-  });
+    const data = await res.json();
+    if (data.ok) {
+      renderFullReport(data.report, response.razorpay_payment_id);
+    } else {
+      showError(data.error || "Something went wrong. Contact support@salarybit.in");
+    }
+  } catch(e) {
+    showError("Network error. Email support@salarybit.in with your payment ID: " + response.razorpay_payment_id);
+  }
+}
+
+// ── RENDER FULL REPORT ON SCREEN ─────────────────────────
+function renderFullReport(r, paymentId) {
+  const hypoHTML = r.hasHypo
+    ? `<span class="hypo-badge hypo-active" style="font-size:13px;padding:6px 14px;">⚠ Hypothecation Active</span>`
+    : `<span class="hypo-badge hypo-clear"  style="font-size:13px;padding:6px 14px;">✓ RC Clear</span>`;
+
+  const hypoSection = r.hasHypo ? `
+    <div class="hypo-section active">
+      <h3 style="color:#856404;">⚠ Hypothecation Active</h3>
+      <p style="color:#856404;">Financer: <b>${r.financerName}</b><br>
+      Hypothecation Date: ${r.hypothecationDate}<br><br>
+      Your RC has an active loan lien. You must remove this before selling the vehicle.</p>
+    </div>` : `
+    <div class="hypo-section clear">
+      <h3 style="color:var(--green);">✓ No Hypothecation</h3>
+      <p style="color:var(--green);">RC is clear — no active loan lien. Safe to sell.</p>
+    </div>`;
+
+  const bankDraft = r.hasHypo ? `
+    <div class="bank-draft">
+      <h3>📧 Bank Email Draft — Request Your NOC</h3>
+      <div class="draft-box">To: [Your Bank NOC / Loan Closure Email]
+Subject: Request for NOC — Vehicle ${r.regNo}
+
+Dear Sir/Madam,
+
+I, ${r.ownerName}, request the No Objection Certificate (NOC)
+for hypothecation termination of my vehicle.
+
+Vehicle Registration No : ${r.regNo}
+Make & Model            : ${r.make} ${r.model}
+Registered Owner        : ${r.ownerName}
+
+My vehicle loan is fully repaid. Please issue the NOC at
+the earliest so I can update my RC at the RTO.
+
+Kindly email the NOC and post the physical copy to my
+registered address.
+
+Thanking you,
+${r.ownerName}
+[Your Loan Account Number]
+[Your Registered Mobile Number]</div>
+      <p style="font-size:12px;color:var(--ink3);margin-top:8px;">
+        📌 Find your bank's NOC email — search "[Bank Name] NOC email vehicle" or call customer care.
+      </p>
+    </div>` : "";
+
+  const steps = r.hasHypo ? `
+    <div class="steps-section">
+      <h3>📋 How to Remove Hypothecation Online</h3>
+      <ol>
+        <li>Collect the <b>NOC letter</b> from your bank (branch or NetBanking).</li>
+        <li>Go to <a href="https://parivahan.gov.in/vahanservice" target="_blank" style="color:#0d6efd;">parivahan.gov.in/vahanservice</a> → <b>Vehicle Services → Hypothecation Termination</b>.</li>
+        <li>Login with your <b>registered mobile number</b> (same as RC).</li>
+        <li>Enter vehicle number → upload NOC (PDF/JPG, max 2MB).</li>
+        <li>Pay RTO fee online — ₹100 to ₹300 depending on state.</li>
+        <li>Submit → save the <b>acknowledgement number</b>.</li>
+        <li>Updated Smart Card RC delivered by post in <b>7–21 working days</b>.</li>
+      </ol>
+      <div class="tip">💡 Tip: If your RC address differs from current address, file <b>Form 33</b> at the same time — saves a separate RTO visit.</div>
+    </div>` : "";
+
+  document.getElementById("result-area").innerHTML = `
+    <div class="report-card" id="full-report">
+      <div class="report-header">
+        <span class="report-reg">${r.regNo}</span>
+        ${hypoHTML}
+      </div>
+
+      <div class="report-grid">
+        <div class="r-cell"><div class="r-label">Owner Name</div><div class="r-value">${r.ownerName}</div></div>
+        <div class="r-cell"><div class="r-label">Make & Model</div><div class="r-value">${r.make} ${r.model}</div></div>
+        <div class="r-cell"><div class="r-label">Vehicle Category</div><div class="r-value">${r.vehicleCategory}</div></div>
+        <div class="r-cell"><div class="r-label">Fuel Type</div><div class="r-value">${r.fuelType}</div></div>
+        <div class="r-cell"><div class="r-label">Registration Date</div><div class="r-value">${r.regDate}</div></div>
+        <div class="r-cell"><div class="r-label">Pending Challans</div><div class="r-value">${r.challanCount}</div></div>
+        <div class="r-cell"><div class="r-label">Insurance Valid Upto</div><div class="r-value">${r.insuranceUpto}</div></div>
+        <div class="r-cell"><div class="r-label">PUC Valid Upto</div><div class="r-value">${r.pucUpto}</div></div>
+      </div>
+
+      ${hypoSection}
+      ${bankDraft}
+      ${steps}
+
+      <div class="download-row">
+        <button class="btn-download" onclick="window.print()">🖨 Print / Save as PDF</button>
+        <button class="btn-share" onclick="copyReport()">📋 Copy Report</button>
+      </div>
+
+      <div style="padding:0 16px 16px;font-size:11px;color:var(--ink3);text-align:center;">
+        Payment ID: ${paymentId} · VahanClear · salarybit.in
+      </div>
+    </div>`;
+
+  document.getElementById("result-area").scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+function copyReport(r) {
+  const text = document.getElementById("full-report").innerText;
+  navigator.clipboard.writeText(text).then(() => alert("Report copied to clipboard!"));
+}
+
+function showError(msg) {
+  document.getElementById("result-area").innerHTML = `<div class="error-msg">⚠ ${msg}</div>`;
+}
 </script>
 </body>
 </html>

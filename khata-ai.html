@@ -685,7 +685,7 @@ async function callGeminiWithRetry() {
   } catch (err) {
     // On rate limit, wait 5 seconds and retry once automatically
     if (err.message && err.message.includes('Too many requests')) {
-      await new Promise(function(resolve) { setTimeout(resolve, 5000); });
+      await new Promise(function(resolve) { setTimeout(resolve, 10000); });
       try {
         return await callGemini();
       } catch (retryErr) {

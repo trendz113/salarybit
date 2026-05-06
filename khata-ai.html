@@ -424,7 +424,7 @@ var CONFIG = {
   // ⚠️  SECURITY: Never commit your real API key to a public GitHub repo.
   // Generate a new key at https://aistudio.google.com, then in Google Cloud Console
   // → APIs & Services → Credentials → restrict it to HTTP referrers: salarybit.in/*
-  GEMINI_API_KEY: 'YOUR_GEMINI_API_KEY_HERE',
+  GEMINI_API_KEY: 'AIzaSyBvz_uNjh-z3_SnhU9Ih6T7i1ky1LKlQ9I',
   MODEL: 'gemini-2.0-flash',
   MAX_TOKENS: 1024,
 };
@@ -697,8 +697,8 @@ async function callGeminiWithRetry() {
 }
 
 async function callGemini() {
-  if (CONFIG.GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY_HERE') {
-    throw new Error('Gemini API key not set. Open this file and replace YOUR_GEMINI_API_KEY_HERE with your actual key from aistudio.google.com');
+  if (CONFIG.GEMINI_API_KEY === 'AIzaSyBvz_uNjh-z3_SnhU9Ih6T7i1ky1LKlQ9I') {
+    throw new Error('Gemini API key not set. Open this file and replace AIzaSyBvz_uNjh-z3_SnhU9Ih6T7i1ky1LKlQ9I with your actual key from aistudio.google.com');
   }
 
   var url = 'https://generativelanguage.googleapis.com/v1beta/models/' +

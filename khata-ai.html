@@ -697,8 +697,8 @@ async function callGeminiWithRetry() {
 }
 
 async function callGemini() {
-  if (CONFIG.GEMINI_API_KEY === 'AIzaSyBvz_uNjh-z3_SnhU9Ih6T7i1ky1LKlQ9I') {
-    throw new Error('Gemini API key not set. Open this file and replace AIzaSyBvz_uNjh-z3_SnhU9Ih6T7i1ky1LKlQ9I with your actual key from aistudio.google.com');
+  if (!CONFIG.GEMINI_API_KEY || CONFIG.GEMINI_API_KEY.trim() === '') {
+    throw new Error('Gemini API key not set. Please add GEMINI_API_KEY to GitHub Secrets.');
   }
 
   var url = 'https://generativelanguage.googleapis.com/v1beta/models/' +

@@ -43,8 +43,11 @@ app.get("/api/metals", async (req, res) => {
 
     const inrPerUsd = data.rates.INR || 83.5;
     const OZ = 31.1035;
-    const goldG   = (1 / data.rates.XAU) * inrPerUsd / OZ;
-    const silverG = (1 / data.rates.XAG) * inrPerUsd / OZ;
+    // India retail price = spot + import duty (~10%) + GST (3%) + margin
+    const GOLD_INDIA_MARKUP   = 1.087;
+    const SILVER_INDIA_MARKUP = 1.03;
+    const goldG   = (1 / data.rates.XAU) * inrPerUsd / OZ * GOLD_INDIA_MARKUP;
+    const silverG = (1 / data.rates.XAG) * inrPerUsd / OZ * SILVER_INDIA_MARKUP;
 
     const result = {
       updatedAt: new Date().toISOString(),

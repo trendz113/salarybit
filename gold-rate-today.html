@@ -527,35 +527,26 @@
   async function fetchRates() {
     setStatus("Fetching live rates...", "loading");
     try {
-      // Step 1: Try MetalpriceAPI with demo key — replace with your own key
-      const API_KEY = "1d69fd1e06ce36de2ea0b50dcea011af"; 
-      const url = `https://api.metalpriceapi.com/v1/latest?api_key=${API_KEY}&base=USD&currencies=XAU,XAG,INR`;
-      const res = await fetch(url);
+      const res  = await fetch("https://web-production-456eb.up.railway.app/api/metals");
       const data = await res.json();
 
-      if (data.success && data.rates) {
-        const inrPerUsd = data.rates.INR || FALLBACK_USD_INR;
-        const goldUsd   = 1 / data.rates.XAU;
-        const silverUsd = 1 / data.rates.XAG;
-        const goldInrOz   = goldUsd * inrPerUsd;
-        const silverInrOz = silverUsd * inrPerUsd;
+      if (data.gold && data.silver) {
+        R.gold24   = data.gold["24K"];
+        R.gold22   = data.gold["22K"];
+        R.gold21   = data.gold["21K"];
+        R.gold18   = data.gold["18K"];
+        R.silver   = data.silver["999"];
+        R.silver925 = data.silver["925"];
 
-        R.gold24   = goldInrOz / OZ;
-        R.gold22   = R.gold24 * (22 / 24);
-        R.gold21   = R.gold24 * (21 / 24);
-        R.gold18   = R.gold24 * (18 / 24);
-        R.silver   = silverInrOz / OZ;
-        R.silver925 = R.silver * 0.925;
-
-        const now = new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+        const now = new Date(data.updatedAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
         setStatus("Live rates · Updated at " + now, "");
         document.getElementById("status-dot").style.background = "#22c55e";
         renderAll();
         return;
       }
-    } catch (e) {}
+    } catch (e) { console.warn("Proxy error:", e); }
 
-    // Fallback: use reference rates if API key not set yet
+    // Fallback if proxy is down
     useFallback();
   }
 

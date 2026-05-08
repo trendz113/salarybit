@@ -9,7 +9,7 @@
 
 (function () {
   // ✅ Update this to your Railway app URL after deploying
-  const PROXY_URL = "https://your-app-name.up.railway.app";
+  const PROXY_URL = "https://web-production-456eb.up.railway.app";
 
   const TOLA = 11.6638;
   const OZ   = 31.1035;

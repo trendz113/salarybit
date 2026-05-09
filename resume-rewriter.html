@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Resume Rewriter — SalaryBit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f7f6f2;
+      --surface: #ffffff;
+      --surface2: #f0efe9;
+      --border: #e2e0d8;
+      --border2: #cccab8;
+      --text: #1a1916;
+      --text2: #6b6a64;
+      --text3: #9e9d96;
+      --accent: #1a1916;
+      --green-bg: #eaf3de;
+      --green-text: #3b6d11;
+      --green-border: #97c459;
+      --red-bg: #fcebeb;
+      --red-text: #a32d2d;
+      --red-border: #f09595;
+      --amber-bg: #faeeda;
+      --amber-text: #854f0b;
+      --radius: 10px;
+      --radius-sm: 6px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+
+    .logo { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; }
+    .logo span { color: var(--text2); font-weight: 400; }
+    .badge { font-size: 11px; background: var(--surface2); border: 1px solid var(--border); padding: 3px 10px; border-radius: 20px; color: var(--text2); }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+    .hero { margin-bottom: 2rem; }
+    .hero h1 { font-size: 26px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 6px; }
+    .hero p { font-size: 14px; color: var(--text2); line-height: 1.6; }
+
+    .powered { font-size: 12px; color: var(--text3); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 6px; }
+    .powered span { background: var(--surface2); border: 1px solid var(--border); padding: 2px 8px; border-radius: 20px; font-size: 11px; color: var(--text2); }
+
+    .tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: var(--surface2); padding: 4px; border-radius: var(--radius-sm); width: fit-content; }
+    .tab { padding: 6px 16px; border-radius: 5px; border: none; background: transparent; font-size: 13px; cursor: pointer; color: var(--text2); font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+    .tab.active { background: var(--surface); color: var(--text); font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+    .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+    .field label { font-size: 12px; color: var(--text2); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .field textarea {
+      width: 100%; height: 220px; resize: vertical;
+      padding: 12px 14px; border-radius: var(--radius);
+      border: 1px solid var(--border); background: var(--surface);
+      font-size: 13px; line-height: 1.7; color: var(--text);
+      font-family: 'DM Sans', sans-serif; outline: none;
+      transition: border-color 0.15s;
+    }
+    .field textarea:focus { border-color: var(--border2); }
+    .field textarea::placeholder { color: var(--text3); }
+
+    .upload-box {
+      height: 220px; border: 1.5px dashed var(--border2);
+      border-radius: var(--radius); display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 10px;
+      cursor: pointer; background: var(--surface); transition: background 0.15s;
+    }
+    .upload-box:hover { background: var(--surface2); }
+    .upload-box svg { width: 32px; height: 32px; color: var(--text3); }
+    .upload-box .up-label { font-size: 14px; color: var(--text2); font-weight: 500; }
+    .upload-box .up-sub { font-size: 12px; color: var(--text3); }
+    .pdf-name { font-size: 12px; color: var(--text2); margin-top: 6px; text-align: center; }
+
+    .analyze-btn {
+      width: 100%; padding: 13px; border-radius: var(--radius);
+      border: none; background: var(--accent); color: #fff;
+      font-size: 15px; font-weight: 500; font-family: 'DM Sans', sans-serif;
+      cursor: pointer; transition: opacity 0.15s; letter-spacing: -0.2px;
+    }
+    .analyze-btn:hover { opacity: 0.88; }
+    .analyze-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .error-box { background: var(--red-bg); color: var(--red-text); border: 1px solid var(--red-border); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 13px; margin-top: 12px; display: none; }
+    .progress { font-size: 13px; color: var(--text2); text-align: center; padding: 10px; display: none; }
+    .progress span { animation: pulse 1.4s ease-in-out infinite; display: inline-block; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    .results { margin-top: 2rem; display: none; }
+
+    .scores { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+    .score-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem 1rem; text-align: center; }
+    .score-card .sc-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .score-card .sc-val { font-size: 30px; font-weight: 600; letter-spacing: -1px; }
+    .score-card .sc-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+    .good { color: var(--green-text); }
+    .mid { color: var(--amber-text); }
+    .low { color: var(--red-text); }
+
+    .result-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 12px; }
+    .result-section h3 { font-size: 13px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .result-section h3 svg { width: 15px; height: 15px; }
+
+    .kw-wrap { display: flex; flex-wrap: wrap; gap: 7px; }
+    .kw { font-size: 12px; padding: 4px 10px; border-radius: 20px; font-weight: 500; }
+    .kw.missing { background: var(--red-bg); color: var(--red-text); border: 1px solid var(--red-border); }
+    .kw.present { background: var(--green-bg); color: var(--green-text); border: 1px solid var(--green-border); }
+
+    .resume-output {
+      font-size: 13px; line-height: 1.9; color: var(--text);
+      white-space: pre-wrap; font-family: 'DM Mono', monospace;
+      background: var(--surface2); padding: 1.1rem 1.25rem;
+      border-radius: var(--radius-sm); max-height: 420px;
+      overflow-y: auto; border: 1px solid var(--border);
+    }
+
+    .action-row { display: flex; gap: 8px; margin-top: 10px; }
+    .copy-btn, .download-btn {
+      padding: 7px 16px; border-radius: var(--radius-sm); font-size: 13px;
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--text2); cursor: pointer; font-family: 'DM Sans', sans-serif;
+      display: flex; align-items: center; gap: 6px; transition: background 0.12s;
+    }
+    .copy-btn:hover, .download-btn:hover { background: var(--surface2); }
+    .copy-btn svg, .download-btn svg { width: 14px; height: 14px; }
+
+    .tip { font-size: 12px; color: var(--text3); margin-top: 6px; }
+
+    @media (max-width: 620px) {
+      .input-grid { grid-template-columns: 1fr; }
+      .scores { grid-template-columns: 1fr 1fr 1fr; }
+      .hero h1 { font-size: 21px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Salary<span>Bit</span></div>
+  <div class="badge">AI Resume Rewriter</div>
+</header>
+
+<div class="container">
+  <div class="hero">
+    <h1>Fix my resume for this job</h1>
+    <p>Paste your resume + job description. AI rewrites your resume to match, scores ATS fit, and shows missing keywords.</p>
+  </div>
+
+  <div class="powered">Powered by <span>Groq AI</span> — free, fast, no login needed</div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('text')" id="tab-text">Paste resume</button>
+    <button class="tab" onclick="switchTab('pdf')" id="tab-pdf">Upload PDF</button>
+  </div>
+
+  <div class="input-grid">
+    <div class="field" id="text-area">
+      <label>Your current resume</label>
+      <textarea id="resume-text" placeholder="Paste your resume here...&#10;&#10;Include: work experience, skills, education, achievements"></textarea>
+    </div>
+
+    <div class="field" id="pdf-area" style="display:none;">
+      <label>Upload resume (PDF)</label>
+      <div class="upload-box" onclick="document.getElementById('pdf-file').click()">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+        <div class="up-label">Click to upload PDF</div>
+        <div class="up-sub">Max 5MB</div>
+      </div>
+      <input type="file" id="pdf-file" accept=".pdf" style="display:none;" onchange="handlePDF(this)" />
+      <div class="pdf-name" id="pdf-name"></div>
+    </div>
+
+    <div class="field">
+      <label>Job description</label>
+      <textarea id="jd-text" placeholder="Paste the job description here...&#10;&#10;Include: role, responsibilities, required skills, qualifications"></textarea>
+    </div>
+  </div>
+
+  <button class="analyze-btn" id="analyze-btn" onclick="analyzeResume()">
+    Rewrite &amp; analyze resume →
+  </button>
+  <div class="error-box" id="error-box"></div>
+  <div class="progress" id="progress"><span>Analyzing with Groq AI — this takes about 10 seconds...</span></div>
+
+  <div class="results" id="results">
+    <div class="scores">
+      <div class="score-card">
+        <div class="sc-label">ATS score before</div>
+        <div class="sc-val" id="score-before">—</div>
+        <div class="sc-sub">original resume</div>
+      </div>
+      <div class="score-card">
+        <div class="sc-label">ATS score after</div>
+        <div class="sc-val" id="score-after">—</div>
+        <div class="sc-sub">rewritten resume</div>
+      </div>
+      <div class="score-card">
+        <div class="sc-label">Keywords matched</div>
+        <div class="sc-val" id="kw-count">—</div>
+        <div class="sc-sub">out of total</div>
+      </div>
+    </div>
+
+    <div class="result-section">
+      <h3>
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z"/></svg>
+        Missing keywords — add these to your resume
+      </h3>
+      <div class="kw-wrap" id="missing-kws"></div>
+    </div>
+
+    <div class="result-section">
+      <h3>
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Keywords already present
+      </h3>
+      <div class="kw-wrap" id="present-kws"></div>
+    </div>
+
+    <div class="result-section">
+      <h3>
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+        Rewritten resume (ATS optimized)
+      </h3>
+      <div class="resume-output" id="resume-out"></div>
+      <div class="action-row">
+        <button class="copy-btn" onclick="copyResume()">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.375"/></svg>
+          Copy resume
+        </button>
+        <button class="download-btn" onclick="downloadResume()">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+          Download .txt
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ✅ Replace with your Railway backend URL
+  const RAILWAY_URL = 'https://web-production-456eb.up.railway.app';
+
+  let pdfText = null;
+  let currentTab = 'text';
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.getElementById('tab-text').classList.toggle('active', tab === 'text');
+    document.getElementById('tab-pdf').classList.toggle('active', tab === 'pdf');
+    document.getElementById('text-area').style.display = tab === 'text' ? '' : 'none';
+    document.getElementById('pdf-area').style.display = tab === 'pdf' ? '' : 'none';
+  }
+
+  function handlePDF(input) {
+    const file = input.files[0];
+    if (!file) return;
+    document.getElementById('pdf-name').textContent = '📄 ' + file.name;
+    const reader2 = new FileReader();
+    reader2.onload = function(e) {
+      const arr = new Uint8Array(e.target.result);
+      let text = '';
+      for (let i = 0; i < arr.length; i++) {
+        const c = arr[i];
+        if (c >= 32 && c < 127) text += String.fromCharCode(c);
+        else if (c === 10 || c === 13) text += '\n';
+      }
+      text = text.replace(/[^\x20-\x7E\n]/g, '').replace(/\s{3,}/g, '\n').trim();
+      if (text.length > 200) pdfText = text;
+    };
+    reader2.readAsArrayBuffer(file);
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('error-box');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  function hideError() {
+    document.getElementById('error-box').style.display = 'none';
+  }
+
+  function setScore(elId, val) {
+    const el = document.getElementById(elId);
+    el.textContent = val + '%';
+    el.className = 'sc-val ' + (val >= 70 ? 'good' : val >= 45 ? 'mid' : 'low');
+  }
+
+  async function analyzeResume() {
+    hideError();
+
+    const jd = document.getElementById('jd-text').value.trim();
+    if (!jd) { showError('Please paste the job description.'); return; }
+
+    let resumeText = '';
+    if (currentTab === 'text') {
+      resumeText = document.getElementById('resume-text').value.trim();
+      if (!resumeText) { showError('Please paste your resume.'); return; }
+    } else {
+      if (!pdfText) { showError('Please upload a PDF resume and wait a moment.'); return; }
+      resumeText = pdfText;
+    }
+
+    const btn = document.getElementById('analyze-btn');
+    btn.disabled = true;
+    btn.textContent = 'Analyzing...';
+    document.getElementById('progress').style.display = 'block';
+    document.getElementById('results').style.display = 'none';
+
+    try {
+      const resp = await fetch(RAILWAY_URL + '/api/rewrite-resume', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resume: resumeText, jd })
+      });
+
+      const parsed = await resp.json();
+      if (parsed.error) throw new Error(parsed.error);
+
+      setScore('score-before', Math.round(parsed.ats_before));
+      setScore('score-after', Math.round(parsed.ats_after));
+
+      const present = parsed.present_keywords || [];
+      const missing = parsed.missing_keywords || [];
+      const total = present.length + missing.length;
+      const kwEl = document.getElementById('kw-count');
+      kwEl.textContent = present.length + '/' + total;
+      const pct = total > 0 ? (present.length / total) * 100 : 0;
+      kwEl.className = 'sc-val ' + (pct >= 70 ? 'good' : pct >= 45 ? 'mid' : 'low');
+
+      const missingEl = document.getElementById('missing-kws');
+      missingEl.innerHTML = missing.length
+        ? missing.map(k => `<span class="kw missing">${k}</span>`).join('')
+        : '<span style="font-size:13px;color:var(--text2)">None — great match!</span>';
+
+      const presentEl = document.getElementById('present-kws');
+      presentEl.innerHTML = present.length
+        ? present.map(k => `<span class="kw present">${k}</span>`).join('')
+        : '<span style="font-size:13px;color:var(--text2)">No keyword matches found</span>';
+
+      document.getElementById('resume-out').textContent = parsed.rewritten_resume;
+      document.getElementById('results').style.display = 'block';
+      document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    } catch(err) {
+      showError('Error: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Rewrite & analyze resume →';
+      document.getElementById('progress').style.display = 'none';
+    }
+  }
+
+  function copyResume() {
+    const text = document.getElementById('resume-out').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => { btn.innerHTML = '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.375"/></svg> Copy resume'; }, 2000);
+    });
+  }
+
+  function downloadResume() {
+    const text = document.getElementById('resume-out').textContent;
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'rewritten-resume.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+</script>
+</body>
+</html>

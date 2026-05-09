@@ -4,29 +4,29 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Allow requests only from your domain
 app.use(cors({
   origin: [
     "https://salarybit.in",
     "https://www.salarybit.in",
-    "http://localhost:3000" // for local testing
+    "http://localhost:3000"
   ]
 }));
+
+app.use(express.json());
 
 // Cache rates in memory — refresh every 30 minutes
 let cache = { data: null, fetchedAt: 0 };
 const CACHE_TTL = 30 * 60 * 1000;
 
+// ── METALS API ────────────────────────────────────────────
 app.get("/api/metals", async (req, res) => {
   try {
     const now = Date.now();
 
-    // Return cached data if still fresh
     if (cache.data && (now - cache.fetchedAt) < CACHE_TTL) {
       return res.json({ ...cache.data, cached: true });
     }
 
-    // Fetch fresh from MetalpriceAPI — key is secret here on the server
     const API_KEY = process.env.METALS_API_KEY;
     if (!API_KEY) {
       return res.status(500).json({ error: "API key not configured" });
@@ -43,7 +43,6 @@ app.get("/api/metals", async (req, res) => {
 
     const inrPerUsd = data.rates.INR || 83.5;
     const OZ = 31.1035;
-    // India retail price = spot + import duty (~10%) + GST (3%) + margin
     const GOLD_INDIA_MARKUP   = 1.0946;
     const SILVER_INDIA_MARKUP = 1.03;
     const goldG   = (1 / data.rates.XAU) * inrPerUsd / OZ * GOLD_INDIA_MARKUP;
@@ -64,9 +63,7 @@ app.get("/api/metals", async (req, res) => {
       }
     };
 
-    // Save to cache
     cache = { data: result, fetchedAt: now };
-
     res.json(result);
   } catch (err) {
     console.error("Error fetching metals:", err);
@@ -74,7 +71,69 @@ app.get("/api/metals", async (req, res) => {
   }
 });
 
-// Health check — Railway uses this to confirm the app is running
+// ── AI RESUME REWRITER ────────────────────────────────────
+app.post("/api/rewrite-resume", async (req, res) => {
+  const { resume, jd } = req.body;
+
+  if (!resume || !jd) {
+    return res.status(400).json({ error: "Missing resume or jd" });
+  }
+
+  const groqKey = process.env.GROQ_API_KEY;
+  if (!groqKey) {
+    return res.status(500).json({ error: "GROQ_API_KEY not set on server" });
+  }
+
+  const prompt = `You are an expert ATS resume optimizer for the Indian job market.
+
+RESUME:
+${resume}
+
+JOB DESCRIPTION:
+${jd}
+
+Analyze and respond ONLY with valid JSON, no markdown, no explanation:
+{
+  "ats_before": <integer 0-100, realistic ATS match score of original resume>,
+  "ats_after": <integer 0-100, ATS score after rewriting>,
+  "present_keywords": [<array of important keywords from JD already in resume>],
+  "missing_keywords": [<array of important keywords from JD missing in resume>],
+  "rewritten_resume": "<full rewritten resume, ATS optimized, same facts, better phrasing, keywords added naturally>"
+}`;
+
+  try {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${groqKey}`
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        temperature: 0.3,
+        max_tokens: 4096,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+
+    const data = await response.json();
+    if (data.error) return res.status(500).json({ error: data.error.message });
+
+    const raw = data.choices[0].message.content.replace(/```json|```/g, "").trim();
+    const parsed = JSON.parse(raw);
+    res.json(parsed);
+
+  } catch (err) {
+    console.error("rewrite-resume error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── HEALTH CHECK ──────────────────────────────────────────
+app.get("/", (req, res) => {
+  res.json({ status: "ok", service: "salarybit-metals-proxy" });
+});
+
 app.get("/health", (req, res) => {
   res.json({ status: "ok", service: "salarybit-metals-proxy" });
 });

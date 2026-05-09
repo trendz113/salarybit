@@ -648,13 +648,20 @@
         : '<span style="font-size:13px;color:var(--text2)">No keyword matches found</span>';
 
       const rewrittenResume = parsed.rewritten_resume;
-      renderFormattedResume(rewrittenResume);
       document.getElementById('resume-raw').textContent = rewrittenResume;
       document.getElementById('results').style.display = 'block';
       document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
+      // Show loading state while Claude structures the resume
+      document.getElementById('resume-out').innerHTML = '<p style="color:#999;font-family:sans-serif;font-size:13px;padding:1rem;">Formatting resume layout...</p>';
+
+      // Structure the resume via Claude then render
+      const structured = await structureResume(rewrittenResume);
+      renderFormattedResume(structured);
+      document.getElementById('resume-raw').textContent = structured;
+
       // Now fetch interview handover guide
-      generateHandoverGuide(rewrittenResume, jd);
+      generateHandoverGuide(structured, jd);
 
     } catch(err) {
       showError('Error: ' + err.message);
@@ -876,6 +883,58 @@ Make the content specific to this resume and job — personalise the openers wit
     const li = document.getElementById('cli-' + i);
     const chk = document.getElementById('chk-' + i);
     li.classList.toggle('checked', chk.checked);
+  }
+
+  async function structureResume(rawText) {
+    try {
+      const prompt = `You are a professional resume formatter. Take the following resume text (which may be in paragraph form or loosely structured) and reformat it into a clean, well-structured resume with proper sections.
+
+RAW RESUME TEXT:
+${rawText}
+
+Return the resume as plain text with this EXACT structure — use these exact section headers on their own lines, followed by content:
+
+[CANDIDATE NAME]
+[Job Title] | [email] | [phone] | [location]
+
+SUMMARY
+[2-3 sentence professional summary]
+
+EXPERIENCE
+[Job Title] | [Company Name] | [Start Year] – [End Year or Present]
+- [Achievement or responsibility as a bullet]
+- [Achievement or responsibility as a bullet]
+- [Achievement or responsibility as a bullet]
+- [Achievement or responsibility as a bullet]
+
+SKILLS
+[Skill 1], [Skill 2], [Skill 3], [Skill 4], [Skill 5], [Skill 6]
+
+EDUCATION
+[Degree], [Field] | [University Name] | [Year]
+
+Rules:
+- Preserve ALL real information from the original — do not invent anything
+- Each bullet point must start with a dash (-)
+- Section headers must be ALL CAPS on their own line
+- Dates must follow the pattern YYYY – YYYY or YYYY – Present
+- Return ONLY the formatted resume text, no explanations, no markdown, no backticks`;
+
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+      const data = await response.json();
+      const result = data.content.map(i => i.text || '').join('').trim();
+      return result || rawText;
+    } catch(e) {
+      return rawText;
+    }
   }
 
   function printResume() {

@@ -406,7 +406,7 @@
     Rewrite &amp; analyze resume →
   </button>
   <div class="error-box" id="error-box"></div>
-  <div class="progress" id="progress"><span>Analyzing with AI — this takes about 10–15 seconds...</span></div>
+  <div class="progress" id="progress"><span>Rewriting &amp; formatting your resume — takes about 10–15 seconds...</span></div>
 
   <div class="results" id="results">
     <div class="scores">
@@ -617,6 +617,7 @@
     document.getElementById('handover-loading').style.display = 'none';
 
     try {
+      // Call Groq backend for ATS scores + keywords
       const resp = await fetch(RAILWAY_URL + '/api/rewrite-resume', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -637,40 +638,27 @@
       const pct = total > 0 ? (present.length / total) * 100 : 0;
       kwEl.className = 'sc-val ' + (pct >= 70 ? 'good' : pct >= 45 ? 'mid' : 'low');
 
-      const missingEl = document.getElementById('missing-kws');
-      missingEl.innerHTML = missing.length
+      document.getElementById('missing-kws').innerHTML = missing.length
         ? missing.map(k => `<span class="kw missing">${k}</span>`).join('')
         : '<span style="font-size:13px;color:var(--text2)">None — great match!</span>';
 
-      const presentEl = document.getElementById('present-kws');
-      presentEl.innerHTML = present.length
+      document.getElementById('present-kws').innerHTML = present.length
         ? present.map(k => `<span class="kw present">${k}</span>`).join('')
         : '<span style="font-size:13px;color:var(--text2)">No keyword matches found</span>';
 
-      const rewrittenResume = parsed.rewritten_resume;
-      document.getElementById('resume-raw').textContent = rewrittenResume;
+      // Parse the paragraph from Groq into structured resume
+      const rawGroq = parsed.rewritten_resume || '';
+      const structured = paragraphToResume(rawGroq, resumeText);
+      document.getElementById('resume-raw').textContent = structured;
+      renderFormattedResume(structured);
+
       document.getElementById('results').style.display = 'block';
       document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-      // Show loading state while Claude structures the resume
-      document.getElementById('resume-out').innerHTML = '<p style="color:#999;font-family:sans-serif;font-size:13px;padding:1rem;">Formatting resume layout...</p>';
-
-      // Structure the resume via Claude then render
-      const structured = await structureResume(rewrittenResume);
-      renderFormattedResume(structured);
-      document.getElementById('resume-raw').textContent = structured;
-
-      // Now fetch interview handover guide
       generateHandoverGuide(structured, jd);
 
     } catch(err) {
       showError('Error: ' + err.message);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Rewrite & analyze resume →';
-      document.getElementById('progress').style.display = 'none';
     }
-  }
 
   async function generateHandoverGuide(resume, jd) {
     document.getElementById('handover-loading').style.display = 'block';
@@ -997,6 +985,106 @@ Rules:
     const isVisible = raw.style.display === 'block';
     raw.style.display = isVisible ? 'none' : 'block';
     el.textContent = isVisible ? 'Show plain text' : 'Hide plain text';
+  }
+
+  /* ── Paragraph → Structured Resume Converter ── */
+  function paragraphToResume(groqText, originalResume) {
+    // Extract facts from original resume (ground truth)
+    const orig = originalResume + ' ' + groqText;
+
+    // Extract name — first line of original or first capitalized words
+    const nameMatch = originalResume.trim().split('\n')[0].trim();
+    const name = nameMatch.length < 60 ? nameMatch : '';
+
+    // Extract email
+    const emailMatch = orig.match(/[\w.+-]+@[\w-]+\.[\w.]+/);
+    const email = emailMatch ? emailMatch[0] : '';
+
+    // Extract phone
+    const phoneMatch = orig.match(/(\+?\d[\d\s\-().]{8,15}\d)/);
+    const phone = phoneMatch ? phoneMatch[0].trim() : '';
+
+    // Extract city
+    const cityMatch = orig.match(/\b(Bengaluru|Bangalore|Mumbai|Delhi|Hyderabad|Chennai|Pune|Kolkata|Noida|Gurgaon|Gurugram|Ahmedabad|Jaipur|Kochi|Chandigarh|Indore)\b/i);
+    const city = cityMatch ? cityMatch[0] : '';
+
+    // Extract years of experience
+    const expMatch = groqText.match(/(\d+)\s*(?:\+\s*)?years?\s*of\s*experience/i);
+    const expYears = expMatch ? expMatch[1] : '';
+
+    // Extract companies mentioned
+    const companies = [];
+    const compPatterns = [
+      /(?:at|with|for|joined)\s+([A-Z][A-Za-z\s&.]{1,30}?)(?:\s+as|\s+where|\s+and|\s+for|\.|,)/g,
+      /([A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?)\s+(?:as a|as an)\s+/g
+    ];
+    compPatterns.forEach(p => {
+      let m;
+      while ((m = p.exec(orig)) !== null) {
+        const c = m[1].trim();
+        if (c.length > 1 && c.length < 40 && !companies.includes(c)) companies.push(c);
+      }
+    });
+
+    // Extract job titles
+    const titleMatch = orig.match(/(?:as a|as an|worked as|working as|role of)\s+([A-Za-z\s]+(?:Developer|Engineer|Analyst|Manager|Designer|Lead|Architect|Consultant|Specialist))/i);
+    const jobTitle = titleMatch ? titleMatch[1].trim() : (expYears ? 'Software Engineer' : '');
+
+    // Extract education
+    const eduMatch = orig.match(/([Bb]\.?[Tt]ech|[Mm]\.?[Tt]ech|[Bb]\.?[Ee]|[Mm]\.?[Ss]c?|[Bb]\.?[Ss]c?|[Mm][Bb][Aa]|[Bb][Cc][Aa]|[Mm][Cc][Aa])\.?\s+(?:in\s+)?([A-Za-z\s]+?)(?:\s+from|\s+at)?\s+([A-Z][A-Za-z\s]+?)\s*[,.]?\s*(20\d\d|19\d\d)?/i);
+
+    // Extract skills — look for tech keywords in the groq output
+    const skillKeywords = ['Python','Java','JavaScript','TypeScript','React','Node','Django','Spring Boot','Flask','FastAPI',
+      'MySQL','PostgreSQL','MongoDB','Redis','AWS','Azure','GCP','Docker','Kubernetes','Git','CI/CD','Jenkins',
+      'REST API','GraphQL','Microservices','Agile','Scrum','Linux','HTML','CSS','Angular','Vue','PHP','Ruby',
+      'C++','C#','.NET','Scala','Kotlin','Swift','TensorFlow','PyTorch','SQL','NoSQL','Kafka','RabbitMQ',
+      'Terraform','Ansible','Nginx','Apache','Spring','Hibernate','JPA','Maven','Gradle','Webpack','TypeORM'];
+    const foundSkills = skillKeywords.filter(s => orig.toLowerCase().includes(s.toLowerCase()));
+
+    // Extract key sentences from Groq text for bullets
+    const sentences = groqText.replace(/\.\s+/g, '.|').split('|')
+      .map(s => s.trim().replace(/^[-•*]\s*/, ''))
+      .filter(s => s.length > 30 && s.length < 200);
+
+    // Pick 4 best bullets — prefer sentences with action verbs
+    const actionVerbs = /\b(design|develop|build|creat|implement|manag|lead|optim|deliver|maintain|collaborat|architect|deploy|integrat|automat|migrat|reduc|increas|improv|achiev|execut|facilitat)\w*/i;
+    const bullets = sentences.filter(s => actionVerbs.test(s)).slice(0, 4);
+    if (bullets.length < 3) {
+      sentences.forEach(s => { if (bullets.length < 4 && !bullets.includes(s)) bullets.push(s); });
+    }
+
+    // Build structured resume text
+    const contact = [email, phone, city].filter(Boolean).join(' | ');
+    const contactLine = jobTitle ? `${jobTitle} | ${contact}` : contact;
+
+    // Summary — first 2 meaningful sentences from Groq
+    const summarySents = sentences.filter(s => s.length > 50).slice(0, 2).join(' ');
+
+    // Company + role line
+    const company = companies.find(c => !['JavaScript','Python','Java','MySQL'].includes(c)) || '';
+    const yearMatch = orig.match(/(20\d\d)/g);
+    const startYear = yearMatch ? yearMatch[0] : '';
+    const endYear = yearMatch && yearMatch.length > 1 ? yearMatch[yearMatch.length - 1] : 'Present';
+
+    let out = '';
+    out += name ? `${name}\n` : '';
+    out += contactLine ? `${contactLine}\n` : '';
+    out += '\nSUMMARY\n';
+    out += summarySents || groqText.split('.').slice(0,2).join('.') + '.';
+    out += '\n\nEXPERIENCE\n';
+    out += `${jobTitle || 'Software Engineer'}${company ? ' | ' + company : ''}${startYear ? ' | ' + startYear + ' – ' + endYear : ''}\n`;
+    bullets.forEach(b => { out += `- ${b.replace(/^[-•]\s*/, '')}\n`; });
+    out += '\nSKILLS\n';
+    out += foundSkills.length > 0 ? foundSkills.slice(0, 12).join(', ') : 'See resume for skills';
+    out += '\n\nEDUCATION\n';
+    if (eduMatch) {
+      out += `${eduMatch[1]} in ${eduMatch[2].trim()} | ${eduMatch[3].trim()}${eduMatch[4] ? ' | ' + eduMatch[4] : ''}`;
+    } else {
+      const eduFallback = orig.match(/([Bb]\.?[Tt]ech|[Mm]\.?[Tt]ech|[Bb]\.?[Ee]|degree)[^.]*\./i);
+      out += eduFallback ? eduFallback[0].replace(/\.$/, '') : '';
+    }
+
+    return out.trim();
   }
 
   /* ── Formatted Resume Renderer ── */

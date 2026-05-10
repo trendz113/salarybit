@@ -617,7 +617,6 @@
     document.getElementById('handover-loading').style.display = 'none';
 
     try {
-      // Call Groq backend for ATS scores + keywords
       const resp = await fetch(RAILWAY_URL + '/api/rewrite-resume', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -646,9 +645,7 @@
         ? present.map(k => `<span class="kw present">${k}</span>`).join('')
         : '<span style="font-size:13px;color:var(--text2)">No keyword matches found</span>';
 
-      // Parse the paragraph from Groq into structured resume
-      const rawGroq = parsed.rewritten_resume || '';
-      const structured = paragraphToResume(rawGroq, resumeText);
+      const structured = parsed.rewritten_resume || '';
       document.getElementById('resume-raw').textContent = structured;
       renderFormattedResume(structured);
 

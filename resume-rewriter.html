@@ -27,28 +27,18 @@
       --red-border: #f09595;
       --amber-bg: #faeeda;
       --amber-text: #854f0b;
+      --amber-border: #f0c97a;
       --radius: 10px;
       --radius-sm: 6px;
     }
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 0;
-    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
     header {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 0 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 56px;
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 0 2rem; display: flex; align-items: center;
+      justify-content: space-between; height: 56px;
     }
-
     .logo { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; }
     .logo span { color: var(--text2); font-weight: 400; }
     .badge { font-size: 11px; background: var(--surface2); border: 1px solid var(--border); padding: 3px 10px; border-radius: 20px; color: var(--text2); }
@@ -74,8 +64,7 @@
       padding: 12px 14px; border-radius: var(--radius);
       border: 1px solid var(--border); background: var(--surface);
       font-size: 13px; line-height: 1.7; color: var(--text);
-      font-family: 'DM Sans', sans-serif; outline: none;
-      transition: border-color 0.15s;
+      font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.15s;
     }
     .field textarea:focus { border-color: var(--border2); }
     .field textarea::placeholder { color: var(--text3); }
@@ -126,46 +115,45 @@
     .kw.missing { background: var(--red-bg); color: var(--red-text); border: 1px solid var(--red-border); }
     .kw.present { background: var(--green-bg); color: var(--green-text); border: 1px solid var(--green-border); }
 
-    /* ✅ FIXED: Resume output now renders as a proper document, not monospace plain text */
-    .resume-output {
-      font-size: 13.5px;
-      line-height: 1.75;
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      background: var(--surface);
-      padding: 2rem 2.25rem;
-      border-radius: var(--radius-sm);
-      max-height: 560px;
-      overflow-y: auto;
-      border: 1px solid var(--border);
+    /* Interview tips */
+    .tips-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .tips-list li {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: var(--amber-bg); border: 1px solid var(--amber-border);
+      border-radius: var(--radius-sm); padding: 10px 14px;
+      font-size: 13.5px; line-height: 1.6; color: var(--text);
+    }
+    .tips-list li .tip-num {
+      font-size: 11px; font-weight: 600; color: var(--amber-text);
+      background: rgba(133,79,11,0.12); border-radius: 50%;
+      width: 22px; height: 22px; min-width: 22px;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 1px;
     }
 
-    /* Rendered resume internal styles */
-    .resume-output .r-name {
-      font-size: 22px; font-weight: 600; letter-spacing: -0.4px;
-      color: var(--text); margin-bottom: 4px;
+    /* Resume output */
+    .resume-output {
+      font-size: 13.5px; line-height: 1.75; color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      background: var(--surface); padding: 2rem 2.25rem;
+      border-radius: var(--radius-sm); max-height: 580px;
+      overflow-y: auto; border: 1px solid var(--border);
     }
-    .resume-output .r-contact {
-      font-size: 12.5px; color: var(--text2); margin-bottom: 1.25rem;
-      display: flex; flex-wrap: wrap; gap: 6px 14px;
-    }
+    .resume-output .r-name { font-size: 22px; font-weight: 600; letter-spacing: -0.4px; margin-bottom: 4px; }
+    .resume-output .r-contact { font-size: 12.5px; color: var(--text2); margin-bottom: 1.25rem; display: flex; flex-wrap: wrap; gap: 4px 12px; }
     .resume-output .r-section-title {
       font-size: 11px; font-weight: 600; letter-spacing: 1px;
       text-transform: uppercase; color: var(--text2);
       border-bottom: 1px solid var(--border); padding-bottom: 5px;
-      margin: 1.1rem 0 0.6rem;
+      margin: 1.2rem 0 0.65rem;
     }
-    .resume-output .r-job-header {
-      display: flex; justify-content: space-between; align-items: baseline;
-      margin-bottom: 4px; flex-wrap: wrap; gap: 4px;
-    }
+    .resume-output .r-job-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
     .resume-output .r-job-title { font-weight: 600; font-size: 13.5px; }
-    .resume-output .r-job-company { font-style: italic; color: var(--text2); font-size: 13px; margin-left: 6px; }
-    .resume-output .r-job-dates { font-size: 12px; color: var(--text3); }
+    .resume-output .r-job-company { font-style: italic; color: var(--text2); font-size: 13px; margin-left: 5px; }
+    .resume-output .r-job-dates { font-size: 12px; color: var(--text3); white-space: nowrap; }
     .resume-output ul { padding-left: 1.2rem; margin: 4px 0 10px; }
-    .resume-output ul li { margin-bottom: 4px; font-size: 13.5px; color: var(--text); }
-    .resume-output .r-para { margin-bottom: 8px; font-size: 13.5px; }
-    .resume-output .r-skills { font-size: 13.5px; color: var(--text); }
+    .resume-output ul li { margin-bottom: 5px; font-size: 13.5px; }
+    .resume-output .r-para { margin-bottom: 8px; }
 
     .action-row { display: flex; gap: 8px; margin-top: 10px; }
     .copy-btn, .download-btn {
@@ -195,7 +183,7 @@
 <div class="container">
   <div class="hero">
     <h1>Fix my resume for this job</h1>
-    <p>Paste your resume + job description. AI rewrites your resume to match, scores ATS fit, and shows missing keywords.</p>
+    <p>Paste your resume + job description. AI rewrites your resume, scores ATS fit, shows missing keywords, and gives interview tips.</p>
   </div>
 
   <div class="powered">Powered by <span>Groq AI</span> — free, fast, no login needed</div>
@@ -210,7 +198,6 @@
       <label>Your current resume</label>
       <textarea id="resume-text" placeholder="Paste your resume here...&#10;&#10;Include: work experience, skills, education, achievements"></textarea>
     </div>
-
     <div class="field" id="pdf-area" style="display:none;">
       <label>Upload resume (PDF)</label>
       <div class="upload-box" onclick="document.getElementById('pdf-file').click()">
@@ -221,7 +208,6 @@
       <input type="file" id="pdf-file" accept=".pdf" style="display:none;" onchange="handlePDF(this)" />
       <div class="pdf-name" id="pdf-name"></div>
     </div>
-
     <div class="field">
       <label>Job description</label>
       <textarea id="jd-text" placeholder="Paste the job description here...&#10;&#10;Include: role, responsibilities, required skills, qualifications"></textarea>
@@ -232,9 +218,11 @@
     Rewrite &amp; analyze resume →
   </button>
   <div class="error-box" id="error-box"></div>
-  <div class="progress" id="progress"><span>Analyzing with Groq AI — this takes about 10 seconds...</span></div>
+  <div class="progress" id="progress"><span>Analyzing with Groq AI — this takes about 10–15 seconds...</span></div>
 
   <div class="results" id="results">
+
+    <!-- Scores -->
     <div class="scores">
       <div class="score-card">
         <div class="sc-label">ATS score before</div>
@@ -253,6 +241,7 @@
       </div>
     </div>
 
+    <!-- Missing keywords -->
     <div class="result-section">
       <h3>
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z"/></svg>
@@ -261,6 +250,7 @@
       <div class="kw-wrap" id="missing-kws"></div>
     </div>
 
+    <!-- Present keywords -->
     <div class="result-section">
       <h3>
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -269,6 +259,16 @@
       <div class="kw-wrap" id="present-kws"></div>
     </div>
 
+    <!-- Interview tips -->
+    <div class="result-section">
+      <h3>
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>
+        Interview preparation tips
+      </h3>
+      <ul class="tips-list" id="interview-tips"></ul>
+    </div>
+
+    <!-- Rewritten resume -->
     <div class="result-section">
       <h3>
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
@@ -286,15 +286,15 @@
         </button>
       </div>
     </div>
-  </div>
+
+  </div><!-- /results -->
 </div>
 
 <script>
   const RAILWAY_URL = 'https://web-production-456eb.up.railway.app';
-
   let pdfText = null;
   let currentTab = 'text';
-  let rawResumeText = ''; // store for copy/download
+  let rawResumeText = '';
 
   function switchTab(tab) {
     currentTab = tab;
@@ -328,10 +328,7 @@
     el.textContent = msg;
     el.style.display = 'block';
   }
-
-  function hideError() {
-    document.getElementById('error-box').style.display = 'none';
-  }
+  function hideError() { document.getElementById('error-box').style.display = 'none'; }
 
   function setScore(elId, val) {
     const el = document.getElementById(elId);
@@ -339,108 +336,98 @@
     el.className = 'sc-val ' + (val >= 70 ? 'good' : val >= 45 ? 'mid' : 'low');
   }
 
-  // ✅ FIXED: Convert plain text resume into formatted HTML
+  function esc(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // Render plain text resume into styled HTML
   function renderResume(text) {
     const lines = text.split('\n');
     let html = '';
     let inList = false;
-    let firstLine = true;
-    let secondLine = false;
-    let contactDone = false;
-    let contactLines = [];
+    let nameRendered = false;
+    let contactRendered = false;
+    let contactBuffer = [];
 
-    // Detect section heading: all-caps or ends with colon, short line
-    function isSectionHeading(line) {
-      const trimmed = line.trim();
-      if (!trimmed) return false;
-      // All caps words (like SUMMARY, EXPERIENCE, EDUCATION, SKILLS)
-      if (/^[A-Z][A-Z\s&\/\-]{2,}$/.test(trimmed)) return true;
-      // Title case short line ending with colon
-      if (trimmed.endsWith(':') && trimmed.length < 40) return true;
-      return false;
+    const SECTION_HEADINGS = /^(SUMMARY|EXPERIENCE|EDUCATION|SKILLS|CERTIFICATIONS|PROJECTS|ACHIEVEMENTS|OBJECTIVE|PROFILE)S?$/i;
+
+    function isContactLine(l) {
+      return /[@|•·]|(\+?\d[\d\s\-]{7,})|linkedin|github/i.test(l);
     }
-
-    // Detect bullet line
-    function isBullet(line) {
-      return /^(\s*[-•*▸›✓]\s+|\s*\d+\.\s+)/.test(line);
+    function isBullet(l) {
+      return /^\s*[-•*▸›✓]\s+/.test(l);
     }
-
-    // Detect job header line: has a dash/pipe separator with dates on same line
-    function isJobHeader(line) {
-      return /\b(19|20)\d{2}\b/.test(line) && line.trim().length < 120;
-    }
-
-    // Detect contact line: has email/phone/linkedin/location patterns
-    function isContact(line) {
-      return /[@|•·]|(\+?\d[\d\s\-]{8,})|linkedin\.com|github\.com/i.test(line);
+    function isJobLine(l) {
+      // Has a year AND a dash/pipe separator — job title line
+      return /\b(19|20)\d{2}\b/.test(l) && /[—\-–|]/.test(l);
     }
 
     for (let i = 0; i < lines.length; i++) {
-      const raw = lines[i];
-      const line = raw.trim();
-
+      const line = lines[i].trim();
       if (!line) {
         if (inList) { html += '</ul>'; inList = false; }
         continue;
       }
 
-      // First non-empty line = name
-      if (firstLine) {
+      // First line = name
+      if (!nameRendered) {
         html += `<div class="r-name">${esc(line)}</div>`;
-        firstLine = false;
-        secondLine = true;
+        nameRendered = true;
         continue;
       }
 
-      // Collect contact lines (next 1-2 lines after name, or lines with contact patterns)
-      if (!contactDone) {
-        if (isContact(line) || secondLine) {
-          contactLines.push(line);
-          secondLine = false;
-          // peek ahead — if next non-empty line is also contact-like, keep collecting
-          const next = lines[i + 1] ? lines[i + 1].trim() : '';
-          if (next && isContact(next)) continue;
-          // flush contact
-          html += `<div class="r-contact">${contactLines.map(c => `<span>${esc(c)}</span>`).join('')}</div>`;
-          contactLines = [];
-          contactDone = true;
+      // Contact block: collect until we hit a non-contact line
+      if (!contactRendered) {
+        if (isContactLine(line) || contactBuffer.length === 0) {
+          contactBuffer.push(line);
+          // Look ahead
+          const next = (lines[i+1] || '').trim();
+          if (!next || !isContactLine(next)) {
+            html += `<div class="r-contact">${contactBuffer.map(c => `<span>${esc(c)}</span>`).join('<span style="color:var(--border2);margin:0 2px">|</span>')}</div>`;
+            contactBuffer = [];
+            contactRendered = true;
+          }
           continue;
         } else {
-          contactDone = true;
+          contactRendered = true;
         }
       }
 
+      // Section heading
+      if (SECTION_HEADINGS.test(line)) {
+        if (inList) { html += '</ul>'; inList = false; }
+        html += `<div class="r-section-title">${esc(line.replace(/:$/,''))}</div>`;
+        continue;
+      }
+
+      // Bullet
       if (isBullet(line)) {
         if (!inList) { html += '<ul>'; inList = true; }
-        const content = line.replace(/^[\s\-•*▸›✓\d\.]+\s*/, '');
-        html += `<li>${esc(content)}</li>`;
+        html += `<li>${esc(line.replace(/^\s*[-•*▸›✓]\s+/, ''))}</li>`;
         continue;
       }
 
       if (inList) { html += '</ul>'; inList = false; }
 
-      if (isSectionHeading(line)) {
-        html += `<div class="r-section-title">${esc(line.replace(/:$/, ''))}</div>`;
-        continue;
-      }
-
-      if (isJobHeader(line)) {
-        // Try to split "Job Title — Company    2020–2023" or "Job Title | Company | dates"
-        const dateMatch = line.match(/(\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)?\s*\d{4}\s*[-–—to]+\s*(?:Present|\d{4})|Present)/i);
-        let dates = dateMatch ? dateMatch[0] : '';
-        let rest = dates ? line.replace(dates, '').trim() : line;
-        // Split on — or | for title/company
-        const parts = rest.split(/\s*[—|–\-]\s*/);
-        const title = parts[0] || rest;
-        const company = parts[1] || '';
+      // Job header line: "Software Engineer — TCS   2021 – 2023"
+      if (isJobLine(line)) {
+        const dateMatch = line.match(/((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)?\s*\d{4}\s*[-–—]+\s*(?:Present|\d{4}))/i);
+        const dates = dateMatch ? dateMatch[0].trim() : '';
+        const rest = dates ? line.replace(dates, '').trim().replace(/[,\s]+$/, '') : line;
+        const parts = rest.split(/\s*[—–|]\s*/);
+        const title = parts[0] ? parts[0].trim() : rest;
+        const company = parts[1] ? parts[1].trim() : '';
         html += `<div class="r-job-header">
-          <div><span class="r-job-title">${esc(title.trim())}</span>${company ? `<span class="r-job-company">— ${esc(company.trim())}</span>` : ''}</div>
-          ${dates ? `<div class="r-job-dates">${esc(dates.trim())}</div>` : ''}
+          <div>
+            <span class="r-job-title">${esc(title)}</span>
+            ${company ? `<span class="r-job-company">— ${esc(company)}</span>` : ''}
+          </div>
+          ${dates ? `<div class="r-job-dates">${esc(dates)}</div>` : ''}
         </div>`;
         continue;
       }
 
-      // Default: paragraph
+      // Default paragraph
       html += `<p class="r-para">${esc(line)}</p>`;
     }
 
@@ -448,13 +435,8 @@
     return html;
   }
 
-  function esc(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
   async function analyzeResume() {
     hideError();
-
     const jd = document.getElementById('jd-text').value.trim();
     if (!jd) { showError('Please paste the job description.'); return; }
 
@@ -494,17 +476,21 @@
       const pct = total > 0 ? (present.length / total) * 100 : 0;
       kwEl.className = 'sc-val ' + (pct >= 70 ? 'good' : pct >= 45 ? 'mid' : 'low');
 
-      const missingEl = document.getElementById('missing-kws');
-      missingEl.innerHTML = missing.length
-        ? missing.map(k => `<span class="kw missing">${k}</span>`).join('')
+      document.getElementById('missing-kws').innerHTML = missing.length
+        ? missing.map(k => `<span class="kw missing">${esc(k)}</span>`).join('')
         : '<span style="font-size:13px;color:var(--text2)">None — great match!</span>';
 
-      const presentEl = document.getElementById('present-kws');
-      presentEl.innerHTML = present.length
-        ? present.map(k => `<span class="kw present">${k}</span>`).join('')
+      document.getElementById('present-kws').innerHTML = present.length
+        ? present.map(k => `<span class="kw present">${esc(k)}</span>`).join('')
         : '<span style="font-size:13px;color:var(--text2)">No keyword matches found</span>';
 
-      // ✅ FIXED: render as formatted HTML instead of raw textContent
+      // Interview tips
+      const tips = parsed.interview_tips || [];
+      document.getElementById('interview-tips').innerHTML = tips.length
+        ? tips.map((t, i) => `<li><span class="tip-num">${i+1}</span><span>${esc(t)}</span></li>`).join('')
+        : '<li><span class="tip-num">!</span><span>No tips returned. Try again.</span></li>';
+
+      // Rewritten resume
       rawResumeText = parsed.rewritten_resume;
       document.getElementById('resume-out').innerHTML = renderResume(rawResumeText);
 
@@ -524,7 +510,9 @@
     navigator.clipboard.writeText(rawResumeText).then(() => {
       const btn = document.querySelector('.copy-btn');
       btn.textContent = '✓ Copied!';
-      setTimeout(() => { btn.innerHTML = `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.375"/></svg> Copy resume`; }, 2000);
+      setTimeout(() => {
+        btn.innerHTML = `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.375"/></svg> Copy resume`;
+      }, 2000);
     });
   }
 
@@ -532,9 +520,7 @@
     const blob = new Blob([rawResumeText], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = 'rewritten-resume.txt';
-    a.click();
+    a.href = url; a.download = 'rewritten-resume.txt'; a.click();
     URL.revokeObjectURL(url);
   }
 </script>

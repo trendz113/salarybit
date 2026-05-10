@@ -655,7 +655,12 @@
 
     } catch(err) {
       showError('Error: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Rewrite & analyze resume →';
+      document.getElementById('progress').style.display = 'none';
     }
+  }
 
   async function generateHandoverGuide(resume, jd) {
     document.getElementById('handover-loading').style.display = 'block';

@@ -403,8 +403,6 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       <span class="brand-tag">FREE</span>
     </a>
     <div class="nav-links">
-      <a class="nav-a" href="/static/vahanclear.html" style="color:#c8860a;font-weight:600;">🚗 VahanClear</a>
-<div class="nav-divider"></div>
       <a class="nav-a" href="#calc-section">Calculator</a>
       <a class="nav-a" href="#calc-section" onclick="setTimeout(()=>{document.querySelector('[onclick*=\'tax\']')?.click()},100)">Tax Regime</a>
       <a class="nav-a" href="#calc-section" onclick="setTimeout(()=>{document.getElementById('insurance-section')?.click()},100)">Insurance</a>
@@ -418,12 +416,9 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       <div class="nav-divider"></div>
       <a class="nav-a" href="#calc-section" onclick="setTimeout(()=>{document.getElementById('labour-section')?.click()},100)">Labour Code</a>
       <a class="nav-a" href="#calc-section" onclick="setTimeout(()=>{document.getElementById('rights-section')?.click()},100)">Rights</a>
-      <span class="nav-divider"></span>
-      <a class="nav-a" href="/gold-rate-today.html">🥇 Gold Rate</a>
       <div class="nav-divider"></div>
       <a class="nav-a" href="/blog/" style="color:var(--accent);font-weight:600">📝 Blog</a>
-      <a class="mob-nav-a" href="/blog/" onclick="closeMobNav()"><span class="mob-icon">📝</span>Salary Blog &amp; Guides</a>
-<a class="mob-nav-a" href="/resume-rewriter.html" onclick="closeMobNav()"><span class="mob-icon">📄</span>AI Resume Rewriter</a>
+      <a class="nav-a" href="/resume-rewriter.html" style="color:#7c3aed;font-weight:600">📄 AI Resume</a>
     </div>
     <div class="nav-badge">FY 2026-27</div>
     <button class="mob-menu-btn" onclick="openMobNav()" aria-label="Open menu">
@@ -445,7 +440,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   <a class="mob-nav-a" href="#calc-section" onclick="closeMobNav();setTimeout(()=>{document.getElementById('insurance-section')?.click()},150)"><span class="mob-icon">🛡️</span>Insurance Planner</a>
   <a class="mob-nav-a" href="#calc-section" onclick="closeMobNav();setTimeout(()=>{document.getElementById('labour-section')?.click()},150)"><span class="mob-icon">⚖️</span>Labour Code Impact</a>
   <a class="mob-nav-a" href="#calc-section" onclick="closeMobNav();setTimeout(()=>{document.getElementById('rights-section')?.click()},150)"><span class="mob-icon">🏛️</span>Employee Rights</a>
-  <a class="mob-nav-a" href="/gold-rate-today.html" onclick="closeMobNav()"><span class="mob-icon">🥇</span>Gold Rate Today</a>
+  <a class="mob-nav-a" href="/resume-rewriter.html" onclick="closeMobNav()"><span class="mob-icon">📄</span>AI Resume Rewriter</a>
   <div class="mob-nav-section">Financial Tools</div>
   <a class="mob-nav-a" href="#tools-section" onclick="closeMobNav()"><span class="mob-icon">🏠</span>Home Loan EMI</a>
   <a class="mob-nav-a" href="#tools-section" onclick="closeMobNav();setTimeout(()=>showTool('sip',document.querySelector('[onclick*=\'sip\']')),200)"><span class="mob-icon">📊</span>SIP Calculator</a>
@@ -501,7 +496,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           <a class="hero-chip" href="#tools-section" onclick="setTimeout(()=>showTool('gratuity',document.querySelector('[onclick*=\'gratuity\']')),200)">🏆 Gratuity</a>
           <a class="hero-chip" href="#tools-section" onclick="setTimeout(()=>showTool('hike',document.querySelector('[onclick*=\'hike\']')),200)">📊 Salary Hike</a>
           <a class="hero-chip" href="#tools-section" onclick="setTimeout(()=>showTool('epf',document.querySelector('[onclick*=\'epf\']')),200)">🏦 EPF / PF</a>
-          <a class="hero-chip" href="#tools-section" onclick="setTimeout(()=>showTool('notice',document.querySelector('[onclick*=\'notice\']')),200)">📋 Notice Pay</a><a href="https://salarybit.in/qr-decoder.html" class="hero-chip" style="color:#4ade80;border-color:rgba(74,222,128,.3)">🔍 e-Khata QR</a>
+          <a class="hero-chip" href="#tools-section" onclick="setTimeout(()=>showTool('notice',document.querySelector('[onclick*=\'notice\']')),200)">📋 Notice Pay</a><a href="https://salarybit.in/qr-decoder.html" class="hero-chip" style="color:#4ade80;border-color:rgba(74,222,128,.3)">🔍 e-Khata QR</a><a href="/resume-rewriter.html" class="hero-chip" style="color:#c4b5fd;border-color:rgba(167,139,250,.35)">📄 AI Resume Rewriter</a>
           <a class="hero-chip" href="#calc-section">⚖️ Labour Code Impact</a>
           <a class="hero-chip" href="#calc-section">🏛️ Employee Rights</a>
           <a class="hero-chip" href="#tools-section">🧾 GST Calculator</a>
@@ -509,7 +504,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         </div>
       </div>
       <div class="hero-stats">
-        <div class="hero-stat"><div class="hero-stat-val">17+</div><div class="hero-stat-label">Tools</div></div>
+        <div class="hero-stat"><div class="hero-stat-val">18+</div><div class="hero-stat-label">Tools</div></div>
         <div class="hero-stat"><div class="hero-stat-val">0</div><div class="hero-stat-label">Data collected</div></div>
         <div class="hero-stat"><div class="hero-stat-val">Free</div><div class="hero-stat-label">Always</div></div>
       </div>
@@ -1626,6 +1621,35 @@ function calcEsop(){
 <!-- ══════════════════════════════════════════
      FINANCIAL TOOLS SECTION
 ══════════════════════════════════════════ -->
+<!-- ── AI RESUME REWRITER SPOTLIGHT ── -->
+<section style="background:linear-gradient(135deg,#1e1235 0%,#2d1b4e 60%,#1a1a2e 100%);padding:2.5rem 1.5rem;border-top:2px solid rgba(124,58,237,.3)">
+  <div style="max-width:1160px;margin:0 auto;display:flex;align-items:center;gap:2.5rem;flex-wrap:wrap">
+    <div style="flex:1;min-width:260px">
+      <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.3);border-radius:20px;padding:4px 14px;font-size:11px;font-weight:700;color:#c4b5fd;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.875rem">✨ New AI Tool</div>
+      <h2 style="font-family:var(--display);font-size:clamp(22px,3.5vw,32px);color:#fff;line-height:1.2;margin-bottom:.625rem">AI Resume Rewriter<br><span style="color:rgba(255,255,255,.4);font-style:italic">for your next job</span></h2>
+      <p style="font-size:13px;color:rgba(255,255,255,.55);line-height:1.65;max-width:460px;margin-bottom:1.25rem">Paste your resume + job description. AI rewrites it to beat ATS filters, shows missing keywords, scores your match — and tells you exactly how to hand it to the interviewer.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem">
+        <span style="font-size:11px;font-weight:600;background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.25);color:#4ade80;padding:4px 12px;border-radius:20px">✓ ATS score before &amp; after</span>
+        <span style="font-size:11px;font-weight:600;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.25);color:#c4b5fd;padding:4px 12px;border-radius:20px">✓ Missing keywords</span>
+        <span style="font-size:11px;font-weight:600;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.25);color:#fbbf24;padding:4px 12px;border-radius:20px">✓ Interview handover guide</span>
+        <span style="font-size:11px;font-weight:600;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.25);color:#38bdf8;padding:4px 12px;border-radius:20px">✓ Print-ready PDF layout</span>
+      </div>
+      <a href="/resume-rewriter.html" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;font-size:14px;font-weight:700;padding:12px 28px;border-radius:10px;text-decoration:none;transition:.2s;box-shadow:0 4px 20px rgba(124,58,237,.4)" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
+        📄 Rewrite my resume free →
+      </a>
+    </div>
+    <div style="flex-shrink:0;background:rgba(255,255,255,.04);border:1px solid rgba(167,139,250,.2);border-radius:16px;padding:1.5rem;min-width:220px;max-width:280px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.35);margin-bottom:1rem">What you get</div>
+      <div style="display:flex;flex-direction:column;gap:.75rem">
+        <div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:8px;background:rgba(74,222,128,.15);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">🎯</div><div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.4">ATS-optimised rewrite in seconds</div></div>
+        <div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:8px;background:rgba(167,139,250,.15);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">🔍</div><div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.4">Keyword gap analysis</div></div>
+        <div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:8px;background:rgba(251,191,36,.15);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">🖨️</div><div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.4">Formatted resume ready to print</div></div>
+        <div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:8px;background:rgba(56,189,248,.15);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">🤝</div><div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.4">Interview handover tips & scripts</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="tools-section" style="background:var(--snow);border-top:2px solid var(--border);padding:3rem 1.5rem">
   <div style="max-width:1160px;margin:0 auto">
 
@@ -2636,57 +2660,9 @@ function calcNotice(){
 <!-- ═══════════════════════════════════════
      BLOG SECTION
 ════════════════════════════════════════ -->
-<section style="background:#fff;border-top:1px solid var(--border);padding:3rem 1.5rem" id="blog-section">
-  <div style="max-width:1100px;margin:0 auto">
-    <div style="text-align:center;margin-bottom:2rem">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--mist);margin-bottom:.5rem">Free Guides</div>
-      <h2 style="font-family:var(--display);font-size:26px;color:var(--ink);margin-bottom:.5rem">📝 Salary & Tax Guides</h2>
-      <p style="font-size:13px;color:var(--mist);max-width:480px;margin:0 auto">In-depth articles to help you understand your salary, save tax, and make better financial decisions.</p>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem;margin-bottom:2rem">
-      <!-- NEW-ARTICLES -->
-      <a href="/blog/article1-how-to-calculate-inhand-salary.html" style="display:block;text-decoration:none;background:var(--snow);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem;transition:.2s" onmouseover="this.style.borderColor='var(--accent)';this.style.boxShadow='0 4px 16px rgba(91,106,240,.12)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
-        <div style="font-size:20px;margin-bottom:.6rem">💰</div>
-        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:.4rem;line-height:1.35">How to Calculate Your In-Hand Salary (FY 2026-27)</div>
-        <div style="font-size:11px;color:var(--mist)">Step-by-step guide with worked examples for any CTC</div>
-      </a>
-      <a href="/blog/article2-old-vs-new-tax-regime.html" style="display:block;text-decoration:none;background:var(--snow);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem;transition:.2s" onmouseover="this.style.borderColor='var(--accent)';this.style.boxShadow='0 4px 16px rgba(91,106,240,.12)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
-        <div style="font-size:20px;margin-bottom:.6rem">📋</div>
-        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:.4rem;line-height:1.35">Old vs New Tax Regime: Which is Better for You?</div>
-        <div style="font-size:11px;color:var(--mist)">Comparison with verdict by salary range — ₹8L to ₹25L+</div>
-      </a>
-      <a href="/blog/article3-ctc-vs-gross-vs-net-salary.html" style="display:block;text-decoration:none;background:var(--snow);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem;transition:.2s" onmouseover="this.style.borderColor='var(--accent)';this.style.boxShadow='0 4px 16px rgba(91,106,240,.12)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
-        <div style="font-size:20px;margin-bottom:.6rem">🧮</div>
-        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:.4rem;line-height:1.35">CTC vs Gross Salary vs Net Salary: What's the Difference?</div>
-        <div style="font-size:11px;color:var(--mist)">Understand what your offer letter really means</div>
-      </a>
-      <a href="/blog/article4-how-to-read-salary-slip.html" style="display:block;text-decoration:none;background:var(--snow);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem;transition:.2s" onmouseover="this.style.borderColor='var(--accent)';this.style.boxShadow='0 4px 16px rgba(91,106,240,.12)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
-        <div style="font-size:20px;margin-bottom:.6rem">🧾</div>
-        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:.4rem;line-height:1.35">How to Read Your Salary Slip in India</div>
-        <div style="font-size:11px;color:var(--mist)">Every component on your payslip — explained clearly</div>
-      </a>
-      <a href="/blog/article5-epf-pf-guide.html" style="display:block;text-decoration:none;background:var(--snow);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem;transition:.2s" onmouseover="this.style.borderColor='var(--accent)';this.style.boxShadow='0 4px 16px rgba(91,106,240,.12)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
-        <div style="font-size:20px;margin-bottom:.6rem">🏦</div>
-        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:.4rem;line-height:1.35">EPF / PF Complete Guide for Salaried Employees</div>
-        <div style="font-size:11px;color:var(--mist)">Contributions, UAN, interest, withdrawals and more</div>
-      </a>
-      <a href="/blog/article6-hra-exemption-guide.html" style="display:block;text-decoration:none;background:var(--snow);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem;transition:.2s" onmouseover="this.style.borderColor='var(--accent)';this.style.boxShadow='0 4px 16px rgba(91,106,240,.12)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
-        <div style="font-size:20px;margin-bottom:.6rem">🏠</div>
-        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:.4rem;line-height:1.35">HRA Exemption: How to Calculate & Claim It</div>
-        <div style="font-size:11px;color:var(--mist)">Formula, examples, documents, and common mistakes</div>
-      </a>
-      <a href="/blog/article7-how-to-negotiate-salary.html" style="display:block;text-decoration:none;background:var(--snow);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem;transition:.2s" onmouseover="this.style.borderColor='var(--accent)';this.style.boxShadow='0 4px 16px rgba(91,106,240,.12)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
-        <div style="font-size:20px;margin-bottom:.6rem">🤝</div>
-        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:.4rem;line-height:1.35">How to Negotiate Salary in India</div>
-        <div style="font-size:11px;color:var(--mist)">Scripts, tips, and strategies for hikes and new offers</div>
-      </a>
-      
-    </div>
-    <div style="text-align:center">
-      <a href="/blog/" style="display:inline-block;background:var(--accent);color:#fff;padding:10px 24px;border-radius:20px;font-size:13px;font-weight:700;text-decoration:none">View All Articles →</a>
-    </div>
-  </div>
-</section>
+
+
+
 
 <!-- ═══════════════════════════════════════
      FOOTER
@@ -2705,8 +2681,9 @@ function calcNotice(){
     <a onclick="openModal('modal-disclaimer')">Disclaimer</a>
     <a onclick="openModal('modal-about')">About</a>
     <a onclick="openModal('modal-contact')">Contact</a>
-    <a href="/blog/">📝 Blog</a><a href="https://salarybit.in/qr-decoder.html" class="nav-a" style="color:var(--teal);font-weight:700">🔍 QR Decoder</a>
-    <a href="/static/vahanclear.html" class="nav-a" style="color:var(--teal);font-weight:700">🚗 vahanclear</a>
+    <a href="https://salarybit.in/qr-decoder.html" style="color:var(--teal);font-weight:600">🔍 QR Decoder</a>
+    <a href="/static/vahanclear.html" style="color:var(--teal);font-weight:600">🚗 VahanClear</a>
+    <a href="/resume-rewriter.html" style="color:#a78bfa;font-weight:600">📄 AI Resume Rewriter</a>
     <a href="/about.html">About SalaryBit</a>
   </div>
   <div class="footer-legal">

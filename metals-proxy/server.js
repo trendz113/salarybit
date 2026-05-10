@@ -12,7 +12,7 @@ app.use(cors({
   ]
 }));
 
-// ✅ FIX 1: express.json() was completely missing — POST body was always undefined
+// Required to parse JSON POST bodies
 app.use(express.json());
 
 // ─── METALS ──────────────────────────────────────────────────────────────────
@@ -70,7 +70,6 @@ app.get("/api/metals", async (req, res) => {
 });
 
 // ─── RESUME REWRITER ─────────────────────────────────────────────────────────
-// ✅ FIX 2: This entire route was missing — frontend was hitting a 404
 
 app.post("/api/rewrite-resume", async (req, res) => {
   try {
@@ -103,7 +102,7 @@ Rules:
 - ats_after: ATS score of the REWRITTEN resume vs the JD (0-100)
 - present_keywords: keywords already in the original resume that match the JD
 - missing_keywords: important JD keywords NOT in the original resume (weave them into the rewrite naturally)
-- rewritten_resume: the full rewritten resume as plain text only — NO JSON inside this field
+- rewritten_resume: the full rewritten resume as plain text only — NO JSON inside this field, just the resume text
 
 RESUME:
 ${resume}
@@ -118,7 +117,7 @@ ${jd}`;
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "llama3-70b-8192",
+        model: "llama-3.3-70b-versatile",   // ✅ FIXED: was llama3-70b-8192 (wrong)
         temperature: 0.3,
         max_tokens: 3000,
         messages: [{ role: "user", content: prompt }]
@@ -134,7 +133,7 @@ ${jd}`;
     const groqData = await groqRes.json();
     const rawText = groqData.choices?.[0]?.message?.content || "";
 
-    // ✅ FIX 3: Strip markdown fences the model sometimes wraps around JSON
+    // Strip markdown fences the model sometimes wraps around JSON
     const cleaned = rawText
       .replace(/^```json\s*/i, "")
       .replace(/^```\s*/i, "")
@@ -149,7 +148,6 @@ ${jd}`;
       return res.status(500).json({ error: "AI returned invalid JSON. Please try again.", raw: rawText });
     }
 
-    // ✅ FIX 4: Validate shape before sending — prevents undefined fields reaching the frontend
     if (typeof parsed.ats_before === "undefined" || !parsed.rewritten_resume) {
       return res.status(500).json({ error: "AI response missing required fields.", raw: rawText });
     }

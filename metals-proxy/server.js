@@ -12,7 +12,6 @@ app.use(cors({
   ]
 }));
 
-// Required to parse JSON POST bodies
 app.use(express.json());
 
 // ─── METALS ──────────────────────────────────────────────────────────────────
@@ -84,25 +83,41 @@ app.post("/api/rewrite-resume", async (req, res) => {
       return res.status(500).json({ error: "GROQ_API_KEY not set in environment." });
     }
 
-    const prompt = `You are an expert ATS resume optimizer.
+    const prompt = `You are an expert ATS resume writer. Rewrite the candidate's resume to match the job description.
 
-Given the resume and job description below, return ONLY a raw JSON object — no markdown, no backticks, no explanation, no text before or after. Just the JSON.
+STRICT OUTPUT RULES:
+- Return ONLY a valid JSON object. No markdown, no backticks, no explanation.
+- The "rewritten_resume" field must be a properly structured resume in plain text.
+- The resume MUST use these exact section headers on their own line in ALL CAPS: SUMMARY, EXPERIENCE, EDUCATION, SKILLS
+- Each job must follow this exact format:
+  Job Title — Company Name
+  Month Year – Month Year (or Present)
+  • bullet point achievement with metric if possible
+  • bullet point achievement
+  • bullet point achievement
+- SKILLS section must list skills as comma-separated keywords, NOT paragraphs
+- Do NOT write paragraphs for experience — use bullet points ONLY
+- Do NOT write a narrative or story — this is a resume, not a cover letter
+- Naturally weave missing JD keywords into bullets and skills
+- Keep it concise: max 600 words in the resume text
 
-JSON shape:
+JSON format to return:
 {
   "ats_before": <integer 0-100>,
   "ats_after": <integer 0-100>,
   "present_keywords": ["keyword1", "keyword2"],
   "missing_keywords": ["keyword3", "keyword4"],
-  "rewritten_resume": "Full rewritten resume as plain text. Use \\n for line breaks."
+  "interview_tips": ["tip1", "tip2", "tip3", "tip4", "tip5"],
+  "rewritten_resume": "FULL RESUME TEXT HERE with \\n for line breaks"
 }
 
-Rules:
-- ats_before: ATS score of the ORIGINAL resume vs the JD (0-100)
-- ats_after: ATS score of the REWRITTEN resume vs the JD (0-100)
-- present_keywords: keywords already in the original resume that match the JD
-- missing_keywords: important JD keywords NOT in the original resume (weave them into the rewrite naturally)
-- rewritten_resume: the full rewritten resume as plain text only — NO JSON inside this field, just the resume text
+Field rules:
+- ats_before: ATS score of original resume vs JD
+- ats_after: ATS score of rewritten resume vs JD (must be higher)
+- present_keywords: keywords already in the original resume matching JD
+- missing_keywords: important JD keywords that were missing (now added to rewrite)
+- interview_tips: 5 specific, actionable tips to prepare for THIS job interview based on the JD
+- rewritten_resume: the full structured resume — name, contact, SUMMARY, EXPERIENCE with bullets, EDUCATION, SKILLS
 
 RESUME:
 ${resume}
@@ -117,9 +132,9 @@ ${jd}`;
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",   // ✅ FIXED: was llama3-70b-8192 (wrong)
-        temperature: 0.3,
-        max_tokens: 3000,
+        model: "llama-3.3-70b-versatile",
+        temperature: 0.2,
+        max_tokens: 3500,
         messages: [{ role: "user", content: prompt }]
       })
     });
@@ -133,7 +148,6 @@ ${jd}`;
     const groqData = await groqRes.json();
     const rawText = groqData.choices?.[0]?.message?.content || "";
 
-    // Strip markdown fences the model sometimes wraps around JSON
     const cleaned = rawText
       .replace(/^```json\s*/i, "")
       .replace(/^```\s*/i, "")

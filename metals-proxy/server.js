@@ -83,23 +83,30 @@ app.post("/api/rewrite-resume", async (req, res) => {
       return res.status(500).json({ error: "GROQ_API_KEY not set in environment." });
     }
 
-    const prompt = `You are an expert ATS resume writer. Rewrite the candidate's resume to match the job description.
+    const prompt = `You are an expert ATS resume writer and interview coach. Rewrite the candidate's resume to match the job description, and provide complete interview preparation advice.
 
 STRICT OUTPUT RULES:
 - Return ONLY a valid JSON object. No markdown, no backticks, no explanation.
-- The "rewritten_resume" field must be a properly structured resume in plain text.
+- The "rewritten_resume" must be a properly structured resume in plain text.
 - The resume MUST use these exact section headers on their own line in ALL CAPS: SUMMARY, EXPERIENCE, EDUCATION, SKILLS
 - Each job must follow this exact format:
   Job Title — Company Name
   Month Year – Month Year (or Present)
   • bullet point achievement with metric if possible
   • bullet point achievement
-  • bullet point achievement
 - SKILLS section must list skills as comma-separated keywords, NOT paragraphs
 - Do NOT write paragraphs for experience — use bullet points ONLY
-- Do NOT write a narrative or story — this is a resume, not a cover letter
 - Naturally weave missing JD keywords into bullets and skills
-- Keep it concise: max 600 words in the resume text
+
+For "interview_tips", generate exactly 8 tips covering ALL of these categories — one tip per category:
+1. TECHNICAL: One specific technical topic from the JD to study deeply (e.g. "Study Kubernetes pod lifecycle, deployments and services — likely to be asked")
+2. PREPARATION: What to research about the company before the interview (culture, products, tech stack)
+3. DRESS CODE: Exactly what to wear for this type of role and company (formal, business casual, smart casual — be specific)
+4. WHAT TO CARRY: List of everything to bring to the interview (resume copies, ID, notebook, pen, laptop if needed)
+5. CALM & MINDSET: One practical tip to stay calm and confident during the interview
+6. BODY LANGUAGE: Specific body language advice (eye contact, posture, handshake, when to smile)
+7. QUESTIONS TO ASK: One smart question the candidate should ask the interviewer at the end
+8. TIMING: When to arrive, how early, what to do while waiting
 
 JSON format to return:
 {
@@ -107,17 +114,18 @@ JSON format to return:
   "ats_after": <integer 0-100>,
   "present_keywords": ["keyword1", "keyword2"],
   "missing_keywords": ["keyword3", "keyword4"],
-  "interview_tips": ["tip1", "tip2", "tip3", "tip4", "tip5"],
+  "interview_tips": [
+    "TECHNICAL: ...",
+    "PREPARATION: ...",
+    "DRESS CODE: ...",
+    "WHAT TO CARRY: ...",
+    "CALM & MINDSET: ...",
+    "BODY LANGUAGE: ...",
+    "QUESTIONS TO ASK: ...",
+    "TIMING: ..."
+  ],
   "rewritten_resume": "FULL RESUME TEXT HERE with \\n for line breaks"
 }
-
-Field rules:
-- ats_before: ATS score of original resume vs JD
-- ats_after: ATS score of rewritten resume vs JD (must be higher)
-- present_keywords: keywords already in the original resume matching JD
-- missing_keywords: important JD keywords that were missing (now added to rewrite)
-- interview_tips: 5 specific, actionable tips to prepare for THIS job interview based on the JD
-- rewritten_resume: the full structured resume — name, contact, SUMMARY, EXPERIENCE with bullets, EDUCATION, SKILLS
 
 RESUME:
 ${resume}
@@ -134,7 +142,7 @@ ${jd}`;
       body: JSON.stringify({
         model: "llama-3.3-70b-versatile",
         temperature: 0.2,
-        max_tokens: 3500,
+        max_tokens: 4000,
         messages: [{ role: "user", content: prompt }]
       })
     });

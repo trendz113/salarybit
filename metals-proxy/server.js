@@ -135,7 +135,7 @@ STRICT RULES — you must follow these exactly:
         "Authorization": `Bearer ${GROQ_KEY}`
       },
       body: JSON.stringify({
-        model: "llama3-70b-8192",
+        model: "llama-3.3-70b-versatile",
         messages: [{ role: "user", content: prompt }],
         temperature: 0.3,
         max_tokens: 2000
@@ -145,6 +145,7 @@ STRICT RULES — you must follow these exactly:
     const groqData = await groqResp.json();
 
     if (!groqData.choices || !groqData.choices[0]) {
+      console.error("Groq bad response:", JSON.stringify(groqData));
       return res.status(502).json({ error: "Groq returned no response", detail: groqData });
     }
 

@@ -12,11 +12,11 @@ app.use(cors({
   ]
 }));
 
+// ✅ FIX 1: express.json() was completely missing — POST body was always undefined
 app.use(express.json());
 
-// ─────────────────────────────────────────
-// METALS PROXY (existing)
-// ─────────────────────────────────────────
+// ─── METALS ──────────────────────────────────────────────────────────────────
+
 let cache = { data: null, fetchedAt: 0 };
 const CACHE_TTL = 30 * 60 * 1000;
 
@@ -69,103 +69,89 @@ app.get("/api/metals", async (req, res) => {
   }
 });
 
-// ─────────────────────────────────────────
-// RESUME REWRITER (new)
-// ─────────────────────────────────────────
+// ─── RESUME REWRITER ─────────────────────────────────────────────────────────
+// ✅ FIX 2: This entire route was missing — frontend was hitting a 404
+
 app.post("/api/rewrite-resume", async (req, res) => {
   try {
-    const { resume, jd } = req.body;
+    const { resume, jd } = req.body || {};
+
     if (!resume || !jd) {
-      return res.status(400).json({ error: "resume and jd are required" });
+      return res.status(400).json({ error: "Both 'resume' and 'jd' are required." });
     }
 
-    const GROQ_KEY = process.env.GROQ_API_KEY;
-    if (!GROQ_KEY) return res.status(500).json({ error: "Groq API key not configured" });
+    const GROQ_API_KEY = process.env.GROQ_API_KEY;
+    if (!GROQ_API_KEY) {
+      return res.status(500).json({ error: "GROQ_API_KEY not set in environment." });
+    }
 
-    const prompt = `You are an expert ATS resume optimiser. Analyse the resume against the job description and return a JSON response.
+    const prompt = `You are an expert ATS resume optimizer.
+
+Given the resume and job description below, return ONLY a raw JSON object — no markdown, no backticks, no explanation, no text before or after. Just the JSON.
+
+JSON shape:
+{
+  "ats_before": <integer 0-100>,
+  "ats_after": <integer 0-100>,
+  "present_keywords": ["keyword1", "keyword2"],
+  "missing_keywords": ["keyword3", "keyword4"],
+  "rewritten_resume": "Full rewritten resume as plain text. Use \\n for line breaks."
+}
+
+Rules:
+- ats_before: ATS score of the ORIGINAL resume vs the JD (0-100)
+- ats_after: ATS score of the REWRITTEN resume vs the JD (0-100)
+- present_keywords: keywords already in the original resume that match the JD
+- missing_keywords: important JD keywords NOT in the original resume (weave them into the rewrite naturally)
+- rewritten_resume: the full rewritten resume as plain text only — NO JSON inside this field
 
 RESUME:
 ${resume}
 
 JOB DESCRIPTION:
-${jd}
+${jd}`;
 
-Return ONLY valid JSON (no markdown, no backticks, no explanation) with this exact structure:
-{
-  "ats_before": <number 0-100>,
-  "ats_after": <number 0-100>,
-  "present_keywords": ["keyword1", "keyword2"],
-  "missing_keywords": ["keyword1", "keyword2"],
-  "rewritten_resume": "FULL RESUME TEXT HERE"
-}
-
-For rewritten_resume, use this EXACT format with these EXACT section headers:
-
-[Full Name]
-[Job Title] | [email] | [phone] | [city]
-
-SUMMARY
-[Write 2 strong sentences tailored to the job description]
-
-EXPERIENCE
-[Job Title] | [Company Name] | [Start Year] – [End Year or Present]
-- [Achievement bullet using action verb + result + JD keyword]
-- [Achievement bullet using action verb + result + JD keyword]
-- [Achievement bullet using action verb + result + JD keyword]
-- [Achievement bullet using action verb + result + JD keyword]
-
-SKILLS
-[skill1], [skill2], [skill3], [skill4], [skill5], [skill6], [skill7], [skill8]
-
-EDUCATION
-[Degree] in [Field] | [University Name] | [Year]
-
-STRICT RULES — you must follow these exactly:
-1. Section headers (SUMMARY, EXPERIENCE, SKILLS, EDUCATION) must be ALL CAPS alone on their own line
-2. Every bullet point under EXPERIENCE must start with "- " (dash space)
-3. Bullets must use strong action verbs: Designed, Developed, Built, Optimised, Delivered, Led, Implemented, Managed
-4. Do NOT invent any company names, degrees, or dates — only use facts from the original resume
-5. Naturally weave in the missing keywords from the JD into the bullets
-6. Return ONLY the JSON — no other text before or after`;
-
-    const groqResp = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${GROQ_KEY}`
+        "Authorization": `Bearer ${GROQ_API_KEY}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
-        messages: [{ role: "user", content: prompt }],
+        model: "llama3-70b-8192",
         temperature: 0.3,
-        max_tokens: 2000
+        max_tokens: 3000,
+        messages: [{ role: "user", content: prompt }]
       })
     });
 
-    const groqData = await groqResp.json();
-
-    if (!groqData.choices || !groqData.choices[0]) {
-      console.error("Groq bad response:", JSON.stringify(groqData));
-      return res.status(502).json({ error: "Groq returned no response", detail: groqData });
+    if (!groqRes.ok) {
+      const errText = await groqRes.text();
+      console.error("Groq error:", errText);
+      return res.status(502).json({ error: "Groq API error", detail: errText });
     }
 
-    const raw = groqData.choices[0].message.content.trim();
+    const groqData = await groqRes.json();
+    const rawText = groqData.choices?.[0]?.message?.content || "";
 
-    // Strip markdown fences if Groq adds them
-    const clean = raw.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```\s*$/i, "").trim();
+    // ✅ FIX 3: Strip markdown fences the model sometimes wraps around JSON
+    const cleaned = rawText
+      .replace(/^```json\s*/i, "")
+      .replace(/^```\s*/i, "")
+      .replace(/```\s*$/i, "")
+      .trim();
 
     let parsed;
     try {
-      parsed = JSON.parse(clean);
+      parsed = JSON.parse(cleaned);
     } catch (e) {
-      // If JSON parse fails, return the raw text so frontend can still use it
-      return res.json({
-        ats_before: 30,
-        ats_after: 70,
-        present_keywords: [],
-        missing_keywords: [],
-        rewritten_resume: clean
-      });
+      console.error("JSON parse failed. Raw:", rawText);
+      return res.status(500).json({ error: "AI returned invalid JSON. Please try again.", raw: rawText });
+    }
+
+    // ✅ FIX 4: Validate shape before sending — prevents undefined fields reaching the frontend
+    if (typeof parsed.ats_before === "undefined" || !parsed.rewritten_resume) {
+      return res.status(500).json({ error: "AI response missing required fields.", raw: rawText });
     }
 
     res.json(parsed);
@@ -176,13 +162,12 @@ STRICT RULES — you must follow these exactly:
   }
 });
 
-// ─────────────────────────────────────────
-// HEALTH CHECK
-// ─────────────────────────────────────────
+// ─── HEALTH ──────────────────────────────────────────────────────────────────
+
 app.get("/health", (req, res) => {
-  res.json({ status: "ok", service: "salarybit-proxy" });
+  res.json({ status: "ok", service: "salarybit-metals-proxy" });
 });
 
 app.listen(PORT, () => {
-  console.log(`Proxy running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

@@ -18,17 +18,7 @@ FILES_TO_CLEAN = [
 ]
 
 NEW_TOPICS = [
-    "TCS software engineer salary in India 2026",
-    "Infosys fresher salary package 2026",
-    "Government teacher salary India state wise",
-    "IAS officer salary and perks India",
-    "Data scientist salary in India 2026",
-    "Bank PO salary after 7th pay commission",
-    "Amazon India software developer salary",
-    "Doctor salary government hospital India",
-    "MBA fresher salary in India 2026",
-    "CA salary in India after articleship",
-    "HRA calculation formula India",
+     "HRA calculation formula India",
     "PF deduction calculation guide India",
     "Income tax slab 2026-27 India",
     "How to calculate take home salary India",

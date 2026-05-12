@@ -10,15 +10,18 @@ BLOG_FOLDER = "blog"
 PROCESSED_FILE = "processed_articles.json"
 PUBLISHED_FILE = "published_topics.json"
 
-FILES_TO_CLEAN = [
-    "pan-complete.html",
-    "layoff-survival-guide.html",
-    "subscription-manager.html",
-    "karnataka_dl_renewal_guide.html",
-]
-
 NEW_TOPICS = [
-     "HRA calculation formula India",
+    "TCS software engineer salary in India 2026",
+    "Infosys fresher salary package 2026",
+    "Government teacher salary India state wise",
+    "IAS officer salary and perks India",
+    "Data scientist salary in India 2026",
+    "Bank PO salary after 7th pay commission",
+    "Amazon India software developer salary",
+    "Doctor salary government hospital India",
+    "MBA fresher salary in India 2026",
+    "CA salary in India after articleship",
+    "HRA calculation formula India",
     "PF deduction calculation guide India",
     "Income tax slab 2026-27 India",
     "How to calculate take home salary India",
@@ -35,6 +38,51 @@ NEW_TOPICS = [
     "Gratuity calculation formula India",
 ]
 
+# Shared <head> block injected into every article
+def make_head(title, description, canonical_url):
+    return f"""  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{title} | SalaryBit</title>
+  <meta name="description" content="{description}">
+  <link rel="canonical" href="{canonical_url}">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%235b6af0'/><text y='22' x='5' font-size='18'>💰</text></svg>">
+  <link rel="stylesheet" href="../style.css">
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8336334158316485" crossorigin="anonymous"></script>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QFHT4BZTMF"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','G-QFHT4BZTMF');</script>"""
+
+ARTICLE_TEMPLATE = """<!DOCTYPE html>
+<html lang="en">
+<head>
+{head}
+</head>
+<body>
+<header>
+  <a href="/index.html">SalaryBit</a>
+  <nav>
+    <a href="/index.html">Calculator</a>
+    <a href="/blog/">Blog</a>
+  </nav>
+</header>
+<main class="article-container">
+  <div class="ad-slot"><!-- Ad --></div>
+  {content}
+  <div class="ad-slot"><!-- Ad --></div>
+  {faq}
+  <div class="cta-strip">
+    <h3>Calculate Your Exact Salary</h3>
+    <p>Use SalaryBit's free calculator to see your in-hand salary, compare tax regimes, and plan smarter.</p>
+    <a href="/index.html">Open Calculator →</a>
+  </div>
+</main>
+<footer>
+  <p>© 2026 SalaryBit · <a href="/index.html">Home</a> · <a href="/blog/">Blog</a></p>
+</footer>
+</body>
+</html>"""
+
 def load_json(path, default):
     if os.path.exists(path):
         with open(path) as f:
@@ -49,11 +97,6 @@ def make_slug(topic):
     slug = topic.lower().replace(" ", "-")
     slug = "".join(c for c in slug if c.isalnum() or c == "-")
     return slug[:60]
-
-def make_image_alt(topic):
-    """Generate a clean image alt text from the topic."""
-    # Capitalise each word for a clean alt/title
-    return topic.title()
 
 def call_groq(prompt):
     for attempt in range(3):
@@ -77,7 +120,7 @@ def clean_existing_article():
             article_to_clean = f
             break
     if not article_to_clean:
-        print("All 4 articles already cleaned!")
+        print("All articles already cleaned!")
         return
     filepath = f"{BLOG_FOLDER}/{article_to_clean}"
     if not os.path.exists(filepath):
@@ -89,56 +132,44 @@ def clean_existing_article():
     with open(filepath, "r", encoding="utf-8") as f:
         html_content = f.read()
     html_content = html_content[:6000]
-    slug = article_to_clean.replace(".html", "")
-    prompt = f"""You are an SEO expert for salarybit.in — Indian salary and finance website.
+    prompt = f"""You are an SEO content writer for salarybit.in — an Indian salary and finance website.
 
-Clean and improve this HTML article:
+Rewrite this article as clean HTML content. Follow ALL rules strictly:
 
-1. REMOVE ALL personal details like names, phone numbers, emails, addresses, Aadhaar numbers, PAN numbers, bank accounts.
+RULES:
+1. DO NOT include any <img> tags — no images at all
+2. DO NOT include <html>, <head>, <body>, <header>, <footer>, <script> or <style> tags — only the inner article content
+3. DO NOT include any personal data (names, phone numbers, Aadhaar, PAN, bank accounts)
+4. Output ONLY the article body HTML — starting with <div class="breadcrumb"> and ending with the last </section> or </div>
+5. Use H1 once, then H2 and H3 for subheadings
+6. Include at least one salary comparison table with proper <table><thead><tbody> structure
+7. Write 1000+ words useful for Indian salaried readers
+8. End with a FAQ section using this structure:
+<section class="faq-section">
+  <h2>Frequently Asked Questions</h2>
+  <div class="faq-item"><h3>Question?</h3><p>Answer.</p></div>
+  <div class="faq-item"><h3>Question?</h3><p>Answer.</p></div>
+  <div class="faq-item"><h3>Question?</h3><p>Answer.</p></div>
+</section>
 
-2. IMPROVE the content:
-   - Make it 1000 words
-   - Add proper SEO title and meta description
-   - Add useful tables where relevant
-   - Add FAQ section at end with 3 questions
-   - Fix headings H1 once then H2 H3
-   - Write in simple English for Indian readers
+Start with:
+<div class="breadcrumb"><a href="/index.html">Home</a> › <a href="/blog/">Blog</a> › Article Title</div>
+<div class="article-meta"><span class="tag">CATEGORY</span><span>Updated {datetime.now().strftime('%B %Y')}</span><span>8 min read</span></div>
+<h1>Article Title</h1>
 
-3. IMPORTANT: Add a featured image as the FIRST element inside <main>, using this exact format:
-   <img src="../images/{slug}.webp" alt="ARTICLE TITLE" class="featured-image" width="800" height="450" loading="lazy">
-
-4. Use this exact HTML structure:
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TITLE | SalaryBit</title>
-  <meta name="description" content="DESCRIPTION">
-  <link rel="canonical" href="https://salarybit.in/blog/{article_to_clean}">
-  <link rel="stylesheet" href="../style.css">
-</head>
-<body>
-  <header><a href="../index.html"><h2>SalaryBit</h2></a></header>
-  <main class="article-container">
-    <img src="../images/{slug}.webp" alt="ARTICLE TITLE" class="featured-image" width="800" height="450" loading="lazy">
-    <div class="ad-slot"><!-- Ad --></div>
-    IMPROVED CONTENT HERE
-    <div class="ad-slot"><!-- Ad --></div>
-    FAQ SECTION HERE
-    <div class="ad-slot"><!-- Ad --></div>
-  </main>
-  <footer><p>2026 SalaryBit.in | <a href="../index.html">Home</a></p></footer>
-</body>
-</html>
-
-Output ONLY valid HTML no markdown no explanation.
-
-Here is the existing article:
+Here is the existing article to rewrite:
 {html_content}"""
-    improved = call_groq(prompt)
+    content = call_groq(prompt)
+    # Strip any accidental markdown code fences
+    content = content.replace("```html", "").replace("```", "").strip()
+    # Build full page using template
+    canonical = f"https://salarybit.in/blog/{article_to_clean}"
+    # Extract title from content if possible
+    title_line = article_to_clean.replace("-", " ").replace(".html", "").title()
+    head = make_head(title_line, f"Complete guide to {title_line} for Indian professionals.", canonical)
+    full_html = ARTICLE_TEMPLATE.format(head=head, content=content, faq="")
     with open(filepath, "w", encoding="utf-8") as f:
-        f.write(improved)
+        f.write(full_html)
     processed.append(article_to_clean)
     save_json(PROCESSED_FILE, processed)
     print(f"Cleaned: {article_to_clean}")
@@ -155,94 +186,89 @@ def write_new_article():
         save_json(PUBLISHED_FILE, published)
         topic = NEW_TOPICS[0]
     print(f"Writing: {topic}")
-    slug = make_slug(topic)
-    image_alt = make_image_alt(topic)
-    prompt = f"""Write a complete SEO HTML article for salarybit.in about: {topic}
+    prompt = f"""You are an SEO content writer for salarybit.in — an Indian salary and finance website.
 
-Rules:
-- 1000 words useful for Indian readers
-- Real salary numbers and tables
-- Output ONLY valid HTML no markdown
-- Proper title and meta description
-- H1 once then H2 H3 headings
-- Salary comparison table
-- FAQ section at end with 3 questions
-- Add div class ad-slot at top middle bottom
-- IMPORTANT: The FIRST element inside <main class="article-container"> must be this featured image tag (copy exactly):
-  <img src="../images/{slug}.webp" alt="{image_alt}" class="featured-image" width="800" height="450" loading="lazy">
+Write a complete article about: {topic}
 
-Use this exact HTML structure:
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TITLE | SalaryBit</title>
-  <meta name="description" content="DESCRIPTION">
-  <link rel="canonical" href="https://salarybit.in/blog/{slug}.html">
-  <link rel="stylesheet" href="../style.css">
-</head>
-<body>
-  <header><a href="../index.html"><h2>SalaryBit</h2></a></header>
-  <main class="article-container">
-    <img src="../images/{slug}.webp" alt="{image_alt}" class="featured-image" width="800" height="450" loading="lazy">
-    <div class="ad-slot"><!-- Ad --></div>
-    ARTICLE CONTENT
-    <div class="ad-slot"><!-- Ad --></div>
-    FAQ
-    <div class="ad-slot"><!-- Ad --></div>
-  </main>
-  <footer><p>2026 SalaryBit.in | <a href="../index.html">Home</a></p></footer>
-</body>
-</html>
+RULES — follow ALL strictly:
+1. DO NOT include any <img> tags — no images at all
+2. DO NOT include <html>, <head>, <body>, <header>, <footer>, <script> or <style> tags — only article body HTML
+3. Output ONLY the inner article HTML — starting with <div class="breadcrumb"> and ending after the FAQ section
+4. Use H1 once at the top, then H2 and H3 for subheadings
+5. Include at least one salary table with <table><thead><tbody> — real Indian salary numbers in rupees
+6. Write 1000+ words, simple English, useful for Indian salaried readers
+7. End with a FAQ section:
+<section class="faq-section">
+  <h2>Frequently Asked Questions</h2>
+  <div class="faq-item"><h3>Question?</h3><p>Answer.</p></div>
+  <div class="faq-item"><h3>Question?</h3><p>Answer.</p></div>
+  <div class="faq-item"><h3>Question?</h3><p>Answer.</p></div>
+</section>
+
+Start output with:
+<div class="breadcrumb"><a href="/index.html">Home</a> › <a href="/blog/">Blog</a> › {topic}</div>
+<div class="article-meta"><span class="tag">Salary Guide</span><span>Updated {datetime.now().strftime('%B %Y')}</span><span>8 min read</span></div>
+<h1>{topic}</h1>
 
 Today's date: {datetime.now().strftime('%B %d, %Y')}"""
-    html = call_groq(prompt)
+
+    content = call_groq(prompt)
+    # Strip any accidental markdown code fences
+    content = content.replace("```html", "").replace("```", "").strip()
+    slug = make_slug(topic)
     filename = f"{slug}.html"
+    canonical = f"https://salarybit.in/blog/{filename}"
+    head = make_head(topic, f"Complete guide to {topic}. Real salary data, tables and tips for Indian professionals.", canonical)
+    full_html = ARTICLE_TEMPLATE.format(head=head, content=content, faq="")
     os.makedirs(BLOG_FOLDER, exist_ok=True)
     with open(f"{BLOG_FOLDER}/{filename}", "w", encoding="utf-8") as f:
-        f.write(html)
+        f.write(full_html)
     published.append(topic)
     save_json(PUBLISHED_FILE, published)
     print(f"Saved: {filename}")
-    return topic, filename, slug, image_alt
+    return topic, filename
 
-# ── FIX: also return slug & alt from write_new_article so update_blog_index
-#         can build the <img> tag correctly.
-def update_blog_index(title, filename, slug=None, image_alt=None):
+def update_blog_index(topic, filename):
     filepath = "blog/index.html"
     if not os.path.exists(filepath):
         print("blog/index.html not found!")
         return
-
-    # Derive slug/alt if not supplied (e.g. called from old code paths)
-    if slug is None:
-        slug = filename.replace(".html", "")
-    if image_alt is None:
-        image_alt = title
-
     with open(filepath, "r", encoding="utf-8") as f:
         content = f.read()
-
-    # ── KEY FIX: card now includes an <img> so the thumbnail shows up ──────
-    new_card = f"""<a href="https://salarybit.in/blog/{filename}">
-        <div class="article-card">
-            <img src="../images/{slug}.webp" alt="{image_alt}" loading="lazy" width="400" height="225">
-            <h3>{title}</h3>
-            <span>{datetime.now().strftime('%B %Y')}</span>
-        </div>
+    # Pick a relevant emoji based on topic keywords
+    topic_lower = topic.lower()
+    if any(w in topic_lower for w in ["tax", "income", "slab", "itr"]):
+        emoji = "📋"
+    elif any(w in topic_lower for w in ["pf", "epf", "provident", "gratuity"]):
+        emoji = "🏦"
+    elif any(w in topic_lower for w in ["hra", "house", "rent"]):
+        emoji = "🏠"
+    elif any(w in topic_lower for w in ["negotiat", "hike", "appraisal"]):
+        emoji = "🤝"
+    elif any(w in topic_lower for w in ["layoff", "termination", "resignation"]):
+        emoji = "🛟"
+    elif any(w in topic_lower for w in ["doctor", "nurse", "health"]):
+        emoji = "🏥"
+    elif any(w in topic_lower for w in ["pan", "aadhaar", "document"]):
+        emoji = "🪪"
+    elif any(w in topic_lower for w in ["engineer", "software", "developer", "data"]):
+        emoji = "💻"
+    else:
+        emoji = "💰"
+    new_card = f"""<a class="article-card" href="/blog/{filename}">
+      <div class="emoji">{emoji}</div>
+      <div class="category">Salary Guide</div>
+      <h2>{topic}</h2>
+      <p>Complete guide to {topic.lower()} — with real salary data, tables and expert tips for Indian professionals.</p>
+      <div class="meta"><span>8 min read</span><span class="read-link">Read Guide →</span></div>
     </a>"""
-
     if "<!-- NEW-ARTICLES -->" in content:
-        content = content.replace(
-            "<!-- NEW-ARTICLES -->",
-            f"<!-- NEW-ARTICLES -->\n    {new_card}"
-        )
+        content = content.replace("<!-- NEW-ARTICLES -->", f"<!-- NEW-ARTICLES -->\n\n    {new_card}")
         with open(filepath, "w", encoding="utf-8") as f:
             f.write(content)
-        print(f"Blog index updated: {title}")
+        print(f"Blog index updated: {topic}")
     else:
-        print("Add <!-- NEW-ARTICLES --> comment to blog/index.html!")
+        print("WARNING: <!-- NEW-ARTICLES --> comment missing from blog/index.html!")
 
 def update_sitemap():
     articles = []
@@ -251,18 +277,9 @@ def update_sitemap():
             if f.endswith(".html") and f != "index.html":
                 articles.append(f)
     urls = ["<url><loc>https://salarybit.in/</loc><priority>1.0</priority></url>"]
-    for a in articles:
-        urls.append(
-            f"<url><loc>https://salarybit.in/blog/{a}</loc>"
-            f"<lastmod>{datetime.now().strftime('%Y-%m-%d')}</lastmod>"
-            f"<priority>0.8</priority></url>"
-        )
-    sitemap = (
-        '<?xml version="1.0" encoding="UTF-8"?>\n'
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        + "\n".join(urls)
-        + "\n</urlset>"
-    )
+    for a in sorted(articles):
+        urls.append(f"<url><loc>https://salarybit.in/blog/{a}</loc><lastmod>{datetime.now().strftime('%Y-%m-%d')}</lastmod><priority>0.8</priority></url>")
+    sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(urls) + "\n</urlset>"
     with open("sitemap.xml", "w") as f:
         f.write(sitemap)
     print("Sitemap updated!")
@@ -274,9 +291,9 @@ def run_agent():
     clean_existing_article()
     time.sleep(10)
     print("TASK 2: Writing new article...")
-    topic, filename, slug, image_alt = write_new_article()
+    topic, filename = write_new_article()
     print("TASK 3: Updating blog index...")
-    update_blog_index(topic, filename, slug, image_alt)
+    update_blog_index(topic, filename)
     update_sitemap()
     print("=" * 40)
     print("Done!")

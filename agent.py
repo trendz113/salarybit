@@ -10,6 +10,14 @@ BLOG_FOLDER = "blog"
 PROCESSED_FILE = "processed_articles.json"
 PUBLISHED_FILE = "published_topics.json"
 
+# FIX 1: FILES_TO_CLEAN was missing — caused NameError crash in clean_existing_article()
+FILES_TO_CLEAN = [
+    "pan-complete.html",
+    "layoff-survival-guide.html",
+    "subscription-manager.html",
+    "karnataka_dl_renewal_guide.html",
+]
+
 NEW_TOPICS = [
     "TCS software engineer salary in India 2026",
     "Infosys fresher salary package 2026",
@@ -164,7 +172,6 @@ Here is the existing article to rewrite:
     content = content.replace("```html", "").replace("```", "").strip()
     # Build full page using template
     canonical = f"https://salarybit.in/blog/{article_to_clean}"
-    # Extract title from content if possible
     title_line = article_to_clean.replace("-", " ").replace(".html", "").title()
     head = make_head(title_line, f"Complete guide to {title_line} for Indian professionals.", canonical)
     full_html = ARTICLE_TEMPLATE.format(head=head, content=content, faq="")
@@ -228,6 +235,37 @@ Today's date: {datetime.now().strftime('%B %d, %Y')}"""
     print(f"Saved: {filename}")
     return topic, filename
 
+def pick_emoji(topic):
+    t = topic.lower()
+    if any(w in t for w in ["tax", "income", "slab", "itr"]):
+        return "📋"
+    elif any(w in t for w in ["pf", "epf", "provident", "gratuity"]):
+        return "🏦"
+    elif any(w in t for w in ["hra", "house", "rent"]):
+        return "🏠"
+    elif any(w in t for w in ["negotiat", "hike", "appraisal"]):
+        return "🤝"
+    elif any(w in t for w in ["layoff", "termination", "resignation", "compensation"]):
+        return "🛟"
+    elif any(w in t for w in ["doctor", "nurse", "health"]):
+        return "🏥"
+    elif any(w in t for w in ["pan", "aadhaar", "document"]):
+        return "🪪"
+    elif any(w in t for w in ["engineer", "software", "developer", "data"]):
+        return "💻"
+    elif any(w in t for w in ["government", "ias", "army", "police", "teacher"]):
+        return "🏛️"
+    elif any(w in t for w in ["bank", "po", "finance"]):
+        return "🏦"
+    elif any(w in t for w in ["mba", "ca", "fresher"]):
+        return "🎓"
+    return "💰"
+
+# FIX 2: Card format updated to match the new blog/index.html structure.
+# Old format wrapped <div class="article-card"> inside <a href="...">, which
+# broke hover styles and didn't inherit .article-card CSS from the index.
+# New format uses <a class="article-card" href="..."> — matching existing cards.
+# Also switched from absolute URLs (https://salarybit.in/blog/...) to root-relative (/blog/...).
 def update_blog_index(topic, filename):
     filepath = "blog/index.html"
     if not os.path.exists(filepath):
@@ -235,26 +273,8 @@ def update_blog_index(topic, filename):
         return
     with open(filepath, "r", encoding="utf-8") as f:
         content = f.read()
-    # Pick a relevant emoji based on topic keywords
-    topic_lower = topic.lower()
-    if any(w in topic_lower for w in ["tax", "income", "slab", "itr"]):
-        emoji = "📋"
-    elif any(w in topic_lower for w in ["pf", "epf", "provident", "gratuity"]):
-        emoji = "🏦"
-    elif any(w in topic_lower for w in ["hra", "house", "rent"]):
-        emoji = "🏠"
-    elif any(w in topic_lower for w in ["negotiat", "hike", "appraisal"]):
-        emoji = "🤝"
-    elif any(w in topic_lower for w in ["layoff", "termination", "resignation"]):
-        emoji = "🛟"
-    elif any(w in topic_lower for w in ["doctor", "nurse", "health"]):
-        emoji = "🏥"
-    elif any(w in topic_lower for w in ["pan", "aadhaar", "document"]):
-        emoji = "🪪"
-    elif any(w in topic_lower for w in ["engineer", "software", "developer", "data"]):
-        emoji = "💻"
-    else:
-        emoji = "💰"
+
+    emoji = pick_emoji(topic)
     new_card = f"""<a class="article-card" href="/blog/{filename}">
       <div class="emoji">{emoji}</div>
       <div class="category">Salary Guide</div>
@@ -262,6 +282,7 @@ def update_blog_index(topic, filename):
       <p>Complete guide to {topic.lower()} — with real salary data, tables and expert tips for Indian professionals.</p>
       <div class="meta"><span>8 min read</span><span class="read-link">Read Guide →</span></div>
     </a>"""
+
     if "<!-- NEW-ARTICLES -->" in content:
         content = content.replace("<!-- NEW-ARTICLES -->", f"<!-- NEW-ARTICLES -->\n\n    {new_card}")
         with open(filepath, "w", encoding="utf-8") as f:

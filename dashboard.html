@@ -4,26 +4,33 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>My Dashboard — SalaryBit JobAgent</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --black: #0a0a0a;
-      --white: #f5f2ec;
-      --accent: #e8ff47;
-      --accent2: #ff6b35;
-      --grey: #1a1a1a;
-      --grey2: #2a2a2a;
-      --muted: #888;
-      --green: #28c840;
-      --font-display: 'Syne', sans-serif;
-      --font-body: 'DM Sans', sans-serif;
+      --bg: #f4f5f7;
+      --bg2: #ffffff;
+      --text: #0f1117;
+      --text2: #3d4255;
+      --muted: #8891a5;
+      --border: #e2e5ed;
+      --accent: #1a56db;
+      --accent-light: #eff3ff;
+      --green: #057a55;
+      --green-light: #ecfdf3;
+      --orange: #c05621;
+      --orange-light: #fff7ed;
+      --red: #c81e1e;
+      --font: 'Plus Jakarta Sans', sans-serif;
+      --mono: 'IBM Plex Mono', monospace;
+      --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 10px rgba(0,0,0,0.04);
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
     }
     body {
-      background: var(--black);
-      color: var(--white);
-      font-family: var(--font-body);
-      font-weight: 300;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-weight: 400;
       min-height: 100vh;
     }
 
@@ -34,282 +41,336 @@
       align-items: center;
       justify-content: center;
       padding: 2rem;
+      background: var(--bg);
     }
     .login-box {
-      background: var(--grey);
-      border: 1px solid #2a2a2a;
-      padding: 3rem;
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      padding: 2.5rem;
       width: 100%;
       max-width: 420px;
-      border-radius: 4px;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
     }
     .login-logo {
-      font-family: var(--font-display);
       font-weight: 800;
-      font-size: 1.2rem;
-      margin-bottom: 0.3rem;
+      font-size: 1rem;
+      color: var(--text);
+      margin-bottom: 0.25rem;
     }
     .login-logo span { color: var(--accent); }
-    .login-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 2rem; }
-    .login-title { font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; margin-bottom: 0.3rem; letter-spacing: -0.02em; }
+    .login-sub { font-size: 0.82rem; color: var(--muted); margin-bottom: 2rem; }
+    .login-title { font-weight: 800; font-size: 1.5rem; margin-bottom: 0.25rem; letter-spacing: -0.03em; }
+    .login-desc { font-size: 0.85rem; color: var(--text2); margin-bottom: 1.75rem; }
 
     label {
       display: block;
       font-size: 0.72rem;
-      letter-spacing: 0.08em;
+      font-weight: 700;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--text2);
       margin-bottom: 0.4rem;
-      font-family: var(--font-display);
-      font-weight: 600;
     }
     input {
       width: 100%;
-      background: var(--black);
-      border: 1px solid #2a2a2a;
-      color: var(--white);
-      font-family: var(--font-body);
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      font-family: var(--font);
       font-size: 0.9rem;
-      padding: 0.75rem 1rem;
-      border-radius: 2px;
+      padding: 0.7rem 0.9rem;
+      border-radius: 8px;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
       margin-bottom: 1rem;
     }
-    input:focus { border-color: var(--accent); }
-    input::placeholder { color: #444; }
+    input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(26,86,219,0.1); }
+    input::placeholder { color: #c0c8d8; }
 
     .btn {
       width: 100%;
       background: var(--accent);
-      color: var(--black);
-      font-family: var(--font-display);
-      font-weight: 800;
-      font-size: 0.95rem;
-      padding: 0.85rem;
+      color: #fff;
+      font-family: var(--font);
+      font-weight: 700;
+      font-size: 0.92rem;
+      padding: 0.8rem;
       border: none;
-      border-radius: 2px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      margin-top: 0.5rem;
+      transition: background 0.2s, transform 0.2s;
     }
-    .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(232,255,71,0.3); }
-    .btn-ghost {
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid #2a2a2a;
-      margin-top: 0.7rem;
-      font-size: 0.82rem;
-    }
-    .btn-ghost:hover { border-color: var(--accent); color: var(--white); box-shadow: none; }
-
-    .login-note { font-size: 0.75rem; color: var(--muted); text-align: center; margin-top: 1rem; }
-    .login-note a { color: var(--accent); text-decoration: none; }
+    .btn:hover { background: #1240a4; transform: translateY(-1px); }
+    .login-link { font-size: 0.8rem; color: var(--muted); text-align: center; margin-top: 1rem; }
+    .login-link a { color: var(--accent); text-decoration: none; font-weight: 600; }
 
     /* DASHBOARD */
     .dashboard { display: none; }
     .dashboard.show { display: block; }
 
-    /* TOP NAV */
+    /* NAV */
     .dash-nav {
-      background: var(--grey);
-      border-bottom: 1px solid #1f1f1f;
-      padding: 1rem 2rem;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 0.9rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       position: sticky;
       top: 0;
       z-index: 50;
+      box-shadow: var(--shadow-sm);
     }
-    .dash-logo { font-family: var(--font-display); font-weight: 800; font-size: 1rem; }
+    .dash-logo { font-weight: 800; font-size: 1rem; color: var(--text); }
     .dash-logo span { color: var(--accent); }
+
     .dash-user { display: flex; align-items: center; gap: 1rem; }
-    .user-tag {
-      font-size: 0.78rem;
-      color: var(--muted);
-      font-family: var(--font-display);
-    }
-    .user-tag strong { color: var(--white); }
+    .user-tag { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+    .user-tag strong { color: var(--text); }
+
     .btn-sm {
       background: transparent;
-      border: 1px solid #2a2a2a;
-      color: var(--muted);
-      font-family: var(--font-display);
-      font-size: 0.72rem;
-      padding: 0.4rem 0.8rem;
-      border-radius: 2px;
+      border: 1.5px solid var(--border);
+      color: var(--text2);
+      font-family: var(--font);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.4rem 0.9rem;
+      border-radius: 6px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: border-color 0.2s, color 0.2s;
     }
-    .btn-sm:hover { border-color: var(--accent); color: var(--white); }
+    .btn-sm:hover { border-color: var(--accent); color: var(--accent); }
 
-    /* MAIN CONTENT */
-    .dash-main { padding: 2rem; max-width: 1100px; margin: 0 auto; }
+    /* MAIN */
+    .dash-main { padding: 2rem; max-width: 1150px; margin: 0 auto; }
 
     /* STATUS BANNER */
     .status-banner {
-      background: var(--grey);
-      border: 1px solid #1f1f1f;
-      border-left: 3px solid var(--green);
-      padding: 1rem 1.5rem;
-      border-radius: 2px;
+      background: var(--green-light);
+      border: 1.5px solid #a7f3d0;
+      padding: 0.9rem 1.25rem;
+      border-radius: 10px;
       display: flex;
       align-items: center;
-      gap: 1rem;
-      margin-bottom: 2rem;
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
     }
-    .status-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; flex-shrink: 0; }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
-    .status-text { font-size: 0.88rem; }
-    .status-text strong { color: var(--green); font-family: var(--font-display); }
+    .status-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; flex-shrink: 0; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
+    .status-text { font-size: 0.85rem; color: #065f46; }
+    .status-text strong { font-weight: 700; }
+
+    /* UPDATE NOTICE */
+    .update-notice {
+      background: var(--accent-light);
+      border: 1.5px solid #c3d2f7;
+      padding: 0.8rem 1.25rem;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
+      font-size: 0.85rem;
+      color: var(--accent);
+    }
+    .update-notice strong { font-weight: 700; }
 
     /* STATS GRID */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
       gap: 1rem;
-      margin-bottom: 2rem;
+      margin-bottom: 1.75rem;
     }
     .stat-card {
-      background: var(--grey);
-      border: 1px solid #1f1f1f;
-      padding: 1.5rem;
-      border-radius: 2px;
-      transition: border-color 0.3s;
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      padding: 1.4rem 1.5rem;
+      border-radius: 10px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      box-shadow: var(--shadow-sm);
     }
-    .stat-card:hover { border-color: var(--accent); }
-    .stat-card-label { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-family: var(--font-display); margin-bottom: 0.5rem; }
-    .stat-card-num { font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; line-height: 1; }
-    .stat-card-num.green { color: var(--green); }
-    .stat-card-num.yellow { color: var(--accent); }
-    .stat-card-num.orange { color: var(--accent2); }
-    .stat-card-sub { font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem; }
+    .stat-card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+    .stat-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.6rem; }
+    .stat-num { font-weight: 800; font-size: 2.1rem; line-height: 1; letter-spacing: -0.04em; font-family: var(--font); }
+    .stat-num.blue { color: var(--accent); }
+    .stat-num.green { color: var(--green); }
+    .stat-num.orange { color: var(--orange); }
+    .stat-sub { font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem; }
 
-    /* PROFILE CARD */
-    .two-col { display: grid; grid-template-columns: 1fr 1.6fr; gap: 1.5rem; margin-bottom: 2rem; }
+    /* TWO COL */
+    .two-col { display: grid; grid-template-columns: 1fr 1.6fr; gap: 1.25rem; margin-bottom: 1.75rem; }
 
+    /* CARDS */
     .card {
-      background: var(--grey);
-      border: 1px solid #1f1f1f;
-      border-radius: 2px;
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
       overflow: hidden;
+      box-shadow: var(--shadow-sm);
     }
     .card-header {
-      padding: 1rem 1.5rem;
-      border-bottom: 1px solid #1f1f1f;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .card-title { font-family: var(--font-display); font-weight: 700; font-size: 0.88rem; letter-spacing: 0.03em; }
+    .card-title { font-weight: 700; font-size: 0.88rem; color: var(--text); }
     .card-badge {
       font-size: 0.65rem;
-      font-family: var(--font-display);
       font-weight: 700;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      padding: 0.25rem 0.6rem;
-      border-radius: 2px;
+      padding: 0.2rem 0.55rem;
+      border-radius: 5px;
     }
-    .badge-green { background: rgba(40,200,64,0.15); color: var(--green); }
-    .badge-yellow { background: rgba(232,255,71,0.15); color: var(--accent); }
-    .badge-orange { background: rgba(255,107,53,0.15); color: var(--accent2); }
+    .badge-green { background: var(--green-light); color: var(--green); }
+    .badge-blue { background: var(--accent-light); color: var(--accent); }
+    .badge-orange { background: var(--orange-light); color: var(--orange); }
 
-    .card-body { padding: 1.5rem; }
+    .card-body { padding: 1.25rem; }
 
+    /* PROFILE */
     .profile-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0.6rem 0;
-      border-bottom: 1px solid #1f1f1f;
-      font-size: 0.85rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.84rem;
     }
     .profile-row:last-child { border-bottom: none; }
-    .profile-key { color: var(--muted); font-size: 0.78rem; }
-    .profile-val { font-weight: 500; text-align: right; }
+    .profile-key { color: var(--muted); font-size: 0.78rem; font-weight: 500; }
+    .profile-val { font-weight: 600; text-align: right; color: var(--text); }
 
-    /* APPLICATIONS TABLE */
+    /* TABLE */
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
     th {
       text-align: left;
-      padding: 0.7rem 1rem;
-      font-family: var(--font-display);
+      padding: 0.65rem 1rem;
       font-size: 0.68rem;
-      letter-spacing: 0.1em;
+      font-weight: 700;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--muted);
-      border-bottom: 1px solid #1f1f1f;
+      border-bottom: 1px solid var(--border);
       white-space: nowrap;
+      background: #fafbfc;
     }
     td {
       padding: 0.85rem 1rem;
-      border-bottom: 1px solid #1a1a1a;
-      color: var(--white);
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
       vertical-align: middle;
     }
-    tr:hover td { background: rgba(255,255,255,0.02); }
     tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafbfd; }
+
+    .company-name { font-weight: 600; font-size: 0.85rem; }
+    .job-title { color: var(--muted); font-size: 0.78rem; margin-top: 0.1rem; }
 
     .status-pill {
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
-      font-size: 0.7rem;
-      font-family: var(--font-display);
+      gap: 0.3rem;
+      font-size: 0.68rem;
       font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      padding: 0.25rem 0.6rem;
-      border-radius: 2px;
+      padding: 0.2rem 0.55rem;
+      border-radius: 5px;
     }
-    .pill-applied { background: rgba(232,255,71,0.1); color: var(--accent); }
-    .pill-interview { background: rgba(40,200,64,0.15); color: var(--green); }
-    .pill-pending { background: rgba(136,136,136,0.1); color: var(--muted); }
-    .pill-rejected { background: rgba(255,107,53,0.1); color: var(--accent2); }
-
-    .company-name { font-weight: 500; }
-    .job-title { color: var(--muted); font-size: 0.78rem; margin-top: 0.1rem; }
-
-    /* EMPTY STATE */
-    .empty-state {
-      text-align: center;
-      padding: 3rem;
-      color: var(--muted);
-    }
-    .empty-icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
-    .empty-title { font-family: var(--font-display); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+    .pill-applied { background: var(--accent-light); color: var(--accent); }
+    .pill-interview { background: var(--green-light); color: var(--green); }
+    .pill-pending { background: #f3f4f6; color: var(--muted); }
+    .pill-rejected { background: var(--orange-light); color: var(--orange); }
 
     /* TIMELINE */
-    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .timeline { display: flex; flex-direction: column; }
     .tl-item {
       display: flex;
-      gap: 1rem;
-      padding: 0.9rem 0;
-      border-bottom: 1px solid #1a1a1a;
+      gap: 0.9rem;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
     }
     .tl-item:last-child { border-bottom: none; }
     .tl-icon {
       width: 28px; height: 28px;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       flex-shrink: 0;
-      margin-top: 0.1rem;
     }
-    .tl-green { background: rgba(40,200,64,0.15); }
-    .tl-yellow { background: rgba(232,255,71,0.1); }
-    .tl-orange { background: rgba(255,107,53,0.1); }
-    .tl-text { font-size: 0.83rem; line-height: 1.5; }
-    .tl-time { font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; }
+    .tl-green { background: var(--green-light); color: var(--green); }
+    .tl-blue { background: var(--accent-light); color: var(--accent); }
+    .tl-orange { background: var(--orange-light); color: var(--orange); }
+    .tl-text { font-size: 0.82rem; line-height: 1.5; color: var(--text); }
+    .tl-time { font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; font-family: var(--mono); }
 
-    /* RESPONSIVE */
+    /* EMPTY STATE */
+    .empty-state { text-align: center; padding: 3rem; color: var(--muted); }
+    .empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .empty-title { font-weight: 700; font-size: 0.95rem; color: var(--text); margin-bottom: 0.35rem; }
+    .empty-sub { font-size: 0.82rem; }
+
+    /* HELP */
+    .help-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .help-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: var(--font);
+      font-weight: 600;
+      font-size: 0.82rem;
+      padding: 0.55rem 1.1rem;
+      border-radius: 7px;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .help-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .help-wa { background: #25D366; color: #fff; }
+    .help-email { background: var(--bg); border: 1.5px solid var(--border); color: var(--text2); }
+    .help-faq { background: var(--bg); border: 1.5px solid var(--border); color: var(--text2); }
+
+    /* FORECAST CARD */
+    .forecast-card {
+      background: var(--accent-light);
+      border: 1.5px solid #c3d2f7;
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.75rem;
+    }
+    .forecast-title {
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--accent);
+      margin-bottom: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .forecast-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; }
+    .forecast-item {
+      background: var(--bg2);
+      border-radius: 8px;
+      padding: 0.9rem 1rem;
+      border: 1px solid #dce5f8;
+    }
+    .fi-label { font-size: 0.72rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.3rem; }
+    .fi-val { font-weight: 800; font-size: 1.4rem; color: var(--text); letter-spacing: -0.03em; font-family: var(--font); }
+    .fi-val.green { color: var(--green); }
+    .fi-val.blue { color: var(--accent); }
+
     @media (max-width: 768px) {
       .two-col { grid-template-columns: 1fr; }
-      .dash-nav { padding: 1rem; }
+      .dash-nav { padding: 0.9rem 1rem; }
       .dash-main { padding: 1rem; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
@@ -319,18 +380,16 @@
 <div class="login-screen" id="loginScreen">
   <div class="login-box">
     <div class="login-logo">Salary<span>Bit</span> · JobAgent</div>
-    <p class="login-sub">Track your applications & interviews</p>
+    <p class="login-sub">Your AI job application agent</p>
     <div class="login-title">My Dashboard</div>
-    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1.5rem;">Enter the email you signed up with</p>
+    <p class="login-desc">Enter the email you signed up with to view your applications and daily reports.</p>
 
-    <div>
-      <label>Email Address</label>
-      <input type="email" id="login-email" placeholder="rahul@gmail.com"/>
-      <button class="btn" onclick="handleLogin()">View My Dashboard →</button>
-      <a href="job-agent.html" style="display:block;text-align:center;margin-top:1rem;font-size:0.8rem;color:var(--muted);text-decoration:none;">Don't have an account? <span style="color:var(--accent)">Sign up free →</span></a>
-    </div>
+    <label>Email Address</label>
+    <input type="email" id="login-email" placeholder="rahul@gmail.com" autocomplete="email"/>
+    <button class="btn" onclick="handleLogin()">View My Dashboard →</button>
 
-    <p class="login-note" style="margin-top:1.5rem;">🔒 No password needed. We verify by email only.</p>
+    <p class="login-link">Don't have an account? <a href="job-agent.html">Sign up free →</a></p>
+    <p style="font-size:0.75rem;color:var(--muted);text-align:center;margin-top:0.75rem;">🔒 No password needed · Verified by email only</p>
   </div>
 </div>
 
@@ -351,37 +410,66 @@
     <!-- STATUS -->
     <div class="status-banner">
       <div class="status-dot"></div>
-      <div class="status-text"><strong>Agent is running</strong> — Last scan: Today 9:00 AM · Next scan: Tomorrow 9:00 AM</div>
+      <div class="status-text"><strong>Agent is running</strong> — Last scan: Today 10:00 AM · Next scan: Tomorrow 10:00 AM</div>
+    </div>
+
+    <!-- DAILY UPDATE NOTICE -->
+    <div class="update-notice">
+      <span>🕙</span>
+      <div>You receive a <strong>daily update at 10 AM</strong> via email and Telegram with a full list of jobs applied and any recruiter responses.</div>
+    </div>
+
+    <!-- 1-WEEK FORECAST -->
+    <div class="forecast-card" id="forecastCard">
+      <div class="forecast-title">📈 Your 7-Day Forecast</div>
+      <div class="forecast-grid">
+        <div class="forecast-item">
+          <div class="fi-label">Estimated Applications</div>
+          <div class="fi-val blue">~350</div>
+        </div>
+        <div class="forecast-item">
+          <div class="fi-label">Recruiter Views</div>
+          <div class="fi-val">80–120</div>
+        </div>
+        <div class="forecast-item">
+          <div class="fi-label">Expected Responses</div>
+          <div class="fi-val green">3–7</div>
+        </div>
+        <div class="forecast-item">
+          <div class="fi-label">Daily Update Time</div>
+          <div class="fi-val blue" style="font-size:1.1rem;font-family:var(--mono);">10:00 AM</div>
+        </div>
+      </div>
     </div>
 
     <!-- STATS -->
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-card-label">Total Applied</div>
-        <div class="stat-card-num yellow" id="stat-total">0</div>
-        <div class="stat-card-sub">Since you joined</div>
+        <div class="stat-label">Total Applied</div>
+        <div class="stat-num blue" id="stat-total">0</div>
+        <div class="stat-sub">Since you joined</div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-label">This Week</div>
-        <div class="stat-card-num yellow" id="stat-week">0</div>
-        <div class="stat-card-sub">LinkedIn applications</div>
+        <div class="stat-label">This Week</div>
+        <div class="stat-num blue" id="stat-week">0</div>
+        <div class="stat-sub">LinkedIn applications</div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-label">Interviews</div>
-        <div class="stat-card-num green" id="stat-interviews">0</div>
-        <div class="stat-card-sub">Recruiter responses</div>
+        <div class="stat-label">Interviews</div>
+        <div class="stat-num green" id="stat-interviews">0</div>
+        <div class="stat-sub">Recruiter responses</div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-label">Success Rate</div>
-        <div class="stat-card-num orange" id="stat-rate">0%</div>
-        <div class="stat-card-sub">Applications → Interviews</div>
+        <div class="stat-label">Success Rate</div>
+        <div class="stat-num orange" id="stat-rate">0%</div>
+        <div class="stat-sub">Applications → Interviews</div>
       </div>
     </div>
 
     <!-- PROFILE + ACTIVITY -->
     <div class="two-col">
 
-      <!-- PROFILE -->
+      <!-- PROFILE CARD -->
       <div class="card">
         <div class="card-header">
           <div class="card-title">Your Profile</div>
@@ -405,11 +493,19 @@
             <span class="profile-val" id="p-notice">—</span>
           </div>
           <div class="profile-row">
-            <span class="profile-key">Resume</span>
-            <span class="profile-val"><a id="p-resume" href="#" target="_blank" style="color:var(--accent);font-size:0.78rem;">View Resume →</a></span>
+            <span class="profile-key">Experience</span>
+            <span class="profile-val" id="p-exp">—</span>
           </div>
           <div class="profile-row">
-            <span class="profile-key">Joined</span>
+            <span class="profile-key">Telegram</span>
+            <span class="profile-val" id="p-telegram">—</span>
+          </div>
+          <div class="profile-row">
+            <span class="profile-key">Resume</span>
+            <span class="profile-val"><a id="p-resume" href="#" target="_blank" style="color:var(--accent);font-size:0.78rem;font-weight:600;">View Resume →</a></span>
+          </div>
+          <div class="profile-row">
+            <span class="profile-key">Agent Since</span>
             <span class="profile-val" id="p-joined">—</span>
           </div>
         </div>
@@ -419,29 +515,29 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title">Recent Activity</div>
-          <div class="card-badge badge-yellow">Live</div>
+          <div class="card-badge badge-blue">Live</div>
         </div>
-        <div class="card-body">
+        <div class="card-body" style="padding:0 1.25rem;">
           <div class="timeline" id="activity-timeline">
             <div class="tl-item">
               <div class="tl-icon tl-green">✓</div>
               <div>
                 <div class="tl-text">Agent scanned LinkedIn Jobs — <strong>52 jobs applied</strong></div>
-                <div class="tl-time">Today · 9:02 AM</div>
+                <div class="tl-time">Today · 10:00 AM</div>
               </div>
             </div>
             <div class="tl-item">
-              <div class="tl-icon tl-yellow">📧</div>
+              <div class="tl-icon tl-blue">📧</div>
               <div>
-                <div class="tl-text">Weekly report sent to your email</div>
-                <div class="tl-time">Monday · 8:00 AM</div>
+                <div class="tl-text">Daily report sent via email + Telegram</div>
+                <div class="tl-time">Today · 10:01 AM</div>
               </div>
             </div>
             <div class="tl-item">
               <div class="tl-icon tl-green">✓</div>
               <div>
                 <div class="tl-text">Agent scanned LinkedIn Jobs — <strong>48 jobs applied</strong></div>
-                <div class="tl-time">Yesterday · 9:01 AM</div>
+                <div class="tl-time">Yesterday · 10:00 AM</div>
               </div>
             </div>
             <div class="tl-item">
@@ -461,13 +557,14 @@
           </div>
         </div>
       </div>
+
     </div>
 
     <!-- APPLICATIONS TABLE -->
-    <div class="card" style="margin-bottom:2rem;">
+    <div class="card" style="margin-bottom:1.75rem;">
       <div class="card-header">
         <div class="card-title">Recent Applications</div>
-        <div class="card-badge badge-yellow">Auto-tracked</div>
+        <div class="card-badge badge-blue">Auto-tracked</div>
       </div>
       <div class="table-wrap">
         <table>
@@ -486,7 +583,7 @@
                 <div class="empty-state">
                   <div class="empty-icon">⏳</div>
                   <div class="empty-title">Agent scanning now</div>
-                  <p style="font-size:0.82rem;">Your applications will appear here after the first scan. Check back after 9 AM tomorrow.</p>
+                  <p class="empty-sub">Your applications will appear here after the first 10 AM scan. Check back tomorrow morning.</p>
                 </div>
               </td>
             </tr>
@@ -495,24 +592,17 @@
       </div>
     </div>
 
-    <!-- HELP SECTION -->
+    <!-- HELP -->
     <div class="card" style="margin-bottom:2rem;">
       <div class="card-header">
         <div class="card-title">Need Help?</div>
       </div>
-      <div class="card-body" style="display:flex;gap:1rem;flex-wrap:wrap;">
-        <a href="https://wa.me/919742801802?text=Hi!%20I%20need%20help%20with%20my%20SalaryBit%20dashboard" target="_blank"
-           style="display:inline-flex;align-items:center;gap:0.5rem;background:#25D366;color:#000;font-family:var(--font-display);font-weight:700;font-size:0.82rem;padding:0.6rem 1.2rem;border-radius:2px;text-decoration:none;transition:opacity 0.2s;">
-          💬 WhatsApp Support
-        </a>
-        <a href="mailto:support@salarybit.in"
-           style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--grey2);color:var(--white);font-family:var(--font-display);font-weight:700;font-size:0.82rem;padding:0.6rem 1.2rem;border-radius:2px;text-decoration:none;border:1px solid #2a2a2a;">
-          📧 Email Support
-        </a>
-        <a href="job-agent.html#faq"
-           style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--grey2);color:var(--white);font-family:var(--font-display);font-weight:700;font-size:0.82rem;padding:0.6rem 1.2rem;border-radius:2px;text-decoration:none;border:1px solid #2a2a2a;">
-          ❓ FAQ
-        </a>
+      <div class="card-body">
+        <div class="help-row">
+          <a href="https://wa.me/919742801802?text=Hi!%20I%20need%20help%20with%20my%20SalaryBit%20dashboard" target="_blank" class="help-btn help-wa">💬 WhatsApp Support</a>
+          <a href="mailto:support@salarybit.in" class="help-btn help-email">📧 Email Support</a>
+          <a href="job-agent.html#faq" class="help-btn help-faq">❓ FAQ</a>
+        </div>
       </div>
     </div>
 
@@ -544,31 +634,28 @@
       alert('Please enter a valid email address.');
       return;
     }
-
-    // Save to session
     sessionStorage.setItem('sb_email', email);
-
-    // Load stored profile if exists
     const stored = JSON.parse(localStorage.getItem('sb_profile_' + email) || '{}');
-
     showDashboard(email, stored);
   }
 
   function showDashboard(email, profile) {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('dashboardScreen').classList.add('show');
-
-    // Set email display
     document.getElementById('dash-email-display').textContent = email;
 
-    // Fill profile
+    // Profile values — use stored data if available
     document.getElementById('p-role').textContent = profile.targetRole || 'Not set';
     document.getElementById('p-location').textContent = profile.location || 'Not set';
     document.getElementById('p-salary').textContent = profile.salary || 'Not set';
     document.getElementById('p-notice').textContent = profile.notice || 'Not set';
+    document.getElementById('p-exp').textContent = profile.experience || 'Not set';
+    document.getElementById('p-telegram').textContent = profile.telegram || 'Not set';
 
     if (profile.resumeLink) {
-      document.getElementById('p-resume').href = profile.resumeLink;
+      const resumeEl = document.getElementById('p-resume');
+      resumeEl.href = profile.resumeLink;
+      resumeEl.textContent = 'View Resume →';
     } else {
       document.getElementById('p-resume').textContent = 'Not provided';
     }
@@ -579,26 +666,42 @@
     document.getElementById('p-joined').textContent = joined;
     document.getElementById('p-joined-tl').textContent = joined;
 
-    // Fill stats
-    document.getElementById('stat-total').textContent = '248';
-    document.getElementById('stat-week').textContent = '52';
-    document.getElementById('stat-interviews').textContent = '3';
-    document.getElementById('stat-rate').textContent = '1.2%';
+    // Stats — show sample data to demonstrate the dashboard
+    const hasProfile = !!(profile.targetRole);
+    document.getElementById('stat-total').textContent = hasProfile ? '248' : '—';
+    document.getElementById('stat-week').textContent = hasProfile ? '52' : '—';
+    document.getElementById('stat-interviews').textContent = hasProfile ? '3' : '—';
+    document.getElementById('stat-rate').textContent = hasProfile ? '1.2%' : '—';
 
-    // Fill table
-    const tbody = document.getElementById('applications-tbody');
-    tbody.innerHTML = SAMPLE_APPS.map(app => `
-      <tr>
-        <td>
-          <div class="company-name">${app.company}</div>
-          <div class="job-title">${app.role}</div>
-        </td>
-        <td style="color:var(--muted);font-size:0.8rem;">${app.location}</td>
-        <td style="color:var(--muted);font-size:0.8rem;white-space:nowrap;">${app.date}</td>
-        <td>${STATUS_MAP[app.status]}</td>
-        <td><a href="${app.link}" target="_blank" style="color:var(--accent);font-size:0.75rem;text-decoration:none;font-family:var(--font-display);font-weight:600;">View →</a></td>
-      </tr>
-    `).join('');
+    // Fill table with sample data if profile exists
+    if (hasProfile) {
+      const tbody = document.getElementById('applications-tbody');
+      tbody.innerHTML = SAMPLE_APPS.map(app => `
+        <tr>
+          <td>
+            <div class="company-name">${app.company}</div>
+            <div class="job-title">${app.role}</div>
+          </td>
+          <td style="color:var(--muted);font-size:0.8rem;">${app.location}</td>
+          <td style="color:var(--muted);font-size:0.8rem;white-space:nowrap;font-family:var(--mono);">${app.date}</td>
+          <td>${STATUS_MAP[app.status]}</td>
+          <td><a href="${app.link}" target="_blank" style="color:var(--accent);font-size:0.78rem;text-decoration:none;font-weight:600;">View →</a></td>
+        </tr>
+      `).join('');
+    }
+
+    // Show welcome state if profile not yet set up
+    if (!hasProfile) {
+      document.getElementById('forecastCard').style.display = 'none';
+      const banner = document.querySelector('.status-banner');
+      banner.style.background = '#fff7ed';
+      banner.style.borderColor = '#fcd8a5';
+      const dot = banner.querySelector('.status-dot');
+      dot.style.background = 'var(--orange)';
+      const text = banner.querySelector('.status-text');
+      text.innerHTML = '<strong style="color:var(--orange)">Profile not found</strong> — <a href="job-agent.html" style="color:var(--accent);font-weight:600;">Sign up to activate your agent →</a>';
+      text.style.color = 'var(--orange)';
+    }
   }
 
   function handleLogout() {
@@ -606,7 +709,6 @@
     window.location.href = 'job-agent.html';
   }
 
-  // Auto-login if session exists
   window.addEventListener('load', () => {
     const email = sessionStorage.getItem('sb_email');
     if (email) {
@@ -615,7 +717,6 @@
     }
   });
 
-  // Allow Enter key on login
   document.addEventListener('keydown', e => {
     if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') {
       handleLogin();

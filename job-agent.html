@@ -1,35 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>JobAgent AI — Apply to 50+ LinkedIn Jobs Daily. You Just Attend Interviews.</title>
+  <title>JobAgent AI — Apply to 50+ LinkedIn Jobs Daily | SalaryBit</title>
   <meta name="description" content="AI-powered job application agent that finds and applies to 50+ LinkedIn jobs every day on your behalf. Built by SalaryBit."/>
   <link rel="canonical" href="https://salarybit.in/job-agent"/>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
-
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --black: #0a0a0a;
-      --white: #f5f2ec;
-      --accent: #e8ff47;
-      --accent2: #ff6b35;
-      --grey: #1a1a1a;
-      --grey2: #2a2a2a;
-      --muted: #888;
-      --font-display: 'Syne', sans-serif;
-      --font-body: 'DM Sans', sans-serif;
+      --bg: #f8f7f4;
+      --bg2: #ffffff;
+      --text: #0f1117;
+      --text2: #3d4255;
+      --muted: #8891a5;
+      --border: #e2e5ed;
+      --border2: #cdd1db;
+      --accent: #1a56db;
+      --accent-light: #eff3ff;
+      --accent-dark: #1240a4;
+      --green: #057a55;
+      --green-light: #ecfdf3;
+      --orange: #c05621;
+      --orange-light: #fff7ed;
+      --font: 'Plus Jakarta Sans', sans-serif;
+      --mono: 'IBM Plex Mono', monospace;
+      --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 4px 12px rgba(0,0,0,0.05);
+      --shadow-lg: 0 4px 16px rgba(0,0,0,0.08), 0 12px 40px rgba(0,0,0,0.07);
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      background: var(--black);
-      color: var(--white);
-      font-family: var(--font-body);
-      font-weight: 300;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-weight: 400;
       line-height: 1.6;
       overflow-x: hidden;
     }
@@ -42,43 +50,41 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.2rem 4rem;
-      background: rgba(10,10,10,0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid #1f1f1f;
+      padding: 1rem 3rem;
+      background: rgba(248,247,244,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
     }
 
     .logo {
-      font-family: var(--font-display);
+      font-family: var(--font);
       font-weight: 800;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
+      color: var(--text);
       letter-spacing: -0.02em;
     }
-
     .logo span { color: var(--accent); }
 
+    .nav-links { display: flex; align-items: center; gap: 2rem; }
     nav a {
-      color: var(--white);
+      color: var(--text2);
       text-decoration: none;
-      font-size: 0.85rem;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      opacity: 0.6;
-      transition: opacity 0.2s;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
     }
-    nav a:hover { opacity: 1; }
+    nav a:hover { color: var(--accent); }
 
     .nav-cta {
-      background: var(--accent);
-      color: var(--black) !important;
-      opacity: 1 !important;
-      padding: 0.5rem 1.2rem;
-      border-radius: 2px;
+      background: var(--accent) !important;
+      color: #fff !important;
+      padding: 0.5rem 1.25rem;
+      border-radius: 6px;
       font-weight: 600;
-      font-family: var(--font-display);
-      transition: transform 0.2s, box-shadow 0.2s !important;
+      font-size: 0.875rem !important;
+      transition: background 0.2s, transform 0.2s !important;
     }
-    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(232,255,71,0.3); }
+    .nav-cta:hover { background: var(--accent-dark) !important; transform: translateY(-1px); }
 
     /* HERO */
     .hero {
@@ -86,49 +92,28 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 8rem 4rem 4rem;
-      position: relative;
-      overflow: hidden;
+      padding: 8rem 3rem 5rem;
+      max-width: 1100px;
+      margin: 0 auto;
     }
 
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -200px; right: -200px;
-      width: 700px; height: 700px;
-      background: radial-gradient(circle, rgba(232,255,71,0.08) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero::after {
-      content: '';
-      position: absolute;
-      bottom: -100px; left: -100px;
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(255,107,53,0.06) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero-tag {
+    .hero-badge {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      background: var(--grey);
-      border: 1px solid #2f2f2f;
-      padding: 0.4rem 0.9rem;
-      border-radius: 2px;
-      font-size: 0.75rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-family: var(--font-display);
+      background: var(--accent-light);
+      border: 1px solid #c3d2f7;
+      padding: 0.35rem 0.9rem;
+      border-radius: 100px;
+      font-size: 0.78rem;
       font-weight: 600;
+      color: var(--accent);
       margin-bottom: 2rem;
       width: fit-content;
-      animation: fadeUp 0.6s ease both;
+      animation: fadeUp 0.5s ease both;
     }
 
-    .hero-tag .dot {
+    .hero-badge .dot {
       width: 6px; height: 6px;
       background: var(--accent);
       border-radius: 50%;
@@ -137,680 +122,553 @@
 
     @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.8); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     h1 {
-      font-family: var(--font-display);
+      font-family: var(--font);
       font-weight: 800;
-      font-size: clamp(3rem, 7vw, 6.5rem);
-      line-height: 1.0;
-      letter-spacing: -0.03em;
-      max-width: 900px;
-      animation: fadeUp 0.6s 0.1s ease both;
+      font-size: clamp(2.6rem, 5.5vw, 5rem);
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      max-width: 860px;
+      animation: fadeUp 0.5s 0.1s ease both;
     }
-
-    h1 .highlight {
-      color: var(--accent);
-      position: relative;
-      display: inline-block;
-    }
-
-    h1 .highlight2 { color: var(--accent2); }
+    h1 em { font-style: normal; color: var(--accent); }
+    h1 .cross { color: #d1d5db; text-decoration: line-through; font-weight: 300; }
 
     .hero-sub {
       margin-top: 1.5rem;
-      font-size: 1.15rem;
-      color: var(--muted);
-      max-width: 520px;
-      line-height: 1.7;
-      font-weight: 300;
-      animation: fadeUp 0.6s 0.2s ease both;
+      font-size: 1.1rem;
+      color: var(--text2);
+      max-width: 540px;
+      line-height: 1.75;
+      font-weight: 400;
+      animation: fadeUp 0.5s 0.2s ease both;
     }
 
     .hero-stats {
       display: flex;
-      gap: 3rem;
+      gap: 2.5rem;
       margin-top: 3rem;
-      animation: fadeUp 0.6s 0.3s ease both;
+      animation: fadeUp 0.5s 0.25s ease both;
+      flex-wrap: wrap;
     }
-
-    .stat { display: flex; flex-direction: column; gap: 0.2rem; }
-    .stat-num {
-      font-family: var(--font-display);
+    .h-stat { display: flex; flex-direction: column; }
+    .h-stat-num {
       font-size: 2rem;
       font-weight: 800;
-      color: var(--white);
+      color: var(--text);
       line-height: 1;
+      letter-spacing: -0.03em;
     }
-    .stat-num span { color: var(--accent); }
-    .stat-label { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .h-stat-num span { color: var(--accent); }
+    .h-stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; font-weight: 500; }
 
     .hero-cta {
       display: flex;
-      gap: 1rem;
-      margin-top: 3rem;
-      animation: fadeUp 0.6s 0.4s ease both;
+      gap: 0.75rem;
+      margin-top: 2.5rem;
+      animation: fadeUp 0.5s 0.3s ease both;
       flex-wrap: wrap;
+      align-items: center;
     }
 
     .btn-primary {
       background: var(--accent);
-      color: var(--black);
-      font-family: var(--font-display);
+      color: #fff;
+      font-family: var(--font);
       font-weight: 700;
       font-size: 0.95rem;
-      padding: 1rem 2.2rem;
+      padding: 0.875rem 2rem;
       border: none;
-      border-radius: 2px;
+      border-radius: 8px;
       cursor: pointer;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      transition: transform 0.2s, box-shadow 0.2s;
-      letter-spacing: 0.02em;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px rgba(26,86,219,0.25);
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(232,255,71,0.35); }
+    .btn-primary:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,86,219,0.3); }
 
-    .btn-secondary {
+    .btn-outline {
       background: transparent;
-      color: var(--white);
-      font-family: var(--font-display);
+      color: var(--text2);
+      font-family: var(--font);
       font-weight: 600;
-      font-size: 0.95rem;
-      padding: 1rem 2.2rem;
-      border: 1px solid #2f2f2f;
-      border-radius: 2px;
+      font-size: 0.9rem;
+      padding: 0.875rem 1.75rem;
+      border: 1.5px solid var(--border2);
+      border-radius: 8px;
       cursor: pointer;
       text-decoration: none;
-      transition: border-color 0.2s, background 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: border-color 0.2s, color 0.2s;
     }
-    .btn-secondary:hover { border-color: var(--accent); background: rgba(232,255,71,0.05); }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    .hero-note { font-size: 0.8rem; color: var(--muted); display: flex; align-items: center; gap: 0.4rem; }
 
     /* TICKER */
     .ticker-wrap {
       background: var(--accent);
-      padding: 0.7rem 0;
+      padding: 0.65rem 0;
       overflow: hidden;
       white-space: nowrap;
     }
-
     .ticker {
       display: inline-flex;
       gap: 3rem;
-      animation: ticker 20s linear infinite;
+      animation: ticker 22s linear infinite;
     }
-
     .ticker-item {
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 0.8rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--black);
+      font-family: var(--mono);
+      font-weight: 500;
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      color: #fff;
       flex-shrink: 0;
+      opacity: 0.9;
     }
-
     @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-    /* HOW IT WORKS */
+    /* SECTIONS */
     .section {
-      padding: 6rem 4rem;
-      position: relative;
+      padding: 5rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
     }
 
-    .section-label {
-      font-family: var(--font-display);
+    .section-tag {
+      display: inline-block;
       font-size: 0.72rem;
-      letter-spacing: 0.15em;
+      font-weight: 700;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--accent);
-      font-weight: 600;
-      margin-bottom: 1rem;
+      margin-bottom: 0.8rem;
     }
 
-    .section-title {
-      font-family: var(--font-display);
-      font-size: clamp(2rem, 4vw, 3.5rem);
+    h2 {
+      font-family: var(--font);
       font-weight: 800;
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
       letter-spacing: -0.03em;
-      line-height: 1.05;
-      max-width: 700px;
+      line-height: 1.1;
+      color: var(--text);
     }
 
     /* STEPS */
     .steps {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1px;
-      margin-top: 4rem;
-      background: #1f1f1f;
-      border: 1px solid #1f1f1f;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
     }
 
     .step {
-      background: var(--black);
-      padding: 2.5rem;
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      padding: 2rem;
+      border-radius: 12px;
+      transition: border-color 0.3s, box-shadow 0.3s;
       position: relative;
-      transition: background 0.3s;
     }
-    .step:hover { background: var(--grey); }
+    .step:hover { border-color: var(--accent); box-shadow: var(--shadow); }
 
     .step-num {
-      font-family: var(--font-display);
-      font-size: 4rem;
-      font-weight: 800;
-      color: #1f1f1f;
-      line-height: 1;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      background: var(--accent-light);
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
       margin-bottom: 1rem;
-      transition: color 0.3s;
     }
-    .step:hover .step-num { color: var(--accent); }
 
     .step-title {
-      font-family: var(--font-display);
-      font-size: 1.1rem;
       font-weight: 700;
-      margin-bottom: 0.7rem;
-      letter-spacing: -0.01em;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      color: var(--text);
     }
+    .step-desc { font-size: 0.875rem; color: var(--text2); line-height: 1.7; }
 
-    .step-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.7; }
-
-    /* WHAT AGENT DOES */
+    /* TERMINAL */
     .agent-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1.1fr 1fr;
       gap: 4rem;
-      margin-top: 4rem;
+      margin-top: 3rem;
       align-items: center;
     }
 
     .terminal {
-      background: var(--grey);
-      border: 1px solid #2a2a2a;
-      border-radius: 4px;
+      background: #0f1117;
+      border: 1px solid #2a2f3d;
+      border-radius: 10px;
       overflow: hidden;
+      box-shadow: var(--shadow-lg);
     }
-
     .terminal-bar {
-      background: #1f1f1f;
-      padding: 0.7rem 1rem;
+      background: #1a1f2e;
+      padding: 0.75rem 1rem;
       display: flex;
-      gap: 0.5rem;
+      gap: 0.4rem;
       align-items: center;
+      border-bottom: 1px solid #2a2f3d;
     }
-
-    .terminal-dot {
-      width: 10px; height: 10px; border-radius: 50%;
-    }
+    .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
     .terminal-dot:nth-child(1) { background: #ff5f57; }
     .terminal-dot:nth-child(2) { background: #febc2e; }
     .terminal-dot:nth-child(3) { background: #28c840; }
-
+    .terminal-label {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: #5a6070;
+    }
     .terminal-body {
       padding: 1.5rem;
-      font-family: 'Courier New', monospace;
-      font-size: 0.82rem;
-      line-height: 2;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      line-height: 2.1;
+      color: #a0aab8;
     }
+    .t-green { color: #4ade80; }
+    .t-blue { color: #60a5fa; }
+    .t-yellow { color: #fcd34d; }
+    .t-muted { color: #5a6070; }
+    .t-white { color: #e2e8f0; }
 
-    .t-green { color: #28c840; }
-    .t-yellow { color: var(--accent); }
-    .t-orange { color: var(--accent2); }
-    .t-muted { color: var(--muted); }
-
-    .agent-features { display: flex; flex-direction: column; gap: 1.5rem; }
-
+    .feature-list { display: flex; flex-direction: column; gap: 1rem; }
     .feature-item {
       display: flex;
       gap: 1rem;
       align-items: flex-start;
-      padding: 1.5rem;
-      border: 1px solid #1f1f1f;
-      border-radius: 2px;
-      transition: border-color 0.3s, background 0.3s;
+      padding: 1.25rem;
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .feature-item:hover { border-color: var(--accent); background: rgba(232,255,71,0.03); }
-
+    .feature-item:hover { border-color: var(--accent); box-shadow: var(--shadow); }
     .feature-icon {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       flex-shrink: 0;
-      width: 40px;
+      width: 36px;
       text-align: center;
     }
-
-    .feature-title {
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 0.95rem;
-      margin-bottom: 0.3rem;
-    }
-
-    .feature-desc { font-size: 0.85rem; color: var(--muted); }
+    .feature-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.2rem; }
+    .feature-desc { font-size: 0.82rem; color: var(--text2); }
 
     /* PRICING */
     .pricing-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 1.5rem;
-      margin-top: 4rem;
+      margin-top: 3rem;
     }
-
     .price-card {
-      border: 1px solid #1f1f1f;
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
       padding: 2.5rem;
+      border-radius: 12px;
       position: relative;
-      transition: border-color 0.3s;
+      transition: border-color 0.3s, box-shadow 0.3s;
     }
-    .price-card:hover { border-color: var(--accent); }
-
+    .price-card:hover { box-shadow: var(--shadow); }
     .price-card.featured {
       border-color: var(--accent);
-      background: rgba(232,255,71,0.03);
+      background: var(--bg2);
+      box-shadow: 0 0 0 4px rgba(26,86,219,0.06), var(--shadow);
     }
-
     .price-badge {
       position: absolute;
-      top: -1px; right: 2rem;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
       background: var(--accent);
-      color: var(--black);
-      font-family: var(--font-display);
-      font-size: 0.65rem;
-      font-weight: 800;
-      letter-spacing: 0.1em;
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      padding: 0.3rem 0.7rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 100px;
+      white-space: nowrap;
     }
-
-    .price-plan {
-      font-family: var(--font-display);
-      font-size: 0.75rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 1rem;
-    }
-
-    .price-amount {
-      font-family: var(--font-display);
-      font-size: 3rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1;
-    }
-
-    .price-amount span {
-      font-size: 1rem;
-      font-weight: 400;
-      color: var(--muted);
-      letter-spacing: 0;
-    }
-
-    .price-divider {
-      border: none;
-      border-top: 1px solid #1f1f1f;
-      margin: 1.5rem 0;
-    }
-
-    .price-features { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 2rem; }
-
-    .price-feature {
-      display: flex;
-      gap: 0.7rem;
-      align-items: center;
-      font-size: 0.88rem;
-      color: var(--muted);
-    }
-
-    .price-feature .check { color: var(--accent); font-size: 0.9rem; }
-    .price-feature.active { color: var(--white); }
+    .price-plan { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
+    .price-amount { font-size: 3rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1; color: var(--text); }
+    .price-amount span { font-size: 1rem; font-weight: 400; color: var(--muted); }
+    .price-divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+    .price-features { display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 2rem; }
+    .price-feature { display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.875rem; color: var(--text2); }
+    .price-feature .check { color: var(--green); font-weight: 700; flex-shrink: 0; }
+    .price-feature.dim { opacity: 0.4; }
 
     /* SIGNUP SECTION */
     .signup-section {
-      background: var(--grey);
-      border-top: 1px solid #1f1f1f;
-      border-bottom: 1px solid #1f1f1f;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 5rem 3rem;
     }
-
     .signup-inner {
+      max-width: 1100px;
+      margin: 0 auto;
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6rem;
-      align-items: center;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 5rem;
+      align-items: start;
     }
+    .signup-left-tag { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.8rem; }
+    .signup-left h2 { margin-bottom: 1rem; }
+    .signup-left p { color: var(--text2); line-height: 1.75; margin-bottom: 1.5rem; font-size: 0.95rem; }
 
-    .signup-promise { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; }
-
-    .promise-item {
+    /* 1-WEEK PREVIEW CARD */
+    .week-preview {
+      background: var(--green-light);
+      border: 1.5px solid #a7f3d0;
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-top: 1.5rem;
+    }
+    .week-preview-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--green);
       display: flex;
-      gap: 1rem;
       align-items: center;
-      font-size: 0.9rem;
-      color: var(--muted);
+      gap: 0.5rem;
+      margin-bottom: 0.8rem;
     }
+    .week-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.45rem 0;
+      font-size: 0.825rem;
+      color: #065f46;
+      border-bottom: 1px solid #d1fae5;
+    }
+    .week-row:last-child { border-bottom: none; }
+    .week-row .day { font-weight: 700; min-width: 60px; font-family: var(--mono); font-size: 0.75rem; }
+    .week-row .action { flex: 1; }
+    .week-row .count { font-weight: 700; font-family: var(--mono); color: var(--green); }
 
-    .promise-icon { color: var(--accent); font-size: 1rem; flex-shrink: 0; }
+    .promise-list { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
+    .promise-item { display: flex; gap: 0.75rem; align-items: flex-start; font-size: 0.875rem; color: var(--text2); }
+    .promise-check { color: var(--green); font-weight: 700; flex-shrink: 0; margin-top: 0.1rem; }
 
     /* FORM */
     .signup-form {
-      background: var(--black);
-      border: 1px solid #2a2a2a;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
       padding: 2.5rem;
-      border-radius: 2px;
+      border-radius: 14px;
+      box-shadow: var(--shadow-lg);
     }
-
-    .form-title {
-      font-family: var(--font-display);
-      font-size: 1.4rem;
-      font-weight: 800;
-      margin-bottom: 0.4rem;
-      letter-spacing: -0.02em;
-    }
-
+    .form-title { font-weight: 800; font-size: 1.3rem; margin-bottom: 0.3rem; letter-spacing: -0.02em; }
     .form-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 2rem; }
 
     .form-group { margin-bottom: 1rem; }
-
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
     label {
       display: block;
       font-size: 0.72rem;
-      letter-spacing: 0.08em;
+      font-weight: 700;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--text2);
       margin-bottom: 0.4rem;
-      font-family: var(--font-display);
-      font-weight: 600;
     }
+    label .req { color: #e02424; }
 
     input, select, textarea {
       width: 100%;
-      background: var(--grey);
-      border: 1px solid #2a2a2a;
-      color: var(--white);
-      font-family: var(--font-body);
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      font-family: var(--font);
       font-size: 0.9rem;
-      padding: 0.75rem 1rem;
-      border-radius: 2px;
+      padding: 0.7rem 0.9rem;
+      border-radius: 8px;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
       appearance: none;
     }
-
     input:focus, select:focus, textarea:focus {
       border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
     }
-
-    input::placeholder, textarea::placeholder { color: #444; }
-
-    select option { background: var(--grey); }
+    input::placeholder, textarea::placeholder { color: #c0c8d8; }
+    select option { background: #fff; color: var(--text); }
 
     .form-submit {
       width: 100%;
-      margin-top: 1.5rem;
+      margin-top: 1.25rem;
       background: var(--accent);
-      color: var(--black);
-      font-family: var(--font-display);
-      font-weight: 800;
-      font-size: 1rem;
-      padding: 1rem;
+      color: #fff;
+      font-family: var(--font);
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.9rem;
       border: none;
-      border-radius: 2px;
+      border-radius: 8px;
       cursor: pointer;
-      letter-spacing: 0.03em;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px rgba(26,86,219,0.25);
     }
-    .form-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(232,255,71,0.35); }
+    .form-submit:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,86,219,0.3); }
+    .form-note { text-align: center; font-size: 0.75rem; color: var(--muted); margin-top: 0.75rem; }
 
-    .form-note {
-      text-align: center;
-      font-size: 0.75rem;
-      color: var(--muted);
-      margin-top: 0.8rem;
-    }
-
-    /* SUCCESS STATE */
-    .success-state {
-      display: none;
-      text-align: center;
-      padding: 2rem;
-    }
-
-    .success-state.show { display: block; }
+    /* SUCCESS */
+    .success-state { display: none; }
     .signup-form.submitted .form-content { display: none; }
     .signup-form.submitted .success-state { display: block; }
 
-    .success-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
+    .success-box {
+      text-align: center;
+      padding: 1rem 0;
     }
+    .success-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .success-title { font-weight: 800; font-size: 1.4rem; color: var(--green); margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+    .success-desc { font-size: 0.9rem; color: var(--text2); line-height: 1.75; margin-bottom: 1.5rem; }
 
-    .success-title {
-      font-family: var(--font-display);
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: var(--accent);
-      margin-bottom: 0.5rem;
+    /* 1 WEEK PREDICTION (shows after form submit) */
+    .week-forecast {
+      background: var(--bg2);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      text-align: left;
     }
-
-    .success-desc { font-size: 0.9rem; color: var(--muted); }
-
-    /* TESTIMONIALS */
-    .testimonials {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-top: 4rem;
-    }
-
-    .testimonial {
-      border: 1px solid #1f1f1f;
-      padding: 2rem;
-      transition: border-color 0.3s;
-    }
-    .testimonial:hover { border-color: #2f2f2f; }
-
-    .testimonial-text {
-      font-size: 0.92rem;
-      line-height: 1.8;
-      color: var(--muted);
-      margin-bottom: 1.5rem;
-      font-style: italic;
-    }
-
-    .testimonial-author { display: flex; align-items: center; gap: 0.8rem; }
-
-    .author-avatar {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      background: var(--grey2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-display);
-      font-weight: 800;
-      font-size: 0.8rem;
-      color: var(--accent);
-      flex-shrink: 0;
-    }
-
-    .author-name {
-      font-family: var(--font-display);
+    .wf-title {
       font-weight: 700;
-      font-size: 0.85rem;
-    }
-
-    .author-role { font-size: 0.75rem; color: var(--muted); }
-
-    /* FAQ */
-    .faq-list { margin-top: 3rem; max-width: 700px; }
-
-    .faq-item {
-      border-bottom: 1px solid #1f1f1f;
-    }
-
-    .faq-q {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.3rem 0;
-      cursor: pointer;
-      font-family: var(--font-display);
-      font-weight: 600;
-      font-size: 0.95rem;
-      transition: color 0.2s;
-      user-select: none;
-    }
-    .faq-q:hover { color: var(--accent); }
-
-    .faq-icon {
-      font-size: 1.2rem;
-      transition: transform 0.3s;
-      color: var(--muted);
-      flex-shrink: 0;
-    }
-
-    .faq-item.open .faq-icon { transform: rotate(45deg); color: var(--accent); }
-
-    .faq-a {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease, padding 0.3s;
-      font-size: 0.88rem;
-      color: var(--muted);
-      line-height: 1.8;
-    }
-
-    .faq-item.open .faq-a { max-height: 200px; padding-bottom: 1.3rem; }
-
-    /* FOOTER */
-    footer {
-      border-top: 1px solid #1f1f1f;
-      padding: 3rem 4rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .footer-logo {
-      font-family: var(--font-display);
-      font-weight: 800;
-      font-size: 1rem;
-    }
-    .footer-logo span { color: var(--accent); }
-
-    .footer-links { display: flex; gap: 2rem; flex-wrap: wrap; }
-    .footer-links a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.82rem;
-      transition: color 0.2s;
-    }
-    .footer-links a:hover { color: var(--white); }
-
-    .footer-copy { font-size: 0.78rem; color: var(--muted); }
-
-    /* ANIMATIONS */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .reveal.visible { opacity: 1; transform: none; }
-
-    /* WHATSAPP BUTTON */
-    .whatsapp-btn {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      z-index: 999;
-      background: #25D366;
-      color: white;
-      width: 58px; height: 58px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
-      text-decoration: none;
-      transition: transform 0.2s, box-shadow 0.2s;
-      animation: waBounce 2s ease infinite;
-    }
-    .whatsapp-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 8px 30px rgba(37,211,102,0.5);
-    }
-    .whatsapp-btn svg { width: 28px; height: 28px; fill: white; }
-
-    .whatsapp-tooltip {
-      position: fixed;
-      bottom: 2.4rem;
-      right: 5.5rem;
-      z-index: 998;
-      background: var(--grey);
-      border: 1px solid #2a2a2a;
-      color: var(--white);
-      font-family: var(--font-display);
-      font-size: 0.78rem;
-      font-weight: 600;
-      padding: 0.5rem 0.9rem;
-      border-radius: 2px;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s;
-    }
-    .whatsapp-btn:hover + .whatsapp-tooltip,
-    .whatsapp-tooltip:hover { opacity: 1; }
-
-    @keyframes waBounce {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-
-    /* SOCIAL PROOF BAR */
-    .social-proof {
-      background: var(--grey);
-      border-bottom: 1px solid #1f1f1f;
-      padding: 0.6rem 4rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 2rem;
-      flex-wrap: wrap;
-    }
-    .sp-item {
+      font-size: 0.9rem;
+      color: var(--text);
+      margin-bottom: 1rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      font-size: 0.78rem;
-      color: var(--muted);
-      font-family: var(--font-display);
-      font-weight: 600;
-      letter-spacing: 0.03em;
     }
-    .sp-dot { width: 6px; height: 6px; background: #25D366; border-radius: 50%; animation: pulse 2s infinite; }
-    .sp-num { color: var(--white); }
+    .wf-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.835rem;
+    }
+    .wf-row:last-child { border-bottom: none; }
+    .wf-label { color: var(--text2); }
+    .wf-val { font-weight: 700; color: var(--text); font-family: var(--mono); }
+    .wf-val.green { color: var(--green); }
+    .wf-val.blue { color: var(--accent); }
 
-    /* RESPONSIVE */
-    @media (max-width: 900px) {
-      nav { padding: 1rem 1.5rem; }
-      .hero { padding: 7rem 1.5rem 3rem; }
-      .section { padding: 4rem 1.5rem; }
-      .agent-grid { grid-template-columns: 1fr; gap: 2rem; }
-      .signup-inner { grid-template-columns: 1fr; gap: 3rem; }
-      footer { padding: 2rem 1.5rem; flex-direction: column; text-align: center; }
-      .hero-stats { gap: 1.5rem; }
+    .next-update-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--accent-light);
+      border: 1px solid #c3d2f7;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-top: 1rem;
+    }
+
+    /* FAQ */
+    .faq-wrap { max-width: 780px; margin-top: 3rem; }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .faq-q {
+      padding: 1.2rem 0;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      transition: color 0.2s;
+      color: var(--text);
+    }
+    .faq-q:hover { color: var(--accent); }
+    .faq-icon { font-size: 1.2rem; flex-shrink: 0; color: var(--accent); font-weight: 300; transition: transform 0.3s; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-a {
+      font-size: 0.875rem;
+      color: var(--text2);
+      line-height: 1.75;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s;
+      padding-bottom: 0;
+    }
+    .faq-item.open .faq-a { max-height: 300px; padding-bottom: 1.25rem; }
+
+    /* FOOTER */
+    footer {
+      background: var(--text);
+      color: #a0aab8;
+      padding: 3rem;
+      text-align: center;
+    }
+    .footer-logo { font-weight: 800; font-size: 1.1rem; color: #fff; margin-bottom: 1.25rem; }
+    .footer-logo span { color: #60a5fa; }
+    .footer-links { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .footer-links a { color: #6b7280; font-size: 0.83rem; text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-copy { font-size: 0.78rem; color: #4b5563; }
+
+    /* WHATSAPP */
+    .whatsapp-btn {
+      position: fixed;
+      bottom: 1.5rem; right: 1.5rem;
+      width: 52px; height: 52px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px rgba(37,211,102,0.35);
+      z-index: 200;
+      transition: transform 0.2s;
+    }
+    .whatsapp-btn:hover { transform: scale(1.1); }
+    .whatsapp-btn svg { width: 26px; height: 26px; fill: #fff; }
+
+    /* REVEAL */
+    .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.25rem; }
+      .nav-links { display: none; }
+      .hero, .section { padding-left: 1.25rem; padding-right: 1.25rem; }
+      h1 { font-size: 2.2rem; }
+      .agent-grid { grid-template-columns: 1fr; }
+      .signup-inner { grid-template-columns: 1fr; gap: 2rem; }
+      .signup-section { padding: 3rem 1.25rem; }
       .form-row { grid-template-columns: 1fr; }
     }
   </style>
@@ -820,297 +678,272 @@
 <!-- NAV -->
 <nav>
   <div class="logo">Salary<span>Bit</span> · JobAgent</div>
-  <div style="display:flex;gap:2rem;align-items:center;">
-    <a href="#how">How it works</a>
+  <div class="nav-links">
+    <a href="#how">How it Works</a>
     <a href="#pricing">Pricing</a>
-    <a href="#signup" class="nav-cta">Get Early Access →</a>
+    <a href="#faq">FAQ</a>
+    <a href="dashboard.html">My Dashboard</a>
+    <a href="#signup" class="nav-cta">Get Started Free</a>
   </div>
 </nav>
 
-<!-- SOCIAL PROOF BAR -->
-<div class="social-proof">
-  <div class="sp-item"><div class="sp-dot"></div> <span class="sp-num" id="activeCount">47</span> job seekers active today</div>
-  <div class="sp-item">⚡ <span class="sp-num" id="appliedCount">2,340</span> applications sent this week</div>
-  <div class="sp-item">🎉 <span class="sp-num">12</span> interview calls this week</div>
-</div>
-
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-tag">
-    <div class="dot"></div>
-    LinkedIn Job Agent — Now Live
+  <div class="hero-badge">
+    <span class="dot"></span>
+    Early Access · 47 users active this week
   </div>
 
-  <h1>Stop applying.<br/>Start <span class="highlight">interviewing</span>.<br/><span class="highlight2">We do the rest.</span></h1>
+  <h1>Apply to <em>50+ jobs daily.</em><br/>You just show up <span class="cross">applying</span> interviewing.</h1>
 
-  <p class="hero-sub">Your personal AI agent scans LinkedIn every day and applies to 50+ fresh, relevant jobs on your behalf — while you sleep, eat, and live your life. You only show up for interviews.</p>
+  <p class="hero-sub">
+    SalaryBit's AI agent scans LinkedIn every morning at 10 AM and applies to roles matching your profile — completely hands-free.
+  </p>
 
   <div class="hero-stats">
-    <div class="stat">
-      <div class="stat-num">50<span>+</span></div>
-      <div class="stat-label">LinkedIn jobs applied daily</div>
+    <div class="h-stat">
+      <div class="h-stat-num"><span id="activeCount">47</span></div>
+      <div class="h-stat-label">Active users</div>
     </div>
-    <div class="stat">
-      <div class="stat-num">24<span>hr</span></div>
-      <div class="stat-label">Fresh jobs only — last 24 hours</div>
+    <div class="h-stat">
+      <div class="h-stat-num"><span id="appliedCount">2,340</span>+</div>
+      <div class="h-stat-label">Jobs applied this month</div>
     </div>
-    <div class="stat">
-      <div class="stat-num">0</div>
-      <div class="stat-label">Effort from you</div>
+    <div class="h-stat">
+      <div class="h-stat-num">10 <span style="font-size:1.2rem;font-weight:400;color:var(--muted)">AM</span></div>
+      <div class="h-stat-label">Daily scan time</div>
+    </div>
+    <div class="h-stat">
+      <div class="h-stat-num">100<span style="font-size:1.2rem;color:var(--muted)">%</span></div>
+      <div class="h-stat-label">Free during early access</div>
     </div>
   </div>
 
   <div class="hero-cta">
-    <a href="#signup" class="btn-primary">Activate My Agent →</a>
-    <a href="#how" class="btn-secondary">See how it works</a>
+    <a href="#signup" class="btn-primary">Activate My Agent — It's Free →</a>
+    <a href="dashboard.html" class="btn-outline">View Dashboard</a>
+  </div>
+  <div class="hero-note" style="margin-top:0.75rem;">
+    <span>🔒</span> No password needed · Runs every day at 10 AM · You get daily email + Telegram updates
   </div>
 </section>
 
 <!-- TICKER -->
 <div class="ticker-wrap">
   <div class="ticker">
-    <span class="ticker-item">✦ Fully Automated</span>
-    <span class="ticker-item">✦ 50+ LinkedIn Jobs Per Day</span>
-    <span class="ticker-item">✦ LinkedIn First · Where Recruiters Are</span>
-    <span class="ticker-item">✦ Weekly Reports</span>
-    <span class="ticker-item">✦ Instant Interview Alerts</span>
-    <span class="ticker-item">✦ Built by SalaryBit</span>
-    <span class="ticker-item">✦ Fully Automated</span>
-    <span class="ticker-item">✦ 50+ LinkedIn Jobs Per Day</span>
-    <span class="ticker-item">✦ LinkedIn First · Where Recruiters Are</span>
-    <span class="ticker-item">✦ Weekly Reports</span>
-    <span class="ticker-item">✦ Instant Interview Alerts</span>
-    <span class="ticker-item">✦ Built by SalaryBit</span>
+    <span class="ticker-item">✦ LinkedIn Jobs · Scanned Daily at 10 AM</span>
+    <span class="ticker-item">✦ 50+ Applications per Day</span>
+    <span class="ticker-item">✦ Email + Telegram Updates</span>
+    <span class="ticker-item">✦ Recruiter Alerts · Instant Notification</span>
+    <span class="ticker-item">✦ 100% Free · Early Access</span>
+    <span class="ticker-item">✦ LinkedIn Jobs · Scanned Daily at 10 AM</span>
+    <span class="ticker-item">✦ 50+ Applications per Day</span>
+    <span class="ticker-item">✦ Email + Telegram Updates</span>
+    <span class="ticker-item">✦ Recruiter Alerts · Instant Notification</span>
+    <span class="ticker-item">✦ 100% Free · Early Access</span>
   </div>
 </div>
 
 <!-- HOW IT WORKS -->
-<section class="section" id="how">
-  <div class="section-label reveal">Process</div>
-  <h2 class="section-title reveal">Four steps. Then nothing. Agent takes over.</h2>
-
-  <div class="steps reveal">
-    <div class="step">
-      <div class="step-num">01</div>
-      <div class="step-title">You fill one form</div>
-      <p class="step-desc">Tell us your target role, location, salary expectation, and upload your resume link. Takes 3 minutes. Never again.</p>
+<div class="section" id="how">
+  <div class="section-tag reveal">How it works</div>
+  <h2 class="reveal">Three steps. Then relax.</h2>
+  <div class="steps">
+    <div class="step reveal">
+      <div class="step-num">STEP 01</div>
+      <div class="step-title">Fill your profile once</div>
+      <p class="step-desc">Tell us your target role, location, salary expectations, and share your resume link. Takes under 3 minutes.</p>
     </div>
-    <div class="step">
-      <div class="step-num">02</div>
-      <div class="step-title">Agent scans LinkedIn daily</div>
-      <p class="step-desc">Every morning at 9 AM, your agent scans LinkedIn Jobs for roles posted in the last 24 hours that match your exact profile — role, location, and salary.</p>
+    <div class="step reveal">
+      <div class="step-num">STEP 02</div>
+      <div class="step-title">Agent runs every day at 10 AM</div>
+      <p class="step-desc">Our AI scans LinkedIn Jobs every morning at 10 AM and submits applications to matched openings — automatically.</p>
     </div>
-    <div class="step">
-      <div class="step-num">03</div>
-      <div class="step-title">Agent applies for you</div>
-      <p class="step-desc">Only relevant LinkedIn jobs pass the filter. Each is automatically applied to on your behalf and logged with company, role, and date.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">04</div>
-      <div class="step-title">You get interviews</div>
-      <p class="step-desc">When a LinkedIn recruiter responds, you're alerted instantly. Every Monday you get a full report. You just prepare and show up.</p>
+    <div class="step reveal">
+      <div class="step-num">STEP 03</div>
+      <div class="step-title">Get daily updates & interview alerts</div>
+      <p class="step-desc">You receive a daily digest via email and Telegram at 10 AM. Instant alert the moment a recruiter responds.</p>
     </div>
   </div>
-</section>
+</div>
 
-<!-- WHAT AGENT DOES -->
-<section class="section" style="background: var(--grey); border-top: 1px solid #1f1f1f;" id="agent">
-  <div class="section-label reveal">Under the Hood</div>
-  <h2 class="section-title reveal">Your agent works<br/>while you don't.</h2>
-
-  <div class="agent-grid reveal">
-    <div class="terminal">
-      <div class="terminal-bar">
-        <div class="terminal-dot"></div>
-        <div class="terminal-dot"></div>
-        <div class="terminal-dot"></div>
-        <span style="font-size:0.72rem;color:var(--muted);margin-left:0.5rem;">jobagent · live activity</span>
-      </div>
-      <div class="terminal-body">
-        <div class="t-muted">— 09:00:01 Agent started</div>
-        <div class="t-green">✓ Connecting to LinkedIn Jobs RSS...</div>
-        <div class="t-green">✓ Feed loaded successfully</div>
-        <div class="t-yellow">→ Filtering: "Product Manager"</div>
-        <div class="t-yellow">→ Location: "Bengaluru"</div>
-        <div class="t-yellow">→ Posted: Last 24 hours only</div>
-        <div class="t-green">✓ 52 matched LinkedIn jobs found</div>
-        <div class="t-green">✓ Logging to Google Sheets...</div>
-        <div class="t-orange">⚡ Applying: Razorpay — PM, Payments</div>
-        <div class="t-orange">⚡ Applying: Zepto — PM, Growth</div>
-        <div class="t-orange">⚡ Applying: Meesho — Senior PM</div>
-        <div class="t-muted">... 49 more LinkedIn applications</div>
-        <div class="t-green">✓ 52 applications sent</div>
-        <div class="t-green">✓ Confirmation email sent to you</div>
-        <div class="t-muted">— Next run: Tomorrow 09:00</div>
-      </div>
-    </div>
-
-    <div class="agent-features">
-      <div class="feature-item">
-        <div class="feature-icon">🎯</div>
-        <div>
-          <div class="feature-title">Smart Job Matching</div>
-          <p class="feature-desc">Only applies to jobs that match your exact role, location, and salary. No spam. No irrelevant applications.</p>
+<!-- WHAT THE AGENT DOES -->
+<div style="background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 5rem 0;">
+  <div class="section" style="padding-top:0; padding-bottom:0;">
+    <div class="section-tag reveal">Under the hood</div>
+    <h2 class="reveal">What happens every morning.</h2>
+    <div class="agent-grid">
+      <div class="terminal reveal">
+        <div class="terminal-bar">
+          <div class="terminal-dot"></div>
+          <div class="terminal-dot"></div>
+          <div class="terminal-dot"></div>
+          <div class="terminal-label">jobagent · daily-run.log</div>
+        </div>
+        <div class="terminal-body">
+          <div><span class="t-muted">09:59:55</span> <span class="t-blue">INIT</span> <span class="t-white">Starting daily scan...</span></div>
+          <div><span class="t-muted">10:00:01</span> <span class="t-green">AUTH</span> <span class="t-white">LinkedIn session valid</span></div>
+          <div><span class="t-muted">10:00:14</span> <span class="t-yellow">SCAN</span> <span class="t-white">Searching: "Product Manager" Bengaluru</span></div>
+          <div><span class="t-muted">10:00:28</span> <span class="t-yellow">FILTER</span> <span class="t-white">312 jobs found · Filtering matches</span></div>
+          <div><span class="t-muted">10:01:05</span> <span class="t-green">APPLY</span> <span class="t-white">Razorpay · PM Payments ✓</span></div>
+          <div><span class="t-muted">10:01:12</span> <span class="t-green">APPLY</span> <span class="t-white">Meesho · Senior PM Growth ✓</span></div>
+          <div><span class="t-muted">10:01:21</span> <span class="t-green">APPLY</span> <span class="t-white">CRED · PM Lending ✓</span></div>
+          <div><span class="t-muted">10:04:38</span> <span class="t-green">DONE</span> <span class="t-white">52 applications submitted</span></div>
+          <div><span class="t-muted">10:04:40</span> <span class="t-blue">NOTIFY</span> <span class="t-white">Email + Telegram report sent ✓</span></div>
         </div>
       </div>
-      <div class="feature-item">
-        <div class="feature-icon">📊</div>
-        <div>
-          <div class="feature-title">Full Transparency Dashboard</div>
-          <p class="feature-desc">Google Sheets dashboard shows every job applied to — company, role, date, status — updated in real time.</p>
+      <div class="feature-list reveal">
+        <div class="feature-item">
+          <div class="feature-icon">🎯</div>
+          <div>
+            <div class="feature-title">Precision matching</div>
+            <p class="feature-desc">Filters by role, location, experience level, and minimum salary. No spam applications — only relevant roles.</p>
+          </div>
         </div>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">⚡</div>
-        <div>
-          <div class="feature-title">Instant Interview Alerts</div>
-          <p class="feature-desc">The moment a recruiter replies or shortlists you, you get an immediate email alert. Never miss an opportunity.</p>
+        <div class="feature-item">
+          <div class="feature-icon">📊</div>
+          <div>
+            <div class="feature-title">Daily 10 AM update</div>
+            <p class="feature-desc">Every day after the scan, you receive a summary via email and Telegram listing every application made.</p>
+          </div>
         </div>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">📬</div>
-        <div>
-          <div class="feature-title">Weekly Report Every Monday</div>
-          <p class="feature-desc">Clean weekly summary — jobs scanned, applications sent, companies applied, and current pipeline status.</p>
+        <div class="feature-item">
+          <div class="feature-icon">🔔</div>
+          <div>
+            <div class="feature-title">Instant recruiter alerts</div>
+            <p class="feature-desc">When a recruiter shortlists you or sends a message, you get an immediate push notification.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">📋</div>
+          <div>
+            <div class="feature-title">Full application log</div>
+            <p class="feature-desc">Every company, role, date, and link tracked in your personal dashboard — always accessible.</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
 <!-- PRICING -->
-<section class="section" id="pricing">
-  <div class="section-label reveal">Pricing</div>
-  <h2 class="section-title reveal">Free now. Pay when<br/>it changes your life.</h2>
-
-  <div class="pricing-grid reveal">
-    <div class="price-card">
-      <div class="price-plan">Early Access</div>
+<div class="section" id="pricing">
+  <div class="section-tag reveal">Plans</div>
+  <h2 class="reveal">Simple, honest pricing.</h2>
+  <div class="pricing-grid">
+    <div class="price-card reveal">
+      <div class="price-plan">Free · Early Access</div>
       <div class="price-amount">₹0 <span>/ month</span></div>
       <hr class="price-divider"/>
       <div class="price-features">
-        <div class="price-feature active"><span class="check">✓</span> 50+ daily LinkedIn applications</div>
-        <div class="price-feature active"><span class="check">✓</span> LinkedIn Jobs RSS — last 24hrs</div>
-        <div class="price-feature active"><span class="check">✓</span> Weekly email report</div>
-        <div class="price-feature active"><span class="check">✓</span> Interview alerts</div>
-        <div class="price-feature"><span class="check" style="color:var(--muted)">–</span> AI resume customisation</div>
-        <div class="price-feature"><span class="check" style="color:var(--muted)">–</span> Cover letter generation</div>
+        <div class="price-feature"><span class="check">✓</span> 50+ LinkedIn applications/day</div>
+        <div class="price-feature"><span class="check">✓</span> Daily 10 AM email + Telegram digest</div>
+        <div class="price-feature"><span class="check">✓</span> Personal dashboard</div>
+        <div class="price-feature"><span class="check">✓</span> Recruiter response alerts</div>
+        <div class="price-feature dim"><span class="check">–</span> Naukri, Indeed, 500+ boards</div>
+        <div class="price-feature dim"><span class="check">–</span> AI cover letters</div>
       </div>
-      <a href="#signup" class="btn-primary" style="display:block;text-align:center;">Join Free →</a>
+      <a href="#signup" class="btn-primary" style="display:block;text-align:center;text-decoration:none;">Get Started Free</a>
     </div>
-
-    <div class="price-card featured">
+    <div class="price-card featured reveal">
       <div class="price-badge">Coming Soon</div>
-      <div class="price-plan">Pro</div>
+      <div class="price-plan">Pro Plan</div>
       <div class="price-amount">₹999 <span>/ month</span></div>
       <hr class="price-divider"/>
       <div class="price-features">
-        <div class="price-feature active"><span class="check">✓</span> Everything in Free</div>
-        <div class="price-feature active"><span class="check">✓</span> AI resume per job role</div>
-        <div class="price-feature active"><span class="check">✓</span> AI cover letter generation</div>
-        <div class="price-feature active"><span class="check">✓</span> LinkedIn + 500+ boards</div>
-        <div class="price-feature active"><span class="check">✓</span> Priority interview prep tips</div>
-        <div class="price-feature active"><span class="check">✓</span> Dedicated support</div>
+        <div class="price-feature"><span class="check">✓</span> Everything in Free</div>
+        <div class="price-feature"><span class="check">✓</span> Naukri, Indeed + 500+ job boards</div>
+        <div class="price-feature"><span class="check">✓</span> AI-personalised cover letters</div>
+        <div class="price-feature"><span class="check">✓</span> Resume keyword optimisation</div>
+        <div class="price-feature"><span class="check">✓</span> Priority support</div>
       </div>
-      <a href="#signup" class="btn-secondary" style="display:block;text-align:center;">Join Waitlist →</a>
+      <button class="btn-outline" style="width:100%;justify-content:center;cursor:not-allowed;opacity:0.6;" disabled>Notify Me When Live</button>
     </div>
   </div>
-</section>
+</div>
 
-<!-- TESTIMONIALS -->
-<section class="section" style="background:var(--grey);border-top:1px solid #1f1f1f;">
-  <div class="section-label reveal">Early Users</div>
-  <h2 class="section-title reveal">They stopped applying.<br/>They started interviewing.</h2>
-
-  <div class="testimonials reveal">
-    <div class="testimonial">
-      <p class="testimonial-text">"I was spending 3 hours every night applying to jobs. Now I wake up to a report saying 52 applications were sent. Got 3 interview calls in week one."</p>
-      <div class="testimonial-author">
-        <div class="author-avatar">RK</div>
-        <div>
-          <div class="author-name">Rahul K.</div>
-          <div class="author-role">Software Engineer · Pune</div>
-        </div>
-      </div>
-    </div>
-    <div class="testimonial">
-      <p class="testimonial-text">"Honestly didn't believe it would work. But the weekly report showed 200+ applications in a month. I had 8 interviews. Landed my job. Unbelievable."</p>
-      <div class="testimonial-author">
-        <div class="author-avatar">PS</div>
-        <div>
-          <div class="author-name">Priya S.</div>
-          <div class="author-role">Product Manager · Bengaluru</div>
-        </div>
-      </div>
-    </div>
-    <div class="testimonial">
-      <p class="testimonial-text">"Job hunting was killing my mental health. This agent gave me back my evenings and my confidence. Highly recommend to anyone on the job market."</p>
-      <div class="testimonial-author">
-        <div class="author-avatar">AM</div>
-        <div>
-          <div class="author-name">Arjun M.</div>
-          <div class="author-role">Data Analyst · Mumbai</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SIGNUP -->
-<section class="section signup-section" id="signup">
+<!-- SIGNUP SECTION -->
+<section class="signup-section" id="signup">
   <div class="signup-inner">
-    <div class="reveal">
-      <div class="section-label">Get Started</div>
-      <h2 class="section-title">Activate your<br/>agent today.</h2>
-      <p style="color:var(--muted);margin-top:1rem;font-size:0.9rem;max-width:400px;">Fill in your details once. Your agent starts working within 24 hours. 100% free to start.</p>
 
-      <div class="signup-promise">
-        <div class="promise-item"><span class="promise-icon">✓</span> No credit card required</div>
-        <div class="promise-item"><span class="promise-icon">✓</span> Your data is private and never sold</div>
-        <div class="promise-item"><span class="promise-icon">✓</span> Cancel anytime, no questions asked</div>
-        <div class="promise-item"><span class="promise-icon">✓</span> Agent live within 24 hours</div>
+    <div class="signup-left">
+      <div class="signup-left-tag reveal">Get started free</div>
+      <h2 class="reveal">Your agent starts working<br/>within 24 hours.</h2>
+      <p class="reveal" style="margin-top:1rem;">Fill in your profile once. From tomorrow, we apply to matching LinkedIn jobs every day at <strong>10 AM</strong> and send you a full report.</p>
+
+      <!-- 1 WEEK PREVIEW -->
+      <div class="week-preview reveal">
+        <div class="week-preview-title">
+          📅 What you'll get in your first week
+        </div>
+        <div class="week-row">
+          <span class="day">Day 1</span>
+          <span class="action">Agent activates · First scan at 10 AM</span>
+          <span class="count">~50 apps</span>
+        </div>
+        <div class="week-row">
+          <span class="day">Day 2–3</span>
+          <span class="action">Daily LinkedIn scan + email/Telegram update</span>
+          <span class="count">~100 apps</span>
+        </div>
+        <div class="week-row">
+          <span class="day">Day 4–5</span>
+          <span class="action">Recruiters start viewing your profile</span>
+          <span class="count">~100 apps</span>
+        </div>
+        <div class="week-row">
+          <span class="day">Day 7</span>
+          <span class="action">First recruiter response · Interview likely</span>
+          <span class="count">~350 total</span>
+        </div>
+      </div>
+
+      <div class="promise-list reveal">
+        <div class="promise-item"><span class="promise-check">✓</span> Daily update at 10 AM via email and Telegram</div>
+        <div class="promise-item"><span class="promise-check">✓</span> Full application log in your dashboard</div>
+        <div class="promise-item"><span class="promise-check">✓</span> No lock-in — pause or stop anytime</div>
+        <div class="promise-item"><span class="promise-check">✓</span> 100% free during early access</div>
       </div>
     </div>
 
-    <div class="signup-form reveal" id="signupForm">
+    <!-- FORM -->
+    <div class="signup-form" id="signupForm">
       <div class="form-content">
-        <div class="form-title">Activate Your Agent</div>
-        <p class="form-sub">Takes 3 minutes. Agent works forever.</p>
+        <div class="form-title">Activate My Job Agent</div>
+        <div class="form-sub">Free during early access · Agent starts within 24 hours</div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" id="f-name" placeholder="Rahul Kumar" required/>
+            <label>Full Name <span class="req">*</span></label>
+            <input type="text" id="f-name" placeholder="Rahul Sharma"/>
           </div>
-          <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" id="f-email" placeholder="rahul@gmail.com" required/>
-          </div>
-        </div>
-
-        <div class="form-row">
           <div class="form-group">
             <label>Phone Number</label>
             <input type="tel" id="f-phone" placeholder="+91 98765 43210"/>
           </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email Address <span class="req">*</span></label>
+          <input type="email" id="f-email" placeholder="rahul@gmail.com"/>
+        </div>
+
+        <div class="form-row">
           <div class="form-group">
             <label>Current Role</label>
             <input type="text" id="f-current" placeholder="Software Engineer"/>
           </div>
+          <div class="form-group">
+            <label>Target Role <span class="req">*</span></label>
+            <input type="text" id="f-target" placeholder="Senior Product Manager"/>
+          </div>
         </div>
 
         <div class="form-row">
-          <div class="form-group">
-            <label>Target Role</label>
-            <input type="text" id="f-target" placeholder="Senior Product Manager" required/>
-          </div>
           <div class="form-group">
             <label>Preferred Location</label>
             <input type="text" id="f-location" placeholder="Bengaluru / Remote"/>
           </div>
-        </div>
-
-        <div class="form-row">
           <div class="form-group">
             <label>Minimum Salary (LPA)</label>
             <select id="f-salary">
@@ -1122,6 +955,9 @@
               <option>25+ LPA</option>
             </select>
           </div>
+        </div>
+
+        <div class="form-row">
           <div class="form-group">
             <label>Notice Period</label>
             <select id="f-notice">
@@ -1133,80 +969,112 @@
               <option>3 months</option>
             </select>
           </div>
+          <div class="form-group">
+            <label>Years of Experience</label>
+            <select id="f-exp">
+              <option value="">Select</option>
+              <option>0–1 years</option>
+              <option>1–3 years</option>
+              <option>3–5 years</option>
+              <option>5–8 years</option>
+              <option>8+ years</option>
+            </select>
+          </div>
         </div>
 
         <div class="form-group">
-          <label>Resume Link (Google Drive / Notion)</label>
+          <label>Resume Link <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;">(Google Drive / Notion)</span></label>
           <input type="url" id="f-resume" placeholder="https://drive.google.com/..."/>
+        </div>
+
+        <div class="form-group">
+          <label>Telegram Username <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;">(to receive daily updates)</span></label>
+          <input type="text" id="f-telegram" placeholder="@yourusername"/>
         </div>
 
         <button class="form-submit" onclick="handleSubmit()">
           🚀 Activate My Job Agent — It's Free
         </button>
-
         <p class="form-note">🔒 Your data is encrypted and never shared with third parties.</p>
       </div>
 
+      <!-- SUCCESS STATE -->
       <div class="success-state">
-        <div class="success-icon">🎉</div>
-        <div class="success-title">Agent Activated!</div>
-        <p class="success-desc" style="margin-top:0.5rem;">Welcome aboard! Your agent starts scanning jobs within 24 hours.<br/><br/>Check your email for confirmation. Your first weekly report arrives next Monday.</p>
-        <a href="https://salarybit.in" style="display:inline-block;margin-top:1.5rem;color:var(--accent);font-family:var(--font-display);font-weight:700;text-decoration:none;font-size:0.9rem;">← Back to SalaryBit</a>
+        <div class="success-box">
+          <div class="success-icon">🎉</div>
+          <div class="success-title">Agent Activated!</div>
+          <p class="success-desc">Welcome aboard, <strong id="success-name"></strong>! Your agent will run its first scan tomorrow at <strong>10 AM</strong> and you'll receive a full report via email and Telegram.</p>
+
+          <div class="week-forecast">
+            <div class="wf-title">📈 Your first-week forecast</div>
+            <div class="wf-row">
+              <span class="wf-label">Estimated applications (7 days)</span>
+              <span class="wf-val blue">~350</span>
+            </div>
+            <div class="wf-row">
+              <span class="wf-label">Expected recruiter views</span>
+              <span class="wf-val">~80–120</span>
+            </div>
+            <div class="wf-row">
+              <span class="wf-label">Expected responses</span>
+              <span class="wf-val green">3–7</span>
+            </div>
+            <div class="wf-row">
+              <span class="wf-label">Daily update time</span>
+              <span class="wf-val blue">10:00 AM</span>
+            </div>
+            <div class="wf-row">
+              <span class="wf-label">Notification channels</span>
+              <span class="wf-val">Email + Telegram</span>
+            </div>
+          </div>
+
+          <div class="next-update-tag">
+            🕙 First update arrives tomorrow at 10 AM
+          </div>
+
+          <div style="margin-top:1.5rem;display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
+            <a href="dashboard.html" class="btn-primary" style="font-size:0.85rem;padding:0.7rem 1.5rem;">View My Dashboard →</a>
+            <a href="https://salarybit.in" class="btn-outline" style="font-size:0.85rem;padding:0.7rem 1.5rem;">← Back to SalaryBit</a>
+          </div>
+        </div>
       </div>
     </div>
+
   </div>
 </section>
 
 <!-- FAQ -->
-<section class="section" id="faq">
-  <div class="section-label reveal">FAQ</div>
-  <h2 class="section-title reveal">Questions answered.</h2>
-
-  <div class="faq-list reveal">
+<div class="section" id="faq">
+  <div class="section-tag reveal">FAQ</div>
+  <h2 class="reveal">Common questions.</h2>
+  <div class="faq-wrap reveal">
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        Does the agent actually apply on my behalf?
-        <span class="faq-icon">+</span>
-      </div>
-      <div class="faq-a">Yes. Once you submit your profile, the agent scans LinkedIn Jobs every day and automatically applies to roles matching your criteria. Every application is logged with company name, role, and date in your Google Sheets dashboard.</div>
+      <div class="faq-q" onclick="toggleFaq(this)">Does the agent actually apply on my behalf? <span class="faq-icon">+</span></div>
+      <div class="faq-a">Yes. Once you submit your profile, the agent scans LinkedIn Jobs every morning at 10 AM and automatically applies to roles matching your criteria. Every application is logged in your personal dashboard.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        Why LinkedIn and not Naukri or Indeed?
-        <span class="faq-icon">+</span>
-      </div>
-      <div class="faq-a">Most Indian recruiters in 2026 hire directly through LinkedIn. It's where decision makers are active, referrals happen, and top companies post first. We focus LinkedIn to get you quality interviews not just volume. Pro plan adds Naukri, Indeed and 500+ more boards.</div>
+      <div class="faq-q" onclick="toggleFaq(this)">When will I get my first update? <span class="faq-icon">+</span></div>
+      <div class="faq-a">Your agent activates within 24 hours. From then on, you'll receive a daily email and Telegram message at 10 AM with a full list of jobs applied, companies contacted, and any recruiter responses.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        Is my resume data safe?
-        <span class="faq-icon">+</span>
-      </div>
-      <div class="faq-a">Absolutely. We only store a link to your resume (Google Drive or similar). Your actual resume stays in your own cloud storage. We never download or store your resume on our servers.</div>
+      <div class="faq-q" onclick="toggleFaq(this)">How will I know what jobs were applied to? <span class="faq-icon">+</span></div>
+      <div class="faq-a">Every day at 10 AM you receive a full report listing every company, role, date, and link. Your personal dashboard at dashboard.html shows the complete history with application statuses.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        How will I know what jobs were applied to?
-        <span class="faq-icon">+</span>
-      </div>
-      <div class="faq-a">Every Monday you receive a full report listing every company, role, and date applied. You also get instant email alerts the moment a recruiter responds or shortlists you.</div>
+      <div class="faq-q" onclick="toggleFaq(this)">Is my resume data safe? <span class="faq-icon">+</span></div>
+      <div class="faq-a">Absolutely. We only store a link to your resume (Google Drive or similar). Your actual resume stays in your own cloud storage — we never download or store it on our servers.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        Is it really free? What's the catch?
-        <span class="faq-icon">+</span>
-      </div>
-      <div class="faq-a">Yes, 100% free during early access. We're building the product and want real users giving us feedback. When we launch Pro features (AI resume customisation, cover letters), those will be paid. Free tier stays free.</div>
+      <div class="faq-q" onclick="toggleFaq(this)">Is it really free? What's the catch? <span class="faq-icon">+</span></div>
+      <div class="faq-a">Yes, 100% free during early access. We're building the product and want real users giving us feedback. When we launch Pro features (AI resume customisation, cover letters, multi-platform), those will be paid. Free tier stays free.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        Can I pause or stop the agent?
-        <span class="faq-icon">+</span>
-      </div>
+      <div class="faq-q" onclick="toggleFaq(this)">Can I pause or stop the agent? <span class="faq-icon">+</span></div>
       <div class="faq-a">Yes. Email us anytime at support@salarybit.in and we'll pause or deactivate your agent immediately. No lock-in, no questions asked.</div>
     </div>
   </div>
-</section>
+</div>
 
 <!-- FOOTER -->
 <footer>
@@ -1215,26 +1083,33 @@
     <a href="https://salarybit.in">Home</a>
     <a href="https://salarybit.in/blog">Blog</a>
     <a href="#faq">FAQ</a>
-    <a href="https://salarybit.in/privacy/">Privacy Policy</a>
+    <a href="https://salarybit.in/privacy/">Privacy</a>
     <a href="dashboard.html">My Dashboard</a>
     <a href="mailto:support@salarybit.in">Support</a>
   </div>
   <div class="footer-copy">© 2026 SalaryBit. All rights reserved.</div>
 </footer>
 
+<!-- WHATSAPP -->
+<a href="https://wa.me/919742801802?text=Hi!%20I%20need%20help%20with%20SalaryBit%20Job%20Agent" class="whatsapp-btn" target="_blank" rel="noopener" aria-label="WhatsApp Support">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
 <script>
-  // REVEAL ON SCROLL
+  // REVEAL
   const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((e, i) => {
       if (e.isIntersecting) {
-        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        setTimeout(() => e.target.classList.add('visible'), i * 70);
       }
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.08 });
   reveals.forEach(el => observer.observe(el));
 
-  // FAQ TOGGLE
+  // FAQ
   function toggleFaq(el) {
     const item = el.parentElement;
     const isOpen = item.classList.contains('open');
@@ -1242,8 +1117,8 @@
     if (!isOpen) item.classList.add('open');
   }
 
-  // FORM SUBMIT
-  function handleSubmit() {
+  // FORM SUBMIT → ZAPIER
+  async function handleSubmit() {
     const name = document.getElementById('f-name').value.trim();
     const email = document.getElementById('f-email').value.trim();
     const target = document.getElementById('f-target').value.trim();
@@ -1252,8 +1127,15 @@
       alert('Please fill in Name, Email, and Target Role at minimum.');
       return;
     }
+    if (!email.includes('@')) {
+      alert('Please enter a valid email address.');
+      return;
+    }
 
-    // Collect all data
+    const btn = document.querySelector('.form-submit');
+    btn.textContent = '⏳ Activating your agent...';
+    btn.disabled = true;
+
     const data = {
       name,
       email,
@@ -1263,35 +1145,37 @@
       location: document.getElementById('f-location').value,
       salary: document.getElementById('f-salary').value,
       notice: document.getElementById('f-notice').value,
+      experience: document.getElementById('f-exp').value,
       resumeLink: document.getElementById('f-resume').value,
-      signupDate: new Date().toISOString()
+      telegram: document.getElementById('f-telegram').value,
+      signupDate: new Date().toISOString(),
+      source: 'job-agent-form'
     };
 
+    // Save to localStorage for dashboard
+    localStorage.setItem('sb_profile_' + email, JSON.stringify(data));
+    sessionStorage.setItem('sb_email', email);
+
+    // Send to Zapier webhook
     const ZAPIER_WEBHOOK = 'https://hooks.zapier.com/hooks/catch/27585092/4y70ud1/';
+    try {
+      await fetch(ZAPIER_WEBHOOK, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+    } catch (e) {
+      // Fail silently — webhook is no-cors, response won't be readable
+    }
 
-    fetch(ZAPIER_WEBHOOK, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    }).catch(() => {});
-
+    // Show success
+    document.getElementById('success-name').textContent = name.split(' ')[0];
     document.getElementById('signupForm').classList.add('submitted');
     window.scrollTo({ top: document.getElementById('signup').offsetTop - 80, behavior: 'smooth' });
   }
 
-  // Smooth scroll
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-      const target = document.querySelector(a.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-  });
-
-  // ANIMATED SOCIAL PROOF COUNTERS
+  // COUNTERS
   function animateCount(el, target, duration) {
     let start = 0;
     const step = target / (duration / 16);
@@ -1305,16 +1189,15 @@
     animateCount(document.getElementById('activeCount'), 47, 1500);
     animateCount(document.getElementById('appliedCount'), 2340, 2000);
   });
-</script>
 
-<!-- WHATSAPP FLOATING BUTTON -->
-<a href="https://wa.me/919742801802?text=Hi!%20I%20need%20help%20with%20SalaryBit%20Job%20Agent%20%F0%9F%9A%80"
-   class="whatsapp-btn" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-  </svg>
-</a>
-<div class="whatsapp-tooltip">💬 Chat with us</div>
+  // SMOOTH SCROLL
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+  });
+</script>
 
 </body>
 </html>

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Dashboard — SalaryBit JobAgent</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #0a0a0a;
+      --white: #f5f2ec;
+      --accent: #e8ff47;
+      --accent2: #ff6b35;
+      --grey: #1a1a1a;
+      --grey2: #2a2a2a;
+      --muted: #888;
+      --green: #28c840;
+      --font-display: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    /* LOGIN SCREEN */
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .login-box {
+      background: var(--grey);
+      border: 1px solid #2a2a2a;
+      padding: 3rem;
+      width: 100%;
+      max-width: 420px;
+      border-radius: 4px;
+    }
+    .login-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.2rem;
+      margin-bottom: 0.3rem;
+    }
+    .login-logo span { color: var(--accent); }
+    .login-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 2rem; }
+    .login-title { font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; margin-bottom: 0.3rem; letter-spacing: -0.02em; }
+
+    label {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+      font-family: var(--font-display);
+      font-weight: 600;
+    }
+    input {
+      width: 100%;
+      background: var(--black);
+      border: 1px solid #2a2a2a;
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      padding: 0.75rem 1rem;
+      border-radius: 2px;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 1rem;
+    }
+    input:focus { border-color: var(--accent); }
+    input::placeholder { color: #444; }
+
+    .btn {
+      width: 100%;
+      background: var(--accent);
+      color: var(--black);
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 0.95rem;
+      padding: 0.85rem;
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-top: 0.5rem;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(232,255,71,0.3); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid #2a2a2a;
+      margin-top: 0.7rem;
+      font-size: 0.82rem;
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--white); box-shadow: none; }
+
+    .login-note { font-size: 0.75rem; color: var(--muted); text-align: center; margin-top: 1rem; }
+    .login-note a { color: var(--accent); text-decoration: none; }
+
+    /* DASHBOARD */
+    .dashboard { display: none; }
+    .dashboard.show { display: block; }
+
+    /* TOP NAV */
+    .dash-nav {
+      background: var(--grey);
+      border-bottom: 1px solid #1f1f1f;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .dash-logo { font-family: var(--font-display); font-weight: 800; font-size: 1rem; }
+    .dash-logo span { color: var(--accent); }
+    .dash-user { display: flex; align-items: center; gap: 1rem; }
+    .user-tag {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-family: var(--font-display);
+    }
+    .user-tag strong { color: var(--white); }
+    .btn-sm {
+      background: transparent;
+      border: 1px solid #2a2a2a;
+      color: var(--muted);
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-sm:hover { border-color: var(--accent); color: var(--white); }
+
+    /* MAIN CONTENT */
+    .dash-main { padding: 2rem; max-width: 1100px; margin: 0 auto; }
+
+    /* STATUS BANNER */
+    .status-banner {
+      background: var(--grey);
+      border: 1px solid #1f1f1f;
+      border-left: 3px solid var(--green);
+      padding: 1rem 1.5rem;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .status-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; flex-shrink: 0; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+    .status-text { font-size: 0.88rem; }
+    .status-text strong { color: var(--green); font-family: var(--font-display); }
+
+    /* STATS GRID */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: var(--grey);
+      border: 1px solid #1f1f1f;
+      padding: 1.5rem;
+      border-radius: 2px;
+      transition: border-color 0.3s;
+    }
+    .stat-card:hover { border-color: var(--accent); }
+    .stat-card-label { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-family: var(--font-display); margin-bottom: 0.5rem; }
+    .stat-card-num { font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; line-height: 1; }
+    .stat-card-num.green { color: var(--green); }
+    .stat-card-num.yellow { color: var(--accent); }
+    .stat-card-num.orange { color: var(--accent2); }
+    .stat-card-sub { font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem; }
+
+    /* PROFILE CARD */
+    .two-col { display: grid; grid-template-columns: 1fr 1.6fr; gap: 1.5rem; margin-bottom: 2rem; }
+
+    .card {
+      background: var(--grey);
+      border: 1px solid #1f1f1f;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid #1f1f1f;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-title { font-family: var(--font-display); font-weight: 700; font-size: 0.88rem; letter-spacing: 0.03em; }
+    .card-badge {
+      font-size: 0.65rem;
+      font-family: var(--font-display);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border-radius: 2px;
+    }
+    .badge-green { background: rgba(40,200,64,0.15); color: var(--green); }
+    .badge-yellow { background: rgba(232,255,71,0.15); color: var(--accent); }
+    .badge-orange { background: rgba(255,107,53,0.15); color: var(--accent2); }
+
+    .card-body { padding: 1.5rem; }
+
+    .profile-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #1f1f1f;
+      font-size: 0.85rem;
+    }
+    .profile-row:last-child { border-bottom: none; }
+    .profile-key { color: var(--muted); font-size: 0.78rem; }
+    .profile-val { font-weight: 500; text-align: right; }
+
+    /* APPLICATIONS TABLE */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    th {
+      text-align: left;
+      padding: 0.7rem 1rem;
+      font-family: var(--font-display);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid #1f1f1f;
+      white-space: nowrap;
+    }
+    td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid #1a1a1a;
+      color: var(--white);
+      vertical-align: middle;
+    }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    tr:last-child td { border-bottom: none; }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.7rem;
+      font-family: var(--font-display);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border-radius: 2px;
+    }
+    .pill-applied { background: rgba(232,255,71,0.1); color: var(--accent); }
+    .pill-interview { background: rgba(40,200,64,0.15); color: var(--green); }
+    .pill-pending { background: rgba(136,136,136,0.1); color: var(--muted); }
+    .pill-rejected { background: rgba(255,107,53,0.1); color: var(--accent2); }
+
+    .company-name { font-weight: 500; }
+    .job-title { color: var(--muted); font-size: 0.78rem; margin-top: 0.1rem; }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--muted);
+    }
+    .empty-icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+    .empty-title { font-family: var(--font-display); font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
+
+    /* TIMELINE */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .tl-item {
+      display: flex;
+      gap: 1rem;
+      padding: 0.9rem 0;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    .tl-item:last-child { border-bottom: none; }
+    .tl-icon {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .tl-green { background: rgba(40,200,64,0.15); }
+    .tl-yellow { background: rgba(232,255,71,0.1); }
+    .tl-orange { background: rgba(255,107,53,0.1); }
+    .tl-text { font-size: 0.83rem; line-height: 1.5; }
+    .tl-time { font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .two-col { grid-template-columns: 1fr; }
+      .dash-nav { padding: 1rem; }
+      .dash-main { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Salary<span>Bit</span> · JobAgent</div>
+    <p class="login-sub">Track your applications & interviews</p>
+    <div class="login-title">My Dashboard</div>
+    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1.5rem;">Enter the email you signed up with</p>
+
+    <div>
+      <label>Email Address</label>
+      <input type="email" id="login-email" placeholder="rahul@gmail.com"/>
+      <button class="btn" onclick="handleLogin()">View My Dashboard →</button>
+      <a href="job-agent.html" style="display:block;text-align:center;margin-top:1rem;font-size:0.8rem;color:var(--muted);text-decoration:none;">Don't have an account? <span style="color:var(--accent)">Sign up free →</span></a>
+    </div>
+
+    <p class="login-note" style="margin-top:1.5rem;">🔒 No password needed. We verify by email only.</p>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboardScreen">
+
+  <!-- NAV -->
+  <nav class="dash-nav">
+    <div class="dash-logo">Salary<span>Bit</span> · JobAgent</div>
+    <div class="dash-user">
+      <div class="user-tag">Agent active for <strong id="dash-email-display">you</strong></div>
+      <button class="btn-sm" onclick="handleLogout()">← Back to site</button>
+    </div>
+  </nav>
+
+  <div class="dash-main">
+
+    <!-- STATUS -->
+    <div class="status-banner">
+      <div class="status-dot"></div>
+      <div class="status-text"><strong>Agent is running</strong> — Last scan: Today 9:00 AM · Next scan: Tomorrow 9:00 AM</div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-card-label">Total Applied</div>
+        <div class="stat-card-num yellow" id="stat-total">0</div>
+        <div class="stat-card-sub">Since you joined</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">This Week</div>
+        <div class="stat-card-num yellow" id="stat-week">0</div>
+        <div class="stat-card-sub">LinkedIn applications</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Interviews</div>
+        <div class="stat-card-num green" id="stat-interviews">0</div>
+        <div class="stat-card-sub">Recruiter responses</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Success Rate</div>
+        <div class="stat-card-num orange" id="stat-rate">0%</div>
+        <div class="stat-card-sub">Applications → Interviews</div>
+      </div>
+    </div>
+
+    <!-- PROFILE + ACTIVITY -->
+    <div class="two-col">
+
+      <!-- PROFILE -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Your Profile</div>
+          <div class="card-badge badge-green">Active</div>
+        </div>
+        <div class="card-body">
+          <div class="profile-row">
+            <span class="profile-key">Target Role</span>
+            <span class="profile-val" id="p-role">—</span>
+          </div>
+          <div class="profile-row">
+            <span class="profile-key">Location</span>
+            <span class="profile-val" id="p-location">—</span>
+          </div>
+          <div class="profile-row">
+            <span class="profile-key">Min Salary</span>
+            <span class="profile-val" id="p-salary">—</span>
+          </div>
+          <div class="profile-row">
+            <span class="profile-key">Notice Period</span>
+            <span class="profile-val" id="p-notice">—</span>
+          </div>
+          <div class="profile-row">
+            <span class="profile-key">Resume</span>
+            <span class="profile-val"><a id="p-resume" href="#" target="_blank" style="color:var(--accent);font-size:0.78rem;">View Resume →</a></span>
+          </div>
+          <div class="profile-row">
+            <span class="profile-key">Joined</span>
+            <span class="profile-val" id="p-joined">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIVITY -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Recent Activity</div>
+          <div class="card-badge badge-yellow">Live</div>
+        </div>
+        <div class="card-body">
+          <div class="timeline" id="activity-timeline">
+            <div class="tl-item">
+              <div class="tl-icon tl-green">✓</div>
+              <div>
+                <div class="tl-text">Agent scanned LinkedIn Jobs — <strong>52 jobs applied</strong></div>
+                <div class="tl-time">Today · 9:02 AM</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-icon tl-yellow">📧</div>
+              <div>
+                <div class="tl-text">Weekly report sent to your email</div>
+                <div class="tl-time">Monday · 8:00 AM</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-icon tl-green">✓</div>
+              <div>
+                <div class="tl-text">Agent scanned LinkedIn Jobs — <strong>48 jobs applied</strong></div>
+                <div class="tl-time">Yesterday · 9:01 AM</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-icon tl-orange">🎉</div>
+              <div>
+                <div class="tl-text">Interview alert — Recruiter from <strong>a top company</strong> responded</div>
+                <div class="tl-time">2 days ago</div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-icon tl-green">✓</div>
+              <div>
+                <div class="tl-text">Agent activated — welcome aboard!</div>
+                <div class="tl-time" id="p-joined-tl">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- APPLICATIONS TABLE -->
+    <div class="card" style="margin-bottom:2rem;">
+      <div class="card-header">
+        <div class="card-title">Recent Applications</div>
+        <div class="card-badge badge-yellow">Auto-tracked</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Company & Role</th>
+              <th>Location</th>
+              <th>Applied</th>
+              <th>Status</th>
+              <th>Link</th>
+            </tr>
+          </thead>
+          <tbody id="applications-tbody">
+            <tr>
+              <td colspan="5">
+                <div class="empty-state">
+                  <div class="empty-icon">⏳</div>
+                  <div class="empty-title">Agent scanning now</div>
+                  <p style="font-size:0.82rem;">Your applications will appear here after the first scan. Check back after 9 AM tomorrow.</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- HELP SECTION -->
+    <div class="card" style="margin-bottom:2rem;">
+      <div class="card-header">
+        <div class="card-title">Need Help?</div>
+      </div>
+      <div class="card-body" style="display:flex;gap:1rem;flex-wrap:wrap;">
+        <a href="https://wa.me/919742801802?text=Hi!%20I%20need%20help%20with%20my%20SalaryBit%20dashboard" target="_blank"
+           style="display:inline-flex;align-items:center;gap:0.5rem;background:#25D366;color:#000;font-family:var(--font-display);font-weight:700;font-size:0.82rem;padding:0.6rem 1.2rem;border-radius:2px;text-decoration:none;transition:opacity 0.2s;">
+          💬 WhatsApp Support
+        </a>
+        <a href="mailto:support@salarybit.in"
+           style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--grey2);color:var(--white);font-family:var(--font-display);font-weight:700;font-size:0.82rem;padding:0.6rem 1.2rem;border-radius:2px;text-decoration:none;border:1px solid #2a2a2a;">
+          📧 Email Support
+        </a>
+        <a href="job-agent.html#faq"
+           style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--grey2);color:var(--white);font-family:var(--font-display);font-weight:700;font-size:0.82rem;padding:0.6rem 1.2rem;border-radius:2px;text-decoration:none;border:1px solid #2a2a2a;">
+          ❓ FAQ
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const SAMPLE_APPS = [
+    { company: 'Razorpay', role: 'Product Manager — Payments', location: 'Bengaluru', date: 'Today', status: 'applied', link: 'https://linkedin.com/jobs' },
+    { company: 'Zepto', role: 'Senior PM — Growth', location: 'Mumbai', date: 'Today', status: 'applied', link: 'https://linkedin.com/jobs' },
+    { company: 'Meesho', role: 'Product Manager', location: 'Bengaluru', date: 'Today', status: 'interview', link: 'https://linkedin.com/jobs' },
+    { company: 'CRED', role: 'PM — Lending', location: 'Bengaluru', date: 'Yesterday', status: 'applied', link: 'https://linkedin.com/jobs' },
+    { company: 'PhonePe', role: 'Product Manager', location: 'Bengaluru', date: 'Yesterday', status: 'applied', link: 'https://linkedin.com/jobs' },
+    { company: 'Swiggy', role: 'Senior PM — Supply', location: 'Bengaluru', date: '2 days ago', status: 'pending', link: 'https://linkedin.com/jobs' },
+    { company: 'Ola', role: 'PM — Mobility', location: 'Bengaluru', date: '3 days ago', status: 'applied', link: 'https://linkedin.com/jobs' },
+    { company: 'Nykaa', role: 'Product Manager', location: 'Mumbai', date: '3 days ago', status: 'rejected', link: 'https://linkedin.com/jobs' },
+  ];
+
+  const STATUS_MAP = {
+    applied: '<span class="status-pill pill-applied">● Applied</span>',
+    interview: '<span class="status-pill pill-interview">● Interview</span>',
+    pending: '<span class="status-pill pill-pending">● Pending</span>',
+    rejected: '<span class="status-pill pill-rejected">● Closed</span>',
+  };
+
+  function handleLogin() {
+    const email = document.getElementById('login-email').value.trim();
+    if (!email || !email.includes('@')) {
+      alert('Please enter a valid email address.');
+      return;
+    }
+
+    // Save to session
+    sessionStorage.setItem('sb_email', email);
+
+    // Load stored profile if exists
+    const stored = JSON.parse(localStorage.getItem('sb_profile_' + email) || '{}');
+
+    showDashboard(email, stored);
+  }
+
+  function showDashboard(email, profile) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('dashboardScreen').classList.add('show');
+
+    // Set email display
+    document.getElementById('dash-email-display').textContent = email;
+
+    // Fill profile
+    document.getElementById('p-role').textContent = profile.targetRole || 'Not set';
+    document.getElementById('p-location').textContent = profile.location || 'Not set';
+    document.getElementById('p-salary').textContent = profile.salary || 'Not set';
+    document.getElementById('p-notice').textContent = profile.notice || 'Not set';
+
+    if (profile.resumeLink) {
+      document.getElementById('p-resume').href = profile.resumeLink;
+    } else {
+      document.getElementById('p-resume').textContent = 'Not provided';
+    }
+
+    const joined = profile.signupDate
+      ? new Date(profile.signupDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+      : 'Recently';
+    document.getElementById('p-joined').textContent = joined;
+    document.getElementById('p-joined-tl').textContent = joined;
+
+    // Fill stats
+    document.getElementById('stat-total').textContent = '248';
+    document.getElementById('stat-week').textContent = '52';
+    document.getElementById('stat-interviews').textContent = '3';
+    document.getElementById('stat-rate').textContent = '1.2%';
+
+    // Fill table
+    const tbody = document.getElementById('applications-tbody');
+    tbody.innerHTML = SAMPLE_APPS.map(app => `
+      <tr>
+        <td>
+          <div class="company-name">${app.company}</div>
+          <div class="job-title">${app.role}</div>
+        </td>
+        <td style="color:var(--muted);font-size:0.8rem;">${app.location}</td>
+        <td style="color:var(--muted);font-size:0.8rem;white-space:nowrap;">${app.date}</td>
+        <td>${STATUS_MAP[app.status]}</td>
+        <td><a href="${app.link}" target="_blank" style="color:var(--accent);font-size:0.75rem;text-decoration:none;font-family:var(--font-display);font-weight:600;">View →</a></td>
+      </tr>
+    `).join('');
+  }
+
+  function handleLogout() {
+    sessionStorage.removeItem('sb_email');
+    window.location.href = 'job-agent.html';
+  }
+
+  // Auto-login if session exists
+  window.addEventListener('load', () => {
+    const email = sessionStorage.getItem('sb_email');
+    if (email) {
+      const stored = JSON.parse(localStorage.getItem('sb_profile_' + email) || '{}');
+      showDashboard(email, stored);
+    }
+  });
+
+  // Allow Enter key on login
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') {
+      handleLogin();
+    }
+  });
+</script>
+
+</body>
+</html>

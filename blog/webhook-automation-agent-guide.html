@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Build a Webhook Automation Agent with Zapier, Email & Telegram | SalaryBit Blog</title>
+
+  <!-- SEO Meta -->
+  <meta name="description" content="Step-by-step guide to build a no-code webhook automation that captures user data, stores it in Zapier Tables, and sends instant Email + Telegram notifications. Zero coding required." />
+  <meta name="keywords" content="zapier automation, webhook automation, no-code agent, telegram notification zapier, zapier tables, website automation, lead capture automation, zapier tutorial india" />
+  <meta name="author" content="SalaryBit" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <link rel="canonical" href="https://salarybit.in/blog/webhook-automation-agent-guide.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Build a Webhook Automation Agent with Zapier, Email & Telegram" />
+  <meta property="og:description" content="No-code step-by-step guide: capture user data via webhook → store in database → send Email + Telegram alerts. Live in under an hour." />
+  <meta property="og:url" content="https://salarybit.in/blog/webhook-automation-agent-guide.html" />
+  <meta property="og:site_name" content="SalaryBit" />
+  <meta property="og:locale" content="en_IN" />
+  <meta property="article:published_time" content="2026-05-16T00:00:00+05:30" />
+  <meta property="article:section" content="Automation & Tools" />
+  <meta property="article:tag" content="zapier, webhook, automation, no-code, telegram, email notification" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@salarybit_in" />
+  <meta name="twitter:title" content="Build a Webhook Automation Agent with Zapier, Email & Telegram" />
+  <meta name="twitter:description" content="No-code guide: webhook → database → email → Telegram. Live in under an hour." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #5b6af0;
+      --primary-dark: #4250d4;
+      --text: #1a1a2e;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --bg: #ffffff;
+      --bg-alt: #f9fafb;
+      --bg-blue: #eff6ff;
+      --bg-green: #f0fdf4;
+      --bg-amber: #fffbeb;
+      --bg-purple: #faf5ff;
+      --code-bg: #1e293b;
+      --code-text: #e2e8f0;
+      --radius: 8px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    /* NAV */
+    nav {
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      height: 56px;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 100;
+    }
+    .nav-brand { font-weight: 700; font-size: 18px; color: var(--primary); text-decoration: none; }
+    .nav-links { display: flex; gap: 24px; }
+    .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 14px; font-weight: 500; }
+    .nav-links a:hover { color: var(--primary); }
+
+    /* LAYOUT */
+    .page-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 48px;
+      align-items: start;
+    }
+
+    @media (max-width: 768px) {
+      .page-wrap { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+    }
+
+    /* ARTICLE */
+    article { min-width: 0; }
+
+    .article-tag {
+      display: inline-block;
+      background: var(--bg-blue);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    h1 {
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    .article-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .article-meta span { display: flex; align-items: center; gap: 4px; }
+
+    /* HERO BOX */
+    .hero-box {
+      background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+      border: 1px solid #bfdbfe;
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 36px;
+    }
+    .hero-box p { font-size: 17px; color: #1e40af; font-weight: 500; }
+
+    /* SECTION HEADINGS */
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 40px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--primary);
+    }
+    h3 {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 28px 0 12px;
+    }
+
+    p { margin-bottom: 16px; color: #374151; }
+
+    /* FLOW STEPS */
+    .flow-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 24px 0;
+    }
+    .flow-step {
+      display: flex;
+      gap: 16px;
+      align-items: stretch;
+    }
+    .flow-connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 40px;
+      flex-shrink: 0;
+    }
+    .step-num {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .step-line {
+      width: 2px;
+      flex: 1;
+      min-height: 20px;
+      background: var(--border);
+      margin: 4px 0;
+    }
+    .flow-step:last-child .step-line { display: none; }
+    .step-body {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 12px;
+    }
+    .step-body h4 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+    .step-body p { font-size: 14px; margin: 0; color: var(--text-muted); }
+
+    /* STEP 1 */
+    .flow-step:nth-child(1) .step-num { background: #ede9fe; color: #7c3aed; }
+    .flow-step:nth-child(1) .step-body { border-color: #ede9fe; background: #faf5ff; }
+    .flow-step:nth-child(1) .step-body h4 { color: #7c3aed; }
+    /* STEP 2 */
+    .flow-step:nth-child(2) .step-num { background: #dbeafe; color: #2563eb; }
+    .flow-step:nth-child(2) .step-body { border-color: #dbeafe; background: #eff6ff; }
+    .flow-step:nth-child(2) .step-body h4 { color: #2563eb; }
+    /* STEP 3 */
+    .flow-step:nth-child(3) .step-num { background: #d1fae5; color: #059669; }
+    .flow-step:nth-child(3) .step-body { border-color: #d1fae5; background: #f0fdf4; }
+    .flow-step:nth-child(3) .step-body h4 { color: #059669; }
+    /* STEP 4 */
+    .flow-step:nth-child(4) .step-num { background: #fce7f3; color: #db2777; }
+    .flow-step:nth-child(4) .step-body { border-color: #fce7f3; background: #fdf2f8; }
+    .flow-step:nth-child(4) .step-body h4 { color: #db2777; }
+
+    /* CALLOUT BOXES */
+    .callout {
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin: 20px 0;
+      border-left: 4px solid;
+    }
+    .callout-title { font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+    .callout p { font-size: 14px; margin: 0; }
+    .callout-info { background: var(--bg-blue); border-color: #3b82f6; }
+    .callout-info .callout-title { color: #1e40af; }
+    .callout-info p { color: #1d4ed8; }
+    .callout-warning { background: var(--bg-amber); border-color: #f59e0b; }
+    .callout-warning .callout-title { color: #92400e; }
+    .callout-warning p { color: #78350f; }
+    .callout-success { background: var(--bg-green); border-color: #22c55e; }
+    .callout-success .callout-title { color: #14532d; }
+    .callout-success p { color: #166534; }
+
+    /* NUMBERED STEPS */
+    ol.steps { padding-left: 0; list-style: none; counter-reset: steps; }
+    ol.steps li {
+      counter-increment: steps;
+      display: flex;
+      gap: 14px;
+      margin-bottom: 14px;
+      align-items: flex-start;
+    }
+    ol.steps li::before {
+      content: counter(steps);
+      background: var(--primary);
+      color: white;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    ol.steps li p { margin: 0; font-size: 15px; }
+
+    /* BULLET LIST */
+    ul.bullets { padding-left: 0; list-style: none; }
+    ul.bullets li {
+      padding-left: 24px;
+      position: relative;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: #374151;
+    }
+    ul.bullets li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* CODE BLOCK */
+    .code-wrap { margin: 20px 0; border-radius: var(--radius); overflow: hidden; }
+    .code-header {
+      background: #0f172a;
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .code-label { font-size: 12px; color: #94a3b8; font-weight: 500; }
+    .copy-btn {
+      background: #334155;
+      border: none;
+      color: #94a3b8;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+    .copy-btn:hover { background: #475569; color: white; }
+    .copy-btn.copied { background: #166534; color: #bbf7d0; }
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 20px;
+      overflow-x: auto;
+      font-size: 13.5px;
+      line-height: 1.65;
+      font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+      margin: 0;
+    }
+    code { font-family: 'Fira Code', 'Consolas', 'Monaco', monospace; font-size: 0.875em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #0f172a; }
+    pre code { background: none; padding: 0; color: inherit; font-size: inherit; }
+
+    /* SYNTAX COLORS */
+    .kw { color: #7dd3fc; }   /* keyword / function names */
+    .str { color: #86efac; }  /* strings */
+    .cm { color: #64748b; }   /* comments */
+    .var { color: #fde68a; }  /* variables */
+    .op { color: #f9a8d4; }   /* operators */
+
+    /* DATA TABLE */
+    .data-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+    .data-table th {
+      background: #1e3a5f;
+      color: white;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+    }
+    .data-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .data-table tr:nth-child(even) td { background: var(--bg-alt); }
+    .data-table tr:hover td { background: var(--bg-blue); }
+    .table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); margin: 20px 0; }
+
+    /* FAQ */
+    .faq { margin: 20px 0; }
+    .faq-item { border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; }
+    .faq-q {
+      padding: 14px 18px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      background: var(--bg-alt);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+    .faq-q:hover { background: var(--bg-blue); }
+    .faq-arrow { transition: transform 0.2s; font-size: 12px; }
+    .faq-a { padding: 14px 18px; font-size: 14px; color: #374151; display: none; }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); }
+    .faq-item.open .faq-a { display: block; }
+
+    /* CTA BOX */
+    .cta-box {
+      background: linear-gradient(135deg, #5b6af0 0%, #4250d4 100%);
+      border-radius: 12px;
+      padding: 28px 32px;
+      color: white;
+      text-align: center;
+      margin: 40px 0;
+    }
+    .cta-box h3 { color: white; font-size: 20px; margin-bottom: 8px; }
+    .cta-box p { color: rgba(255,255,255,0.85); font-size: 14px; margin-bottom: 20px; }
+    .cta-btn {
+      display: inline-block;
+      background: white;
+      color: var(--primary);
+      padding: 10px 24px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: transform 0.15s;
+    }
+    .cta-btn:hover { transform: translateY(-1px); }
+
+    /* CHECKLIST */
+    .checklist { background: var(--bg-alt); border-radius: var(--radius); padding: 20px 24px; margin: 20px 0; }
+    .checklist h4 { font-size: 15px; font-weight: 600; margin-bottom: 14px; color: var(--text); }
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    .check-box {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #d1d5db;
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 1px;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .check-box.checked { background: var(--primary); border-color: var(--primary); }
+    .check-box.checked::after { content: "✓"; color: white; font-size: 11px; font-weight: 700; }
+
+    /* SIDEBAR */
+    .sidebar { position: sticky; top: 72px; }
+    .toc-box {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .toc-box h4 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 14px; }
+    .toc-box ol { padding-left: 0; list-style: none; counter-reset: toc; }
+    .toc-box ol li { counter-increment: toc; margin-bottom: 6px; }
+    .toc-box ol li a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 13px;
+      display: flex;
+      gap: 8px;
+      transition: color 0.15s;
+    }
+    .toc-box ol li a::before { content: counter(toc) "."; color: var(--primary); font-weight: 600; width: 18px; flex-shrink: 0; }
+    .toc-box ol li a:hover { color: var(--primary); }
+
+    .quick-facts {
+      background: var(--bg-alt);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .quick-facts h4 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 14px; }
+    .fact-item { display: flex; flex-direction: column; margin-bottom: 14px; }
+    .fact-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); }
+    .fact-value { font-size: 15px; font-weight: 600; color: var(--text); }
+
+    /* AD PLACEHOLDER */
+    .ad-placeholder {
+      background: var(--bg-alt);
+      border: 1px dashed #d1d5db;
+      border-radius: 6px;
+      padding: 16px;
+      text-align: center;
+      font-size: 12px;
+      color: #9ca3af;
+      margin: 28px 0;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 24px;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 60px;
+    }
+    footer a { color: var(--primary); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="https://salarybit.in" class="nav-brand">💰 SalaryBit</a>
+  <div class="nav-links">
+    <a href="https://salarybit.in">Calculator</a>
+    <a href="https://salarybit.in/blog/">Blog</a>
+    <a href="https://salarybit.in/about.html">About</a>
+  </div>
+</nav>
+
+<!-- AD — TOP LEADERBOARD -->
+<div style="max-width:1100px;margin:16px auto;padding:0 24px;">
+  <div class="ad-placeholder">📢 Advertisement (728×90)</div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="page-wrap">
+
+  <!-- ARTICLE -->
+  <article>
+
+    <span class="article-tag">🤖 Automation &amp; Tools</span>
+
+    <h1>Build a Webhook Automation Agent with Zapier, Email &amp; Telegram</h1>
+
+    <div class="article-meta">
+      <span>📅 May 2026</span>
+      <span>⏱ 12 min read</span>
+      <span>👤 SalaryBit Team</span>
+    </div>
+
+    <!-- AD — IN-ARTICLE TOP -->
+    <div class="ad-placeholder">📢 Advertisement — Large Rectangle (336×280)</div>
+
+    <div class="hero-box">
+      <p>Imagine this: someone signs up on your website, and within 5 seconds their details are saved in a database, you get an email, and your phone pings with a Telegram alert — fully automatic, zero code required. This guide shows you exactly how to build it.</p>
+    </div>
+
+    <!-- SECTION 1 -->
+    <h2 id="what-youll-build">1. What You'll Build</h2>
+
+    <p>This is a 4-step no-code automation workflow built on Zapier. Every time someone submits a form or action on your website, the following happens in real time:</p>
+
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-connector">
+          <div class="step-num">1</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <h4>🪝 Webhook Trigger</h4>
+          <p>Your website sends a POST request with user data (name + email) to a unique Zapier URL — the entry point for everything.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-connector">
+          <div class="step-num">2</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <h4>💾 Zapier Tables — Store the Record</h4>
+          <p>The data is parsed and saved as a new row in a Zapier Table (your database). Every signup gets a unique Record ID.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-connector">
+          <div class="step-num">3</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <h4>📧 Email Notification</h4>
+          <p>An email with the user's name, email, and Record ID is sent instantly to your inbox.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-connector">
+          <div class="step-num">4</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-body">
+          <h4>💬 Telegram Alert</h4>
+          <p>A formatted message is delivered to your Telegram — instant mobile visibility wherever you are.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Step</th><th>Action</th><th>Output</th><th>Time</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Webhook receives POST request</td><td>Raw JSON body</td><td>Instant</td></tr>
+          <tr><td>2</td><td>Table stores the record</td><td>Record ID + user fields</td><td>~1 sec</td></tr>
+          <tr><td>3</td><td>Email notification sent</td><td>Email to your inbox</td><td>~2 sec</td></tr>
+          <tr><td>4</td><td>Telegram message delivered</td><td>Mobile notification</td><td>~4 sec</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SECTION 2 -->
+    <h2 id="what-you-need">2. What You'll Need</h2>
+
+    <ul class="bullets">
+      <li><strong>Zapier account</strong> — Free plan works for testing; Starter (~$20/mo) for production</li>
+      <li><strong>Email address</strong> — Any email you want to receive alerts at</li>
+      <li><strong>Telegram account</strong> — Install the Telegram app and create a bot (instructions below)</li>
+      <li><strong>A website or app</strong> — Anything that can send an HTTP POST request (optional for testing)</li>
+    </ul>
+
+    <div class="callout callout-info">
+      <div class="callout-title">💡 No Website? No Problem</div>
+      <p>You can test this entire workflow using cURL, JavaScript, or Python from your terminal or browser console — no live website required to get started.</p>
+    </div>
+
+    <!-- AD — MID ARTICLE -->
+    <div class="ad-placeholder">📢 Advertisement — In-Article Responsive</div>
+
+    <!-- SECTION 3 -->
+    <h2 id="step1-webhook">3. Step 1 — Create the Webhook Trigger</h2>
+
+    <p>Log in to <strong>zapier.com</strong> and create a new Zap. In the Trigger step, search for <strong>Webhooks by Zapier</strong> and select the event <strong>Catch Raw Hook</strong>. Zapier will generate a unique webhook URL for you.</p>
+
+    <div class="callout callout-warning">
+      <div class="callout-title">⚠️ Keep Your Webhook URL Private</div>
+      <p>Anyone with this URL can send data to your Zap. Do not publish it publicly. Treat it like an API key.</p>
+    </div>
+
+    <h3>Send a Test Payload</h3>
+    <p>Zapier needs to receive at least one test request before you can continue. Use any of the methods below:</p>
+
+    <h3>Method A — cURL (Terminal)</h3>
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-label">bash</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><code><span class="cm"># Replace YOUR_WEBHOOK_URL with the URL from Zapier</span>
+<span class="kw">curl</span> -X POST YOUR_WEBHOOK_URL \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{"name": "Jane Smith", "email": "jane@example.com"}'</span></code></pre>
+    </div>
+
+    <h3>Method B — JavaScript (Browser or Node.js)</h3>
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-label">javascript</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><code><span class="kw">fetch</span>(<span class="str">'YOUR_WEBHOOK_URL'</span>, {
+  <span class="var">method</span>: <span class="str">'POST'</span>,
+  <span class="var">headers</span>: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+  <span class="var">body</span>: <span class="kw">JSON</span>.<span class="kw">stringify</span>({
+    <span class="var">name</span>: <span class="str">'Jane Smith'</span>,
+    <span class="var">email</span>: <span class="str">'jane@example.com'</span>
+  })
+});</code></pre>
+    </div>
+
+    <h3>Method C — Python</h3>
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-label">python</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><code><span class="kw">import</span> requests
+
+requests.<span class="kw">post</span>(
+    <span class="str">'YOUR_WEBHOOK_URL'</span>,
+    <span class="var">json</span>={<span class="str">'name'</span>: <span class="str">'Jane Smith'</span>, <span class="str">'email'</span>: <span class="str">'jane@example.com'</span>}
+)</code></pre>
+    </div>
+
+    <p>After sending, go back to Zapier and click <strong>Test Trigger</strong>. You should see the JSON data appear. Click Continue.</p>
+
+    <!-- SECTION 4 -->
+    <h2 id="step2-tables">4. Step 2 — Store Data in Zapier Tables</h2>
+
+    <p>Zapier Tables is a built-in database that stores your records permanently. First, create your table:</p>
+
+    <ol class="steps">
+      <li><p>Go to <strong>tables.zapier.com</strong> and click <strong>Create Table</strong>.</p></li>
+      <li><p>Name it something like "User Signups" and add two columns: <strong>User Name</strong> (text) and <strong>Email</strong> (email).</p></li>
+      <li><p>Save the table. Copy the <strong>Table ID</strong> from the URL bar.</p></li>
+      <li><p>Back in your Zap, add an Action step → <strong>Zapier Tables</strong> → <strong>Create Record</strong>.</p></li>
+    </ol>
+
+    <h3>Configure Field Mapping with Inline Formulas</h3>
+    <p>Because the webhook captures raw JSON, you need inline formulas to extract each field. This is the most important technical step:</p>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-label">Zapier Inline Formula — User Name field</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><code>{{=Object.get(JSON.parse(YOUR_STEP_ID__raw_body), "name")}}</code></pre>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-label">Zapier Inline Formula — Email field</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><code>{{=Object.get(JSON.parse(YOUR_STEP_ID__raw_body), "email")}}</code></pre>
+    </div>
+
+    <div class="callout callout-info">
+      <div class="callout-title">🔑 How to Find YOUR_STEP_ID</div>
+      <p>In Zapier, each step has a numeric ID. Hover over your webhook trigger step — the step ID is shown in the output panel (e.g. <code>364374425</code>). Replace <code>YOUR_STEP_ID</code> in the formula with this number. Example: <code>{{=Object.get(JSON.parse(364374425__raw_body), "name")}}</code></p>
+    </div>
+
+    <p>Click <strong>Test Action</strong>. A new row should appear in your Zapier Table. Click Continue.</p>
+
+    <!-- AD -->
+    <div class="ad-placeholder">📢 Advertisement — Large Rectangle (336×280)</div>
+
+    <!-- SECTION 5 -->
+    <h2 id="step3-email">5. Step 3 — Send Email Notification</h2>
+
+    <ol class="steps">
+      <li><p>Add a new Action step → search <strong>Email by Zapier</strong> → <strong>Send Outbound Email</strong>.</p></li>
+      <li><p>In the <strong>To</strong> field, enter your email address where you want alerts.</p></li>
+      <li><p>Set <strong>Subject</strong>: <code>New Signup: [User Name]</code> — use the dynamic field from the Tables step.</p></li>
+      <li><p>Paste this into the <strong>Body</strong> field and map each value dynamically:</p></li>
+    </ol>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-label">Email Body Template</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><code>Hello,
+
+A new user has signed up. Here are the details:
+
+Name:       [User Name]
+Email:      [Email Address]
+Record ID:  [Record ID from Tables step]
+Time:       [Current Date/Time]
+
+This is an automated notification.</code></pre>
+    </div>
+
+    <p>Click <strong>Test Action</strong> — a real email should arrive in your inbox within seconds. Click Continue.</p>
+
+    <!-- SECTION 6 -->
+    <h2 id="step4-telegram">6. Step 4 — Send Telegram Alert</h2>
+
+    <h3>One-Time: Create a Telegram Bot</h3>
+    <ol class="steps">
+      <li><p>Open Telegram, search for <strong>@BotFather</strong>, and start a chat.</p></li>
+      <li><p>Type <code>/newbot</code> and follow the prompts — give your bot a name and username (must end in "bot").</p></li>
+      <li><p>BotFather will give you a <strong>Bot Token</strong> — save it securely.</p></li>
+      <li><p>Search for your new bot and click <strong>Start</strong> to activate it.</p></li>
+    </ol>
+
+    <h3>Find Your Chat ID</h3>
+    <p>Visit this URL in your browser, replacing <code>YOUR_BOT_TOKEN</code> with your actual token:</p>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-label">Find your Chat ID</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><code>https://api.telegram.org/botYOUR_BOT_TOKEN/getUpdates</code></pre>
+    </div>
+
+    <p>In the JSON response, find the <code>chat</code> object and note the <code>id</code> field — that's your Chat ID.</p>
+
+    <h3>Add Telegram to Your Zap</h3>
+    <ol class="steps">
+      <li><p>Add Action step → <strong>Telegram Bot</strong> → <strong>Send Text Message</strong>.</p></li>
+      <li><p>Connect your account using your Bot Token when prompted.</p></li>
+      <li><p>Enter your Chat ID in the <strong>Chat ID</strong> field.</p></li>
+      <li><p>Paste the message template below and map fields dynamically:</p></li>
+    </ol>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-label">Telegram Message Template</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><code>🤖 New Signup Alert!
+
+Name:       [User Name]
+Email:      [Email Address]
+Record ID:  [Record ID]
+
+Source: Automated via Zapier</code></pre>
+    </div>
+
+    <p>Click <strong>Test Action</strong> — a message should appear on your phone instantly. Click Continue.</p>
+
+    <!-- SECTION 7 -->
+    <h2 id="publish-test">7. Publish &amp; Test Your Automation</h2>
+
+    <ol class="steps">
+      <li><p>Click <strong>Publish</strong> in the top-right corner of the Zap editor.</p></li>
+      <li><p>Toggle the Zap to <strong>ON</strong>.</p></li>
+      <li><p>Send a fresh test payload to your webhook URL and watch all 4 steps fire in sequence.</p></li>
+    </ol>
+
+    <div class="callout callout-success">
+      <div class="callout-title">✅ Your Automation Is Live</div>
+      <p>Check Zapier's <strong>Zap History</strong> tab anytime to see every run — success or error — with full details on what data was received and which step executed.</p>
+    </div>
+
+    <h3>Integrate with Your Website</h3>
+    <p>Add this snippet to your form's submit handler to trigger the automation automatically:</p>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-label">javascript — website integration</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><code><span class="cm">// Add to your form submit handler</span>
+<span class="kw">async function</span> <span class="var">handleSignup</span>(name, email) {
+  <span class="kw">const</span> <span class="var">WEBHOOK_URL</span> = <span class="str">'YOUR_ZAPIER_WEBHOOK_URL'</span>;
+  <span class="kw">try</span> {
+    <span class="kw">await</span> <span class="kw">fetch</span>(WEBHOOK_URL, {
+      <span class="var">method</span>: <span class="str">'POST'</span>,
+      <span class="var">headers</span>: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+      <span class="var">body</span>: <span class="kw">JSON</span>.<span class="kw">stringify</span>({ name, email })
+    });
+    console.<span class="kw">log</span>(<span class="str">'Signup tracked!'</span>);
+  } <span class="kw">catch</span> (err) {
+    console.<span class="kw">error</span>(<span class="str">'Webhook error:'</span>, err);
+  }
+}
+
+<span class="cm">// Wire to your form:</span>
+document.<span class="kw">getElementById</span>(<span class="str">'signup-form'</span>)
+  .<span class="kw">addEventListener</span>(<span class="str">'submit'</span>, (e) =&gt; {
+    e.<span class="kw">preventDefault</span>();
+    <span class="var">handleSignup</span>(
+      document.<span class="kw">getElementById</span>(<span class="str">'name'</span>).value,
+      document.<span class="kw">getElementById</span>(<span class="str">'email'</span>).value
+    );
+  });</code></pre>
+    </div>
+
+    <!-- SECTION 8 -->
+    <h2 id="customise">8. Customise &amp; Extend</h2>
+
+    <p>This 4-step workflow is a foundation. Here are practical ways to extend it:</p>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Enhancement</th><th>How to Do It</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Add more fields (phone, city, plan)</td><td>Add to JSON payload + new columns in Zapier Table + extra formulas</td></tr>
+          <tr><td>Filter alerts (skip test emails)</td><td>Add a Zapier Filter step between Step 2 and Step 3</td></tr>
+          <tr><td>Sync to a CRM</td><td>Add HubSpot / Salesforce / Notion as an extra action step</td></tr>
+          <tr><td>Send SMS too</td><td>Add a Twilio action step after Telegram</td></tr>
+          <tr><td>Route by user type</td><td>Use Zapier Paths (Premium) to send different messages per plan</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- IMPLEMENTATION CHECKLIST -->
+    <h2 id="checklist">9. Implementation Checklist</h2>
+
+    <div class="checklist">
+      <h4>✅ Track Your Progress</h4>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><span>Zapier account created</span></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><span>New Zap created with a name</span></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><span>Webhook trigger configured (Catch Raw Hook)</span></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><span>Test payload sent and received</span></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><span>Zapier Table created with correct columns</span></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><span>Inline formulas configured for JSON parsing</span></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><span>Email action configured and tested</span></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><span>Telegram bot created and Chat ID found</span></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><span>Telegram action configured and tested</span></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><span>Full end-to-end test completed</span></div>
+      <div class="checklist-item"><div class="check-box" onclick="toggleCheck(this)"></div><span>Zap published and turned ON</span></div>
+    </div>
+
+    <!-- TROUBLESHOOTING -->
+    <h2 id="troubleshooting">10. Troubleshooting</h2>
+
+    <div class="faq">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Webhook not receiving data <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">Double-check the webhook URL is copied correctly and you're sending to HTTPS. If using <code>fetch()</code> from a browser, ensure there are no CORS restrictions. Try cURL from your terminal first.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Table fields are empty after the step runs <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">The most common cause is an incorrect Step ID in the inline formula. The Step ID must match the exact numeric ID of your webhook trigger step. Find it by hovering over the step in Zapier's output panel.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Email not arriving in my inbox <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">Check your spam folder first. Then verify the "To" field in Zapier is correct. Email by Zapier sends from a Zapier domain, which some spam filters may flag on the first run.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">Telegram message not delivered <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">Make sure you have started a conversation with your bot (search for it in Telegram and click Start). Re-verify your Chat ID by visiting the <code>getUpdates</code> URL and checking the <code>chat.id</code> field in the response.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">The Zap is not triggering at all <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">Check the Zap toggle is set to ON. Go to Zap History to see if requests are being received but failing silently. Also check your Zapier plan task limit — free plans have a 100 task/month limit.</div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-box">
+      <h3>Calculate Your In-Hand Salary Too</h3>
+      <p>While you're automating your workflow, check what actually lands in your bank account each month — free, no login required.</p>
+      <a href="https://salarybit.in" class="cta-btn">💰 Open Salary Calculator →</a>
+    </div>
+
+    <!-- AD FOOTER -->
+    <div class="ad-placeholder">📢 Advertisement — Footer Leaderboard (728×90)</div>
+
+  </article>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="toc-box">
+      <h4>📋 Table of Contents</h4>
+      <ol>
+        <li><a href="#what-youll-build">What You'll Build</a></li>
+        <li><a href="#what-you-need">What You'll Need</a></li>
+        <li><a href="#step1-webhook">Step 1 — Webhook</a></li>
+        <li><a href="#step2-tables">Step 2 — Zapier Tables</a></li>
+        <li><a href="#step3-email">Step 3 — Email</a></li>
+        <li><a href="#step4-telegram">Step 4 — Telegram</a></li>
+        <li><a href="#publish-test">Publish &amp; Test</a></li>
+        <li><a href="#customise">Customise &amp; Extend</a></li>
+        <li><a href="#checklist">Checklist</a></li>
+        <li><a href="#troubleshooting">Troubleshooting</a></li>
+      </ol>
+    </div>
+
+    <div class="quick-facts">
+      <h4>⚡ Quick Facts</h4>
+      <div class="fact-item">
+        <span class="fact-label">Coding required</span>
+        <span class="fact-value">None ✅</span>
+      </div>
+      <div class="fact-item">
+        <span class="fact-label">Time to build</span>
+        <span class="fact-value">Under 1 hour</span>
+      </div>
+      <div class="fact-item">
+        <span class="fact-label">Apps used</span>
+        <span class="fact-value">4 (all free)</span>
+      </div>
+      <div class="fact-item">
+        <span class="fact-label">Delivery time</span>
+        <span class="fact-value">&lt;5 seconds</span>
+      </div>
+      <div class="fact-item">
+        <span class="fact-label">Zapier plan</span>
+        <span class="fact-value">Free for testing</span>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 <strong><a href="https://salarybit.in">SalaryBit</a></strong> · Free · No login · No data collected</p>
+  <p style="margin-top:6px;">For informational purposes only. All calculations are estimates.</p>
+</footer>
+
+<script>
+  // Copy code buttons
+  function copyCode(btn) {
+    const pre = btn.closest('.code-wrap').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  // FAQ accordion
+  function toggleFaq(el) {
+    const item = el.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // Interactive checklist
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+  }
+</script>
+
+</body>
+</html>

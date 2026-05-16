@@ -419,7 +419,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       <div class="nav-divider"></div>
       <a class="nav-a" href="/blog/" style="color:var(--accent);font-weight:600">📝 Blog</a>
       <a class="nav-a" href="/resume-rewriter.html" style="color:#7c3aed;font-weight:600">📄 AI Resume</a>
-      <a class="nav-a" href="/job-agent.html" style="color:#e8ff47;font-weight:700;background:linear-gradient(135deg,#1a1a2e,#2d2d4a);border:1px solid rgba(232,255,71,0.3);border-radius:6px;padding:5px 10px;">🤖 Job Agent</a>
+
     </div>
     <div class="nav-badge">FY 2026-27</div>
     <button class="mob-menu-btn" onclick="openMobNav()" aria-label="Open menu">
@@ -442,7 +442,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   <a class="mob-nav-a" href="#calc-section" onclick="closeMobNav();setTimeout(()=>{document.getElementById('labour-section')?.click()},150)"><span class="mob-icon">⚖️</span>Labour Code Impact</a>
   <a class="mob-nav-a" href="#calc-section" onclick="closeMobNav();setTimeout(()=>{document.getElementById('rights-section')?.click()},150)"><span class="mob-icon">🏛️</span>Employee Rights</a>
   <a class="mob-nav-a" href="/resume-rewriter.html" onclick="closeMobNav()"><span class="mob-icon">📄</span>AI Resume Rewriter</a>
-  <a class="mob-nav-a" href="/job-agent.html" onclick="closeMobNav()" style="color:#e8ff47;font-weight:700;background:rgba(232,255,71,0.05);border-left:3px solid #e8ff47"><span class="mob-icon">🤖</span>AI Job Agent — New!</a>
+
   <div class="mob-nav-section">Financial Tools</div>
   <a class="mob-nav-a" href="#tools-section" onclick="closeMobNav()"><span class="mob-icon">🏠</span>Home Loan EMI</a>
   <a class="mob-nav-a" href="#tools-section" onclick="closeMobNav();setTimeout(()=>showTool('sip',document.querySelector('[onclick*=\'sip\']')),200)"><span class="mob-icon">📊</span>SIP Calculator</a>
@@ -472,9 +472,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   <a class="mob-tab" href="#sharetax-standalone" onclick="setActiveTab(this)">
     <span class="mob-tab-icon">📈</span>Tax
   </a>
-  <a class="mob-tab" href="/job-agent.html" onclick="setActiveTab(this)" style="color:#e8ff47">
-    <span class="mob-tab-icon">🤖</span>Jobs
-  </a>
+
   <button class="mob-tab" onclick="openMobNav()">
     <span class="mob-tab-icon">☰</span>More
   </button>
@@ -506,7 +504,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           <a class="hero-chip" href="#calc-section">🏛️ Employee Rights</a>
           <a class="hero-chip" href="#tools-section">🧾 GST Calculator</a>
           <a class="hero-chip" href="#tools-section">🏛️ Professional Tax</a>
-          <a class="hero-chip" href="/job-agent.html" style="color:#e8ff47;border-color:rgba(232,255,71,0.4);font-weight:700">🤖 AI Job Agent ✦ New</a>
+
         </div>
       </div>
       <div class="hero-stats">
@@ -518,24 +516,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   </div>
 </section>
 
-<!-- JOB AGENT PROMO BANNER -->
-<div style="background:linear-gradient(135deg,#1a1a2e 0%,#2d2d4a 100%);border-bottom:1px solid rgba(232,255,71,0.15);padding:1rem 1.5rem">
-  <div style="max-width:1160px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">
-    <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
-      <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(232,255,71,0.1);border:1px solid rgba(232,255,71,0.25);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;color:#e8ff47;letter-spacing:.08em;text-transform:uppercase;flex-shrink:0">
-        <span style="width:6px;height:6px;background:#22c55e;border-radius:50%;display:inline-block;animation:pulse 2s infinite"></span>
-        NEW
-      </div>
-      <div>
-        <span style="color:#ffffff;font-weight:700;font-size:14px">🤖 AI Job Agent — </span>
-        <span style="color:rgba(255,255,255,0.6);font-size:13px">Apply to 50+ LinkedIn jobs daily while you sleep. Zero effort. 100% free.</span>
-      </div>
-    </div>
-    <a href="/job-agent.html" style="display:inline-flex;align-items:center;gap:6px;background:#e8ff47;color:#0a0a0a;font-weight:800;font-size:12px;padding:7px 16px;border-radius:6px;text-decoration:none;flex-shrink:0;transition:opacity 0.2s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
-      Activate My Agent →
-    </a>
-  </div>
-</div>
+
 
 <!-- MAIN -->
 <main class="main" id="calc-section">

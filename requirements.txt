@@ -4,6 +4,6 @@ flask-cors==4.0.1
 razorpay==1.4.2
 pymupdf==1.24.5
 pyzbar==0.1.9
-pillow==10.3.0
+pillow==10.4.0
 gunicorn==22.0.0
 requests

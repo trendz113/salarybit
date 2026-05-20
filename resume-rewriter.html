@@ -303,7 +303,7 @@
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-  const RAILWAY_URL = 'https://web-production-456eb.up.railway.app';
+  const RAILWAY_URL = '';
   let pdfText = null;
   let currentTab = 'text';
   let rawResumeText = '';
@@ -368,7 +368,7 @@
     btn.disabled = true;
     btn.textContent = 'Creating order...';
 
-    fetch(RAILWAY_URL + '/api/create-resume-order', { method: 'POST' })
+    fetch('/api/create-resume-order'
       .then(r => r.json())
       .then(order => {
         if (order.error) throw new Error(order.error);
@@ -421,7 +421,7 @@
     hideError();
 
     try {
-      const resp = await fetch(RAILWAY_URL + '/api/rewrite-resume', {
+      const resp = await fetch('/api/rewrite-resume'', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

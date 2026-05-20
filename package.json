@@ -2,6 +2,7 @@
   "name": "salarybit",
   "version": "1.0.0",
   "dependencies": {
-    "razorpay": "^2.9.2"
+    "razorpay": "^2.9.2",
+    "formidable": "^2.1.2"
   }
 }

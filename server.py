@@ -148,6 +148,28 @@ def decode_qr_from_pdf(pdf_path):
     return results
 
 
+# ── CREATE RESUME ORDER (₹99) ────────────────────────────
+@app.route("/api/create-resume-order", methods=["POST", "OPTIONS"])
+def create_resume_order():
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": 9900,        # ₹99 in paise — hardcoded
+            "currency": "INR",
+            "receipt": f"resume_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id":     order["id"],
+            "amount":       order["amount"],
+            "currency":     order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID"),
+        })
+    except Exception as e:
+        print(f"create-resume-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
 # ── AI RESUME REWRITER ────────────────────────────────────
 @app.route("/api/rewrite-resume", methods=["POST", "OPTIONS"])
 def rewrite_resume():

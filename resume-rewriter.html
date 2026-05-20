@@ -10,24 +10,25 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #f7f6f2;
-      --surface: #ffffff;
-      --surface2: #f0efe9;
-      --border: #e2e0d8;
-      --border2: #cccab8;
-      --text: #1a1916;
-      --text2: #6b6a64;
-      --text3: #9e9d96;
-      --accent: #1a1916;
-      --green-bg: #eaf3de;
-      --green-text: #3b6d11;
-      --green-border: #97c459;
-      --red-bg: #fcebeb;
-      --red-text: #a32d2d;
-      --red-border: #f09595;
-      --amber-bg: #faeeda;
-      --amber-text: #854f0b;
-      --amber-border: #f0c97a;
+      --bg: #0d0e14;
+      --surface: #13151f;
+      --surface2: #1a1d2e;
+      --border: #252840;
+      --border2: #343760;
+      --text: #f0f0f8;
+      --text2: #9499c0;
+      --text3: #5a5f80;
+      --accent: #5b6af0;
+      --accent-hover: #7480f5;
+      --green-bg: #0f2a1a;
+      --green-text: #4ade80;
+      --green-border: #1a5c30;
+      --red-bg: #2a0f0f;
+      --red-text: #f87171;
+      --red-border: #5c1a1a;
+      --amber-bg: #2a1f0a;
+      --amber-text: #fbbf24;
+      --amber-border: #5c400a;
       --radius: 10px;
       --radius-sm: 6px;
     }
@@ -39,22 +40,27 @@
       padding: 0 2rem; display: flex; align-items: center;
       justify-content: space-between; height: 56px;
     }
-    .logo { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; }
-    .logo span { color: var(--text2); font-weight: 400; }
+    .logo { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; color: var(--text); }
+    .logo span { color: var(--accent); }
     .badge { font-size: 11px; background: var(--surface2); border: 1px solid var(--border); padding: 3px 10px; border-radius: 20px; color: var(--text2); }
 
     .container { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
 
     .hero { margin-bottom: 2rem; }
-    .hero h1 { font-size: 26px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 6px; }
+    .hero h1 { font-size: 26px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 6px; color: var(--text); }
     .hero p { font-size: 14px; color: var(--text2); line-height: 1.6; }
 
-    .powered { font-size: 12px; color: var(--text3); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 6px; }
-    .powered span { background: var(--surface2); border: 1px solid var(--border); padding: 2px 8px; border-radius: 20px; font-size: 11px; color: var(--text2); }
+    .price-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--surface2); border: 1px solid var(--accent);
+      padding: 5px 14px; border-radius: 20px; font-size: 12px;
+      color: var(--accent); margin-bottom: 1.5rem; font-weight: 500;
+    }
+    .price-badge strong { font-size: 15px; font-weight: 700; }
 
     .tabs { display: flex; gap: 4px; margin-bottom: 1rem; background: var(--surface2); padding: 4px; border-radius: var(--radius-sm); width: fit-content; }
     .tab { padding: 6px 16px; border-radius: 5px; border: none; background: transparent; font-size: 13px; cursor: pointer; color: var(--text2); font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
-    .tab.active { background: var(--surface); color: var(--text); font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .tab.active { background: var(--accent); color: #fff; font-weight: 500; }
 
     .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
 
@@ -66,7 +72,7 @@
       font-size: 13px; line-height: 1.7; color: var(--text);
       font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.15s;
     }
-    .field textarea:focus { border-color: var(--border2); }
+    .field textarea:focus { border-color: var(--accent); }
     .field textarea::placeholder { color: var(--text3); }
 
     .upload-box {
@@ -75,19 +81,19 @@
       align-items: center; justify-content: center; gap: 10px;
       cursor: pointer; background: var(--surface); transition: background 0.15s;
     }
-    .upload-box:hover { background: var(--surface2); }
+    .upload-box:hover { background: var(--surface2); border-color: var(--accent); }
     .upload-box svg { width: 32px; height: 32px; color: var(--text3); }
     .upload-box .up-label { font-size: 14px; color: var(--text2); font-weight: 500; }
     .upload-box .up-sub { font-size: 12px; color: var(--text3); }
     .pdf-name { font-size: 12px; color: var(--text2); margin-top: 6px; text-align: center; }
 
     .analyze-btn {
-      width: 100%; padding: 13px; border-radius: var(--radius);
+      width: 100%; padding: 14px; border-radius: var(--radius);
       border: none; background: var(--accent); color: #fff;
-      font-size: 15px; font-weight: 500; font-family: 'DM Sans', sans-serif;
-      cursor: pointer; transition: opacity 0.15s; letter-spacing: -0.2px;
+      font-size: 15px; font-weight: 600; font-family: 'DM Sans', sans-serif;
+      cursor: pointer; transition: background 0.15s; letter-spacing: -0.2px;
     }
-    .analyze-btn:hover { opacity: 0.88; }
+    .analyze-btn:hover { background: var(--accent-hover); }
     .analyze-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
     .error-box { background: var(--red-bg); color: var(--red-text); border: 1px solid var(--red-border); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 13px; margin-top: 12px; display: none; }
@@ -115,7 +121,6 @@
     .kw.missing { background: var(--red-bg); color: var(--red-text); border: 1px solid var(--red-border); }
     .kw.present { background: var(--green-bg); color: var(--green-text); border: 1px solid var(--green-border); }
 
-    /* Interview tips */
     .tips-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
     .tips-list li {
       display: flex; gap: 12px; align-items: flex-start;
@@ -125,13 +130,11 @@
     }
     .tips-list li .tip-num {
       font-size: 11px; font-weight: 600; color: var(--amber-text);
-      background: rgba(133,79,11,0.12); border-radius: 50%;
+      background: rgba(251,191,36,0.12); border-radius: 50%;
       width: 22px; height: 22px; min-width: 22px;
-      display: flex; align-items: center; justify-content: center;
-      margin-top: 1px;
+      display: flex; align-items: center; justify-content: center; margin-top: 1px;
     }
 
-    /* Resume output */
     .resume-output {
       font-size: 13.5px; line-height: 1.75; color: var(--text);
       font-family: 'DM Sans', sans-serif;
@@ -139,11 +142,11 @@
       border-radius: var(--radius-sm); max-height: 580px;
       overflow-y: auto; border: 1px solid var(--border);
     }
-    .resume-output .r-name { font-size: 22px; font-weight: 600; letter-spacing: -0.4px; margin-bottom: 4px; }
+    .resume-output .r-name { font-size: 22px; font-weight: 600; letter-spacing: -0.4px; margin-bottom: 4px; color: var(--text); }
     .resume-output .r-contact { font-size: 12.5px; color: var(--text2); margin-bottom: 1.25rem; display: flex; flex-wrap: wrap; gap: 4px 12px; }
     .resume-output .r-section-title {
       font-size: 11px; font-weight: 600; letter-spacing: 1px;
-      text-transform: uppercase; color: var(--text2);
+      text-transform: uppercase; color: var(--accent);
       border-bottom: 1px solid var(--border); padding-bottom: 5px;
       margin: 1.2rem 0 0.65rem;
     }
@@ -158,12 +161,19 @@
     .action-row { display: flex; gap: 8px; margin-top: 10px; }
     .copy-btn, .download-btn {
       padding: 7px 16px; border-radius: var(--radius-sm); font-size: 13px;
-      border: 1px solid var(--border); background: var(--surface);
+      border: 1px solid var(--border); background: var(--surface2);
       color: var(--text2); cursor: pointer; font-family: 'DM Sans', sans-serif;
       display: flex; align-items: center; gap: 6px; transition: background 0.12s;
     }
-    .copy-btn:hover, .download-btn:hover { background: var(--surface2); }
+    .copy-btn:hover, .download-btn:hover { background: var(--border); color: var(--text); }
     .copy-btn svg, .download-btn svg { width: 14px; height: 14px; }
+
+    footer {
+      border-top: 1px solid var(--border); text-align: center;
+      padding: 20px; font-size: 12px; color: var(--text3);
+    }
+    footer a { color: var(--text3); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
 
     @media (max-width: 620px) {
       .input-grid { grid-template-columns: 1fr; }
@@ -182,11 +192,13 @@
 
 <div class="container">
   <div class="hero">
-    <h1>Fix my resume for this job</h1>
-    <p>Paste your resume + job description. AI rewrites your resume, scores ATS fit, shows missing keywords, and gives interview tips.</p>
+    <h1>Rewrite my resume for this job</h1>
+    <p>Paste your resume + job description. AI rewrites your resume to beat ATS filters, shows missing keywords, scores your match, and gives you interview tips.</p>
   </div>
 
-  <div class="powered">Powered by <span>Groq AI</span> — free, fast, no login needed</div>
+  <div class="price-badge">
+    ✦ One-time rewrite · <strong>₹99</strong> · Instant result
+  </div>
 
   <div class="tabs">
     <button class="tab active" onclick="switchTab('text')" id="tab-text">Paste resume</button>
@@ -214,15 +226,14 @@
     </div>
   </div>
 
-  <button class="analyze-btn" id="analyze-btn" onclick="analyzeResume()">
-    Rewrite &amp; analyze resume →
+  <button class="analyze-btn" id="analyze-btn" onclick="initiatePayment()">
+    Rewrite &amp; analyze resume — ₹99 →
   </button>
   <div class="error-box" id="error-box"></div>
-  <div class="progress" id="progress"><span>Analyzing with Groq AI — this takes about 10–15 seconds...</span></div>
+  <div class="progress" id="progress"><span>Analyzing — this takes about 10–15 seconds...</span></div>
 
   <div class="results" id="results">
 
-    <!-- Scores -->
     <div class="scores">
       <div class="score-card">
         <div class="sc-label">ATS score before</div>
@@ -241,7 +252,6 @@
       </div>
     </div>
 
-    <!-- Missing keywords -->
     <div class="result-section">
       <h3>
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z"/></svg>
@@ -250,7 +260,6 @@
       <div class="kw-wrap" id="missing-kws"></div>
     </div>
 
-    <!-- Present keywords -->
     <div class="result-section">
       <h3>
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -259,7 +268,6 @@
       <div class="kw-wrap" id="present-kws"></div>
     </div>
 
-    <!-- Interview tips -->
     <div class="result-section">
       <h3>
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>
@@ -268,7 +276,6 @@
       <ul class="tips-list" id="interview-tips"></ul>
     </div>
 
-    <!-- Rewritten resume -->
     <div class="result-section">
       <h3>
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
@@ -290,6 +297,11 @@
   </div><!-- /results -->
 </div>
 
+<footer>
+  © 2026 SalaryBit · <a href="https://salarybit.in">salarybit.in</a> · <a href="mailto:support@salarybit.in">support@salarybit.in</a>
+</footer>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
   const RAILWAY_URL = 'https://web-production-456eb.up.railway.app';
   let pdfText = null;
@@ -301,7 +313,7 @@
     document.getElementById('tab-text').classList.toggle('active', tab === 'text');
     document.getElementById('tab-pdf').classList.toggle('active', tab === 'pdf');
     document.getElementById('text-area').style.display = tab === 'text' ? '' : 'none';
-    document.getElementById('pdf-area').style.display = tab === 'pdf' ? '' : 'none';
+    document.getElementById('pdf-area').style.display  = tab === 'pdf'  ? '' : 'none';
   }
 
   function handlePDF(input) {
@@ -340,7 +352,130 @@
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  // Render plain text resume into styled HTML
+  // ── STEP 1: VALIDATE → OPEN RAZORPAY ─────────────────────────────────────
+  function initiatePayment() {
+    hideError();
+    const jd = document.getElementById('jd-text').value.trim();
+    if (!jd) { showError('Please paste the job description.'); return; }
+    if (currentTab === 'text' && !document.getElementById('resume-text').value.trim()) {
+      showError('Please paste your resume.'); return;
+    }
+    if (currentTab === 'pdf' && !pdfText) {
+      showError('Please upload a PDF resume and wait a moment.'); return;
+    }
+
+    const btn = document.getElementById('analyze-btn');
+    btn.disabled = true;
+    btn.textContent = 'Creating order...';
+
+    fetch(RAILWAY_URL + '/api/create-resume-order', { method: 'POST' })
+      .then(r => r.json())
+      .then(order => {
+        if (order.error) throw new Error(order.error);
+        const options = {
+          key:         order.razorpay_key,
+          amount:      order.amount,
+          currency:    order.currency,
+          name:        'SalaryBit',
+          description: 'AI Resume Rewrite & ATS Analysis',
+          order_id:    order.order_id,
+          handler: function(response) {
+            analyzeResume(
+              response.razorpay_payment_id,
+              response.razorpay_order_id,
+              response.razorpay_signature
+            );
+          },
+          theme: { color: '#5b6af0' },
+          modal: {
+            ondismiss: function() {
+              btn.disabled = false;
+              btn.textContent = 'Rewrite & analyze resume — ₹99 →';
+              showError('Payment cancelled. Try again when ready.');
+            }
+          }
+        };
+        new Razorpay(options).open();
+        btn.disabled = false;
+        btn.textContent = 'Rewrite & analyze resume — ₹99 →';
+      })
+      .catch(err => {
+        btn.disabled = false;
+        btn.textContent = 'Rewrite & analyze resume — ₹99 →';
+        showError('Could not initiate payment: ' + err.message);
+      });
+  }
+
+  // ── STEP 2: PAYMENT SUCCESS → CALL RAILWAY → GROQ ────────────────────────
+  async function analyzeResume(paymentId, orderId, signature) {
+    const jd = document.getElementById('jd-text').value.trim();
+    const resumeText = currentTab === 'text'
+      ? document.getElementById('resume-text').value.trim()
+      : pdfText;
+
+    const btn = document.getElementById('analyze-btn');
+    btn.disabled = true;
+    btn.textContent = 'Analyzing — please wait...';
+    document.getElementById('progress').style.display = 'block';
+    document.getElementById('results').style.display  = 'none';
+    hideError();
+
+    try {
+      const resp = await fetch(RAILWAY_URL + '/api/rewrite-resume', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          resume:              resumeText,
+          jd,
+          razorpay_payment_id: paymentId,
+          razorpay_order_id:   orderId,
+          razorpay_signature:  signature
+        })
+      });
+
+      const parsed = await resp.json();
+      if (parsed.error) throw new Error(parsed.error);
+
+      setScore('score-before', Math.round(parsed.ats_before));
+      setScore('score-after',  Math.round(parsed.ats_after));
+
+      const present = parsed.present_keywords || [];
+      const missing = parsed.missing_keywords || [];
+      const total   = present.length + missing.length;
+      const kwEl    = document.getElementById('kw-count');
+      kwEl.textContent = present.length + '/' + total;
+      const pct = total > 0 ? (present.length / total) * 100 : 0;
+      kwEl.className = 'sc-val ' + (pct >= 70 ? 'good' : pct >= 45 ? 'mid' : 'low');
+
+      document.getElementById('missing-kws').innerHTML = missing.length
+        ? missing.map(k => `<span class="kw missing">${esc(k)}</span>`).join('')
+        : '<span style="font-size:13px;color:var(--green-text)">None — great match!</span>';
+
+      document.getElementById('present-kws').innerHTML = present.length
+        ? present.map(k => `<span class="kw present">${esc(k)}</span>`).join('')
+        : '<span style="font-size:13px;color:var(--text2)">No keyword matches found</span>';
+
+      const tips = parsed.interview_tips || [];
+      document.getElementById('interview-tips').innerHTML = tips.length
+        ? tips.map((t, i) => `<li><span class="tip-num">${i+1}</span><span>${esc(t)}</span></li>`).join('')
+        : '<li><span class="tip-num">1</span><span>No tips returned. Try again.</span></li>';
+
+      rawResumeText = parsed.rewritten_resume;
+      document.getElementById('resume-out').innerHTML = renderResume(rawResumeText);
+
+      document.getElementById('results').style.display = 'block';
+      document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    } catch(err) {
+      showError('Error: ' + err.message + '. If payment was charged, contact support@salarybit.in');
+    } finally {
+      btn.disabled    = false;
+      btn.textContent = 'Rewrite & analyze resume — ₹99 →';
+      document.getElementById('progress').style.display = 'none';
+    }
+  }
+
+  // ── RESUME RENDERER ───────────────────────────────────────────────────────
   function renderResume(text) {
     const lines = text.split('\n');
     let html = '';
@@ -351,175 +486,74 @@
 
     const SECTION_HEADINGS = /^(SUMMARY|EXPERIENCE|EDUCATION|SKILLS|CERTIFICATIONS|PROJECTS|ACHIEVEMENTS|OBJECTIVE|PROFILE)S?$/i;
 
-    function isContactLine(l) {
-      return /[@|•·]|(\+?\d[\d\s\-]{7,})|linkedin|github/i.test(l);
-    }
-    function isBullet(l) {
-      return /^\s*[-•*▸›✓]\s+/.test(l);
-    }
-    function isJobLine(l) {
-      // Has a year AND a dash/pipe separator — job title line
-      return /\b(19|20)\d{2}\b/.test(l) && /[—\-–|]/.test(l);
-    }
+    function isContactLine(l) { return /[@|•·]|(\+?\d[\d\s\-]{7,})|linkedin|github/i.test(l); }
+    function isBullet(l) { return /^\s*[-•*▸›✓]\s+/.test(l); }
+    function isJobLine(l) { return /\b(19|20)\d{2}\b/.test(l) && /[—\-–|]/.test(l); }
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
-      if (!line) {
-        if (inList) { html += '</ul>'; inList = false; }
-        continue;
-      }
+      if (!line) { if (inList) { html += '</ul>'; inList = false; } continue; }
 
-      // First line = name
       if (!nameRendered) {
         html += `<div class="r-name">${esc(line)}</div>`;
-        nameRendered = true;
-        continue;
+        nameRendered = true; continue;
       }
 
-      // Contact block: collect until we hit a non-contact line
       if (!contactRendered) {
         if (isContactLine(line) || contactBuffer.length === 0) {
           contactBuffer.push(line);
-          // Look ahead
           const next = (lines[i+1] || '').trim();
           if (!next || !isContactLine(next)) {
             html += `<div class="r-contact">${contactBuffer.map(c => `<span>${esc(c)}</span>`).join('<span style="color:var(--border2);margin:0 2px">|</span>')}</div>`;
-            contactBuffer = [];
-            contactRendered = true;
+            contactBuffer = []; contactRendered = true;
           }
           continue;
-        } else {
-          contactRendered = true;
-        }
+        } else { contactRendered = true; }
       }
 
-      // Section heading
       if (SECTION_HEADINGS.test(line)) {
         if (inList) { html += '</ul>'; inList = false; }
-        html += `<div class="r-section-title">${esc(line.replace(/:$/,''))}</div>`;
-        continue;
+        html += `<div class="r-section-title">${esc(line.replace(/:$/,''))}</div>`; continue;
       }
 
-      // Bullet
       if (isBullet(line)) {
         if (!inList) { html += '<ul>'; inList = true; }
-        html += `<li>${esc(line.replace(/^\s*[-•*▸›✓]\s+/, ''))}</li>`;
-        continue;
+        html += `<li>${esc(line.replace(/^\s*[-•*▸›✓]\s+/, ''))}</li>`; continue;
       }
 
       if (inList) { html += '</ul>'; inList = false; }
 
-      // Job header line: "Software Engineer — TCS   2021 – 2023"
       if (isJobLine(line)) {
         const dateMatch = line.match(/((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)?\s*\d{4}\s*[-–—]+\s*(?:Present|\d{4}))/i);
         const dates = dateMatch ? dateMatch[0].trim() : '';
-        const rest = dates ? line.replace(dates, '').trim().replace(/[,\s]+$/, '') : line;
+        const rest  = dates ? line.replace(dates, '').trim().replace(/[,\s]+$/, '') : line;
         const parts = rest.split(/\s*[—–|]\s*/);
         const title = parts[0] ? parts[0].trim() : rest;
         const company = parts[1] ? parts[1].trim() : '';
         html += `<div class="r-job-header">
-          <div>
-            <span class="r-job-title">${esc(title)}</span>
-            ${company ? `<span class="r-job-company">— ${esc(company)}</span>` : ''}
-          </div>
+          <div><span class="r-job-title">${esc(title)}</span>${company ? `<span class="r-job-company">— ${esc(company)}</span>` : ''}</div>
           ${dates ? `<div class="r-job-dates">${esc(dates)}</div>` : ''}
-        </div>`;
-        continue;
+        </div>`; continue;
       }
 
-      // Default paragraph
       html += `<p class="r-para">${esc(line)}</p>`;
     }
-
     if (inList) html += '</ul>';
     return html;
-  }
-
-  async function analyzeResume() {
-    hideError();
-    const jd = document.getElementById('jd-text').value.trim();
-    if (!jd) { showError('Please paste the job description.'); return; }
-
-    let resumeText = '';
-    if (currentTab === 'text') {
-      resumeText = document.getElementById('resume-text').value.trim();
-      if (!resumeText) { showError('Please paste your resume.'); return; }
-    } else {
-      if (!pdfText) { showError('Please upload a PDF resume and wait a moment.'); return; }
-      resumeText = pdfText;
-    }
-
-    const btn = document.getElementById('analyze-btn');
-    btn.disabled = true;
-    btn.textContent = 'Analyzing...';
-    document.getElementById('progress').style.display = 'block';
-    document.getElementById('results').style.display = 'none';
-
-    try {
-      const resp = await fetch(RAILWAY_URL + '/api/rewrite-resume', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ resume: resumeText, jd })
-      });
-
-      const parsed = await resp.json();
-      if (parsed.error) throw new Error(parsed.error);
-
-      setScore('score-before', Math.round(parsed.ats_before));
-      setScore('score-after', Math.round(parsed.ats_after));
-
-      const present = parsed.present_keywords || [];
-      const missing = parsed.missing_keywords || [];
-      const total = present.length + missing.length;
-      const kwEl = document.getElementById('kw-count');
-      kwEl.textContent = present.length + '/' + total;
-      const pct = total > 0 ? (present.length / total) * 100 : 0;
-      kwEl.className = 'sc-val ' + (pct >= 70 ? 'good' : pct >= 45 ? 'mid' : 'low');
-
-      document.getElementById('missing-kws').innerHTML = missing.length
-        ? missing.map(k => `<span class="kw missing">${esc(k)}</span>`).join('')
-        : '<span style="font-size:13px;color:var(--text2)">None — great match!</span>';
-
-      document.getElementById('present-kws').innerHTML = present.length
-        ? present.map(k => `<span class="kw present">${esc(k)}</span>`).join('')
-        : '<span style="font-size:13px;color:var(--text2)">No keyword matches found</span>';
-
-      // Interview tips
-      const tips = parsed.interview_tips || [];
-      document.getElementById('interview-tips').innerHTML = tips.length
-        ? tips.map((t, i) => `<li><span class="tip-num">${i+1}</span><span>${esc(t)}</span></li>`).join('')
-        : '<li><span class="tip-num">!</span><span>No tips returned. Try again.</span></li>';
-
-      // Rewritten resume
-      rawResumeText = parsed.rewritten_resume;
-      document.getElementById('resume-out').innerHTML = renderResume(rawResumeText);
-
-      document.getElementById('results').style.display = 'block';
-      document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-    } catch(err) {
-      showError('Error: ' + err.message);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Rewrite & analyze resume →';
-      document.getElementById('progress').style.display = 'none';
-    }
   }
 
   function copyResume() {
     navigator.clipboard.writeText(rawResumeText).then(() => {
       const btn = document.querySelector('.copy-btn');
       btn.textContent = '✓ Copied!';
-      setTimeout(() => {
-        btn.innerHTML = `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:14px;height:14px"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.375"/></svg> Copy resume`;
-      }, 2000);
+      setTimeout(() => { btn.innerHTML = `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.375"/></svg> Copy resume`; }, 2000);
     });
   }
 
   function downloadResume() {
     const blob = new Blob([rawResumeText], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
     a.href = url; a.download = 'rewritten-resume.txt'; a.click();
     URL.revokeObjectURL(url);
   }

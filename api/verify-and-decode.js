@@ -1,79 +1,103 @@
-// api/verify-and-decode.js
-// Pure Node.js QR decode — no Python required, works on Vercel
-
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const { IncomingForm } = require('formidable');
 
-module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+function parseMultipart(event) {
+  return new Promise((resolve, reject) => {
+    const Busboy = require('busboy');
+    const busboy = Busboy({ headers: event.headers });
 
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+    const fields = {};
+    let pdfBuffer = null;
 
-  // ── STEP 1: Parse multipart form ──
-  const form = new IncomingForm({ maxFileSize: 10 * 1024 * 1024 });
-  let fields, files;
+    busboy.on('field', (name, value) => {
+      fields[name] = value;
+    });
+
+    busboy.on('file', (name, file) => {
+      if (name === 'pdf') {
+        const chunks = [];
+        file.on('data', (chunk) => chunks.push(chunk));
+        file.on('end', () => { pdfBuffer = Buffer.concat(chunks); });
+      } else {
+        file.resume();
+      }
+    });
+
+    busboy.on('finish', () => resolve({ fields, pdfBuffer }));
+    busboy.on('error', reject);
+
+    const body = event.isBase64Encoded
+      ? Buffer.from(event.body, 'base64')
+      : Buffer.from(event.body || '', 'utf8');
+
+    busboy.end(body);
+  });
+}
+
+exports.handler = async (event) => {
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
+
+  if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers, body: '' };
+  if (event.httpMethod !== 'POST') return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
+
+  let parsed;
   try {
-    [fields, files] = await form.parse(req);
+    parsed = await parseMultipart(event);
   } catch (err) {
-    return res.status(400).json({ success: false, error: 'Could not parse form: ' + err.message });
+    return { statusCode: 400, headers, body: JSON.stringify({ success: false, error: 'Could not parse form: ' + err.message }) };
   }
 
-  const orderId   = Array.isArray(fields.razorpay_order_id)   ? fields.razorpay_order_id[0]   : fields.razorpay_order_id;
-  const paymentId = Array.isArray(fields.razorpay_payment_id) ? fields.razorpay_payment_id[0] : fields.razorpay_payment_id;
-  const signature = Array.isArray(fields.razorpay_signature)  ? fields.razorpay_signature[0]  : fields.razorpay_signature;
-  const pdfFile   = Array.isArray(files.pdf) ? files.pdf[0] : files.pdf;
+  const { fields, pdfBuffer } = parsed;
+  const orderId   = fields.razorpay_order_id;
+  const paymentId = fields.razorpay_payment_id;
+  const signature = fields.razorpay_signature;
 
-  if (!orderId || !paymentId || !signature || !pdfFile) {
-    return res.status(400).json({ success: false, error: 'Missing required fields.' });
+  if (!orderId || !paymentId || !signature || !pdfBuffer) {
+    return { statusCode: 400, headers, body: JSON.stringify({ success: false, error: 'Missing required fields.' }) };
   }
 
-  // ── STEP 2: Verify Razorpay signature ──
-  const body = orderId + '|' + paymentId;
+  // Verify Razorpay signature
+  const sigBody = orderId + '|' + paymentId;
   const expected = crypto
     .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
-    .update(body)
+    .update(sigBody)
     .digest('hex');
 
   if (expected !== signature) {
-    return res.status(400).json({ success: false, error: 'Payment verification failed.' });
+    return { statusCode: 400, headers, body: JSON.stringify({ success: false, error: 'Payment verification failed.' }) };
   }
 
-  // ── STEP 3: Decode QR from PDF using Node.js only ──
   const tmpPdf = path.join(os.tmpdir(), `pdf_${Date.now()}.pdf`);
 
   try {
-    fs.copyFileSync(pdfFile.filepath, tmpPdf);
+    fs.writeFileSync(tmpPdf, pdfBuffer);
 
     const { fromPath } = require('pdf2pic');
     const Jimp = require('jimp');
     const jsQR = require('jsqr');
     const pdfParse = require('pdf-parse');
 
-    // Get page count
-    const pdfBuffer = fs.readFileSync(tmpPdf);
     const pdfData = await pdfParse(pdfBuffer);
     const pageCount = Math.min(pdfData.numpages, 10);
 
-    // FIX 1: Render at lower density — QR codes decode fine at 150 DPI.
-    // Original 200 DPI at 1200x1600 was loading the 3264x1836 property
-    // photo fully into RAM and causing SIGKILL (OOM).
+    // Render at lower density — QR codes decode fine at 150 DPI and it avoids OOM
     const convert = fromPath(tmpPdf, {
-      density: 150,           // was 200
+      density: 150,
       saveFilename: `page_${Date.now()}`,
       savePath: os.tmpdir(),
       format: 'png',
-      width: 800,             // was 1200
-      height: 1100,           // was 1600
+      width: 800,
+      height: 1100,
     });
 
     const results = [];
-    const seen = new Set(); // FIX 2: deduplicate QR strings across pages
+    const seen = new Set();
 
     for (let pageNum = 1; pageNum <= pageCount; pageNum++) {
       let imgPath = null;
@@ -81,9 +105,7 @@ module.exports = async (req, res) => {
         const result = await convert(pageNum, { responseType: 'image' });
         imgPath = result.path;
 
-        // FIX 3: Remove scale=3 — Jimp.scale(3) on 800x1100 = 2400x3300
-        // = ~30MB RAM per page = OOM. Scale 1 and 2 are enough for QR decode.
-        for (const scale of [1, 2]) { // was [1, 2, 3]
+        for (const scale of [1, 2]) {
           const image = await Jimp.read(imgPath);
           if (scale > 1) image.scale(scale);
           image.grayscale();
@@ -96,7 +118,7 @@ module.exports = async (req, res) => {
             rgba[i * 4 + 2] = data[i * 4 + 2];
             rgba[i * 4 + 3] = data[i * 4 + 3];
           }
-          image.bitmap.data = null; // FIX 4: release bitmap from memory immediately
+          image.bitmap.data = null; // release bitmap memory immediately
 
           const decoded = jsQR(rgba, width, height, {
             inversionAttempts: 'attemptBoth',
@@ -112,7 +134,6 @@ module.exports = async (req, res) => {
               page: pageNum,
               label: `Page ${pageNum}`,
             });
-            // FIX 5: Don't break — e-Khata has 2 QR codes on same page
           }
         }
       } catch (pageErr) {
@@ -124,27 +145,32 @@ module.exports = async (req, res) => {
       }
     }
 
-    // Cleanup
     try { fs.unlinkSync(tmpPdf); } catch {}
-    try { fs.unlinkSync(pdfFile.filepath); } catch {}
 
     if (results.length === 0) {
-      return res.status(200).json({
-        success: false,
-        error: 'No QR code found in this PDF. A refund will be processed within 24 hours.',
-      });
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          success: false,
+          error: 'No QR code found in this PDF. A refund will be processed within 24 hours.',
+        }),
+      };
     }
 
-    return res.status(200).json({
-      success: true,
-      qr_strings: results,
-      count: results.length,
-    });
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({ success: true, qr_strings: results, count: results.length }),
+    };
 
   } catch (err) {
     try { fs.unlinkSync(tmpPdf); } catch {}
-    try { fs.unlinkSync(pdfFile.filepath); } catch {}
     console.error('verify-and-decode error:', err);
-    return res.status(500).json({ success: false, error: 'Decode failed: ' + err.message });
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ success: false, error: 'Decode failed: ' + err.message }),
+    };
   }
 };

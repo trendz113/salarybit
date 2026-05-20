@@ -1,32 +1,31 @@
-// api/rewrite-resume.js
 const crypto = require('crypto');
 
-module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+exports.handler = async (event) => {
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
 
-  const { resume, jd, razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
+  if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers, body: '' };
+  if (event.httpMethod !== 'POST') return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
 
-  if (!resume || !jd) return res.status(400).json({ error: 'Resume and job description required.' });
+  const { resume, jd, razorpay_payment_id, razorpay_order_id, razorpay_signature } = JSON.parse(event.body || '{}');
+
+  if (!resume || !jd) return { statusCode: 400, headers, body: JSON.stringify({ error: 'Resume and job description required.' }) };
   if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature) {
-    return res.status(400).json({ error: 'Payment verification fields missing.' });
+    return { statusCode: 400, headers, body: JSON.stringify({ error: 'Payment verification fields missing.' }) };
   }
 
-  // Verify Razorpay signature
-  const body = razorpay_order_id + '|' + razorpay_payment_id;
   const expected = crypto
     .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
-    .update(body)
+    .update(razorpay_order_id + '|' + razorpay_payment_id)
     .digest('hex');
 
   if (expected !== razorpay_signature) {
-    return res.status(400).json({ error: 'Payment verification failed.' });
+    return { statusCode: 400, headers, body: JSON.stringify({ error: 'Payment verification failed.' }) };
   }
 
-  // Call Groq API
   const prompt = `You are an expert ATS resume optimizer for the Indian job market.
 
 RESUME:
@@ -50,24 +49,22 @@ Respond ONLY with valid JSON, no markdown, no explanation:
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + process.env.GROQ_API_KEY
+        'Authorization': 'Bearer ' + process.env.GROQ_API_KEY,
       },
       body: JSON.stringify({
         model: 'llama-3.3-70b-versatile',
         temperature: 0.3,
         max_tokens: 4096,
-        messages: [{ role: 'user', content: prompt }]
-      })
+        messages: [{ role: 'user', content: prompt }],
+      }),
     });
 
     const data = await groqRes.json();
-    let raw = data.choices[0].message.content.trim();
-    raw = raw.replace(/```json/g, '').replace(/```/g, '').trim();
+    let raw = data.choices[0].message.content.trim().replace(/```json|```/g, '').trim();
     const parsed = JSON.parse(raw);
-    return res.status(200).json(parsed);
+    return { statusCode: 200, headers, body: JSON.stringify(parsed) };
 
   } catch (err) {
-    console.error('rewrite-resume error:', err);
-    return res.status(500).json({ error: err.message });
+    return { statusCode: 500, headers, body: JSON.stringify({ error: err.message }) };
   }
 };

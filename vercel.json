@@ -1,5 +1,7 @@
 {
   "version": 2,
+  "buildCommand": "npm install",
+  "outputDirectory": ".",
   "functions": {
     "api/create-order.js": {
       "memory": 256,

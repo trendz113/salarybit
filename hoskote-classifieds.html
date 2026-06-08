@@ -325,7 +325,7 @@ function renderListings(data) {
     const photo   = (l.Photo||l.photo||'').trim();
     const hasPhoto= photo && photo.startsWith('http');
     const contact = (l.Contact||l.contact||'').toString().replace(/\D/g,'');
-    const waLink  = contact ? `https://wa.me/91${contact}?text=Hi%2C%20I%20saw%20listing%20${encodeURIComponent(l.ID||'')}%20on%20Hoskote%20Classifieds` : `https://wa.me/${WA_NUMBER}?text=Hi%2C%20I%20am%20interested%20in%20listing%20${encodeURIComponent(l.ID||'')}`;
+    const waLink = contact ? `https://wa.me/91${contact}?text=Hi%2C%20I%20saw%20your%20*${encodeURIComponent(l.Title||'')}*%20listing%20on%20Hoskote%20Classifieds%20%F0%9F%8F%98%EF%B8%8F%20Is%20it%20still%20available%3F`;
     const desc    = (l.Description||l.description||'').trim();
     return `
     <div class="listing-card" style="animation-delay:${i*0.04}s">

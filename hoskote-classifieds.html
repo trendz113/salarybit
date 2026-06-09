@@ -26,7 +26,6 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { background:var(--dark); color:var(--text); font-family:'Baloo 2',cursive; min-height:100vh; }
 
-/* Hero */
 .hero {
   background: linear-gradient(135deg,#0F1115 0%,#1a1200 50%,#0F1115 100%);
   border-bottom: 1px solid var(--border);
@@ -72,7 +71,6 @@ body { background:var(--dark); color:var(--text); font-family:'Baloo 2',cursive;
 .hero-channel-btn:hover { background:rgba(37,211,102,0.2);transform:translateY(-1px); }
 .hero-sub { font-size:12px;color:var(--muted);margin-top:10px; }
 
-/* Search */
 .search-wrap {
   padding:14px 16px;background:var(--card);border-bottom:1px solid var(--border);
   position:sticky;top:0;z-index:100;
@@ -91,7 +89,6 @@ body { background:var(--dark); color:var(--text); font-family:'Baloo 2',cursive;
 }
 .search-btn:hover { background:var(--saffron-light); }
 
-/* Categories */
 .cats-wrap {
   padding:12px 16px;overflow-x:auto;display:flex;gap:8px;
   scrollbar-width:none;border-bottom:1px solid var(--border);
@@ -105,29 +102,29 @@ body { background:var(--dark); color:var(--text); font-family:'Baloo 2',cursive;
 .cat-btn:hover { border-color:var(--saffron);color:var(--saffron); }
 .cat-btn.active { background:var(--saffron);border-color:var(--saffron);color:white;box-shadow:0 2px 12px rgba(255,107,0,0.3); }
 
-/* Main */
 .main { padding:16px;max-width:700px;margin:0 auto; }
 .section-title { font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px; }
 .listings-grid { display:grid;gap:12px; }
 
-/* Card */
 .listing-card {
   background:var(--card);border:1px solid var(--border);border-radius:14px;
   overflow:hidden;transition:border-color 0.2s,transform 0.2s;animation:fadeUp 0.3s ease both;
 }
 .listing-card:hover { border-color:var(--saffron);transform:translateY(-2px); }
 @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-.card-photo { width:100%;height:180px;object-fit:cover;display:block;border-bottom:1px solid var(--border);cursor:pointer;transition:opacity 0.2s; }
+.card-photo { width:100%;height:200px;object-fit:cover;display:block;border-bottom:1px solid var(--border);cursor:pointer;transition:opacity 0.2s; }
 .card-photo:hover { opacity:0.9; }
 .card-body { padding:14px; }
 .card-top { display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px; }
 .cat-tag { font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;flex-shrink:0; }
 .cat-tag.property { background:rgba(99,102,241,0.15);color:#818cf8; }
+.cat-tag.rentals   { background:rgba(99,102,241,0.15);color:#818cf8; }
 .cat-tag.jobs      { background:rgba(34,197,94,0.15);color:#4ade80; }
 .cat-tag.services  { background:rgba(249,115,22,0.15);color:#fb923c; }
 .cat-tag.buy-sell  { background:rgba(236,72,153,0.15);color:#f472b6; }
 .cat-tag.vehicles  { background:rgba(20,184,166,0.15);color:#2dd4bf; }
 .cat-tag.education { background:rgba(250,204,21,0.15);color:#fbbf24; }
+.cat-tag.other     { background:rgba(139,146,165,0.15);color:#8B92A5; }
 .card-id { font-size:10px;color:var(--muted); }
 .card-title { font-size:16px;font-weight:700;color:var(--white);margin-bottom:6px;line-height:1.3; }
 .card-desc { font-size:13px;color:var(--muted);margin-bottom:8px;line-height:1.4; }
@@ -143,7 +140,6 @@ body { background:var(--dark); color:var(--text); font-family:'Baloo 2',cursive;
 }
 .contact-btn:hover { opacity:0.85; }
 
-/* Channel Banner */
 .channel-banner {
   background:linear-gradient(135deg,rgba(37,211,102,0.08),rgba(18,140,126,0.05));
   border:1px solid rgba(37,211,102,0.2);border-radius:14px;padding:16px 20px;
@@ -159,7 +155,6 @@ body { background:var(--dark); color:var(--text); font-family:'Baloo 2',cursive;
 }
 .channel-follow-btn:hover { opacity:0.85; }
 
-/* Post CTA */
 .post-cta {
   background:linear-gradient(135deg,rgba(255,107,0,0.1),rgba(255,140,53,0.05));
   border:1px solid rgba(255,107,0,0.25);border-radius:14px;padding:20px;text-align:center;margin-bottom:20px;
@@ -169,7 +164,6 @@ body { background:var(--dark); color:var(--text); font-family:'Baloo 2',cursive;
 .lang-pills { display:flex;justify-content:center;gap:8px;margin-bottom:14px;flex-wrap:wrap; }
 .lang-pill { background:var(--card2);border:1px solid var(--border);border-radius:20px;font-size:12px;padding:3px 12px;color:var(--text); }
 
-/* Modal */
 .modal-overlay {
   display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);
   z-index:1000;align-items:center;justify-content:center;padding:20px;
@@ -182,7 +176,6 @@ body { background:var(--dark); color:var(--text); font-family:'Baloo 2',cursive;
   display:flex;align-items:center;justify-content:center;
 }
 
-/* Empty/Loading */
 .empty-state { text-align:center;padding:60px 20px;color:var(--muted); }
 .empty-state .emoji { font-size:48px;margin-bottom:12px; }
 .empty-state h3 { font-size:18px;margin-bottom:6px;color:var(--text); }
@@ -190,7 +183,6 @@ body { background:var(--dark); color:var(--text); font-family:'Baloo 2',cursive;
 .spinner { width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--saffron);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px; }
 @keyframes spin { to{transform:rotate(360deg)} }
 
-/* Footer */
 footer { text-align:center;padding:24px 16px;border-top:1px solid var(--border);color:var(--muted);font-size:12px;margin-top:40px; }
 footer a { color:var(--saffron);text-decoration:none; }
 </style>
@@ -211,7 +203,7 @@ footer a { color:var(--saffron);text-decoration:none; }
   <div class="hero-stats">
     <div class="stat"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Listings</div></div>
     <div class="stat"><div class="stat-num">FREE</div><div class="stat-label">To Post</div></div>
-    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Languages</div></div>
+    <div class="stat"><div class="stat-num" id="stat-members">—</div><div class="stat-label">Members</div></div>
   </div>
   <div class="hero-btns">
     <a class="hero-wa-btn" href="https://wa.me/918317429244?text=Hello%20Hoskote%20Classifieds" target="_blank">
@@ -228,7 +220,7 @@ footer a { color:var(--saffron);text-decoration:none; }
 <!-- Search -->
 <div class="search-wrap">
   <div class="search-box">
-    <input class="search-input" id="searchInput" type="text" placeholder="Search 2BHK, plumber, job...">
+    <input class="search-input" id="searchInput" type="text" placeholder="Search water service, plumber, 2BHK...">
     <button class="search-btn" onclick="doSearch()">🔍</button>
   </div>
 </div>
@@ -237,6 +229,7 @@ footer a { color:var(--saffron);text-decoration:none; }
 <div class="cats-wrap">
   <button class="cat-btn active" onclick="filterCat('All',this)">🏘️ All</button>
   <button class="cat-btn" onclick="filterCat('Property',this)">🏠 Property</button>
+  <button class="cat-btn" onclick="filterCat('Rentals',this)">🏠 Rentals</button>
   <button class="cat-btn" onclick="filterCat('Jobs',this)">💼 Jobs</button>
   <button class="cat-btn" onclick="filterCat('Services',this)">🔧 Services</button>
   <button class="cat-btn" onclick="filterCat('Buy-Sell',this)">🛒 Buy & Sell</button>
@@ -289,11 +282,14 @@ footer a { color:var(--saffron);text-decoration:none; }
 </footer>
 
 <script>
-const API_BASE   = 'https://web-production-b6ffc.up.railway.app';
-const WA_NUMBER  = '918317429244';
-let currentCat   = 'All';
-let searchTerm   = '';
+// ── Config ────────────────────────────────────────────────────────────────────
+var API_BASE    = 'https://web-production-b6ffc.up.railway.app';
+var WA_NUMBER   = '918317429244';
+var WA_CHANNEL  = 'https://whatsapp.com/channel/0029VbDCF7S7tkj3AUTfFV30';
+var currentCat  = 'All';
+var searchTerm  = '';
 
+// ── Photo Modal ───────────────────────────────────────────────────────────────
 function openModal(url) {
   document.getElementById('modalImg').src = url;
   document.getElementById('photoModal').classList.add('open');
@@ -301,87 +297,141 @@ function openModal(url) {
 function closeModal() {
   document.getElementById('photoModal').classList.remove('open');
 }
-document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+document.addEventListener('keydown', function(e) { if(e.key==='Escape') closeModal(); });
 
+// ── Category CSS class ────────────────────────────────────────────────────────
 function catClass(cat) {
-  const m = {'property':'property','rentals':'property','jobs':'jobs','services':'services','buy-sell':'buy-sell','buy/sell':'buy-sell','vehicles':'vehicles','education':'education'};
-  return m[(cat||'').toLowerCase()] || 'jobs';
+  var c = (cat||'').toLowerCase().trim();
+  var map = {
+    'property':'property','rentals':'rentals',
+    'jobs':'jobs','job':'jobs',
+    'services':'services','service':'services',
+    'buy-sell':'buy-sell','buy/sell':'buy-sell',
+    'vehicles':'vehicles','vehicle':'vehicles',
+    'education':'education'
+  };
+  return map[c] || 'other';
 }
 
-function escHtml(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+// ── Escape HTML ───────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s||'')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// ── Build WhatsApp contact link using listing TITLE (not ID) ─────────────────
+function buildContactLink(listing) {
+  var title   = (listing.Title || listing.title || '').trim();
+  var contact = String(listing.Contact || listing.contact || '').replace(/\D/g,'');
+  var msg     = encodeURIComponent('Hi, I saw your *' + title + '* listing on Hoskote Classifieds 🏘️ Is it still available?');
+  if (contact && contact.length >= 10) {
+    // Direct contact with seller
+    return 'https://wa.me/91' + contact + '?text=' + msg;
+  } else {
+    // Contact via bot
+    var botMsg = encodeURIComponent('Hi, I am interested in *' + title + '* listed on Hoskote Classifieds 🏘️');
+    return 'https://wa.me/' + WA_NUMBER + '?text=' + botMsg;
+  }
+}
+
+// ── Render listings ───────────────────────────────────────────────────────────
 function renderListings(data) {
-  const grid  = document.getElementById('listingsGrid');
-  const count = document.getElementById('listingCount');
-  if (!data || !data.length) {
+  var grid  = document.getElementById('listingsGrid');
+  var count = document.getElementById('listingCount');
+
+  if (!data || data.length === 0) {
     count.textContent = 'No listings found';
-    grid.innerHTML = `<div class="empty-state"><div class="emoji">📭</div><h3>No listings yet!</h3><p>Be the first to post free.</p><br><a class="contact-btn" href="https://wa.me/${WA_NUMBER}?text=post" target="_blank">Post Free Now</a></div>`;
+    grid.innerHTML =
+      '<div class="empty-state">' +
+        '<div class="emoji">📭</div>' +
+        '<h3>No listings yet in this category</h3>' +
+        '<p>Be the first to post — it\'s free!</p><br>' +
+        '<a class="contact-btn" href="https://wa.me/' + WA_NUMBER + '?text=post" target="_blank">Post Free Now</a>' +
+      '</div>';
     return;
   }
-  count.textContent = `${data.length} listing${data.length!==1?'s':''} found`;
-  grid.innerHTML = data.map((l,i) => {
-    const photo   = (l.Photo||l.photo||'').trim();
-    const hasPhoto= photo && photo.startsWith('http');
-    const contact = (l.Contact||l.contact||'').toString().replace(/\D/g,'');
-    const waLink = contact ? `https://wa.me/91${contact}?text=Hi%2C%20I%20saw%20your%20*${encodeURIComponent(l.Title||'')}*%20listing%20on%20Hoskote%20Classifieds%20%F0%9F%8F%98%EF%B8%8F%20Is%20it%20still%20available%3F`;
-    const desc    = (l.Description||l.description||'').trim();
-    return `
-    <div class="listing-card" style="animation-delay:${i*0.04}s">
-      ${hasPhoto?`<img class="card-photo" src="${escHtml(photo)}" alt="${escHtml(l.Title||'')}" onclick="openModal('${escHtml(photo)}')" loading="lazy">`:''}
-      <div class="card-body">
-        <div class="card-top">
-          <span class="cat-tag ${catClass(l.Category)}">${escHtml(l.Category||'Other')}</span>
-          <span class="card-id">${escHtml(l.ID||'')}</span>
-        </div>
-        <div class="card-title">${escHtml(l.Title||'')}</div>
-        ${desc?`<div class="card-desc">${escHtml(desc)}</div>`:''}
-        <div class="card-meta">
-          <span class="price">💰 ${escHtml(l.Price||'Contact')}</span>
-          <span>📍 ${escHtml(l.Location||'Hoskote')}</span>
-          ${hasPhoto?'<span>🖼️ Photo</span>':''}
-        </div>
-        <div class="card-bottom">
-          <span class="card-date">📅 ${escHtml(l.Date||'')}</span>
-          <a class="contact-btn" href="${waLink}" target="_blank">📞 Contact</a>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
+
+  count.textContent = data.length + ' listing' + (data.length !== 1 ? 's' : '') + ' found';
+
+  var html = '';
+  for (var i = 0; i < data.length; i++) {
+    var l       = data[i];
+    var photo   = String(l.Photo || l.photo || '').trim();
+    var hasPhoto= photo && photo.indexOf('http') === 0;
+    var desc    = String(l.Description || l.description || '').trim();
+    var waLink  = buildContactLink(l);
+    var delay   = (i * 0.04) + 's';
+
+    html +=
+      '<div class="listing-card" style="animation-delay:' + delay + '">' +
+        (hasPhoto ? '<img class="card-photo" src="' + esc(photo) + '" alt="' + esc(l.Title||'') + '" onclick="openModal(\'' + esc(photo) + '\')" loading="lazy">' : '') +
+        '<div class="card-body">' +
+          '<div class="card-top">' +
+            '<span class="cat-tag ' + catClass(l.Category) + '">' + esc(l.Category||'Other') + '</span>' +
+            '<span class="card-id">' + esc(l.ID||'') + '</span>' +
+          '</div>' +
+          '<div class="card-title">' + esc(l.Title||'') + '</div>' +
+          (desc ? '<div class="card-desc">' + esc(desc) + '</div>' : '') +
+          '<div class="card-meta">' +
+            '<span class="price">💰 ' + esc(l.Price||'Contact') + '</span>' +
+            '<span>📍 ' + esc(l.Location||'Hoskote') + '</span>' +
+            (hasPhoto ? '<span>🖼️ Photo</span>' : '') +
+          '</div>' +
+          '<div class="card-bottom">' +
+            '<span class="card-date">📅 ' + esc(l.Date||'') + '</span>' +
+            '<a class="contact-btn" href="' + waLink + '" target="_blank">📞 Contact</a>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }
+  grid.innerHTML = html;
 }
 
-async function fetchListings(category='All', search='') {
-  const grid = document.getElementById('listingsGrid');
+// ── Fetch from Railway API ────────────────────────────────────────────────────
+function fetchListings(category, search) {
+  category = category || 'All';
+  search   = search   || '';
+  var grid = document.getElementById('listingsGrid');
   grid.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
-  try {
-    let url = `${API_BASE}/api/listings?limit=100`;
-    if (category && category!=='All') url += `&category=${encodeURIComponent(category)}`;
-    if (search) url += `&search=${encodeURIComponent(search)}`;
-    const res  = await fetch(url);
-    const data = await res.json();
-    renderListings(data.listings||[]);
-  } catch(e) {
-    renderListings([
-      {ID:'HC0001',Category:'Services',Title:'Plumber - All plumbing work',Price:'₹300/visit',Location:'Hoskote',Contact:'9980078418',Date:'07-06-2026'},
-      {ID:'HC0002',Category:'Property',Title:'2BHK for Rent - Near Bus Stand',Price:'₹8,000/month',Location:'Hoskote Bus Stand',Contact:'',Date:'07-06-2026'},
-    ]);
-  }
+
+  var url = API_BASE + '/api/listings?limit=100';
+  if (category && category !== 'All') url += '&category=' + encodeURIComponent(category);
+  if (search) url += '&search=' + encodeURIComponent(search);
+
+  fetch(url)
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      renderListings(data.listings || []);
+    })
+    .catch(function() {
+      // Show demo listings if API not reachable
+      renderListings([
+        {ID:'HC0001',Category:'Services',Title:'Plumber - All plumbing work',Description:'All plumbing repairs and installations',Price:'₹300/visit',Location:'Hoskote',Contact:'9980078418',Date:'07-06-2026'},
+        {ID:'HC0002',Category:'Services',Title:'Siddhu Hoskote Water Service',Description:'Water tank supply available',Price:'₹400/tank',Location:'Hoskote',Contact:'9900989743',Date:'07-06-2026'},
+        {ID:'HC0003',Category:'Services',Title:'Girish Building Contractor Hoskote',Description:'Building construction work',Price:'₹2000/sqft',Location:'Hoskote',Contact:'9901034398',Date:'07-06-2026'}
+      ]);
+    });
 }
 
-async function fetchStats() {
-  try {
-    const res  = await fetch(`${API_BASE}/api/stats`);
-    const data = await res.json();
-    document.getElementById('stat-total').textContent = data.total_listings||'0';
-  } catch(e) {
-    document.getElementById('stat-total').textContent = '1+';
-  }
+function fetchStats() {
+  fetch(API_BASE + '/api/stats')
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      document.getElementById('stat-total').textContent   = data.total_listings  || '0';
+      document.getElementById('stat-members').textContent = data.total_members   || '0';
+    })
+    .catch(function() {
+      document.getElementById('stat-total').textContent   = '5+';
+      document.getElementById('stat-members').textContent = '3+';
+    });
 }
 
+// ── Filter & Search ───────────────────────────────────────────────────────────
 function filterCat(cat, btn) {
   currentCat = cat;
-  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  var btns = document.querySelectorAll('.cat-btn');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
   btn.classList.add('active');
   fetchListings(cat, searchTerm);
 }
@@ -390,10 +440,14 @@ function doSearch() {
   searchTerm = document.getElementById('searchInput').value.trim();
   fetchListings(currentCat, searchTerm);
 }
-document.getElementById('searchInput').addEventListener('keydown', e=>{ if(e.key==='Enter') doSearch(); });
 
+document.getElementById('searchInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doSearch();
+});
+
+// ── Init ──────────────────────────────────────────────────────────────────────
 fetchStats();
-fetchListings();
+fetchListings('All', '');
 </script>
 </body>
 </html>

@@ -439,7 +439,7 @@
 // CONFIG — replace with your football-data.org free API key
 // Get free key at: https://www.football-data.org/client/register
 // ============================================================
-let API_KEY = localStorage.getItem('fdorg_key') || '2c749c3fe0504fd8859b82035a268f47';
+let API_KEY = localStorage.getItem('fdorg_key') || '';
 const BASE_URL = 'https://api.football-data.org/v4';
 const WC_CODE = 'WC';
 let activeTab = 'scores';
@@ -474,9 +474,11 @@ function switchTab(tab) {
 // API FETCH
 // ============================================================
 async function apiFetch(endpoint) {
-  const res = await fetch(`${BASE_URL}${endpoint}`, {
-    headers: { 'X-Auth-Token': API_KEY }
-  });
+  const url = `https://api.football-data.org/v4${endpoint}`;
+  const res = await fetch(
+    `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    { headers: { 'X-Auth-Token': API_KEY } }
+  );
   if (!res.ok) throw new Error(`API Error ${res.status}`);
   return res.json();
 }

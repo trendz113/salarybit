@@ -235,6 +235,22 @@ Analyze and respond ONLY with valid JSON, no markdown, no explanation:
         return jsonify({"error": str(e)}), 500
 
 
+
+# ── FOOTBALL DATA PROXY ───────────────────────────────────
+import requests as http_requests
+
+@app.route('/api/football')
+def football_proxy():
+    endpoint = request.args.get('endpoint', '')
+    if not endpoint:
+        return jsonify({'error': 'No endpoint'}), 400
+    r = http_requests.get(
+        f'https://api.football-data.org/v4{endpoint}',
+        headers={'X-Auth-Token': '2c749c3fe0504fd8859b82035a268f47'},
+        timeout=10
+    )
+    return jsonify(r.json())
+
 # ── HEALTH CHECK ──────────────────────────────────────────
 @app.route("/", methods=["GET"])
 def health():

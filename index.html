@@ -23,17 +23,38 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:image" content="https://salarybit.in/og-image.png">
 <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "SalaryBit — In-Hand Salary Calculator India",
-  "url": "https://salarybit.in/",
-  "description": "Free in-hand salary calculator for Indian salaried employees. Compare Old vs New tax regime, HRA, PF, Labour Code impact. FY 2026-27.",
-  "applicationCategory": "FinanceApplication",
-  "operatingSystem": "All",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" },
-  "creator": { "@type": "Organization", "name": "SalaryBit", "url": "https://salarybit.in/" }
-}
+[
+  {
+    "@context":"https://schema.org","@type":"WebApplication",
+    "name":"SalaryBit — In-Hand Salary Calculator India",
+    "url":"https://salarybit.in/",
+    "description":"Free in-hand salary calculator for Indian salaried employees. Compare Old vs New tax regime, HRA, PF, Labour Code impact. FY 2026-27.",
+    "applicationCategory":"FinanceApplication","operatingSystem":"All",
+    "offers":{"@type":"Offer","price":"0","priceCurrency":"INR"},
+    "creator":{"@type":"Organization","name":"SalaryBit","url":"https://salarybit.in/"}
+  },
+  {
+    "@context":"https://schema.org","@type":"ItemList",
+    "name":"SalaryBit Financial Calculators",
+    "itemListElement":[
+      {"@type":"ListItem","position":1,"name":"Salary Calculator","url":"https://salarybit.in/tools/salary-calculator.html"},
+      {"@type":"ListItem","position":2,"name":"Old vs New Tax Regime","url":"https://salarybit.in/tools/old-vs-new-tax-regime.html"},
+      {"@type":"ListItem","position":3,"name":"ESOP RSU Tax Calculator","url":"https://salarybit.in/tools/esop-rsu-tax-calculator.html"},
+      {"@type":"ListItem","position":4,"name":"Capital Gains Tax Calculator","url":"https://salarybit.in/tools/capital-gains-calculator.html"},
+      {"@type":"ListItem","position":5,"name":"Gratuity Calculator","url":"https://salarybit.in/tools/gratuity-calculator.html"},
+      {"@type":"ListItem","position":6,"name":"Notice Period Calculator","url":"https://salarybit.in/tools/notice-period-calculator.html"},
+      {"@type":"ListItem","position":7,"name":"Home Loan EMI Calculator","url":"https://salarybit.in/tools/home-loan-emi-calculator.html"},
+      {"@type":"ListItem","position":8,"name":"SIP Calculator","url":"https://salarybit.in/tools/sip-calculator.html"},
+      {"@type":"ListItem","position":9,"name":"FD Calculator","url":"https://salarybit.in/tools/fd-calculator.html"},
+      {"@type":"ListItem","position":10,"name":"Car Loan EMI Calculator","url":"https://salarybit.in/tools/car-loan-emi-calculator.html"},
+      {"@type":"ListItem","position":11,"name":"Retirement Calculator","url":"https://salarybit.in/tools/retirement-calculator.html"},
+      {"@type":"ListItem","position":12,"name":"EPF PF Calculator","url":"https://salarybit.in/tools/epf-calculator.html"},
+      {"@type":"ListItem","position":13,"name":"Salary Hike Calculator","url":"https://salarybit.in/tools/salary-hike-calculator.html"},
+      {"@type":"ListItem","position":14,"name":"GST Calculator","url":"https://salarybit.in/tools/gst-calculator.html"},
+      {"@type":"ListItem","position":15,"name":"Professional Tax Calculator","url":"https://salarybit.in/tools/professional-tax-calculator.html"}
+    ]
+  }
+]
 </script>
 <!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8336334158316485" crossorigin="anonymous"></script>
@@ -42,7 +63,7 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QFHT4BZTMF');</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -390,6 +411,78 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 .mob-tab:hover,.mob-tab.active{color:var(--accent)}
 .mob-tab-icon{font-size:18px;line-height:1}
 @media(max-width:640px){.main{padding-bottom:5rem}footer{margin-bottom:4rem}}
+
+/* ══ MOBILE OVERRIDES (injected) ══ */
+.brand-name{font-family:'Syne',sans-serif!important}
+
+/* Hero: show chips as 2-col grid on mobile */
+@media(max-width:640px){
+  body{padding-bottom:68px}
+  .hero{padding:1.25rem 1rem 1rem}
+  .hero h1{font-size:22px!important}
+  .hero-sub{font-size:12px!important;margin-top:.375rem}
+  .hero-tools{display:grid!important;grid-template-columns:1fr 1fr;gap:5px!important;margin-top:.875rem!important}
+  .hero-chip{font-size:11px!important;padding:7px 8px!important;border-radius:9px!important;white-space:normal!important;line-height:1.3!important;justify-content:flex-start!important}
+  .hero-stats{display:flex!important;gap:.75rem!important;margin-top:.875rem!important;padding-top:.75rem!important;border-top:1px solid rgba(255,255,255,.1)!important}
+  .hero-stat-val{font-size:18px!important}
+  .hero-stat-label{font-size:9px!important}
+  /* section nav scroll */
+  .sec-nav{flex-wrap:nowrap!important;overflow-x:auto!important;scrollbar-width:none!important;padding-bottom:4px!important}
+  .sec-nav::-webkit-scrollbar{display:none}
+  .sec-btn{flex-shrink:0!important;white-space:nowrap!important;font-size:11px!important;padding:5px 11px!important}
+  /* tool tab bar scroll */
+  #toolTabBar{flex-wrap:nowrap!important;overflow-x:auto!important;scrollbar-width:none!important;justify-content:flex-start!important;padding-bottom:4px!important}
+  #toolTabBar::-webkit-scrollbar{display:none}
+  .tool-tab{flex-shrink:0!important;font-size:11px!important;padding:5px 11px!important;white-space:nowrap!important}
+  /* tool pane grid */
+  .tool-grid{grid-template-columns:1fr!important}
+  /* panels */
+  .panel-body{padding:.875rem!important}
+  .panel-head{padding:.875rem!important}
+  .main{padding:1rem!important;padding-bottom:5rem!important}
+  /* ESOP/Share tax sections */
+  #sharetax-standalone,#esop-standalone,#tools-section,#seo-section{padding:1.75rem 1rem!important}
+  /* results area cards */
+  .th-card{padding:1.25rem!important}
+  .th-amount{font-size:32px!important}
+  .frow{grid-template-columns:1fr!important}
+  .regime-grid{grid-template-columns:1fr!important}
+  /* rights grid */
+  .rights-grid{grid-template-columns:1fr!important}
+  /* ESOP explainer grid */
+  .esop-expl-grid{grid-template-columns:1fr!important}
+  /* share tax results grid */
+  #st-results-grid{grid-template-columns:1fr!important}
+  #st-results-grid>div:first-child{border-right:none!important;border-bottom:1px solid var(--border)!important}
+  footer{padding:2rem 1rem 1.5rem!important;margin-bottom:60px!important}
+}
+
+/* Bottom tab bar improvements */
+.mob-tabbar{box-shadow:0 -2px 16px rgba(26,26,46,.08)!important}
+.mob-tab{font-size:9.5px!important;font-weight:600!important;position:relative}
+.mob-tab.active::before,.mob-tab:focus::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--accent);border-radius:0 0 3px 3px}
+
+/* Tool result cards — used by financial tools */
+.tool-result-card{background:var(--pale);border:1px solid var(--border);border-radius:var(--r-sm);padding:.875rem;margin-bottom:.5rem}
+.tool-result-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mist);margin-bottom:.25rem}
+.tool-result-val{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;color:var(--ink)}
+.tool-result-row{display:flex;justify-content:space-between;align-items:center;padding:.3rem 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--ink3);gap:.5rem}
+.tool-result-row:last-child{border-bottom:none}
+.tool-result-row span:last-child{font-weight:700;color:var(--ink);text-align:right}
+
+/* Tool tabs */
+.tool-pane{display:none}
+.tool-pane.on{display:block}
+.tool-tab{font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--mist);cursor:pointer;transition:.15s;white-space:nowrap}
+.tool-tab.on,.tool-tab:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Deep dive row in hero */
+.hero-deepdive{display:flex;flex-wrap:wrap;gap:.375rem;margin-top:.875rem;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.08)}
+@media(max-width:640px){.hero-mob-cta{display:flex!important;gap:8px;margin-top:12px;margin-bottom:2px}}
+.hero-deepdive-label{font-size:9px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.07em;align-self:center;margin-right:2px}
+.hero-deeplink{font-size:10px;font-weight:600;color:rgba(255,255,255,.55);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:3px 9px;border-radius:20px;text-decoration:none}
+.hero-deeplink:hover{background:rgba(255,255,255,.12);color:#fff}
+
 </style>
 </head>
 <body>
@@ -403,24 +496,19 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       <span class="brand-tag">FREE</span>
     </a>
     <div class="nav-links">
-      <a class="nav-a" href="#calc-section">Calculator</a>
-      <a class="nav-a" href="#calc-section" onclick="setTimeout(()=>{document.querySelector('[onclick*=\'tax\']')?.click()},100)">Tax Regime</a>
-      <a class="nav-a" href="#calc-section" onclick="setTimeout(()=>{document.getElementById('insurance-section')?.click()},100)">Insurance</a>
-      <a class="nav-a" href="#sharetax-standalone">Share Tax</a>
+      <a class="nav-a" href="/tools/salary-calculator.html">💰 Salary</a>
+      <a class="nav-a" href="/tools/old-vs-new-tax-regime.html">📋 Tax Regime</a>
+      <a class="nav-a" href="/tools/capital-gains-calculator.html">📈 Capital Gains</a>
+      <a class="nav-a" href="/tools/esop-rsu-tax-calculator.html">🏢 ESOP/RSU</a>
       <div class="nav-divider"></div>
-      <a class="nav-a" href="#tools-section">EMI</a>
-      <a class="nav-a" href="#tools-section" onclick="setTimeout(()=>showTool('sip',document.querySelector('[onclick*=\'sip\']')),150)">SIP</a>
-      <a class="nav-a" href="#tools-section" onclick="setTimeout(()=>showTool('retirement',document.querySelector('[onclick*=\'retirement\']')),150)">Retirement</a>
-      <a class="nav-a" href="#tools-section" onclick="setTimeout(()=>showTool('epf',document.querySelector('[onclick*=\'epf\']')),150)">EPF</a>
-      <a class="nav-a" href="#tools-section" onclick="setTimeout(()=>showTool('notice',document.querySelector('[onclick*=\'notice\']')),150)">Notice Pay</a>
+      <a class="nav-a" href="/tools/gratuity-calculator.html">🏆 Gratuity</a>
+      <a class="nav-a" href="/tools/notice-period-calculator.html">📋 Notice Pay</a>
+      <a class="nav-a" href="/tools/home-loan-emi-calculator.html">🏠 Home Loan</a>
+      <a class="nav-a" href="/tools/sip-calculator.html">📊 SIP</a>
+      <a class="nav-a" href="/tools/epf-calculator.html">🏦 EPF</a>
       <div class="nav-divider"></div>
-      <a class="nav-a" href="#calc-section" onclick="setTimeout(()=>{document.getElementById('labour-section')?.click()},100)">Labour Code</a>
-      <a class="nav-a" href="#calc-section" onclick="setTimeout(()=>{document.getElementById('rights-section')?.click()},100)">Rights</a>
-      <div class="nav-divider"></div>
-      <a class="nav-a" href="/blog/" style="color:var(--accent);font-weight:600">📝 Blog</a>
-      <a class="nav-a" href="/travel-rewards.html" style="color:var(--teal);font-weight:600">✈️ Travel Rewards</a>
-
-
+      <a class="nav-a" href="/blog/" style="color:var(--accent);font-weight:700">📝 Blog</a>
+      <a class="nav-a" href="/travel-rewards.html" style="color:var(--teal);font-weight:700">✈️ Travel</a>
     </div>
     <div class="nav-badge">FY 2026-27</div>
     <button class="mob-menu-btn" onclick="openMobNav()" aria-label="Open menu">
@@ -457,6 +545,21 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   <div class="mob-nav-section">More Tools</div>
   <a class="mob-nav-a" href="#tools-section" onclick="closeMobNav();setTimeout(()=>showTool('gst',document.querySelector('[onclick*=\"gst\"]'))  ,200)"><span class="mob-icon">🧾</span>GST Calculator</a>
   <a class="mob-nav-a" href="#tools-section" onclick="closeMobNav();setTimeout(()=>showTool('proftax',document.querySelector('[onclick*=\"proftax\"]'))  ,200)"><span class="mob-icon">🏛️</span>Professional Tax</a>
+  <div class="mob-nav-section">📄 Dedicated Tool Pages</div>
+  <a class="mob-nav-a" href="/tools/salary-calculator.html"><span class="mob-icon">💰</span>Salary Calculator Guide</a>
+  <a class="mob-nav-a" href="/tools/old-vs-new-tax-regime.html"><span class="mob-icon">📋</span>Old vs New Tax Regime</a>
+  <a class="mob-nav-a" href="/tools/capital-gains-calculator.html"><span class="mob-icon">📈</span>Capital Gains Tax</a>
+  <a class="mob-nav-a" href="/tools/esop-rsu-tax-calculator.html"><span class="mob-icon">🏢</span>ESOP / RSU Tax</a>
+  <a class="mob-nav-a" href="/tools/gratuity-calculator.html"><span class="mob-icon">🏆</span>Gratuity Calculator</a>
+  <a class="mob-nav-a" href="/tools/notice-period-calculator.html"><span class="mob-icon">📋</span>Notice Period</a>
+  <a class="mob-nav-a" href="/tools/home-loan-emi-calculator.html"><span class="mob-icon">🏠</span>Home Loan EMI</a>
+  <a class="mob-nav-a" href="/tools/sip-calculator.html"><span class="mob-icon">📊</span>SIP Calculator</a>
+  <a class="mob-nav-a" href="/tools/fd-calculator.html"><span class="mob-icon">💵</span>FD Calculator</a>
+  <a class="mob-nav-a" href="/tools/retirement-calculator.html"><span class="mob-icon">🏖️</span>Retirement Planner</a>
+  <a class="mob-nav-a" href="/tools/epf-calculator.html"><span class="mob-icon">🏦</span>EPF / PF</a>
+  <a class="mob-nav-a" href="/tools/salary-hike-calculator.html"><span class="mob-icon">📊</span>Salary Hike</a>
+  <a class="mob-nav-a" href="/tools/gst-calculator.html"><span class="mob-icon">🧾</span>GST Calculator</a>
+  <a class="mob-nav-a" href="/tools/professional-tax-calculator.html"><span class="mob-icon">🏛️</span>Professional Tax</a>
   <div class="mob-nav-section">Learn</div>
   <a class="mob-nav-a" href="/blog/" onclick="closeMobNav()"><span class="mob-icon">📝</span>Salary Blog &amp; Guides</a>
   <a class="mob-nav-a" href="/travel-rewards.html" onclick="closeMobNav()"><span class="mob-icon">✈️</span>Travel Rewards Advisor</a>
@@ -471,10 +574,12 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   <a class="mob-tab" href="#tools-section" onclick="setActiveTab(this)">
     <span class="mob-tab-icon">🧮</span>Tools
   </a>
-  <a class="mob-tab" href="#sharetax-standalone" onclick="setActiveTab(this)">
+  <a class="mob-tab" href="/tools/capital-gains-calculator.html">
     <span class="mob-tab-icon">📈</span>Tax
   </a>
-
+  <a class="mob-tab" href="/travel-rewards.html">
+    <span class="mob-tab-icon">✈️</span>Travel
+  </a>
   <button class="mob-tab" onclick="openMobNav()">
     <span class="mob-tab-icon">☰</span>More
   </button>
@@ -492,7 +597,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           <a class="hero-chip" href="#calc-section">💰 Salary Calculator</a>
           <a class="hero-chip" href="#calc-section">📋 Old vs New Regime</a>
           <a class="hero-chip" href="#calc-section">🛡️ Insurance Planner</a>
-          <a class="hero-chip" href="#sharetax-standalone">📈 Share &amp; Capital Gains Tax</a>
+          <a class="hero-chip" href="/tools/capital-gains-calculator.html">📈 Capital Gains Tax</a>
           <a class="hero-chip" href="#tools-section">🏠 Home Loan EMI</a>
           <a class="hero-chip" href="#tools-section" onclick="setTimeout(()=>showTool('sip',document.querySelector('[onclick*=\'sip\']')),200)">📊 SIP Calculator</a>
           <a class="hero-chip" href="#tools-section" onclick="setTimeout(()=>showTool('fd',document.querySelector('[onclick*=\'fd\']')),200)">💵 FD Calculator</a>
@@ -508,6 +613,25 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           <a class="hero-chip" href="#tools-section">🏛️ Professional Tax</a>
           <a class="hero-chip" href="/travel-rewards.html">✈️ Travel Rewards</a>
 
+        </div>
+        <!-- Mobile CTA (shown only on mobile) -->
+        <div style="display:none" class="hero-mob-cta">
+          <a href="#calc-section" style="display:inline-flex;align-items:center;gap:5px;background:#fff;color:var(--accent);font-weight:700;font-size:13px;padding:9px 16px;border-radius:9px;text-decoration:none;box-shadow:0 4px 12px rgba(0,0,0,.15)">💰 Salary Calculator</a>
+          <a href="#tools-section" style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);color:#fff;font-weight:600;font-size:13px;padding:9px 14px;border-radius:9px;text-decoration:none;border:1px solid rgba(255,255,255,.22)">🧮 All Tools</a>
+        </div>
+        <!-- Deep Dive links — SEO internal linking -->
+        <div class="hero-deepdive">
+          <span class="hero-deepdive-label">Deep Dive →</span>
+          <a class="hero-deeplink" href="/tools/salary-calculator.html">💰 Salary Guide</a>
+          <a class="hero-deeplink" href="/tools/old-vs-new-tax-regime.html">📋 Tax Regime Guide</a>
+          <a class="hero-deeplink" href="/tools/esop-rsu-tax-calculator.html">🏢 ESOP/RSU Guide</a>
+          <a class="hero-deeplink" href="/tools/capital-gains-calculator.html">📈 Capital Gains</a>
+          <a class="hero-deeplink" href="/tools/gratuity-calculator.html">🏆 Gratuity</a>
+          <a class="hero-deeplink" href="/tools/notice-period-calculator.html">📋 Notice Pay</a>
+          <a class="hero-deeplink" href="/tools/home-loan-emi-calculator.html">🏠 Home Loan EMI</a>
+          <a class="hero-deeplink" href="/tools/sip-calculator.html">📊 SIP</a>
+          <a class="hero-deeplink" href="/tools/retirement-calculator.html">🏖️ Retirement</a>
+          <a class="hero-deeplink" href="/tools/epf-calculator.html">🏦 EPF/PF</a>
         </div>
       </div>
       <div class="hero-stats">
@@ -712,8 +836,8 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           <button class="sec-btn" onclick="showSection('roadmap',this)">🗺️ Roadmap</button>
           <button class="sec-btn" onclick="showSection('labour',this)" id="labour-section">⚖️ Labour Code</button>
           <button class="sec-btn" onclick="showSection('rights',this)" id="rights-section">🏛️ Your Rights</button>
-          <button class="sec-btn" onclick="document.getElementById('sharetax-standalone').scrollIntoView({behavior:'smooth'})" id="sharetax-section">📈 Share Tax</button>
-          <button class="sec-btn" onclick="document.getElementById('esop-standalone').scrollIntoView({behavior:'smooth'})" id="esop-section">🏢 ESOP Tax</button>
+          <button class="sec-btn" onclick="window.location='/tools/capital-gains-calculator.html';return false;//({behavior:'smooth'})" id="sharetax-section">📈 Share Tax</button>
+          <button class="sec-btn" onclick="window.location='/tools/esop-rsu-tax-calculator.html';return false;//({behavior:'smooth'})" id="esop-section">🏢 ESOP Tax</button>
         </div>
 
         <!-- ── SALARY SECTION ── -->
@@ -969,643 +1093,49 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   </div><!-- /layout -->
 </main>
 
-<!-- SHARE TAX SECTION — standalone, always visible -->
-<section id="sharetax-standalone" style="background:var(--snow);border-top:1px solid var(--border);padding:2.5rem 1.5rem">
+<!-- SHARE TAX — redirect card to dedicated page -->
+<section id="sharetax-standalone" style="background:var(--snow);border-top:1px solid var(--border);padding:2rem 1.5rem">
   <div style="max-width:900px;margin:0 auto">
-    <div style="text-align:center;margin-bottom:2rem">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--mist);margin-bottom:.5rem">Free Tool</div>
-      <h2 style="font-family:var(--display);font-size:26px;color:var(--ink);margin-bottom:.5rem">📈 Capital Gains Tax on Shares</h2>
-      <p style="font-size:13px;color:var(--mist)">Works for Indian 🇮🇳, US 🇺🇸, and Euro 🇪🇺 shares. DTAA double-tax relief auto-applied for foreign shares.</p>
-    </div>
-
-    <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden">
-
-      <!-- Step 1: Share type -->
-      <div style="padding:1.5rem 1.5rem 0">
-        <div class="fg-label">Step 1 — What kind of shares did you sell?</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;margin-bottom:1.5rem">
-          <label class="st-choice">
-            <input type="radio" name="st-type" value="indian" onchange="stTypeChange()" checked>
-            <span class="st-flag">🇮🇳</span>
-            <span class="st-name">Indian shares<br><small>NSE / BSE (₹)</small></span>
-          </label>
-          <label class="st-choice">
-            <input type="radio" name="st-type" value="us" onchange="stTypeChange()">
-            <span class="st-flag">🇺🇸</span>
-            <span class="st-name">US shares<br><small>NYSE / NASDAQ ($)</small></span>
-          </label>
-          <label class="st-choice">
-            <input type="radio" name="st-type" value="euro" onchange="stTypeChange()">
-            <span class="st-flag">🇪🇺</span>
-            <span class="st-name">Euro shares<br><small>Frankfurt / LSE (€)</small></span>
-          </label>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:0 2px 12px rgba(26,26,46,.08);overflow:hidden">
+      <div style="background:linear-gradient(135deg,#1a1a2e,#2d2d4a);padding:1.5rem 1.75rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap">
+        <div style="flex:1;min-width:220px">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.4);margin-bottom:.4rem">📄 Dedicated Tool Page</div>
+          <h2 style="font-family:var(--display);font-size:22px;color:#fff;margin-bottom:.375rem">📈 Capital Gains Tax on Shares</h2>
+          <p style="font-size:12px;color:rgba(255,255,255,.5);line-height:1.5">Indian 🇮🇳 · US 🇺🇸 · Euro 🇪🇺 shares. STCG, LTCG, DTAA auto-applied. Budget 2024 rates. Advance tax schedule.</p>
         </div>
+        <a href="/tools/capital-gains-calculator.html" style="display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--accent),var(--teal));color:#fff;font-weight:700;font-size:14px;padding:11px 22px;border-radius:10px;text-decoration:none;flex-shrink:0;box-shadow:0 4px 16px rgba(91,106,240,.35)">Open Calculator →</a>
       </div>
-
-      <!-- Step 2: Fields -->
-      <div style="padding:0 1.5rem 1.5rem">
-        <div class="fg-label">Step 2 — Enter your sale details</div>
-
-        <!-- Indian -->
-        <div id="st-fields-indian">
-          <div class="frow">
-            <div class="field">
-              <label>Buy price per share (₹)</label>
-              <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="st-buy-inr" placeholder="e.g. 500" oninput="calcShareTax()"></div>
-            </div>
-            <div class="field">
-              <label>Sell price per share (₹)</label>
-              <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="st-sell-inr" placeholder="e.g. 750" oninput="calcShareTax()"></div>
-            </div>
-          </div>
-          <div class="frow">
-            <div class="field">
-              <label>Number of shares sold</label>
-              <input class="fld-inp bare" type="number" id="st-qty-inr" placeholder="e.g. 100" oninput="calcShareTax()">
-            </div>
-            <div class="field">
-              <label>How long did you hold?</label>
-              <select class="fld-inp bare" id="st-hold-inr" onchange="calcShareTax()">
-                <option value="stcg">Less than 1 year → STCG (20%)</option>
-                <option value="ltcg">More than 1 year → LTCG (12.5%)</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <!-- US -->
-        <div id="st-fields-us" style="display:none">
-          <div class="insight blue" style="margin-bottom:1rem"><span class="insight-icon">🤝</span><div><strong>India–USA DTAA applies.</strong> Tax already withheld in the US (usually 25%) is credited against your Indian tax — so you don't pay twice. We calculate the net amount you owe in India.</div></div>
-          <div class="frow">
-            <div class="field">
-              <label>Buy price per share ($)</label>
-              <div class="fld-wrap"><span class="fld-pre">$</span><input class="fld-inp" type="number" id="st-buy-usd" placeholder="e.g. 100" oninput="calcShareTax()"></div>
-            </div>
-            <div class="field">
-              <label>Sell price per share ($)</label>
-              <div class="fld-wrap"><span class="fld-pre">$</span><input class="fld-inp" type="number" id="st-sell-usd" placeholder="e.g. 150" oninput="calcShareTax()"></div>
-            </div>
-          </div>
-          <div class="frow">
-            <div class="field">
-              <label>Number of shares sold</label>
-              <input class="fld-inp bare" type="number" id="st-qty-usd" placeholder="e.g. 10" oninput="calcShareTax()">
-            </div>
-            <div class="field">
-              <label>USD → INR rate (on sell date)</label>
-              <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="st-fx-usd" value="84" oninput="calcShareTax()"></div>
-            </div>
-          </div>
-          <div class="frow">
-            <div class="field">
-              <label>How long did you hold?</label>
-              <select class="fld-inp bare" id="st-hold-usd" onchange="calcShareTax()">
-                <option value="stcg">Less than 2 years → STCG (slab rate)</option>
-                <option value="ltcg">More than 2 years → LTCG (12.5%)</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>US withholding tax rate (%)</label>
-              <div class="fld-wrap"><input class="fld-inp" type="number" id="st-withheld-usd" value="25" oninput="calcShareTax()"><span class="fld-pre" style="border-left:1px solid var(--border);border-right:none">%</span></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Euro -->
-        <div id="st-fields-euro" style="display:none">
-          <div class="insight blue" style="margin-bottom:1rem"><span class="insight-icon">🤝</span><div><strong>India–EU DTAA applies.</strong> Tax withheld in Europe (typically 10–15%) is credited under Section 90. File <strong>Form 67</strong> before your ITR to claim this — otherwise you lose the credit.</div></div>
-          <div class="frow">
-            <div class="field">
-              <label>Buy price per share (€)</label>
-              <div class="fld-wrap"><span class="fld-pre">€</span><input class="fld-inp" type="number" id="st-buy-eur" placeholder="e.g. 80" oninput="calcShareTax()"></div>
-            </div>
-            <div class="field">
-              <label>Sell price per share (€)</label>
-              <div class="fld-wrap"><span class="fld-pre">€</span><input class="fld-inp" type="number" id="st-sell-eur" placeholder="e.g. 120" oninput="calcShareTax()"></div>
-            </div>
-          </div>
-          <div class="frow">
-            <div class="field">
-              <label>Number of shares sold</label>
-              <input class="fld-inp bare" type="number" id="st-qty-eur" placeholder="e.g. 10" oninput="calcShareTax()">
-            </div>
-            <div class="field">
-              <label>EUR → INR rate (on sell date)</label>
-              <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="st-fx-eur" value="92" oninput="calcShareTax()"></div>
-            </div>
-          </div>
-          <div class="frow">
-            <div class="field">
-              <label>How long did you hold?</label>
-              <select class="fld-inp bare" id="st-hold-eur" onchange="calcShareTax()">
-                <option value="stcg">Less than 2 years → STCG (slab rate)</option>
-                <option value="ltcg">More than 2 years → LTCG (12.5%)</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>EU withholding tax rate (%)</label>
-              <div class="fld-wrap"><input class="fld-inp" type="number" id="st-withheld-eur" value="10" oninput="calcShareTax()"><span class="fld-pre" style="border-left:1px solid var(--border);border-right:none">%</span></div>
-            </div>
-          </div>
-        </div>
+      <div style="padding:1.25rem 1.75rem;display:flex;flex-wrap:wrap;gap:.625rem">
+        <div style="display:flex;align-items:center;gap:6px;background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:8px;padding:.5rem .875rem;font-size:12px;color:var(--accent)"><strong>STCG 20%</strong> — Listed equity held &lt;12 months</div>
+        <div style="display:flex;align-items:center;gap:6px;background:var(--teal-bg);border:1px solid rgba(14,165,160,.2);border-radius:8px;padding:.5rem .875rem;font-size:12px;color:var(--teal)"><strong>LTCG 12.5%</strong> — Listed equity held &gt;12 months (₹1.25L exempt)</div>
+        <div style="display:flex;align-items:center;gap:6px;background:var(--amber-bg);border:1px solid rgba(217,119,6,.2);border-radius:8px;padding:.5rem .875rem;font-size:12px;color:var(--amber)"><strong>DTAA Relief</strong> — US &amp; EU foreign tax credit auto-applied</div>
+        <div style="display:flex;align-items:center;gap:6px;background:var(--green-bg);border:1px solid rgba(22,163,74,.2);border-radius:8px;padding:.5rem .875rem;font-size:12px;color:var(--green)"><strong>Advance Tax Schedule</strong> — 4 installment dates auto-calculated</div>
       </div>
-
-      <!-- Results -->
-      <div id="st-empty" style="padding:1rem 1.5rem 1.5rem">
-        <div class="insight blue"><span class="insight-icon">👆</span><div>Fill in the details above — your tax and advance tax schedule will appear instantly.</div></div>
-      </div>
-
-      <div id="st-results" style="display:none;border-top:1px solid var(--border)">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0" id="st-results-grid">
-
-          <!-- Left: Tax breakdown -->
-          <div style="padding:1.5rem;border-right:1px solid var(--border)">
-            <div class="card-title" style="margin-bottom:1rem">💰 Your tax calculation</div>
-            <div id="st-result-rows"></div>
-            <div class="insight" id="st-insight" style="margin-top:1rem"></div>
-          </div>
-
-          <!-- Right: Advance tax schedule -->
-          <div style="padding:1.5rem">
-            <div class="card-title" style="margin-bottom:.25rem">📅 Advance Tax Schedule</div>
-            <div style="font-size:11px;color:var(--mist);margin-bottom:1rem">Pay in installments if total tax &gt; ₹10,000</div>
-            <div id="st-advance-rows"></div>
-            <div class="insight gold" style="margin-top:1rem"><span class="insight-icon">📋</span><div id="st-form67-note"></div></div>
-          </div>
-
-        </div>
-      </div>
-
     </div>
   </div>
 </section>
 
-<!-- ESOP TAX SECTION — standalone, always visible -->
-<section id="esop-standalone" style="background:var(--pale);border-top:1px solid var(--border);padding:1.75rem 1.5rem">
+<!-- ESOP TAX — redirect card to dedicated page -->
+<section id="esop-standalone" style="background:var(--pale);border-top:1px solid var(--border);padding:2rem 1.5rem">
   <div style="max-width:960px;margin:0 auto">
-
-    <!-- Header -->
-    <div style="text-align:center;margin-bottom:1.25rem">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--mist);margin-bottom:.5rem">Free Tool</div>
-      <h2 style="font-family:var(--display);font-size:26px;color:var(--ink);margin-bottom:.5rem">🏢 ESOP / RSU Tax Calculator</h2>
-      <p style="font-size:13px;color:var(--mist)">Works for Indian 🇮🇳, US 🇺🇸, and Euro 🇪🇺 company ESOPs. Two-stage tax: <strong>Perquisite at exercise + Capital gains at sale</strong> — DTAA relief auto-applied for foreign grants.</p>
-    </div>
-
-    <!-- AdSense unit -->
-    <ins class="adsbygoogle"
-      style="display:block;margin:0 0 1.5rem"
-      data-ad-client="ca-pub-8336334158316485"
-      data-ad-slot="6518505601"
-      data-ad-format="auto"
-      data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
-
-    <!-- Country selector tabs -->
-    <div style="display:flex;gap:.625rem;flex-wrap:wrap;margin-bottom:1.5rem;justify-content:center">
-      <label class="st-choice" style="min-width:140px" onclick="esopCountryChange('india')">
-        <input type="radio" name="esop-country" value="india" checked>
-        <span class="st-flag">🇮🇳</span>
-        <span class="st-name">Indian company<br><small>NSE/BSE listed or Startup (₹)</small></span>
-      </label>
-      <label class="st-choice" style="min-width:140px" onclick="esopCountryChange('us')">
-        <input type="radio" name="esop-country" value="us">
-        <span class="st-flag">🇺🇸</span>
-        <span class="st-name">US company<br><small>NYSE/NASDAQ ($) — RSU/ESPP/ISO</small></span>
-      </label>
-      <label class="st-choice" style="min-width:140px" onclick="esopCountryChange('eu')">
-        <input type="radio" name="esop-country" value="eu">
-        <span class="st-flag">🇪🇺</span>
-        <span class="st-name">Euro company<br><small>Frankfurt/LSE/Euronext (€)</small></span>
-      </label>
-    </div>
-
-    <!-- Main card -->
-    <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden">
-
-      <!-- Explainer — changes per country -->
-      <div id="esop-explainer-india" style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(91,106,240,.04),rgba(14,165,160,.04))">
-        <div style="font-size:12px;font-weight:700;color:var(--ink);margin-bottom:.75rem">📚 How Indian ESOP Tax Works (Section 17(2) + Capital Gains)</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem" class="esop-expl-grid">
-          <div style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:var(--r-sm);padding:.75rem">
-            <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--accent);margin-bottom:.35rem">🔵 Step 1 — Exercise</div>
-            <div style="font-size:11px;color:var(--ink3);line-height:1.45">(FMV − Grant price) × shares = <strong>Perquisite</strong>. Taxed at your income slab. Employer deducts TDS via Form 16 Part B.</div>
-          </div>
-          <div style="background:var(--teal-bg);border:1px solid rgba(14,165,160,.2);border-radius:var(--r-sm);padding:.75rem">
-            <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--teal);margin-bottom:.35rem">🟢 Step 2 — Sale</div>
-            <div style="font-size:11px;color:var(--ink3);line-height:1.45">Cost basis = FMV on exercise. Listed &gt;1yr → LTCG 12.5% (₹1.25L exempt). Listed &lt;1yr → STCG 20%. Unlisted &gt;2yr → 12.5%, else slab.</div>
-          </div>
-          <div style="background:var(--amber-bg);border:1px solid rgba(217,119,6,.2);border-radius:var(--r-sm);padding:.75rem">
-            <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--amber);margin-bottom:.35rem">⚠️ Startup Deferral</div>
-            <div style="font-size:11px;color:var(--ink3);line-height:1.45">Sec 192(1C): SEBI-registered startups can defer TDS up to 48 months from exercise, or till sale/exit — whichever is earliest.</div>
-          </div>
+    <div style="background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:0 2px 12px rgba(26,26,46,.08);overflow:hidden">
+      <div style="background:linear-gradient(135deg,#5b21b6,#7c3aed);padding:1.5rem 1.75rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap">
+        <div style="flex:1;min-width:220px">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.4);margin-bottom:.4rem">📄 Dedicated Tool Page</div>
+          <h2 style="font-family:var(--display);font-size:22px;color:#fff;margin-bottom:.375rem">🏢 ESOP / RSU Tax Calculator</h2>
+          <p style="font-size:12px;color:rgba(255,255,255,.5);line-height:1.5">Indian 🇮🇳 · US 🇺🇸 · Euro 🇪🇺 ESOPs. Section 17(2) perquisite + capital gains at sale. Full DTAA relief.</p>
         </div>
+        <a href="/tools/esop-rsu-tax-calculator.html" style="display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,#fff,#f0f0ff);color:#5b21b6;font-weight:700;font-size:14px;padding:11px 22px;border-radius:10px;text-decoration:none;flex-shrink:0;box-shadow:0 4px 16px rgba(91,33,177,.25)">Open Calculator →</a>
       </div>
-
-      <div id="esop-explainer-us" style="display:none;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(91,106,240,.04),rgba(14,165,160,.04))">
-        <div style="font-size:12px;font-weight:700;color:var(--ink);margin-bottom:.75rem">📚 How US ESOP / RSU Tax Works for Indian Residents (India–USA DTAA)</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem" class="esop-expl-grid">
-          <div style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:var(--r-sm);padding:.75rem">
-            <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--accent);margin-bottom:.35rem">🔵 Step 1 — Vest / Exercise</div>
-            <div style="font-size:11px;color:var(--ink3);line-height:1.45">On RSU vest or ESOP exercise: FMV in USD converted to INR at SBI TT rate. Perquisite = (FMV−Grant)×qty×FX. Taxed at slab + cess.</div>
-          </div>
-          <div style="background:var(--teal-bg);border:1px solid rgba(14,165,160,.2);border-radius:var(--r-sm);padding:.75rem">
-            <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--teal);margin-bottom:.35rem">🟢 Step 2 — Sale (India CG)</div>
-            <div style="font-size:11px;color:var(--ink3);line-height:1.45">Foreign shares = unlisted for India purposes. &gt;2 yr hold → LTCG 12.5%. &lt;2 yr → taxed at slab rate. Gain = (Sale−FMV)×qty×FX in INR.</div>
-          </div>
-          <div style="background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:var(--r-sm);padding:.75rem">
-            <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--purple);margin-bottom:.35rem">🤝 DTAA Relief (Form 67)</div>
-            <div style="font-size:11px;color:var(--ink3);line-height:1.45">US withholds ~25–37% on vest/sale. India credits this under Sec 90. File <strong>Form 67 before ITR</strong> to claim Foreign Tax Credit — else you lose it.</div>
-          </div>
-        </div>
+      <div style="padding:1.25rem 1.75rem;display:flex;flex-wrap:wrap;gap:.625rem">
+        <div style="display:flex;align-items:center;gap:6px;background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:8px;padding:.5rem .875rem;font-size:12px;color:var(--accent)"><strong>Stage 1 — At Vesting</strong> Perquisite taxed at slab under Sec 17(2)</div>
+        <div style="display:flex;align-items:center;gap:6px;background:var(--teal-bg);border:1px solid rgba(14,165,160,.2);border-radius:8px;padding:.5rem .875rem;font-size:12px;color:var(--teal)"><strong>Stage 2 — At Sale</strong> LTCG / STCG on gain from FMV to sale price</div>
+        <div style="display:flex;align-items:center;gap:6px;background:var(--amber-bg);border:1px solid rgba(217,119,6,.2);border-radius:8px;padding:.5rem .875rem;font-size:12px;color:var(--amber)"><strong>DTAA + Form 67</strong> Foreign tax credit auto-calculated</div>
+        <div style="display:flex;align-items:center;gap:6px;background:var(--green-bg);border:1px solid rgba(22,163,74,.2);border-radius:8px;padding:.5rem .875rem;font-size:12px;color:var(--green)"><strong>Startup Deferral</strong> Sec 192(1C) 48-month TDS deferral flag</div>
       </div>
-
-      <div id="esop-explainer-eu" style="display:none;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(91,106,240,.04),rgba(14,165,160,.04))">
-        <div style="font-size:12px;font-weight:700;color:var(--ink);margin-bottom:.75rem">📚 How Euro ESOP / RSU Tax Works for Indian Residents (India–EU DTAA)</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem" class="esop-expl-grid">
-          <div style="background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:var(--r-sm);padding:.75rem">
-            <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--accent);margin-bottom:.35rem">🔵 Step 1 — Vest / Exercise</div>
-            <div style="font-size:11px;color:var(--ink3);line-height:1.45">EUR FMV converted to INR on vest/exercise date. Perquisite = (FMV−Grant)×qty×FX. Taxed as salary at your India slab. Employer may withhold source country tax.</div>
-          </div>
-          <div style="background:var(--teal-bg);border:1px solid rgba(14,165,160,.2);border-radius:var(--r-sm);padding:.75rem">
-            <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--teal);margin-bottom:.35rem">🟢 Step 2 — Sale (India CG)</div>
-            <div style="font-size:11px;color:var(--ink3);line-height:1.45">Foreign (Euro) shares treated as unlisted in India. &gt;2 yr → LTCG 12.5%. &lt;2 yr → slab rate. Gain converted from EUR to INR at sale-date rate.</div>
-          </div>
-          <div style="background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:var(--r-sm);padding:.75rem">
-            <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--purple);margin-bottom:.35rem">🤝 DTAA Relief (Form 67)</div>
-            <div style="font-size:11px;color:var(--ink3);line-height:1.45">EU source countries withhold 10–30% at source. India credits under Sec 90/91. File <strong>Form 67 before ITR</strong>. Germany, France, UK etc. all have bilateral DTAAs with India.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Calculator grid -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0" id="esop-calc-grid">
-
-        <!-- LEFT: Inputs -->
-        <div style="padding:1.5rem;border-right:1px solid var(--border)">
-
-          <!-- INDIA inputs -->
-          <div id="esop-inputs-india">
-            <div class="fg-label">🇮🇳 Your Indian ESOP Details</div>
-            <div class="field">
-              <label>Share type</label>
-              <select class="fld-inp bare" id="esop-share-type-india" onchange="calcEsop()">
-                <option value="listed">Listed shares (NSE / BSE)</option>
-                <option value="unlisted">Unlisted / Startup shares</option>
-              </select>
-            </div>
-            <div class="frow" style="margin-top:.625rem">
-              <div class="field">
-                <label>Grant / Exercise price (₹)</label>
-                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="esop-grant-india" placeholder="e.g. 100" oninput="calcEsop()"></div>
-                <div class="fld-hint">Price you pay to exercise</div>
-              </div>
-              <div class="field">
-                <label>FMV on exercise date (₹)</label>
-                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="esop-fmv-india" placeholder="e.g. 500" oninput="calcEsop()"></div>
-                <div class="fld-hint">Market value on exercise day</div>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="field">
-                <label>Sale price per share (₹)</label>
-                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="esop-sale-india" placeholder="e.g. 800 (optional)" oninput="calcEsop()"></div>
-              </div>
-              <div class="field">
-                <label>Number of shares</label>
-                <input class="fld-inp bare" type="number" id="esop-qty-india" placeholder="e.g. 500" oninput="calcEsop()">
-              </div>
-            </div>
-            <div class="frow">
-              <div class="field">
-                <label>Your income tax slab</label>
-                <select class="fld-inp bare" id="esop-slab-india" onchange="calcEsop()">
-                  <option value="5">5% (₹3L–₹7L)</option>
-                  <option value="10">10% (₹7L–₹10L)</option>
-                  <option value="15">15% (₹10L–₹12L)</option>
-                  <option value="20">20% (₹12L–₹15L)</option>
-                  <option value="30" selected>30% (above ₹15L)</option>
-                </select>
-              </div>
-              <div class="field">
-                <label>Holding after exercise</label>
-                <select class="fld-inp bare" id="esop-hold-india" onchange="calcEsop()">
-                  <option value="stcg">Under 1 yr (STCG)</option>
-                  <option value="ltcg" selected>Over 1 yr (LTCG)</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <!-- US inputs -->
-          <div id="esop-inputs-us" style="display:none">
-            <div class="fg-label">🇺🇸 Your US ESOP / RSU Details</div>
-            <div class="field">
-              <label>Grant type</label>
-              <select class="fld-inp bare" id="esop-grant-type-us" onchange="calcEsop()">
-                <option value="rsu">RSU (Restricted Stock Unit)</option>
-                <option value="esop">ESOP / Stock Option</option>
-                <option value="espp">ESPP (Employee Stock Purchase Plan)</option>
-              </select>
-            </div>
-            <div class="frow" style="margin-top:.625rem">
-              <div class="field">
-                <label>Grant / Exercise price ($)</label>
-                <div class="fld-wrap"><span class="fld-pre">$</span><input class="fld-inp" type="number" id="esop-grant-us" placeholder="e.g. 0 (RSU)" oninput="calcEsop()"></div>
-                <div class="fld-hint">0 for RSUs (no cost to you)</div>
-              </div>
-              <div class="field">
-                <label>FMV on vest / exercise ($)</label>
-                <div class="fld-wrap"><span class="fld-pre">$</span><input class="fld-inp" type="number" id="esop-fmv-us" placeholder="e.g. 150" oninput="calcEsop()"></div>
-                <div class="fld-hint">Stock price on vest/exercise date</div>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="field">
-                <label>Sale price per share ($)</label>
-                <div class="fld-wrap"><span class="fld-pre">$</span><input class="fld-inp" type="number" id="esop-sale-us" placeholder="e.g. 200 (optional)" oninput="calcEsop()"></div>
-              </div>
-              <div class="field">
-                <label>Number of shares</label>
-                <input class="fld-inp bare" type="number" id="esop-qty-us" placeholder="e.g. 100" oninput="calcEsop()">
-              </div>
-            </div>
-            <div class="frow">
-              <div class="field">
-                <label>USD → INR rate</label>
-                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="esop-fx-us" value="84" oninput="calcEsop()"></div>
-                <div class="fld-hint">SBI TT rate on vest date</div>
-              </div>
-              <div class="field">
-                <label>US withholding tax (%)</label>
-                <div class="fld-wrap"><input class="fld-inp" type="number" id="esop-withheld-us" value="25" oninput="calcEsop()"><span class="fld-pre" style="border-left:1px solid var(--border);border-right:none">%</span></div>
-                <div class="fld-hint">Typically 22–37% (W-2 supplemental)</div>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="field">
-                <label>Your India tax slab</label>
-                <select class="fld-inp bare" id="esop-slab-us" onchange="calcEsop()">
-                  <option value="5">5%</option><option value="10">10%</option>
-                  <option value="15">15%</option><option value="20">20%</option>
-                  <option value="30" selected>30%</option>
-                </select>
-              </div>
-              <div class="field">
-                <label>Holding after vest/exercise</label>
-                <select class="fld-inp bare" id="esop-hold-us" onchange="calcEsop()">
-                  <option value="stcg">Under 2 yrs (slab rate)</option>
-                  <option value="ltcg" selected>Over 2 yrs (LTCG 12.5%)</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <!-- EU inputs -->
-          <div id="esop-inputs-eu" style="display:none">
-            <div class="fg-label">🇪🇺 Your Euro ESOP / RSU Details</div>
-            <div class="field">
-              <label>Grant type</label>
-              <select class="fld-inp bare" id="esop-grant-type-eu" onchange="calcEsop()">
-                <option value="rsu">RSU (Restricted Stock Unit)</option>
-                <option value="esop">ESOP / Stock Option</option>
-              </select>
-            </div>
-            <div class="frow" style="margin-top:.625rem">
-              <div class="field">
-                <label>Grant / Exercise price (€)</label>
-                <div class="fld-wrap"><span class="fld-pre">€</span><input class="fld-inp" type="number" id="esop-grant-eu" placeholder="e.g. 0 (RSU)" oninput="calcEsop()"></div>
-                <div class="fld-hint">0 for RSUs</div>
-              </div>
-              <div class="field">
-                <label>FMV on vest / exercise (€)</label>
-                <div class="fld-wrap"><span class="fld-pre">€</span><input class="fld-inp" type="number" id="esop-fmv-eu" placeholder="e.g. 80" oninput="calcEsop()"></div>
-                <div class="fld-hint">Stock price on vest/exercise date</div>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="field">
-                <label>Sale price per share (€)</label>
-                <div class="fld-wrap"><span class="fld-pre">€</span><input class="fld-inp" type="number" id="esop-sale-eu" placeholder="e.g. 120 (optional)" oninput="calcEsop()"></div>
-              </div>
-              <div class="field">
-                <label>Number of shares</label>
-                <input class="fld-inp bare" type="number" id="esop-qty-eu" placeholder="e.g. 50" oninput="calcEsop()">
-              </div>
-            </div>
-            <div class="frow">
-              <div class="field">
-                <label>EUR → INR rate</label>
-                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="esop-fx-eu" value="92" oninput="calcEsop()"></div>
-                <div class="fld-hint">SBI TT rate on vest date</div>
-              </div>
-              <div class="field">
-                <label>EU withholding tax (%)</label>
-                <div class="fld-wrap"><input class="fld-inp" type="number" id="esop-withheld-eu" value="15" oninput="calcEsop()"><span class="fld-pre" style="border-left:1px solid var(--border);border-right:none">%</span></div>
-                <div class="fld-hint">Germany ~26%, France ~30%, UK ~40%</div>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="field">
-                <label>Your India tax slab</label>
-                <select class="fld-inp bare" id="esop-slab-eu" onchange="calcEsop()">
-                  <option value="5">5%</option><option value="10">10%</option>
-                  <option value="15">15%</option><option value="20">20%</option>
-                  <option value="30" selected>30%</option>
-                </select>
-              </div>
-              <div class="field">
-                <label>Holding after vest/exercise</label>
-                <select class="fld-inp bare" id="esop-hold-eu" onchange="calcEsop()">
-                  <option value="stcg">Under 2 yrs (slab rate)</option>
-                  <option value="ltcg" selected>Over 2 yrs (LTCG 12.5%)</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-        </div><!-- /left inputs -->
-
-        <!-- RIGHT: Results -->
-        <div style="padding:1.5rem">
-          <div id="esop-empty">
-            <div class="insight blue"><span class="insight-icon">👈</span><div>Fill in your ESOP details on the left — your complete India tax breakdown will appear here instantly.</div></div>
-          </div>
-          <div id="esop-results" style="display:none">
-            <div class="card-title" style="margin-bottom:1rem">💰 Your ESOP Tax Breakdown (India)</div>
-            <div id="esop-result-rows"></div>
-            <div class="insight" id="esop-insight" style="margin-top:1rem"></div>
-            <div style="margin-top:1.25rem">
-              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mist);margin-bottom:.6rem">📅 When &amp; how to pay tax</div>
-              <div id="esop-timeline"></div>
-            </div>
-          </div>
-        </div>
-
-      </div><!-- /esop-calc-grid -->
     </div>
   </div>
 </section>
-
-<style>
-@media(max-width:700px){
-  #esop-calc-grid{grid-template-columns:1fr!important}
-  #esop-calc-grid>div:first-child{border-right:none!important;border-bottom:1px solid var(--border)}
-  .esop-expl-grid{grid-template-columns:1fr!important}
-}
-</style>
-
-<script>
-var _esopCountry='india';
-
-function esopCountryChange(c){
-  _esopCountry=c;
-  ['india','us','eu'].forEach(function(x){
-    document.getElementById('esop-inputs-'+x).style.display=x===c?'':'none';
-    document.getElementById('esop-explainer-'+x).style.display=x===c?'':'none';
-  });
-  document.getElementById('esop-empty').style.display='';
-  document.getElementById('esop-results').style.display='none';
-  calcEsop();
-}
-
-function calcEsop(){
-  var c=_esopCountry;
-  function gv(id){return parseFloat(document.getElementById(id).value)||0;}
-  function el(id){return document.getElementById(id);}
-  function fmtI(n){return '₹'+Math.round(n).toLocaleString('en-IN');}
-  function addSurchargeCess(t){
-    var sur=t>5000000?t*0.15:t>2000000?t*0.10:t>1000000?t*0.07:0;
-    var cess=(t+sur)*0.04;
-    return Math.round(t+sur+cess);
-  }
-
-  var grant,fmv,sale,qty,slab,hold,fx=1,withheld=0,currency='₹',isForeign=false;
-
-  if(c==='india'){
-    grant=gv('esop-grant-india'); fmv=gv('esop-fmv-india');
-    sale=gv('esop-sale-india'); qty=gv('esop-qty-india');
-    slab=gv('esop-slab-india'); hold=el('esop-hold-india').value;
-    var shareType=el('esop-share-type-india').value;
-  } else if(c==='us'){
-    grant=gv('esop-grant-us'); fmv=gv('esop-fmv-us');
-    sale=gv('esop-sale-us'); qty=gv('esop-qty-us');
-    slab=gv('esop-slab-us'); hold=el('esop-hold-us').value;
-    fx=gv('esop-fx-us')||84; withheld=gv('esop-withheld-us')||25;
-    currency='$'; isForeign=true; shareType='unlisted';
-  } else {
-    grant=gv('esop-grant-eu'); fmv=gv('esop-fmv-eu');
-    sale=gv('esop-sale-eu'); qty=gv('esop-qty-eu');
-    slab=gv('esop-slab-eu'); hold=el('esop-hold-eu').value;
-    fx=gv('esop-fx-eu')||92; withheld=gv('esop-withheld-eu')||15;
-    currency='€'; isForeign=true; shareType='unlisted';
-  }
-
-  if(!fmv||!qty){
-    el('esop-empty').style.display='';
-    el('esop-results').style.display='none';
-    return;
-  }
-
-  // — STEP 1: Perquisite at exercise/vest —
-  var perqPerShare=Math.max(0,(fmv-grant)*fx);
-  var totalPerq=perqPerShare*qty;
-  var perqTaxBase=totalPerq*(slab/100);
-
-  // Foreign tax credit on perquisite (withheld by US/EU employer)
-  var withheldINR=fmv*qty*fx*(withheld/100);
-  var ftcPerq=isForeign?Math.min(withheldINR, perqTaxBase):0;
-  var netPerqTax=Math.max(0,perqTaxBase-ftcPerq);
-  var totalPerqTax=addSurchargeCess(netPerqTax);
-
-  // — STEP 2: Capital gains at sale —
-  var cgTax=0, cgLabel='', cgGainINR=0, cgTaxBeforeFTC=0;
-  var ftcCG=0;
-  if(sale>0){
-    var fmvINR=fmv*fx;
-    var saleINR=sale*fx;
-    cgGainINR=(saleINR-fmvINR)*qty;
-    if(cgGainINR>0){
-      if(shareType==='listed'){
-        if(hold==='ltcg'){cgTaxBeforeFTC=Math.max(0,(cgGainINR-125000)*0.125);cgLabel='LTCG 12.5% (listed &gt;1yr, ₹1.25L exempt)';}
-        else{cgTaxBeforeFTC=cgGainINR*0.20;cgLabel='STCG 20% (listed &lt;1yr)';}
-      } else {
-        if(hold==='ltcg'){cgTaxBeforeFTC=Math.max(0,(cgGainINR-125000)*0.125);cgLabel='LTCG 12.5% (unlisted/foreign &gt;2yr, ₹1.25L exempt)';}
-        else{cgTaxBeforeFTC=cgGainINR*(slab/100);cgLabel='STCG at slab '+slab+'% (unlisted/foreign &lt;2yr)';}
-      }
-    }
-    // Any remaining FTC (withheld on sale proceeds in source country) credited against CG tax
-    var withheldSaleINR=isForeign?sale*qty*fx*(withheld/100):0;
-    var usedOnPerq=ftcPerq;
-    var remainFTC=Math.max(0,withheldINR-usedOnPerq);
-    ftcCG=isForeign?Math.min(remainFTC+withheldSaleINR, cgTaxBeforeFTC):0;
-    cgTax=addSurchargeCess(Math.max(0,cgTaxBeforeFTC-ftcCG));
-  }
-
-  var totalTax=totalPerqTax+cgTax;
-  var totalGainINR=totalPerq+(sale>0?Math.max(0,cgGainINR):0);
-  var netProfit=totalGainINR-totalTax;
-
-  // Build rows
-  var sym=isForeign?currency:'₹';
-  var fxNote=isForeign?' ('+sym+(grant||0)+' × ₹'+fx+'/'+sym+')':'';
-  var rows=[
-    {l:'Shares exercised / vested',v:qty.toLocaleString('en-IN')+' shares',cls:''},
-    {hdr:'🔵 AT EXERCISE / VEST — Perquisite Tax (India Sec 17(2))'},
-    {l:'Perquisite per share in INR'+fxNote, v:fmtI(perqPerShare), cls:''},
-    {l:'Total perquisite income', v:fmtI(totalPerq), cls:'a'},
-    {l:'Tax @ slab '+slab+'%', v:fmtI(perqTaxBase), cls:''},
-    ...(isForeign&&ftcPerq>0?[{l:'Foreign Tax Credit (DTAA) on perquisite',v:'− '+fmtI(ftcPerq),cls:'g'}]:[]),
-    {l:'Net perquisite tax (+ surcharge + 4% cess)', v:fmtI(totalPerqTax), cls:'r'},
-  ];
-  if(sale>0){
-    rows.push({hdr:'🟢 AT SALE — Capital Gains Tax'});
-    rows.push({l:'Capital gain in INR', v:cgGainINR>=0?fmtI(cgGainINR):'Loss '+fmtI(Math.abs(cgGainINR)), cls:cgGainINR>=0?'g':'r'});
-    if(cgGainINR>0){
-      rows.push({l:'CG tax ('+cgLabel+')', v:fmtI(cgTaxBeforeFTC), cls:''});
-      if(isForeign&&ftcCG>0) rows.push({l:'Foreign Tax Credit (DTAA) on sale',v:'− '+fmtI(ftcCG),cls:'g'});
-      rows.push({l:'Net CG tax (+ surcharge + 4% cess)', v:fmtI(cgTax), cls:'r'});
-    }
-  }
-  rows.push({hdr:'📊 TOTAL SUMMARY'});
-  rows.push({l:'Total India tax outgo', v:fmtI(totalTax), cls:'r'});
-  rows.push({l:'Net profit after all taxes', v:fmtI(netProfit), cls:netProfit>=0?'g':'r'});
-  if(totalGainINR>0) rows.push({l:'Effective tax rate', v:Math.round(totalTax/totalGainINR*100)+'%', cls:''});
-
-  el('esop-result-rows').innerHTML=rows.map(function(r){
-    if(r.hdr) return '<div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--mist);padding:.5rem 0 .25rem;border-top:1px solid var(--pale);margin-top:.25rem">'+r.hdr+'</div>';
-    return '<div class="data-row"><span class="dr-label">'+r.l+'</span><span class="dr-val '+r.cls+'">'+r.v+'</span></div>';
-  }).join('');
-
-  // Insight
-  var ins=el('esop-insight');
-  if(totalTax===0){
-    ins.className='insight green';
-    ins.innerHTML='<span class="insight-icon">✅</span><div><strong>No India tax after DTAA credit!</strong> All foreign tax withheld covers your India liability. Still file Form 67 before your ITR to formally claim the credit.</div>';
-  } else {
-    ins.className='insight gold';
-    var tip='';
-    if(isForeign) tip='<strong>File Form 67 before ITR submission</strong> to claim your Foreign Tax Credit — missing this means losing DTAA relief entirely. ';
-    if(shareType==='unlisted'&&hold==='stcg') tip+='Tip: Holding shares &gt;2 years post-exercise/vest reduces CG tax from slab rate to flat 12.5% LTCG. ';
-    if(c==='india'&&shareType==='listed'&&hold==='ltcg') tip+='Tip: Tax-loss harvesting — sell loss-making positions in the same year to offset LTCG. ';
-    ins.innerHTML='<span class="insight-icon">💡</span><div><strong>Total India tax: '+fmtI(totalTax)+'.</strong> '+tip+'Pay perquisite tax via Form 16 TDS; CG tax via advance tax / ITR.</div>';
-  }
-
-  // Timeline
-  var tl=el('esop-timeline');
-  var rows2=[];
-  rows2.push('<div class="at-row next"><span>🔵 Exercise/Vest — TDS by employer</span><span>'+fmtI(totalPerqTax)+' deducted</span></div>');
-  if(isForeign) rows2.push('<div class="at-row next"><span>📄 File Form 67 (Foreign Tax Credit)</span><span>Before ITR submission</span></div>');
-  if(sale>0&&cgTax>0) rows2.push('<div class="at-row future"><span>🟢 Sale — CG tax via ITR / Advance Tax</span><span>'+fmtI(cgTax)+' payable</span></div>');
-  rows2.push('<div class="at-row future"><span>📋 File ITR-2 with Schedule CG & FSI</span><span>By 31 Jul of assessment year</span></div>');
-  if(totalTax>10000) rows2.push('<div class="at-row future"><span>📅 Advance Tax if CG &gt; ₹10,000</span><span>Pay by 15 Mar to avoid Sec 234B/C interest</span></div>');
-  tl.innerHTML=rows2.join('');
-
-  el('esop-empty').style.display='none';
-  el('esop-results').style.display='';
-}
-</script>
-
-
 
 
 <!-- ═══════════════════════════════════════
@@ -1656,6 +1186,21 @@ function calcEsop(){
       <button class="tool-tab" onclick="showTool('notice',this)">📋 Notice Period</button>
       <button class="tool-tab" onclick="showTool('gst',this)">🧾 GST Calculator</button>
       <button class="tool-tab" onclick="showTool('proftax',this)">🏛️ Professional Tax</button>
+    </div>
+    <!-- "Open Full Page" links strip — SEO + UX -->
+    <div style="display:flex;flex-wrap:wrap;gap:.375rem;justify-content:center;margin-bottom:1.5rem;padding:.875rem;background:var(--pale);border:1px solid var(--border);border-radius:var(--r)">
+      <span style="font-size:10px;font-weight:700;color:var(--mist);text-transform:uppercase;letter-spacing:.06em;align-self:center;margin-right:4px">📄 Full SEO Pages →</span>
+      <a href="/tools/home-loan-emi-calculator.html" style="font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-border);padding:4px 10px;border-radius:20px;text-decoration:none">🏠 Home Loan</a>
+      <a href="/tools/sip-calculator.html" style="font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-border);padding:4px 10px;border-radius:20px;text-decoration:none">📈 SIP</a>
+      <a href="/tools/fd-calculator.html" style="font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-border);padding:4px 10px;border-radius:20px;text-decoration:none">💵 FD</a>
+      <a href="/tools/car-loan-emi-calculator.html" style="font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-border);padding:4px 10px;border-radius:20px;text-decoration:none">🚗 Car Loan</a>
+      <a href="/tools/retirement-calculator.html" style="font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-border);padding:4px 10px;border-radius:20px;text-decoration:none">🏖️ Retirement</a>
+      <a href="/tools/gratuity-calculator.html" style="font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-border);padding:4px 10px;border-radius:20px;text-decoration:none">🏆 Gratuity</a>
+      <a href="/tools/salary-hike-calculator.html" style="font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-border);padding:4px 10px;border-radius:20px;text-decoration:none">📊 Hike</a>
+      <a href="/tools/epf-calculator.html" style="font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-border);padding:4px 10px;border-radius:20px;text-decoration:none">🏦 EPF</a>
+      <a href="/tools/notice-period-calculator.html" style="font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-border);padding:4px 10px;border-radius:20px;text-decoration:none">📋 Notice Pay</a>
+      <a href="/tools/gst-calculator.html" style="font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-border);padding:4px 10px;border-radius:20px;text-decoration:none">🧾 GST</a>
+      <a href="/tools/professional-tax-calculator.html" style="font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-border);padding:4px 10px;border-radius:20px;text-decoration:none">🏛️ Prof Tax</a>
     </div>
 
     <!-- ── TOOL PANELS ── -->
@@ -3184,172 +2729,6 @@ function buildRoadmap(monthlyInHand,grossAnnual,bestRegime,regimeSaving,age,ctc)
     </div>`).join('');
 }
 
-
-// ── SHARE TAX ──
-function stTypeChange(){
-  const type=document.querySelector('input[name="st-type"]:checked').value;
-  el('st-fields-indian').style.display=type==='indian'?'':'none';
-  el('st-fields-us').style.display=type==='us'?'':'none';
-  el('st-fields-euro').style.display=type==='euro'?'':'none';
-  calcShareTax();
-}
-
-function calcShareTax(){
-  const type=document.querySelector('input[name="st-type"]:checked').value;
-  let gain=0,taxINR=0,withheldINR=0,gainType='',taxRate=0,symbol='₹';
-  const today=new Date();
-
-  if(type==='indian'){
-    const buy=gv('st-buy-inr'),sell=gv('st-sell-inr'),qty=gv('st-qty-inr');
-    const hold=el('st-hold-inr').value;
-    if(!buy||!sell||!qty){el('st-results').style.display='none';el('st-empty').style.display='flex';return;}
-    gain=(sell-buy)*qty;
-    gainType=hold==='ltcg'?'LTCG':'STCG';
-    if(hold==='ltcg'){taxRate=12.5;const exempt=125000;taxINR=Math.max(0,(gain-exempt)*0.125);}
-    else{taxRate=20;taxINR=Math.max(0,gain*0.20);}
-  } else if(type==='us'){
-    const buy=gv('st-buy-usd'),sell=gv('st-sell-usd'),qty=gv('st-qty-usd');
-    const fx=gv('st-fx-usd')||84,hold=el('st-hold-usd').value,wpct=gv('st-withheld-usd')||25;
-    if(!buy||!sell||!qty){el('st-results').style.display='none';el('st-empty').style.display='flex';return;}
-    gain=(sell-buy)*qty*fx;
-    gainType=hold==='ltcg'?'LTCG':'STCG';
-    withheldINR=(sell*qty*fx)*(wpct/100);
-    if(hold==='ltcg'){taxRate=12.5;const exempt=125000;taxINR=Math.max(0,(gain-exempt)*0.125);}
-    else{taxRate=20;taxINR=Math.max(0,gain*0.20);}// slab rate — using 20% as estimate
-    symbol='$';
-  } else {
-    const buy=gv('st-buy-eur'),sell=gv('st-sell-eur'),qty=gv('st-qty-eur');
-    const fx=gv('st-fx-eur')||92,hold=el('st-hold-eur').value,wpct=gv('st-withheld-eur')||10;
-    if(!buy||!sell||!qty){el('st-results').style.display='none';el('st-empty').style.display='flex';return;}
-    gain=(sell-buy)*qty*fx;
-    gainType=hold==='ltcg'?'LTCG':'STCG';
-    withheldINR=(sell*qty*fx)*(wpct/100);
-    if(hold==='ltcg'){taxRate=12.5;const exempt=125000;taxINR=Math.max(0,(gain-exempt)*0.125);}
-    else{taxRate=20;taxINR=Math.max(0,gain*0.20);}
-    symbol='€';
-  }
-
-  const isForeign=type!=='indian';
-  const ftc=isForeign?Math.min(withheldINR,taxINR):0;
-  const netTax=Math.max(0,taxINR-ftc);
-  const surcharge=netTax>5000000?netTax*0.15:netTax>2000000?netTax*0.10:netTax>1000000?netTax*0.07:0;
-  const cess=Math.round((netTax+surcharge)*0.04);
-  const totalTax=Math.round(netTax+surcharge+cess);
-  const isLoss=gain<0;
-
-  const rows=[
-    {l:'Your capital gain/loss (INR)',v:isLoss?'Loss of '+fmtI(Math.abs(Math.round(gain))):'Gain of '+fmtI(Math.round(gain)),cls:isLoss?'r':'g'},
-    {l:'Gain type',v:(type==='indian'?'Indian share, ':type==='us'?'US share (USD→INR), ':'Euro share (EUR→INR), ')+gainType,cls:''},
-    {l:'Tax rate applicable',v:taxRate+'%'+(gainType==='ltcg'?' (12.5% on gains above ₹1.25L)':''),cls:''},
-    {l:'Gross tax before relief',v:fmtI(Math.round(taxINR)),cls:''},
-    ...(isForeign?[{l:'Foreign Tax Credit (DTAA relief)',v:ftc>0?'− '+fmtI(Math.round(ftc)):'Not applicable',cls:'g'}]:[]),
-    {l:'Net tax in India',v:fmtI(Math.round(netTax)),cls:''},
-    ...(surcharge>0?[{l:'Surcharge',v:fmtI(Math.round(surcharge)),cls:'r'}]:[]),
-    {l:'Health & Education Cess (4%)',v:fmtI(cess),cls:'r'},
-    {l:'Total tax payable in India',v:fmtI(totalTax),cls:'r'},
-  ];
-
-  el('st-result-rows').innerHTML=rows.map(r=>`<div class="data-row"><span class="dr-label">${r.l}</span><span class="dr-val ${r.cls}">${r.v}</span></div>`).join('');
-
-  // Insight
-  const ins=el('st-insight');
-  if(isLoss){
-    ins.className='insight green';
-    ins.innerHTML=`<span class="insight-icon">📉</span><div><strong>Capital loss — no tax due.</strong> You can set off this loss against other capital gains in the same year. Carry forward unused loss for up to 8 years in your ITR (Schedule CFL).</div>`;
-  } else if(totalTax===0){
-    ins.className='insight green';
-    ins.innerHTML=`<span class="insight-icon">✅</span><div><strong>No tax payable!</strong> Your gains fall within the ₹1.25 lakh LTCG exemption limit. Still report the sale in your ITR under Capital Gains schedule.</div>`;
-  } else {
-    ins.className='insight gold';
-    ins.innerHTML=`<span class="insight-icon">💡</span><div><strong>Total tax: ${fmtI(totalTax)}.</strong> ${isForeign?`DTAA credit of ${fmtI(Math.round(ftc))} applied — you only pay the balance in India. File <strong>Form 67</strong> before submitting your ITR to claim this credit.`:'Pay via advance tax installments to avoid interest under Section 234B/C.'} ${gainType==='ltcg'&&!isLoss&&type==='indian'?'Tip: If you have unrealised LTCG on other stocks, consider booking loss to offset this gain (tax-loss harvesting).':''}</div>`;
-  }
-
-  // Advance tax schedule
-  const advDates=[
-    {label:'1st installment',date:'15 Jun 2026',pct:15,cutoff:new Date('2026-06-15')},
-    {label:'2nd installment',date:'15 Sep 2026',pct:45,cutoff:new Date('2026-09-15')},
-    {label:'3rd installment',date:'15 Dec 2026',pct:75,cutoff:new Date('2026-12-15')},
-    {label:'4th installment (final)',date:'15 Mar 2027',pct:100,cutoff:new Date('2027-03-15')},
-  ];
-  el('st-advance-rows').innerHTML=advDates.map(d=>{
-    const amt=Math.round(totalTax*(d.pct/100));
-    const isPast=today>d.cutoff;
-    const isNext=!isPast&&advDates.filter(x=>today<=x.cutoff)[0]===d;
-    const cls=isPast?'past':isNext?'next':'future';
-    const tag=isPast?'✓ Paid/Due':'→ Pay by';
-    return `<div class="at-row ${cls}"><span>${d.label} — ${d.date} <span class="at-pct">(${d.pct}% cumulative)</span></span><span>${tag} ${fmtI(amt)}</span></div>`;
-  }).join('');
-
-  const f67=el('st-form67-note');
-  if(f67) f67.innerHTML=isForeign?`<strong>File Form 67 before ITR</strong> to claim your Foreign Tax Credit (DTAA). Missing this means you lose the relief for the year.`:`<strong>Pay advance tax via Challan 280</strong> on the Income Tax portal. Select "Advance Tax" and assessment year 2026-27.`;
-
-  el('st-results').style.display='';
-  el('st-empty').style.display='none';
-}
-
-
-// ── MOBILE NAV ──
-function openMobNav(){
-
-  document.getElementById('mob-drawer').classList.add('open');
-  document.getElementById('mob-overlay').classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function closeMobNav(){
-  document.getElementById('mob-drawer').classList.remove('open');
-  document.getElementById('mob-overlay').classList.remove('open');
-  document.body.style.overflow='';
-}
-function setActiveTab(el){
-  document.querySelectorAll('.mob-tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-}
-document.addEventListener('keydown',function(e){
-  if(e.key==='Escape') closeMobNav();
-});
-
-(function(){
-  el('basicHint').textContent='';
-  el('slipGrossDisplay').textContent='—';
-})();
-
-// ── MODAL HELPERS ──
-function openModal(id){
-  document.getElementById(id).classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function closeModal(id){
-  document.getElementById(id).classList.remove('open');
-  document.body.style.overflow='';
-}
-function closeModalIfBackdrop(e,id){
-  if(e.target===document.getElementById(id)) closeModal(id);
-}
-document.addEventListener('keydown',function(e){
-  if(e.key==='Escape'){
-    ['modal-privacy','modal-disclaimer','modal-about','modal-contact'].forEach(closeModal);
-  }
-});
-
-// ── CONTACT FORM SUBMIT (real — Formspree) ──
-// Sign up free at formspree.io, create a form, replace YOUR_FORM_ID with your real ID
-async function submitContact(){
-  const name=document.getElementById('contact-name').value.trim();
-  const email=document.getElementById('contact-email').value.trim();
-  const msg=document.getElementById('contact-msg').value.trim();
-  const status=document.getElementById('contact-status');
-  if(!name||!email||!msg){status.style.display='block';status.style.color='var(--rose)';status.textContent='Please fill in your name, email, and message.';return;}
-  const emailRe=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if(!emailRe.test(email)){status.style.display='block';status.style.color='var(--rose)';status.textContent='Please enter a valid email address.';return;}
-  status.style.display='block';status.style.color='var(--mist)';status.textContent='Sending…';
-  try{
-    const res=await fetch('https://formspree.io/f/xrerpvgb',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({name,email,message:msg})});
-    if(res.ok){
-      status.style.color='var(--green)';status.textContent='✓ Message sent! We will get back to you within 2 business days.';
-      document.getElementById('contact-name').value='';document.getElementById('contact-email').value='';document.getElementById('contact-msg').value='';
-    }else{status.style.color='var(--rose)';status.textContent='Something went wrong. Please email us directly.';}
-  }catch(e){status.style.color='var(--rose)';status.textContent='Network error. Please try again or email us directly.';}
-}
 </script> 
 </body>
 </html>

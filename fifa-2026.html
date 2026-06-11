@@ -439,7 +439,7 @@
 // CONFIG — replace with your football-data.org free API key
 // Get free key at: https://www.football-data.org/client/register
 // ============================================================
-let API_KEY = localStorage.getItem('fdorg_key') || '2c749c3fe0504fd8859b82035a268f47';
+let API_KEY = localStorage.getItem('fdorg_key') || '';
 const BASE_URL = 'https://api.football-data.org/v4';
 const WC_CODE = 'WC';
 let activeTab = 'scores';
@@ -474,17 +474,14 @@ function switchTab(tab) {
 // API FETCH
 // ============================================================
 async function apiFetch(endpoint) {
-  // Pass auth token as query param since proxy can't forward custom headers
-  const sep = endpoint.includes('?') ? '&' : '?';
-  const url = `https://api.football-data.org/v4${endpoint}${sep}X-Auth-Token=${API_KEY}`;
-  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-  const res = await fetch(proxyUrl);
-  if (!res.ok) throw new Error(`Proxy Error ${res.status}`);
-  const wrapper = await res.json();
-  if (!wrapper.contents) throw new Error('Empty response from proxy');
-  const data = JSON.parse(wrapper.contents);
-  if (data.errorCode) throw new Error(data.message || `API Error ${data.errorCode}`);
-  return data;
+  const url = `https://api.football-data.org/v4${endpoint}`;
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: { 'X-Auth-Token': API_KEY },
+    mode: 'cors'
+  });
+  if (!res.ok) throw new Error(`API Error ${res.status}`);
+  return res.json();
 }
 
 async function loadData() {

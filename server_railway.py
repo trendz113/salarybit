@@ -4,7 +4,7 @@ import hashlib
 import json
 import tempfile
 import razorpay
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, Response
 from flask_cors import CORS
 import fitz  # PyMuPDF
 from PIL import Image
@@ -254,7 +254,11 @@ def football_proxy():
 # ── SERVE FIFA PAGE ───────────────────────────────────────
 @app.route('/fifa-2026')
 def fifa():
-    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'fifa-2026.html')
+    import os
+    html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'fifa-2026.html')
+    with open(html_path, 'r', encoding='utf-8') as f:
+        content_html = f.read()
+    return Response(content_html, mimetype='text/html')
 
 # ── HEALTH CHECK ──────────────────────────────────────────
 @app.route("/", methods=["GET"])

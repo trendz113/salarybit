@@ -4,7 +4,7 @@ import hashlib
 import json
 import tempfile
 import razorpay
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import fitz  # PyMuPDF
 from PIL import Image
@@ -250,6 +250,11 @@ def football_proxy():
         timeout=10
     )
     return jsonify(r.json())
+
+# ── SERVE FIFA PAGE ───────────────────────────────────────
+@app.route('/fifa-2026')
+def fifa():
+    return send_from_directory('.', 'fifa-2026.html')
 
 # ── HEALTH CHECK ──────────────────────────────────────────
 @app.route("/", methods=["GET"])

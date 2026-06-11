@@ -474,13 +474,17 @@ function switchTab(tab) {
 // API FETCH
 // ============================================================
 async function apiFetch(endpoint) {
-  const url = `https://api.football-data.org/v4${endpoint}`;
-  const res = await fetch(
-    `https://corsproxy.io/?${encodeURIComponent(url)}`,
-    { headers: { 'X-Auth-Token': API_KEY } }
-  );
-  if (!res.ok) throw new Error(`API Error ${res.status}`);
-  return res.json();
+  // Pass auth token as query param since proxy can't forward custom headers
+  const sep = endpoint.includes('?') ? '&' : '?';
+  const url = `https://api.football-data.org/v4${endpoint}${sep}X-Auth-Token=${API_KEY}`;
+  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+  const res = await fetch(proxyUrl);
+  if (!res.ok) throw new Error(`Proxy Error ${res.status}`);
+  const wrapper = await res.json();
+  if (!wrapper.contents) throw new Error('Empty response from proxy');
+  const data = JSON.parse(wrapper.contents);
+  if (data.errorCode) throw new Error(data.message || `API Error ${data.errorCode}`);
+  return data;
 }
 
 async function loadData() {

@@ -254,7 +254,7 @@ def football_proxy():
 # ── SERVE FIFA PAGE ───────────────────────────────────────
 @app.route('/fifa-2026')
 def fifa():
-    return send_from_directory('.', 'fifa-2026.html')
+    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'fifa-2026.html')
 
 # ── HEALTH CHECK ──────────────────────────────────────────
 @app.route("/", methods=["GET"])

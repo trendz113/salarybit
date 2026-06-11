@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GST Calculator India 2026 — Add or Remove GST with CGST SGST Breakup | SalaryBit</title>
+<meta name="description" content="Calculate GST on any amount. Add GST to get inclusive price, or extract GST from inclusive price. CGST + SGST or IGST split. Free.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://salarybit.in/tools/gst-calculator.html">
+<meta property="og:title" content="GST Calculator India 2026 — Add or Remove GST with CGST SGST Breakup | SalaryBit">
+<meta property="og:description" content="Calculate GST on any amount. Add GST to get inclusive price, or extract GST from inclusive price. CGST + SGST or IGST split. Free.">
+<meta property="og:url" content="https://salarybit.in/tools/gst-calculator.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%235b6af0'/><text y='22' x='5' font-size='18'>🧾</text></svg>">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8336334158316485" crossorigin="anonymous"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QFHT4BZTMF"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QFHT4BZTMF');</script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1a2e;--ink2:#2d2d4a;--ink3:#4a4a6a;--mist:#7b7b9d;
+  --fog:#a8a8c0;--cloud:#d4d4e8;--pale:#eeeef6;--snow:#f7f7fc;
+  --accent:#5b6af0;--teal:#0ea5a0;--amber:#d97706;--rose:#e05c5c;--green:#16a34a;
+  --border:#e2e2f0;--shadow:0 2px 12px rgba(26,26,46,.08);
+  --accent-bg:rgba(91,106,240,.08);--accent-border:rgba(91,106,240,.2);
+  --teal-bg:rgba(14,165,160,.08);--amber-bg:rgba(217,119,6,.08);
+  --rose-bg:rgba(224,92,92,.08);--green-bg:rgba(22,163,74,.08);
+  --r:14px;--r-sm:8px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--snow);color:var(--ink);line-height:1.6;padding-bottom:72px}
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:rgba(247,247,252,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:900px;margin:0 auto;padding:0 1rem;height:52px;display:flex;align-items:center;gap:.75rem}
+.brand{display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0}
+.brand-mark{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,#5b6af0,#0ea5a0);display:flex;align-items:center;justify-content:center;font-size:13px}
+.brand-name{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--ink)}
+.nav-back{margin-left:auto;font-size:12px;font-weight:600;color:var(--mist);background:var(--pale);padding:5px 12px;border-radius:6px;text-decoration:none}
+.nav-fy{font-size:10px;font-weight:700;background:linear-gradient(135deg,#5b6af0,#0ea5a0);color:#fff;padding:3px 10px;border-radius:20px;flex-shrink:0}
+/* HERO */
+.hero{background:linear-gradient(135deg,#0ea5a0,#5b6af0);padding:1.5rem 1rem 1.25rem}
+.hero-inner{max-width:900px;margin:0 auto}
+.hero-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:9px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.625rem}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(20px,4vw,28px);font-weight:800;color:#fff;line-height:1.2;margin-bottom:.375rem}
+.hero p{font-size:13px;color:rgba(255,255,255,.55);max-width:520px}
+/* CALC WRAP */
+.wrap{max-width:900px;margin:0 auto;padding:1.25rem 1rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start}
+@media(max-width:580px){.grid2{grid-template-columns:1fr}}
+.panel{background:#fff;border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow)}
+.panel-head{padding:.875rem 1rem;border-bottom:1px solid var(--border)}
+.panel-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--ink)}
+.panel-body{padding:1rem}
+/* FIELDS */
+.field{margin-bottom:.75rem}
+.field label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--mist);margin-bottom:3px}
+.fld-wrap{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:var(--r-sm);background:#fff;overflow:hidden;transition:.15s}
+.fld-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg)}
+.fld-pre{font-size:12px;font-weight:600;color:var(--mist);padding:0 8px;background:var(--pale);border-right:1px solid var(--border);height:38px;display:flex;align-items:center;white-space:nowrap}
+.fld-inp{border:none;outline:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);padding:0 10px;height:38px;width:100%}
+.fld-bare{border:1.5px solid var(--border);border-radius:var(--r-sm);padding:0 10px;height:38px;width:100%;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);background:#fff;outline:none;transition:.15s;cursor:pointer}
+.fld-bare:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg)}
+.fld-hint{font-size:10px;color:var(--mist);margin-top:2px}
+/* CTA */
+.cta{width:100%;height:42px;background:linear-gradient(135deg,#5b6af0,#0ea5a0);color:#fff;border:none;border-radius:var(--r-sm);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:.75rem;transition:.2s}
+.cta:hover{opacity:.9;box-shadow:0 4px 16px rgba(91,106,240,.3)}
+/* RESULTS */
+.r-hero{border-radius:var(--r-sm);padding:1.125rem;color:#fff;text-align:center;margin-bottom:.625rem}
+.r-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.5);margin-bottom:.25rem}
+.r-val{font-family:'Syne',sans-serif;font-size:clamp(24px,4vw,32px);font-weight:800;color:#fff;line-height:1}
+.r-sub{font-size:11px;color:rgba(255,255,255,.5);margin-top:.25rem}
+.rcard{background:var(--pale);border:1px solid var(--border);border-radius:var(--r-sm);padding:.875rem;margin-bottom:.5rem}
+.rrow{display:flex;justify-content:space-between;align-items:center;padding:.3rem 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--mist)}
+.rrow:last-child{border-bottom:none}
+.rrow b{color:var(--ink);font-weight:700}
+.rrow.g b{color:var(--green)}
+.rrow.r b{color:var(--rose)}
+.rrow.a b{color:var(--amber)}
+.insight{display:flex;gap:.625rem;padding:.75rem .875rem;border-radius:var(--r-sm);font-size:12px;line-height:1.55;margin-top:.625rem}
+.ii{font-size:16px;flex-shrink:0;margin-top:1px}
+.insight.green{background:var(--green-bg);border:1px solid rgba(22,163,74,.2);color:var(--green)}
+.insight.blue{background:var(--accent-bg);border:1px solid var(--accent-border);color:var(--accent)}
+.insight.gold{background:var(--amber-bg);border:1px solid rgba(217,119,6,.2);color:var(--amber)}
+.insight.red{background:var(--rose-bg);border:1px solid rgba(224,92,92,.2);color:var(--rose)}
+.ph{text-align:center;padding:2rem 1rem;color:var(--mist);font-size:13px}
+/* SEO */
+.seo{max-width:900px;margin:0 auto;padding:1.5rem 1rem 2rem}
+.seo h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--ink);margin-bottom:.625rem;margin-top:1.5rem}
+.seo h2:first-child{margin-top:0}
+.seo h3{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--ink);margin:.875rem 0 .375rem}
+.seo p{font-size:13px;color:var(--ink3);line-height:1.75;margin-bottom:.625rem}
+.seo ul,.seo ol{font-size:13px;color:var(--ink3);padding-left:1.25rem;margin-bottom:.625rem;line-height:1.7}
+.seo li{margin-bottom:.2rem}
+.faq{background:#fff;border:1px solid var(--border);border-radius:var(--r-sm);padding:.875rem;margin-bottom:.5rem}
+.faq-q{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:.375rem}
+.faq-a{font-size:12px;color:var(--ink3);line-height:1.65}
+/* RELATED */
+.related{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.625rem;margin-top:.875rem}
+.rc{background:#fff;border:1px solid var(--border);border-radius:var(--r-sm);padding:.875rem;text-decoration:none;display:block;transition:.15s}
+.rc:hover{border-color:var(--accent)}
+.rc-icon{font-size:20px;margin-bottom:.375rem}
+.rc-name{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.rc-desc{font-size:11px;color:var(--mist)}
+/* BOTTOM NAV */
+.bnav{display:none;position:fixed;bottom:0;left:0;right:0;height:58px;background:rgba(247,247,252,.97);backdrop-filter:blur(16px);border-top:1px solid var(--border);z-index:100}
+@media(max-width:640px){.bnav{display:flex}}
+.bt{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:9px;font-weight:600;color:var(--mist);text-decoration:none;padding:.375rem .25rem .5rem}
+.bt.on{color:var(--accent)}
+.bt-icon{font-size:19px;line-height:1}
+/* ADSENSE */
+.ad-slot{margin:1rem 0}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><div class="brand-mark">🧾</div><span class="brand-name">SalaryBit</span></a>
+    <a class="nav-back" href="/">← All Tools</a>
+    <span class="nav-fy">FY 2026-27</span>
+  </div>
+</nav>
+
+<section class="hero"><div class="hero-inner">
+  <div class="hero-pill">🧾 Free · Instant</div>
+  <h1>GST Calculator India — Add or Remove GST</h1>
+  <p>Calculate GST amount, CGST + SGST or IGST breakup on any amount. Works for 5%, 12%, 18% and 28% GST rates.</p>
+</div></section>
+<div class="wrap"><div class="grid2">
+  <div class="panel">
+    <div class="panel-head"><div class="panel-title">🧾 GST Details</div></div>
+    <div class="panel-body">
+      <div class="field"><label>Amount (₹)</label><div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="gst-amount" placeholder="e.g. 10000" oninput="calcGST()"></div></div>
+      <div class="field"><label>GST Rate</label>
+        <select class="fld-bare" id="gst-rate" onchange="calcGST()">
+          <option value="5">5% — Essential goods (food, medicines)</option>
+          <option value="12">12% — Processed foods, computers</option>
+          <option value="18" selected>18% — Most services, electronics</option>
+          <option value="28">28% — Luxury goods, cars, tobacco</option>
+        </select>
+      </div>
+      <div class="field"><label>Transaction Type</label>
+        <select class="fld-bare" id="gst-type" onchange="calcGST()">
+          <option value="intra">Intra-state (CGST + SGST)</option>
+          <option value="inter">Inter-state (IGST)</option>
+        </select>
+      </div>
+      <div class="field"><label>Amount is</label>
+        <select class="fld-bare" id="gst-inclusive" onchange="calcGST()">
+          <option value="excl">Exclusive of GST (add GST to find total)</option>
+          <option value="incl">Inclusive of GST (extract base + GST)</option>
+        </select>
+      </div>
+      <button class="cta" onclick="calcGST()">Calculate GST →</button>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><div class="panel-title">📊 GST Breakup</div></div>
+    <div class="panel-body"><div id="gst-result"><div class="ph">Enter amount and rate to calculate GST</div></div></div>
+  </div>
+</div></div>
+<div class="seo">
+  <h2>GST in India — What Every Salaried Employee Should Know</h2>
+  <p>Goods and Services Tax (GST) is India's unified indirect tax system that replaced VAT, service tax, excise duty and other levies from July 2017. GST has 4 main slabs: 5%, 12%, 18% and 28%, plus a 0% category for essential items.</p>
+  <h3>CGST vs SGST vs IGST</h3>
+  <ul>
+    <li><strong>CGST (Central GST):</strong> Goes to the Central Government. Applied on intra-state transactions (half the GST rate)</li>
+    <li><strong>SGST (State GST):</strong> Goes to the State Government. Applied on intra-state transactions (half the GST rate)</li>
+    <li><strong>IGST (Integrated GST):</strong> Applied on inter-state transactions (full GST rate). Collected by Centre and shared with destination state</li>
+  </ul>
+  <p>Example: 18% GST on a ₹10,000 service in Karnataka = ₹900 CGST + ₹900 SGST = ₹1,800 total GST.</p>
+  <div class="faq"><div class="faq-q">Is GST applicable on salaries?</div><div class="faq-a">No. Salaries paid by employer to employee are not subject to GST. GST applies only to the supply of goods and services, not to employment income. However, freelancers and consultants who provide services are required to register for GST if their annual turnover exceeds ₹20 lakh (₹10 lakh for special category states).</div></div>
+  <div class="faq"><div class="faq-q">What services attract 18% GST relevant to salaried employees?</div><div class="faq-a">Most banking fees, insurance premiums, mutual fund management fees, telecom services, restaurant meals (except standalone restaurants which are 5%), hotel stays above ₹7,500/night, cab rides, and most professional services (CA, lawyer, consultant fees) attract 18% GST.</div></div>
+</div><div class="seo"><h2>Related Tools</h2><div class="related"><a class="rc" href="/tools/salary-calculator.html"><div class="rc-icon">💰</div><div class="rc-name">Salary Calculator</div><div class="rc-desc">CTC to in-hand</div></a><a class="rc" href="/tools/professional-tax-calculator.html"><div class="rc-icon">🏛️</div><div class="rc-name">Professional Tax</div><div class="rc-desc">State-wise PT</div></a><a class="rc" href="/tools/home-loan-emi-calculator.html"><div class="rc-icon">🏠</div><div class="rc-name">Home Loan EMI</div><div class="rc-desc">Property loan EMI</div></a><a class="rc" href="/tools/old-vs-new-tax-regime.html"><div class="rc-icon">📋</div><div class="rc-name">Tax Regime</div><div class="rc-desc">Old vs New</div></a></div></div><script>
+function calcGST(){
+  const amount=parseFloat(document.getElementById('gst-amount').value)||0;
+  const rate=parseFloat(document.getElementById('gst-rate').value)||18;
+  const type=document.getElementById('gst-type').value;
+  const inclusive=document.getElementById('gst-inclusive').value;
+  if(!amount){document.getElementById('gst-result').innerHTML='<div class="ph">Enter an amount to calculate GST</div>';return;}
+  let base,gst,total;
+  if(inclusive==='excl'){base=amount;gst=amount*rate/100;total=amount+gst;}
+  else{total=amount;base=amount*100/(100+rate);gst=total-base;}
+  const half=gst/2;
+  document.getElementById('gst-result').innerHTML=`
+    <div class="r-hero" style="background:linear-gradient(135deg,#0ea5a0,#5b6af0)">
+      <div class="r-label">GST Amount</div><div class="r-val">${fi(Math.round(gst))}</div>
+      <div class="r-sub">${rate}% GST · ${type==='intra'?'CGST+SGST':'IGST'}</div>
+    </div>
+    <div class="rcard">
+      <div class="rrow"><span>Base Amount (before GST)</span><b>${fi(Math.round(base))}</b></div>
+      ${type==='intra'?`<div class="rrow"><span>CGST (${rate/2}%)</span><b>${fi(Math.round(half))}</b></div><div class="rrow"><span>SGST (${rate/2}%)</span><b>${fi(Math.round(half))}</b></div>`:`<div class="rrow"><span>IGST (${rate}%)</span><b>${fi(Math.round(gst))}</b></div>`}
+      <div class="rrow a"><span>Total Amount (with GST)</span><b>${fi(Math.round(total))}</b></div>
+    </div>`;
+}
+</script>
+<nav class="bnav">
+  <a class="bt" href="/"><span class="bt-icon">🏠</span>Home</a>
+  <a class="bt on" href="#"><span class="bt-icon">🧮</span>Calculator</a>
+  <a class="bt" href="/tools/salary-calculator.html"><span class="bt-icon">💰</span>Salary</a>
+  <a class="bt" href="/blog/"><span class="bt-icon">📝</span>Blog</a>
+  <a class="bt" href="/travel-rewards.html"><span class="bt-icon">✈️</span>Travel</a>
+</nav>
+<script>
+function fi(n){return'₹'+Math.round(n).toLocaleString('en-IN');}
+function fr(n){n=Math.round(n);if(n>=10000000)return'₹'+(n/10000000).toFixed(2)+' Cr';if(n>=100000)return'₹'+(n/100000).toFixed(2)+' L';return'₹'+n.toLocaleString('en-IN');}
+</script>
+</body></html>

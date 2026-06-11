@@ -474,12 +474,7 @@ function switchTab(tab) {
 // API FETCH
 // ============================================================
 async function apiFetch(endpoint) {
-  const url = `https://api.football-data.org/v4${endpoint}`;
-  const res = await fetch(url, {
-    method: 'GET',
-    headers: { 'X-Auth-Token': API_KEY },
-    mode: 'cors'
-  });
+  const res = await fetch(`/api/football?endpoint=${encodeURIComponent(endpoint)}`);
   if (!res.ok) throw new Error(`API Error ${res.status}`);
   return res.json();
 }

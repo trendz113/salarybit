@@ -474,7 +474,7 @@ function switchTab(tab) {
 // API FETCH
 // ============================================================
 async function apiFetch(endpoint) {
-  const res = await fetch(`/api/football?endpoint=${encodeURIComponent(endpoint)}`);
+  const res = await fetch(`https://web-production-456eb.up.railway.app/api/football?endpoint=${encodeURIComponent(endpoint)}`);
   if (!res.ok) throw new Error(`API Error ${res.status}`);
   return res.json();
 }

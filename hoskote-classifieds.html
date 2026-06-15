@@ -183,27 +183,103 @@ body { background:var(--dark); color:var(--text); font-family:'Baloo 2',cursive;
 .spinner { width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--saffron);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px; }
 @keyframes spin { to{transform:rotate(360deg)} }
 
+/* ── REFERRAL WIDGET ─────────────────────────────────────────── */
+.referral-widget{margin:0 0 16px;border-radius:16px;overflow:hidden;border:1px solid rgba(99,102,241,0.3);background:linear-gradient(135deg,rgba(99,102,241,0.07),rgba(139,92,246,0.04))}
+.referral-header{padding:13px 16px 9px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(99,102,241,0.15)}
+.referral-header-icon{width:34px;height:34px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.referral-header-info h4{font-size:13px;font-weight:700;color:#a5b4fc;margin-bottom:1px}
+.referral-header-info p{font-size:11px;color:var(--muted)}
+.referral-cards{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(99,102,241,0.1)}
+.referral-card{background:var(--card);padding:13px 11px 11px;text-decoration:none;color:var(--text);display:flex;flex-direction:column;gap:5px;transition:background 0.2s}
+.referral-card:hover{background:var(--card2)}
+.referral-card-top{display:flex;align-items:center;justify-content:space-between}
+.referral-card-icon{font-size:20px;line-height:1}
+.referral-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px}
+.referral-badge.earn{background:rgba(34,197,94,0.15);color:#4ade80}
+.referral-badge.save{background:rgba(251,191,36,0.15);color:#fbbf24}
+.referral-badge.open{background:rgba(99,102,241,0.15);color:#a5b4fc}
+.referral-badge.biz{background:rgba(255,107,0,0.15);color:#FF6B00}
+.referral-badge.airtel{background:rgba(220,38,38,0.15);color:#f87171}
+.referral-card-name{font-size:12px;font-weight:700;color:var(--white);line-height:1.2}
+.referral-card-desc{font-size:11px;color:var(--muted);line-height:1.35}
+.referral-card-action{font-size:11px;font-weight:700;color:#a5b4fc;margin-top:1px}
+.referral-footer{padding:8px 16px;border-top:1px solid rgba(99,102,241,0.12);text-align:center;font-size:10px;color:var(--muted)}
+.referral-footer strong{color:#a5b4fc}
+
+/* ── AMAZON SLOTS ────────────────────────────────────────────── */
+.amz-slot{margin:4px 0;border-radius:14px;overflow:hidden;border:1px solid rgba(255,153,0,0.22);background:linear-gradient(135deg,rgba(255,153,0,0.05),rgba(255,107,0,0.03));position:relative}
+.amz-slot-label{position:absolute;top:9px;right:11px;font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;font-weight:600}
+.amz-header{display:flex;align-items:center;gap:8px;padding:10px 14px 7px;border-bottom:1px solid rgba(255,153,0,0.12)}
+.amz-header-icon{width:22px;height:22px;background:#FF9900;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.amz-header-text{font-size:11px;font-weight:700;color:#FF9900;text-transform:uppercase;letter-spacing:1px}
+.amz-products{display:grid;grid-template-columns:repeat(3,1fr)}
+.amz-product{padding:11px 7px;text-decoration:none;color:var(--text);display:flex;flex-direction:column;align-items:center;gap:6px;border-right:1px solid rgba(255,153,0,0.09);transition:background 0.2s}
+.amz-product:last-child{border-right:none}
+.amz-product:hover{background:rgba(255,153,0,0.08)}
+.amz-product-icon{font-size:24px;line-height:1}
+.amz-product-name{font-size:11px;font-weight:600;text-align:center;line-height:1.3}
+.amz-product-price{font-size:11px;font-weight:700;color:#FF9900}
+.amz-product-cta{background:#FF9900;color:#111;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px}
+.amz-footer{padding:7px 14px;border-top:1px solid rgba(255,153,0,0.09);font-size:10px;color:var(--muted);text-align:center}
+.amz-footer a{color:#FF9900;text-decoration:none}
+
+/* ── GOOGLE REVIEW WIDGET ─────────────────────────────────────── */
+.review-widget{margin:20px 0;border-radius:16px;overflow:hidden;border:1px solid rgba(66,133,244,0.3);background:linear-gradient(135deg,rgba(66,133,244,0.07),rgba(52,168,83,0.04))}
+.review-header{padding:14px 16px 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(66,133,244,0.15)}
+.review-header-icon{width:36px;height:36px;background:linear-gradient(135deg,#4285F4,#34A853);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.review-header-info h4{font-size:14px;font-weight:700;color:#74a9ff;margin-bottom:2px}
+.review-header-info p{font-size:11px;color:var(--muted)}
+.review-body{padding:16px}
+.review-stars-display{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.review-stars-big{font-size:28px;letter-spacing:2px;color:#FBBC04;line-height:1}
+.review-stars-info h3{font-size:22px;font-weight:800;color:var(--white);line-height:1}
+.review-stars-info p{font-size:12px;color:var(--muted);margin-top:2px}
+.review-bar-section{margin-bottom:16px}
+.review-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.review-bar-label{font-size:11px;color:var(--muted);width:35px;text-align:right;flex-shrink:0}
+.review-bar-track{flex:1;height:6px;background:var(--card2);border-radius:3px;overflow:hidden}
+.review-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#FBBC04,#FF9900);transition:width 1s ease}
+.review-bar-count{font-size:11px;color:var(--muted);width:20px;flex-shrink:0}
+.review-cta-row{display:flex;gap:10px;flex-wrap:wrap}
+.review-btn-google{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#4285F4,#1a73e8);color:white;font-family:'Baloo 2',cursive;font-size:13px;font-weight:700;padding:11px 20px;border-radius:10px;text-decoration:none;transition:opacity 0.2s;flex:1;justify-content:center;min-width:140px}
+.review-btn-google:hover{opacity:0.88}
+.review-btn-share{display:inline-flex;align-items:center;gap:8px;background:rgba(66,133,244,0.12);border:1px solid rgba(66,133,244,0.3);color:#74a9ff;font-family:'Baloo 2',cursive;font-size:13px;font-weight:700;padding:11px 20px;border-radius:10px;text-decoration:none;transition:all 0.2s;flex:1;justify-content:center;min-width:140px}
+.review-btn-share:hover{background:rgba(66,133,244,0.2)}
+.review-testimonials{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.review-testimonial{background:var(--card2);border-radius:10px;padding:11px 13px;border:1px solid var(--border)}
+.review-testimonial-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.review-testimonial-name{font-size:12px;font-weight:700;color:var(--white)}
+.review-testimonial-stars{font-size:12px;color:#FBBC04;letter-spacing:1px}
+.review-testimonial-text{font-size:12px;color:var(--muted);line-height:1.45}
+.review-testimonial-date{font-size:10px;color:var(--border);margin-top:4px}
+
 footer { text-align:center;padding:24px 16px;border-top:1px solid var(--border);color:var(--muted);font-size:12px;margin-top:40px; }
 footer a { color:var(--saffron);text-decoration:none; }
+
+@media(max-width:390px){
+  .referral-cards{grid-template-columns:1fr}
+  .amz-products{grid-template-columns:repeat(2,1fr)}
+  .amz-products a:last-child{display:none}
+}
 </style>
 </head>
 <body>
 
 <!-- Photo Modal -->
 <div class="modal-overlay" id="photoModal" onclick="closeModal()">
-  <button class="modal-close" onclick="closeModal()">✕</button>
+  <button class="modal-close" onclick="closeModal()">&#x2715;</button>
   <img class="modal-img" id="modalImg" src="" alt="Listing Photo">
 </div>
 
 <!-- Hero -->
 <div class="hero">
-  <div class="hero-badge">📍 Hoskote, East Bangalore</div>
+  <div class="hero-badge">&#x1F4CD; Hoskote, East Bangalore</div>
   <h1>Hoskote <span>Classifieds</span></h1>
-  <div class="hero-kannada">ಹೊಸ್ಕೋಟೆ ಕ್ಲಾಸಿಫೈಡ್ಸ್ • होस्कोटे क्लासिफाइड्स</div>
+  <div class="hero-kannada">&#x0CB9;&#x0CCA;&#x0CB8;&#x0CCD;&#x0C95;&#x0CCB;&#x0C9F;&#x0CC6; &#x0C95;&#x0CCD;&#x0CB2;&#x0CBE;&#x0CB8;&#x0CBF;&#x0CAB;&#x0CC8;&#x0CA1;&#x0CCD;&#x0CB8;&#x0CCD; &bull; &#x0939;&#x094B;&#x0938;&#x094D;&#x0915;&#x094B;&#x091F;&#x0947; &#x0915;&#x094D;&#x0932;&#x093E;&#x0938;&#x093F;&#x092B;&#x093E;&#x0907;&#x0921;&#x094D;&#x0938;</div>
   <div class="hero-stats">
-    <div class="stat"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Listings</div></div>
+    <div class="stat"><div class="stat-num" id="stat-total">&mdash;</div><div class="stat-label">Listings</div></div>
     <div class="stat"><div class="stat-num">FREE</div><div class="stat-label">To Post</div></div>
-    <div class="stat"><div class="stat-num" id="stat-members">—</div><div class="stat-label">Members</div></div>
+    <div class="stat"><div class="stat-num" id="stat-members">&mdash;</div><div class="stat-label">Members</div></div>
   </div>
   <div class="hero-btns">
     <a class="hero-wa-btn" href="https://wa.me/918317429244?text=Hello%20Hoskote%20Classifieds" target="_blank">
@@ -211,30 +287,30 @@ footer a { color:var(--saffron);text-decoration:none; }
       Post Free on WhatsApp
     </a>
     <a class="hero-channel-btn" href="https://whatsapp.com/channel/0029VbDCF7S7tkj3AUTfFV30" target="_blank">
-      📢 Follow Our WhatsApp Channel
+      &#x1F4E2; Follow Our WhatsApp Channel
     </a>
   </div>
-  <div class="hero-sub">ಕನ್ನಡ • हिंदी • English — Bot replies in your language! 🇮🇳</div>
+  <div class="hero-sub">&#x0C95;&#x0CA8;&#x0CCD;&#x0CA8;&#x0CA1; &bull; &#x0939;&#x093F;&#x0902;&#x0926;&#x0940; &bull; English &mdash; Bot replies in your language! &#x1F1EE;&#x1F1F3;</div>
 </div>
 
 <!-- Search -->
 <div class="search-wrap">
   <div class="search-box">
     <input class="search-input" id="searchInput" type="text" placeholder="Search water service, plumber, 2BHK...">
-    <button class="search-btn" onclick="doSearch()">🔍</button>
+    <button class="search-btn" onclick="doSearch()">&#x1F50D;</button>
   </div>
 </div>
 
 <!-- Categories -->
 <div class="cats-wrap">
-  <button class="cat-btn active" onclick="filterCat('All',this)">🏘️ All</button>
-  <button class="cat-btn" onclick="filterCat('Property',this)">🏠 Property</button>
-  <button class="cat-btn" onclick="filterCat('Rentals',this)">🏠 Rentals</button>
-  <button class="cat-btn" onclick="filterCat('Jobs',this)">💼 Jobs</button>
-  <button class="cat-btn" onclick="filterCat('Services',this)">🔧 Services</button>
-  <button class="cat-btn" onclick="filterCat('Buy-Sell',this)">🛒 Buy & Sell</button>
-  <button class="cat-btn" onclick="filterCat('Vehicles',this)">🚗 Vehicles</button>
-  <button class="cat-btn" onclick="filterCat('Education',this)">📚 Education</button>
+  <button class="cat-btn active" onclick="filterCat('All',this)">&#x1F3D8;&#xFE0F; All</button>
+  <button class="cat-btn" onclick="filterCat('Property',this)">&#x1F3E0; Property</button>
+  <button class="cat-btn" onclick="filterCat('Rentals',this)">&#x1F3E0; Rentals</button>
+  <button class="cat-btn" onclick="filterCat('Jobs',this)">&#x1F4BC; Jobs</button>
+  <button class="cat-btn" onclick="filterCat('Services',this)">&#x1F527; Services</button>
+  <button class="cat-btn" onclick="filterCat('Buy-Sell',this)">&#x1F6D2; Buy &amp; Sell</button>
+  <button class="cat-btn" onclick="filterCat('Vehicles',this)">&#x1F697; Vehicles</button>
+  <button class="cat-btn" onclick="filterCat('Education',this)">&#x1F4DA; Education</button>
 </div>
 
 <!-- Main -->
@@ -243,53 +319,179 @@ footer a { color:var(--saffron);text-decoration:none; }
   <!-- Channel Banner -->
   <div class="channel-banner">
     <div class="channel-banner-text">
-      <h4>📢 Follow Hoskote Classifieds Channel</h4>
-      <p>Get new listings directly on WhatsApp every day — FREE!</p>
+      <h4>&#x1F4E2; Follow Hoskote Classifieds Channel</h4>
+      <p>Get new listings directly on WhatsApp every day &mdash; FREE!</p>
     </div>
-    <a class="channel-follow-btn" href="https://whatsapp.com/channel/0029VbDCF7S7tkj3AUTfFV30" target="_blank">
-      Follow Now
-    </a>
+    <a class="channel-follow-btn" href="https://whatsapp.com/channel/0029VbDCF7S7tkj3AUTfFV30" target="_blank">Follow Now</a>
   </div>
 
   <!-- Post CTA -->
   <div class="post-cta">
-    <h3>Post Your Listing — It's FREE! 🎉</h3>
-    <p>WhatsApp our AI bot — post in seconds in your language!</p>
+    <h3>Post Your Listing &mdash; It's FREE! &#x1F389;</h3>
+    <p>WhatsApp our AI bot &mdash; post in seconds in your language!</p>
     <div class="lang-pills">
-      <span class="lang-pill">🇮🇳 ಕನ್ನಡದಲ್ಲಿ ಮಾತನಾಡಿ</span>
-      <span class="lang-pill">🇮🇳 हिंदी में बात करें</span>
-      <span class="lang-pill">🇬🇧 Chat in English</span>
+      <span class="lang-pill">&#x1F1EE;&#x1F1F3; &#x0C95;&#x0CA8;&#x0CCD;&#x0CA8;&#x0CA1;&#x0CA6;&#x0CB2;&#x0CCD;&#x0CB2;&#x0CBF; &#x0CAE;&#x0CBE;&#x0CA4;&#x0CA8;&#x0CBE;&#x0CA1;&#x0CBF;</span>
+      <span class="lang-pill">&#x1F1EE;&#x1F1F3; &#x0939;&#x093F;&#x0902;&#x0926;&#x0940; &#x092E;&#x0947;&#x0902; &#x092C;&#x093E;&#x0924; &#x0915;&#x0930;&#x0947;&#x0902;</span>
+      <span class="lang-pill">&#x1F1EC;&#x1F1E7; Chat in English</span>
     </div>
     <a class="contact-btn" href="https://wa.me/918317429244?text=post" target="_blank">
-      📱 WhatsApp to Post Free
+      &#x1F4F1; WhatsApp to Post Free
     </a>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       REFERRAL WIDGET
+       8 referral cards: Razorpay | Groww | Airtel WiFi | Airtel SIM
+                         Airtel CC | Airtel Black | Flipkart Card | Binance
+  ═══════════════════════════════════════════════════════════════ -->
+  <div class="referral-widget">
+    <div class="referral-header">
+      <div class="referral-header-icon">&#x1F4B0;</div>
+      <div class="referral-header-info">
+        <h4>Deals &amp; Offers for Hoskote</h4>
+        <p>Save money &amp; earn rewards with trusted services</p>
+      </div>
+    </div>
+    <div class="referral-cards">
+
+      <!-- Razorpay -->
+      <a class="referral-card" href="https://rzp.io/rzp/Yt46LnKX" target="_blank" rel="nofollow sponsored">
+        <div class="referral-card-top"><span class="referral-card-icon">&#x1F4B3;</span><span class="referral-badge biz">For Business</span></div>
+        <div class="referral-card-name">Accept Payments — Razorpay</div>
+        <div class="referral-card-desc">Shop in Hoskote? Accept UPI, cards &amp; EMI instantly. Free setup.</div>
+        <div class="referral-card-action">Start Free &#8594;</div>
+      </a>
+
+      <!-- Groww -->
+      <a class="referral-card" href="https://app.groww.in/v3cO/tpwi2524" target="_blank" rel="nofollow sponsored">
+        <div class="referral-card-top"><span class="referral-card-icon">&#x1F331;</span><span class="referral-badge earn">Earn &#x20B9;100</span></div>
+        <div class="referral-card-name">Invest on Groww</div>
+        <div class="referral-card-desc">Free Demat &amp; MF account. Start SIP from &#x20B9;100. Zero commission.</div>
+        <div class="referral-card-action">Open Free Account &#8594;</div>
+      </a>
+
+      <!-- Airtel WiFi -->
+      <a class="referral-card" href="https://u.airtel.in/NBHCjC" target="_blank" rel="nofollow sponsored">
+        <div class="referral-card-top"><span class="referral-card-icon">&#x1F4F6;</span><span class="referral-badge save">Save &#x20B9;300</span></div>
+        <div class="referral-card-name">Airtel Wi-Fi Connection</div>
+        <div class="referral-card-desc">Up to 1 Gbps speed. 22+ OTTs. &#x20B9;300 off first bill. Unlimited data.</div>
+        <div class="referral-card-action">Get &#x20B9;300 Off &#8594;</div>
+      </a>
+
+      <!-- Airtel SIM -->
+      <a class="referral-card" href="https://u.airtel.in/LHXtfz" target="_blank" rel="nofollow sponsored">
+        <div class="referral-card-top"><span class="referral-card-icon">&#x1F4F1;</span><span class="referral-badge save">Save &#x20B9;100</span></div>
+        <div class="referral-card-name">Airtel Prepaid SIM</div>
+        <div class="referral-card-desc">&#x20B9;100 off when you join. Free home delivery of SIM. Best network.</div>
+        <div class="referral-card-action">Get New SIM &#8594;</div>
+      </a>
+
+      <!-- Airtel Axis Credit Card -->
+      <a class="referral-card" href="https://u.airtel.in/RtvIiK" target="_blank" rel="nofollow sponsored">
+        <div class="referral-card-top"><span class="referral-card-icon">&#x1F3E6;</span><span class="referral-badge save">Save &#x20B9;300</span></div>
+        <div class="referral-card-name">Airtel Axis Bank Credit Card</div>
+        <div class="referral-card-desc">25% cashback on Airtel bills. Lounge access. &#x20B9;300 off on apply.</div>
+        <div class="referral-card-action">Apply Now &#8594;</div>
+      </a>
+
+      <!-- Airtel Black -->
+      <a class="referral-card" href="https://u.airtel.in/3PdzQa" target="_blank" rel="nofollow sponsored">
+        <div class="referral-card-top"><span class="referral-card-icon">&#x2B1B;</span><span class="referral-badge airtel">Save &#x20B9;300</span></div>
+        <div class="referral-card-name">Airtel Black — All-in-One</div>
+        <div class="referral-card-desc">Mobile + DTH + WiFi in one bill. 24x7 support. &#x20B9;300 off on join.</div>
+        <div class="referral-card-action">Join Airtel Black &#8594;</div>
+      </a>
+
+      <!-- Flipkart Axis Card -->
+      <a class="referral-card" href="https://bitli.in/sYQud68" target="_blank" rel="nofollow sponsored">
+        <div class="referral-card-top"><span class="referral-card-icon">&#x1F6CD;&#xFE0F;</span><span class="referral-badge earn">5% Cashback</span></div>
+        <div class="referral-card-name">Flipkart Axis Bank Card</div>
+        <div class="referral-card-desc">5% on Flipkart, 7.5% Myntra, 4% Swiggy/Uber. &#x20B9;350 welcome gift.</div>
+        <div class="referral-card-action">Apply &amp; Earn &#8594;</div>
+      </a>
+
+      <!-- MF Analyser -->
+      <!-- ⚠️ UPDATE URL: Replace href with your actual MF Analyser link when ready -->
+      <a class="referral-card" href="https://salarybit.in/mf-analyser" target="_blank">
+        <div class="referral-card-top"><span class="referral-card-icon">&#x1F4CA;</span><span class="referral-badge open">Free AI Tool</span></div>
+        <div class="referral-card-name">AI Mutual Fund Analyser</div>
+        <div class="referral-card-desc">Ask in Kannada/Hindi: "Best SIP for &#x20B9;5000/month?" AI answers free.</div>
+        <div class="referral-card-action">Try MF Analyser &#8594;</div>
+      </a>
+
+      <!-- SAP Jobs -->
+      <!-- ⚠️ UPDATE URL: Replace href="#" with your SAP jobs link or referral when ready -->
+      <a class="referral-card" href="#" target="_blank">
+        <div class="referral-card-top"><span class="referral-card-icon">&#x1F4BB;</span><span class="referral-badge biz">SAP Jobs</span></div>
+        <div class="referral-card-name">SAP Jobs — Hoskote &amp; Bangalore</div>
+        <div class="referral-card-desc">SAP Basis, ABAP, MM, SD openings near Hoskote. Expert guidance from 15+ yrs pro.</div>
+        <div class="referral-card-action">View SAP Jobs &#8594;</div>
+      </a>
+
+    </div>
+    <div class="referral-footer"><strong>Hoskote Classifieds</strong> earns a small commission on referrals at no extra cost to you.</div>
   </div>
 
   <div class="section-title" id="listingCount">Loading listings...</div>
   <div class="listings-grid" id="listingsGrid">
     <div class="loading"><div class="spinner"></div>Loading Hoskote listings...</div>
   </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       GOOGLE REVIEW WIDGET
+       Review link: https://g.page/r/CXd7GxZH96zzEAI/review
+  ══════════════════════════════════════════════════════════ -->
+  <div class="review-widget">
+    <div class="review-header">
+      <div class="review-header-icon">⭐</div>
+      <div class="review-header-info">
+        <h4>Rate Hoskote Classifieds on Google</h4>
+        <p>Your review helps more Hoskote people find us for free</p>
+      </div>
+    </div>
+    <div class="review-body">
+
+      <!-- Star summary — REAL: 1 review, 5 stars -->
+      <div class="review-stars-display">
+        <div class="review-stars-big">★★★★★</div>
+        <div class="review-stars-info">
+          <h3>5.0</h3>
+          <p>1 Google review &bull; Be the next!</p>
+        </div>
+      </div>
+
+      <!-- CTA buttons -->
+      <div class="review-cta-row">
+        <a class="review-btn-google" href="https://g.page/r/CXd7GxZH96zzEAI/review" target="_blank" rel="noopener">
+          ⭐ Write a Google Review
+        </a>
+        <a class="review-btn-share" href="https://wa.me/?text=I%20found%20Hoskote%20Classifieds%20very%20useful!%20Free%20local%20marketplace%20for%20Hoskote%20%F0%9F%8F%98%EF%B8%8F%20Check%20it%20out%3A%20https%3A%2F%2Fsalarybit.in%2Fhoskote-classifieds" target="_blank">
+          📤 Share with Friends
+        </a>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
 <footer>
-  <p>🏘️ Hoskote Classifieds — Free for Hoskote community</p>
+  <p>&#x1F3D8;&#xFE0F; Hoskote Classifieds &mdash; Free for Hoskote community</p>
   <p style="margin-top:6px">
-    <a href="https://wa.me/918317429244" target="_blank">📱 +91 83174 29244</a> &nbsp;|&nbsp;
-    <a href="https://whatsapp.com/channel/0029VbDCF7S7tkj3AUTfFV30" target="_blank">📢 Follow Channel</a> &nbsp;|&nbsp;
+    <a href="https://wa.me/918317429244" target="_blank">&#x1F4F1; +91 83174 29244</a> &nbsp;|&nbsp;
+    <a href="https://whatsapp.com/channel/0029VbDCF7S7tkj3AUTfFV30" target="_blank">&#x1F4E2; Follow Channel</a> &nbsp;|&nbsp;
     <a href="/">SalaryBit</a>
   </p>
   <p style="margin-top:6px;font-size:11px">We never share your personal details publicly. Contact numbers are only shared privately via WhatsApp.</p>
 </footer>
 
 <script>
-// ── Config ────────────────────────────────────────────────────────────────────
 var API_BASE    = 'https://web-production-b6ffc.up.railway.app';
 var WA_NUMBER   = '918317429244';
 var WA_CHANNEL  = 'https://whatsapp.com/channel/0029VbDCF7S7tkj3AUTfFV30';
 var currentCat  = 'All';
 var searchTerm  = '';
 
-// ── Photo Modal ───────────────────────────────────────────────────────────────
 function openModal(url) {
   document.getElementById('modalImg').src = url;
   document.getElementById('photoModal').classList.add('open');
@@ -299,7 +501,6 @@ function closeModal() {
 }
 document.addEventListener('keydown', function(e) { if(e.key==='Escape') closeModal(); });
 
-// ── Category CSS class ────────────────────────────────────────────────────────
 function catClass(cat) {
   var c = (cat||'').toLowerCase().trim();
   var map = {
@@ -313,29 +514,74 @@ function catClass(cat) {
   return map[c] || 'other';
 }
 
-// ── Escape HTML ───────────────────────────────────────────────────────────────
 function esc(s) {
   return String(s||'')
     .replace(/&/g,'&amp;').replace(/</g,'&lt;')
     .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ── Build WhatsApp contact link using listing TITLE (not ID) ─────────────────
 function buildContactLink(listing) {
   var title   = (listing.Title || listing.title || '').trim();
   var contact = String(listing.Contact || listing.contact || '').replace(/\D/g,'');
-  var msg     = encodeURIComponent('Hi, I saw your *' + title + '* listing on Hoskote Classifieds 🏘️ Is it still available?');
+  var msg     = encodeURIComponent('Hi, I saw your *' + title + '* listing on Hoskote Classifieds \uD83C\uDFD8\uFE0F Is it still available?');
   if (contact && contact.length >= 10) {
-    // Direct contact with seller
     return 'https://wa.me/91' + contact + '?text=' + msg;
   } else {
-    // Contact via bot
-    var botMsg = encodeURIComponent('Hi, I am interested in *' + title + '* listed on Hoskote Classifieds 🏘️');
+    var botMsg = encodeURIComponent('Hi, I am interested in *' + title + '* listed on Hoskote Classifieds \uD83C\uDFD8\uFE0F');
     return 'https://wa.me/' + WA_NUMBER + '?text=' + botMsg;
   }
 }
 
-// ── Render listings ───────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════
+// AMAZON AFFILIATE — TAG: hoskoclass-21
+// To update a product: change the url value to any Amazon
+// product link and add ?tag=hoskoclass-21 at the end
+// ════════════════════════════════════════════════════════
+var AMZ_TAG = 'hoskoclass-21';
+var AMZ_SLOTS = [
+  { heading:'💧 Water & Home — Hoskote Must-Haves', products:[
+    { icon:'💧', name:'Kent RO Water Purifier', price:'From ₹6,499', url:'https://www.amazon.in/s?k=kent+ro+water+purifier&tag='+AMZ_TAG },
+    { icon:'🔒', name:'Godrej Door Lock', price:'From ₹1,299', url:'https://www.amazon.in/s?k=godrej+door+lock+set&tag='+AMZ_TAG },
+    { icon:'🪟', name:'Good Knight Refill', price:'From ₹149', url:'https://www.amazon.in/s?k=good+knight+mosquito+refill&tag='+AMZ_TAG }
+  ]},
+  { heading:'🚗 Vehicle Must-Haves — Hoskote Roads', products:[
+    { icon:'🪖', name:'Steelbird ISI Helmet', price:'From ₹799', url:'https://www.amazon.in/s?k=steelbird+isi+helmet&tag='+AMZ_TAG },
+    { icon:'📷', name:'Car Dash Cam', price:'From ₹1,999', url:'https://www.amazon.in/s?k=car+dash+cam+india&tag='+AMZ_TAG },
+    { icon:'🧴', name:'Car Cleaning Kit', price:'From ₹399', url:'https://www.amazon.in/s?k=car+cleaning+kit+india&tag='+AMZ_TAG }
+  ]},
+  { heading:'📱 Electronics — Most Searched', products:[
+    { icon:'📱', name:'Redmi Budget Phone', price:'From ₹8,999', url:'https://www.amazon.in/s?k=redmi+smartphone+under+10000&tag='+AMZ_TAG },
+    { icon:'🎧', name:'boAt Airdopes TWS', price:'From ₹999', url:'https://www.amazon.in/s?k=boat+airdopes+earbuds&tag='+AMZ_TAG },
+    { icon:'🔋', name:'Mi 20000mAh Powerbank', price:'From ₹1,299', url:'https://www.amazon.in/s?k=mi+power+bank+20000mah&tag='+AMZ_TAG }
+  ]},
+  { heading:'🏗️ Construction & Property', products:[
+    { icon:'🔧', name:'Bosch Drill Machine', price:'From ₹1,899', url:'https://www.amazon.in/s?k=bosch+drill+machine+home&tag='+AMZ_TAG },
+    { icon:'🎨', name:'Asian Paints Primer', price:'From ₹599', url:'https://www.amazon.in/s?k=asian+paints+wall+primer&tag='+AMZ_TAG },
+    { icon:'💡', name:'Havells LED Bulbs 10pc', price:'From ₹449', url:'https://www.amazon.in/s?k=havells+led+bulbs+10+pack&tag='+AMZ_TAG }
+  ]},
+  { heading:'💼 Work & Study Essentials', products:[
+    { icon:'🖨️', name:'HP DeskJet Printer', price:'From ₹3,999', url:'https://www.amazon.in/s?k=hp+deskjet+all+in+one+printer&tag='+AMZ_TAG },
+    { icon:'📶', name:'TP-Link WiFi Router', price:'From ₹1,299', url:'https://www.amazon.in/s?k=tp+link+wifi+router&tag='+AMZ_TAG },
+    { icon:'📚', name:'Bank/UPSC Exam Books', price:'From ₹299', url:'https://www.amazon.in/s?k=bank+exam+books+2024+hindi&tag='+AMZ_TAG }
+  ]}
+];
+
+function buildAmzSlot(idx) {
+  var s = AMZ_SLOTS[idx % AMZ_SLOTS.length], p = '';
+  for (var i = 0; i < s.products.length; i++) {
+    var pr = s.products[i];
+    p += '<a class="amz-product" href="'+pr.url+'" target="_blank" rel="nofollow sponsored">'+
+      '<div class="amz-product-icon">'+pr.icon+'</div>'+
+      '<div class="amz-product-name">'+pr.name+'</div>'+
+      '<div class="amz-product-price">'+pr.price+'</div>'+
+      '<div class="amz-product-cta">View on Amazon</div></a>';
+  }
+  return '<div class="amz-slot"><span class="amz-slot-label">Sponsored</span>'+
+    '<div class="amz-header"><div class="amz-header-icon">\uD83D\uDED2</div><div class="amz-header-text">'+s.heading+'</div></div>'+
+    '<div class="amz-products">'+p+'</div>'+
+    '<div class="amz-footer">Shop on <a href="https://www.amazon.in?tag='+AMZ_TAG+'" target="_blank">Amazon India</a> \u2014 We may earn a commission at no extra cost to you.</div></div>';
+}
+
 function renderListings(data) {
   var grid  = document.getElementById('listingsGrid');
   var count = document.getElementById('listingCount');
@@ -344,9 +590,9 @@ function renderListings(data) {
     count.textContent = 'No listings found';
     grid.innerHTML =
       '<div class="empty-state">' +
-        '<div class="emoji">📭</div>' +
+        '<div class="emoji">\uD83D\uDCED</div>' +
         '<h3>No listings yet in this category</h3>' +
-        '<p>Be the first to post — it\'s free!</p><br>' +
+        '<p>Be the first to post \u2014 it\'s free!</p><br>' +
         '<a class="contact-btn" href="https://wa.me/' + WA_NUMBER + '?text=post" target="_blank">Post Free Now</a>' +
       '</div>';
     return;
@@ -354,7 +600,7 @@ function renderListings(data) {
 
   count.textContent = data.length + ' listing' + (data.length !== 1 ? 's' : '') + ' found';
 
-  var html = '';
+  var html = '', amzCount = 0;
   for (var i = 0; i < data.length; i++) {
     var l       = data[i];
     var photo   = String(l.Photo || l.photo || '').trim();
@@ -374,21 +620,25 @@ function renderListings(data) {
           '<div class="card-title">' + esc(l.Title||'') + '</div>' +
           (desc ? '<div class="card-desc">' + esc(desc) + '</div>' : '') +
           '<div class="card-meta">' +
-            '<span class="price">💰 ' + esc(l.Price||'Contact') + '</span>' +
-            '<span>📍 ' + esc(l.Location||'Hoskote') + '</span>' +
-            (hasPhoto ? '<span>🖼️ Photo</span>' : '') +
+            '<span class="price">\uD83D\uDCB0 ' + esc(l.Price||'Contact') + '</span>' +
+            '<span>\uD83D\uDCCD ' + esc(l.Location||'Hoskote') + '</span>' +
+            (hasPhoto ? '<span>\uD83D\uDDBC\uFE0F Photo</span>' : '') +
           '</div>' +
           '<div class="card-bottom">' +
-            '<span class="card-date">📅 ' + esc(l.Date||'') + '</span>' +
-            '<a class="contact-btn" href="' + waLink + '" target="_blank">📞 Contact</a>' +
+            '<span class="card-date">\uD83D\uDCC5 ' + esc(l.Date||'') + '</span>' +
+            '<a class="contact-btn" href="' + waLink + '" target="_blank">\uD83D\uDCDE Contact</a>' +
           '</div>' +
         '</div>' +
       '</div>';
+
+    if ((i + 1) % 3 === 0 && i < data.length - 1) {
+      html += buildAmzSlot(amzCount);
+      amzCount++;
+    }
   }
   grid.innerHTML = html;
 }
 
-// ── Fetch from Railway API ────────────────────────────────────────────────────
 function fetchListings(category, search) {
   category = category || 'All';
   search   = search   || '';
@@ -405,11 +655,10 @@ function fetchListings(category, search) {
       renderListings(data.listings || []);
     })
     .catch(function() {
-      // Show demo listings if API not reachable
       renderListings([
-        {ID:'HC0001',Category:'Services',Title:'Plumber - All plumbing work',Description:'All plumbing repairs and installations',Price:'₹300/visit',Location:'Hoskote',Contact:'9980078418',Date:'07-06-2026'},
-        {ID:'HC0002',Category:'Services',Title:'Siddhu Hoskote Water Service',Description:'Water tank supply available',Price:'₹400/tank',Location:'Hoskote',Contact:'9900989743',Date:'07-06-2026'},
-        {ID:'HC0003',Category:'Services',Title:'Girish Building Contractor Hoskote',Description:'Building construction work',Price:'₹2000/sqft',Location:'Hoskote',Contact:'9901034398',Date:'07-06-2026'}
+        {ID:'HC0001',Category:'Services',Title:'Plumber - All plumbing work',Description:'All plumbing repairs and installations',Price:'\u20B9300/visit',Location:'Hoskote',Contact:'9980078418',Date:'07-06-2026'},
+        {ID:'HC0002',Category:'Services',Title:'Siddhu Hoskote Water Service',Description:'Water tank supply available',Price:'\u20B9400/tank',Location:'Hoskote',Contact:'9900989743',Date:'07-06-2026'},
+        {ID:'HC0003',Category:'Services',Title:'Girish Building Contractor Hoskote',Description:'Building construction work',Price:'\u20B92000/sqft',Location:'Hoskote',Contact:'9901034398',Date:'07-06-2026'}
       ]);
     });
 }
@@ -427,7 +676,6 @@ function fetchStats() {
     });
 }
 
-// ── Filter & Search ───────────────────────────────────────────────────────────
 function filterCat(cat, btn) {
   currentCat = cat;
   var btns = document.querySelectorAll('.cat-btn');
@@ -445,9 +693,58 @@ document.getElementById('searchInput').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') doSearch();
 });
 
-// ── Init ──────────────────────────────────────────────────────────────────────
 fetchStats();
 fetchListings('All', '');
+
+// ── Interactive Star Rating ───────────────────────────────────────────────────
+// Reads stars from localStorage so returning users see their previous rating
+(function() {
+  var REVIEW_URL = 'https://g.page/r/CXd7GxZH96zzEAI/review';
+  var stored = localStorage.getItem('hc_user_rating');
+
+  // Build inline star picker above the CTA buttons
+  var starsDisplay = document.getElementById('avgStarsDisplay');
+  if (!starsDisplay) return;
+
+  var picker = document.createElement('div');
+  picker.style.cssText = 'margin-bottom:14px;';
+  picker.innerHTML =
+    '<div style="font-size:13px;font-weight:700;color:var(--white);margin-bottom:8px;">How would you rate us? Tap a star 👇</div>' +
+    '<div id="starPicker" style="display:flex;gap:6px;">' +
+      [1,2,3,4,5].map(function(n) {
+        return '<button data-val="'+n+'" onclick="handleStarPick('+n+')" style="' +
+          'background:none;border:2px solid rgba(251,188,4,0.3);border-radius:10px;' +
+          'cursor:pointer;font-size:28px;padding:6px 10px;transition:all 0.2s;' +
+          'color:'+(stored && parseInt(stored)>=n ? '#FBBC04' : '#3a3a2a')+';">' +
+          '★</button>';
+      }).join('') +
+    '</div>' +
+    '<div id="starFeedback" style="font-size:12px;color:var(--muted);margin-top:8px;min-height:18px;">' +
+      (stored ? 'You rated us '+stored+' star'+(stored>1?'s':'')+'! Thank you ❤️' : '') +
+    '</div>';
+
+  var reviewBody = starsDisplay.parentElement.parentElement;
+  var barSection = document.getElementById('starBars');
+  reviewBody.insertBefore(picker, barSection);
+
+  window.handleStarPick = function(val) {
+    localStorage.setItem('hc_user_rating', val);
+    // Highlight stars
+    var btns = document.querySelectorAll('#starPicker button');
+    btns.forEach(function(b, i) {
+      b.style.color      = i < val ? '#FBBC04' : '#3a3a2a';
+      b.style.border     = i < val ? '2px solid #FBBC04' : '2px solid rgba(251,188,4,0.3)';
+      b.style.background = i < val ? 'rgba(251,188,4,0.1)' : 'none';
+    });
+    var msgs = ['','That is honest, thanks! 🙏','We will improve! 🙏','Good to know! 🙏','Great, thank you! ⭐','Amazing! You made our day! 🎉'];
+    document.getElementById('starFeedback').textContent = msgs[val] || '';
+    // If 4 or 5 stars → redirect to Google Review after short delay
+    if (val >= 4) {
+      document.getElementById('starFeedback').textContent = 'Redirecting to Google Review... ⭐';
+      setTimeout(function() { window.open(REVIEW_URL, '_blank'); }, 900);
+    }
+  };
+})();
 </script>
 </body>
 </html>

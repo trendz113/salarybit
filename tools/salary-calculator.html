@@ -247,7 +247,6 @@ function fmtR(n){
 }
 function pctOf(a,b){return b>0?((a/b)*100).toFixed(1)+'%':'0%';}
 </script>
-</body></html>
 <script>
 function calcSal(){
   const basic=parseFloat(document.getElementById('s-basic').value)||0;
@@ -319,3 +318,4 @@ function calcSal(){
     <div class="insight blue"><span class="insight-icon">💡</span><div>Your effective take-home is <strong>${((inhand/gross)*100).toFixed(0)}% of gross</strong>. ${monthlyTax>5000?'Switching regimes or optimising deductions could save you ₹'+Math.round(monthlyTax*0.15).toLocaleString('en-IN')+'/mo.':''}</div></div>`;
 }
 </script>
+</body></html>

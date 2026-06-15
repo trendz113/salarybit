@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MF Analyzer Bot — Your Complete Investment Advisor</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:#0D0F14;color:#E8E4DC;min-height:100vh;overflow-x:hidden;line-height:1.6}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#D4A853}
+:root{
+  --bg:#0D0F14;--surface:#161A24;--card:#1C2130;
+  --border:rgba(255,255,255,0.08);--text:#E8E4DC;--muted:rgba(232,228,220,0.45);
+  --gold:#D4A853;--gold-lite:rgba(212,168,83,0.13);--gold-border:rgba(212,168,83,0.3);
+  --green:#3DBA6F;--red:#E05252;--blue:#4A7CFF;--purple:#8B5CF6;
+  --saffron:#FF6B35;--navy:#0A1931
+}
+/* HEADER */
+.hd{display:flex;align-items:center;justify-content:space-between;padding:14px 32px;border-bottom:1px solid var(--border);background:rgba(13,15,20,0.97);position:sticky;top:0;z-index:300;flex-wrap:wrap;gap:8px}
+.hd-logo{display:flex;align-items:center;gap:10px}
+.hd-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--saffron),#FF9A3C);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.hd-logo-text{font-family:'Playfair Display',serif;font-size:19px;font-weight:900;color:#E8E4DC}
+.hd-logo-text em{color:var(--gold);font-style:normal}
+.hd-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.badge{font-family:'JetBrains Mono',monospace;font-size:10px;padding:4px 11px;border-radius:20px;border:1px solid;letter-spacing:1px}
+.badge-live{background:rgba(61,186,111,0.08);color:var(--green);border-color:rgba(61,186,111,0.2);display:flex;align-items:center;gap:5px}
+.badge-paid{background:var(--gold-lite);color:var(--gold);border-color:var(--gold-border)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+#hd-upgrade{background:var(--gold);color:#0D0F14;border:none;padding:6px 13px;font-size:12px;font-weight:700;border-radius:4px;cursor:pointer;display:none}
+/* HERO */
+.hero{background:linear-gradient(135deg,#0A1931 0%,#142444 100%);padding:52px 24px 48px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-20%;width:60%;height:200%;background:radial-gradient(ellipse,rgba(255,107,53,0.08) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;top:0;right:0;width:40%;height:100%;background:radial-gradient(ellipse at right,rgba(212,168,83,0.06) 0%,transparent 60%);pointer-events:none}
+.hero-kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:4px;color:var(--saffron);text-transform:uppercase;margin-bottom:16px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(32px,6vw,64px);font-weight:900;line-height:1.08;letter-spacing:-1px;margin-bottom:14px;color:#fff}
+.hero h1 em{color:var(--gold);font-style:normal}
+.hero-desc{font-size:15px;color:rgba(255,255,255,0.6);max-width:500px;margin:0 auto 32px;line-height:1.8}
+.hero-pills{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.hero-pill{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.75);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;display:flex;align-items:center;gap:6px}
+.hero-pill .pnum{background:var(--saffron);color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.hero-cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-primary{background:var(--saffron);color:#fff;border:none;padding:13px 26px;font-size:14px;font-weight:700;border-radius:6px;cursor:pointer;transition:opacity .2s}
+.btn-primary:hover{opacity:.88}
+.btn-secondary{background:none;border:1px solid rgba(255,255,255,0.2);color:#fff;padding:13px 26px;font-size:14px;font-weight:600;border-radius:6px;cursor:pointer;transition:all .2s}
+.btn-secondary:hover{border-color:var(--gold);color:var(--gold)}
+/* MAIN NAV TABS */
+.nav-tabs{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:57px;z-index:200}
+.nav-tabs-inner{max-width:980px;margin:0 auto;display:flex;padding:0 20px}
+.ntab{padding:14px 18px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.ntab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.ntab-note{font-size:10px;font-weight:400}
+/* CONTAINER */
+.wrap{max-width:980px;margin:0 auto;padding:28px 20px 80px}
+/* SECTION PANELS */
+.panel{display:none}.panel.on{display:block}
+/* CARD BASE */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:26px;margin-bottom:16px}
+.card-white{background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:26px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.card h3{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:4px;color:var(--text)}
+.card-white h3{color:#0A1931}
+.card-sub{font-size:13px;color:var(--muted);margin-bottom:18px}
+.card-white .card-sub{color:#4A5568}
+.free-tag{display:inline-flex;align-items:center;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--green);background:rgba(61,186,111,0.08);border:1px solid rgba(61,186,111,0.2);padding:3px 10px;border-radius:10px;margin-bottom:12px}
+.paid-tag{display:inline-flex;align-items:center;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--gold);background:var(--gold-lite);border:1px solid var(--gold-border);padding:3px 10px;border-radius:10px;margin-bottom:12px}
+/* SECTION HEADERS */
+.sec-hd{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.sec-icon{width:42px;height:42px;background:rgba(255,107,53,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.sec-title{font-size:18px;font-weight:700;color:#fff;margin-bottom:2px}
+.sec-sub{font-size:13px;color:var(--muted)}
+/* CAS GUIDE */
+.cas-info{background:rgba(61,186,111,0.06);border:1px solid rgba(61,186,111,0.2);border-radius:8px;padding:14px 16px;margin-bottom:18px;font-size:13px;color:rgba(232,228,220,0.8);line-height:1.7}
+.cas-info strong{display:block;color:var(--green);margin-bottom:4px;font-size:12px;letter-spacing:1px;text-transform:uppercase}
+.portal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+@media(max-width:540px){.portal-grid{grid-template-columns:1fr}}
+.portal-card{border:1px solid var(--border);border-radius:8px;padding:16px;transition:border-color .2s;background:var(--card)}
+.portal-card:hover{border-color:var(--saffron)}
+.pcard-name{font-weight:700;font-size:14px;margin-bottom:4px;color:var(--text)}
+.pcard-desc{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5}
+.pcard-link{display:inline-flex;align-items:center;gap:5px;background:var(--saffron);color:#fff;padding:7px 14px;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;transition:opacity .2s}
+.pcard-link:hover{opacity:.85}
+.steps-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.steps-list li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--muted);line-height:1.5}
+.step-num{background:var(--saffron);color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px}
+/* UPLOAD ZONE */
+.upload-zone{border:2px dashed var(--saffron);border-radius:10px;padding:36px 20px;text-align:center;cursor:pointer;background:rgba(255,107,53,0.04);transition:all .2s}
+.upload-zone:hover{background:rgba(255,107,53,0.08)}
+.upload-zone.dragover{background:rgba(255,107,53,0.12);border-color:#FF9A3C}
+.upload-icon{font-size:40px;margin-bottom:10px}
+.upload-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:5px}
+.upload-sub{font-size:13px;color:var(--muted);margin-bottom:14px}
+.upload-btn{background:var(--saffron);color:#fff;border:none;padding:9px 22px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .2s}
+.upload-btn:hover{opacity:.85}
+.file-ok{background:rgba(61,186,111,0.08);border:1px solid rgba(61,186,111,0.25);border-radius:6px;padding:9px 13px;font-size:13px;color:var(--green);font-weight:500;margin-top:10px;display:none;align-items:center;gap:8px}
+.or-div{text-align:center;position:relative;margin:18px 0;color:var(--muted);font-size:13px}
+.or-div::before,.or-div::after{content:'';position:absolute;top:50%;width:44%;height:1px;background:var(--border)}
+.or-div::before{left:0}.or-div::after{right:0}
+/* MANUAL FORM */
+.manual-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+@media(max-width:540px){.manual-grid{grid-template-columns:1fr}}
+label.lbl{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:4px}
+input.inp,select.inp{width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:6px;font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s}
+input.inp:focus,select.inp:focus{border-color:var(--gold)}
+select.inp option{background:var(--card)}
+.add-btn{width:100%;background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--text);padding:11px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;margin-top:4px;transition:all .2s}
+.add-btn:hover{background:var(--saffron);border-color:var(--saffron);color:#fff}
+/* ADDED LIST */
+.added-list{margin-top:14px;display:flex;flex-direction:column;gap:6px}
+.added-item{display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:6px;padding:9px 12px;font-size:13px}
+.added-item-left{display:flex;align-items:center;gap:8px}
+.added-item-name{font-weight:600;font-size:12px}
+.added-item-meta{color:var(--muted);font-size:11px}
+.remove-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px;padding:2px 5px;border-radius:3px;transition:color .2s}
+.remove-btn:hover{color:var(--red)}
+/* ANALYZE BTN */
+.analyze-btn{width:100%;background:linear-gradient(135deg,var(--saffron),#FF9A3C);color:#fff;border:none;padding:15px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s,transform .1s;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 16px rgba(255,107,53,0.3)}
+.analyze-btn:hover{opacity:.92;transform:translateY(-1px)}
+.analyze-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+/* PRIVACY NOTE */
+.privacy-note{background:rgba(212,168,83,0.05);border:1px solid var(--gold-border);border-radius:6px;padding:11px 14px;font-size:12px;color:rgba(232,228,220,0.65);line-height:1.6;margin-bottom:16px}
+.privacy-note strong{color:var(--gold)}
+/* LOADING */
+.analyzer-loader{display:none;text-align:center;padding:44px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:16px}
+.spin{width:48px;height:48px;border:3px solid rgba(255,107,53,0.15);border-top-color:var(--saffron);border-radius:50%;animation:rot .8s linear infinite;margin:0 auto 16px}
+@keyframes rot{to{transform:rotate(360deg)}}
+.load-text{font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px}
+.load-sub{font-size:13px;color:var(--muted)}
+/* RESULTS */
+.results{display:none}
+.total-banner{background:linear-gradient(135deg,#0A1931,#142444);border-radius:12px;padding:26px;margin-bottom:16px;color:#fff;position:relative;overflow:hidden}
+.total-banner::after{content:'₹';position:absolute;right:-10px;top:-20px;font-size:110px;font-weight:800;opacity:0.04;font-family:'Playfair Display',serif}
+.total-lbl{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;opacity:.6;margin-bottom:6px}
+.total-amt{font-family:'Playfair Display',serif;font-size:clamp(32px,6vw,52px);font-weight:700;margin-bottom:3px;color:#fff}
+.total-amt span{color:var(--saffron)}
+.total-note{font-size:13px;opacity:.55;margin-bottom:18px}
+.total-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.total-stat{background:rgba(255,255,255,0.07);border-radius:8px;padding:11px}
+.total-stat-lbl{font-size:11px;opacity:.55;margin-bottom:3px;font-weight:500}
+.total-stat-val{font-size:16px;font-weight:700}
+.clr-g{color:#4ADE80}.clr-r{color:#FC8181}.clr-a{color:var(--gold)}
+/* EXPORT BAR */
+.export-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.export-btn{display:flex;align-items:center;gap:5px;padding:8px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text);transition:all .2s}
+.export-btn:hover{border-color:var(--saffron);color:var(--saffron)}
+/* CHARTS */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+@media(max-width:620px){.chart-grid{grid-template-columns:1fr}}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:22px}
+.chart-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.chart-wrap{position:relative;height:200px}
+/* INSIGHT CARD */
+.insight-card{background:linear-gradient(135deg,#3730a3,#5B21B6);border-radius:10px;padding:22px;margin-bottom:16px;color:#fff}
+.insight-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.insight-icon{background:rgba(255,255,255,0.15);width:34px;height:34px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.insight-hd h3{font-size:15px;font-weight:700}
+.insight-text{font-size:13px;line-height:1.8;opacity:.9}
+.insight-points{list-style:none;margin-top:10px;display:flex;flex-direction:column;gap:7px}
+.insight-points li{display:flex;align-items:flex-start;gap:7px;font-size:12px;opacity:.88;line-height:1.5}
+.insight-points li::before{content:'→';color:#A78BFA;font-weight:700;flex-shrink:0}
+/* HOLDINGS TABLE */
+.holdings-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:22px;margin-bottom:16px}
+.holdings-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.filter-tabs{display:flex;gap:5px;flex-wrap:wrap}
+.filter-tab{padding:4px 11px;border-radius:16px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:none;color:var(--muted);transition:all .2s}
+.filter-tab.active{background:var(--saffron);color:#fff;border-color:var(--saffron)}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{padding:9px 10px;text-align:left;font-size:10px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--gold-border);white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(255,255,255,0.02)}
+tbody td{padding:10px;vertical-align:middle}
+.asset-badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.badge-mutual-fund,.badge-mf{background:#1e3a5f;color:#93C5FD}
+.badge-stock{background:#1a3a2e;color:#6EE7B7}
+.badge-gold{background:#3b2f0a;color:#FCD34D}
+.badge-fd{background:#1a2e1a;color:#86EFAC}
+.badge-property{background:#3b1a1a;color:#FCA5A5}
+.badge-bond{background:#2d1a4a;color:#C4B5FD}
+.badge-epf,.badge-ppf{background:#2a1f0d;color:#FDE68A}
+.badge-nps{background:#0d1f38;color:#BAE6FD}
+.badge-sovereign-gold-bond,.badge-sgb{background:#3b2a00;color:#FCD34D}
+.badge-reit,.badge-invit{background:#0d2d2a;color:#5EEAD4}
+.badge-insurance{background:#3b0d20;color:#FDA4AF}
+.badge-silver{background:#1a1f2e;color:#CBD5E1}
+.badge-other{background:#1a1a1a;color:#9CA3AF}
+.pnl-pos{color:var(--green);font-weight:600}
+.pnl-neg{color:var(--red);font-weight:600}
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--surface);border:1px solid var(--border);color:var(--text);padding:11px 18px;border-radius:8px;font-size:13px;font-weight:500;z-index:999;transition:transform .3s ease;box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{background:#145228;border-color:rgba(61,186,111,0.3);color:#6EE7B7}
+.toast.error{background:#4a1515;border-color:rgba(224,82,82,0.3);color:#FCA5A5}
+/* FREE TOOLS */
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.g-item{display:flex;flex-direction:column;gap:5px}
+@media(max-width:600px){.grid3{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}}
+.sip-result{display:flex;justify-content:space-around;flex-wrap:wrap;gap:10px;background:var(--card);border-radius:6px;padding:14px;margin-top:10px}
+.sr-item{text-align:center}
+.sr-val{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;line-height:1}
+.sr-val.g{color:var(--green)}.sr-val.r{color:var(--red)}.sr-val.a{color:var(--gold)}
+.sr-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);margin-top:2px}
+.age-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:8px}
+.age-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;cursor:pointer;transition:border-color .2s}
+.age-card:hover,.age-card.sel{border-color:var(--gold)}
+.age-big{font-family:'Playfair Display',serif;font-size:30px;font-weight:900;color:var(--gold);line-height:1}
+.age-title{font-size:12px;font-weight:700;margin:4px 0 2px}
+.age-sub{font-size:11px;color:var(--muted);line-height:1.4}
+.age-split{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--green);margin-top:5px}
+.age-out{margin-top:12px;display:none;background:var(--card);border-radius:8px;padding:16px;border-left:3px solid var(--gold)}
+.age-out-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin-bottom:7px}
+.age-out-body{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:12px}
+.alloc-list{display:flex;flex-direction:column;gap:7px}
+.alloc-row{display:grid;grid-template-columns:140px 1fr 40px;align-items:center;gap:8px}
+.alloc-lbl{font-size:11px;display:flex;align-items:center;gap:5px}
+.a-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0}
+.alloc-bg{height:5px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden}
+.alloc-fill{height:100%;border-radius:3px}
+.alloc-pct{font-family:'JetBrains Mono',monospace;font-size:10px;text-align:right}
+.alloc-eg{font-size:11px;color:var(--muted);padding:0 0 6px 12px}
+.fund-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;display:grid;grid-template-columns:32px 1fr auto;gap:10px;align-items:start;margin-bottom:8px}
+.f-rank{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:rgba(212,168,83,0.2);line-height:1}
+.f-name{font-size:13px;font-weight:700;margin-bottom:2px}
+.f-cat{font-size:11px;color:var(--muted);margin-bottom:3px}
+.f-why{font-size:11px;color:var(--muted);line-height:1.5}
+.f-cagr{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--green);text-align:right;white-space:nowrap}
+.f-min{font-size:10px;color:var(--muted);text-align:right;margin-top:2px}
+.trigger{background:linear-gradient(135deg,rgba(224,82,82,0.07),rgba(212,168,83,0.04));border:1px solid rgba(224,82,82,0.2);border-radius:8px;padding:18px;margin-top:14px;position:relative;overflow:hidden}
+.trigger::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),var(--gold))}
+.trigger h4{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin-bottom:5px}
+.trigger h4 .hl{color:var(--red)}.trigger h4 .hl-g{color:var(--gold)}
+.trigger p{font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:10px}
+.findings{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.finding{font-size:11px;padding:6px 10px;background:rgba(224,82,82,0.05);border-radius:4px;border-left:2px solid var(--red);line-height:1.5}
+.finding.go{background:rgba(212,168,83,0.05);border-left-color:var(--gold)}
+.btn-unlock{background:linear-gradient(135deg,var(--gold),#E8C96A);color:#0D0F14;border:none;padding:9px 20px;font-size:12px;font-weight:700;border-radius:4px;cursor:pointer}
+.btn-dismiss{background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;text-decoration:underline;margin-left:10px}
+.chat-box{background:var(--card);border-radius:8px;min-height:130px;max-height:260px;overflow-y:auto;padding:12px;margin-bottom:10px;display:flex;flex-direction:column;gap:8px}
+.cmsg{padding:10px 13px;border-radius:6px;font-size:13px;line-height:1.7;max-width:88%}
+.cmsg.ai{background:var(--surface);border:1px solid var(--border);align-self:flex-start}
+.cmsg.user{background:var(--gold);color:#0D0F14;font-weight:600;align-self:flex-end}
+.chip-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.chip{background:none;border:1px solid var(--border);color:var(--muted);padding:4px 10px;font-size:11px;border-radius:16px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s}
+.chip:hover{border-color:var(--gold);color:var(--gold)}
+.chat-row{display:flex;gap:7px}
+.chat-inp{flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:6px;font-size:13px;font-family:'Inter',sans-serif;outline:none}
+.chat-inp:focus{border-color:var(--gold)}
+.btn-send{background:var(--gold);color:#0D0F14;border:none;padding:9px 16px;font-weight:700;font-size:13px;border-radius:6px;cursor:pointer}
+.btn-send:disabled{opacity:.35;cursor:not-allowed}
+.qs-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:12px}
+.qs-count{font-family:'JetBrains Mono',monospace;color:var(--muted)}
+.typing{display:inline-flex;gap:4px;align-items:center;padding:10px 13px;background:var(--surface);border:1px solid var(--border);border-radius:6px}
+.td{width:5px;height:5px;background:var(--gold);border-radius:50%;animation:bop 1.2s infinite}
+.td:nth-child(2){animation-delay:.2s}.td:nth-child(3){animation-delay:.4s}
+@keyframes bop{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
+/* REPORT SECTIONS */
+.rpt-header{background:linear-gradient(135deg,var(--surface),var(--card));border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.rpt-h2{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:4px}
+.rpt-sub{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.rpt-score-box{text-align:center;background:var(--bg);border-radius:8px;padding:12px 20px}
+.rpt-score-num{font-family:'Playfair Display',serif;font-size:42px;font-weight:900;line-height:1}
+.rpt-score-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--gold);margin-top:3px}
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+@media(max-width:600px){.rgrid{grid-template-columns:1fr}}
+.rcol{grid-column:1/-1}
+.rcard{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px}
+.rcard h3{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.mrow{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.mrow:last-child{border:none}
+.mlbl{font-size:12px;color:var(--muted)}
+.mval{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600}
+.mval.g{color:var(--green)}.mval.r{color:var(--red)}.mval.a{color:var(--gold)}
+.flag{display:flex;align-items:center;gap:7px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:12px}
+.flag:last-child{border:none}
+.fdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.flvl{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px}
+.ftable{width:100%;border-collapse:collapse}
+.ftable th{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--gold);text-align:left;padding:6px 9px;border-bottom:1px solid var(--gold-border)}
+.ftable td{font-size:11px;padding:7px 9px;border-bottom:1px solid rgba(255,255,255,0.04);color:rgba(232,228,220,0.72)}
+.ftable tr:last-child td{border:none}
+.narrative{font-size:13px;line-height:1.9;color:rgba(232,228,220,0.8);white-space:pre-wrap}
+.income-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.ic{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;transition:border-color .2s}
+.ic:hover{border-color:var(--gold)}
+.ic-icon{font-size:20px;margin-bottom:6px}
+.ic-title{font-size:12px;font-weight:700;margin-bottom:3px}
+.ic-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.ic-earn{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--green);margin-top:5px}
+.astep{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:flex-start}
+.astep:last-child{border:none}
+.anum{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--gold);min-width:14px;margin-top:2px}
+.atext{font-size:12px;color:rgba(232,228,220,0.7);line-height:1.6}
+.wa-bar{background:rgba(37,211,102,0.05);border:1px solid rgba(37,211,102,0.15);border-radius:8px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:10px}
+.wa-bar p{font-size:13px;color:var(--muted)}
+.btn-wa{background:#25D366;color:#fff;border:none;padding:8px 16px;font-weight:700;font-size:12px;border-radius:6px;cursor:pointer}
+.act-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn-dl{background:linear-gradient(135deg,var(--gold),#E8C96A);color:#0D0F14;border:none;padding:10px 20px;font-size:12px;font-weight:700;border-radius:6px;cursor:pointer}
+.btn-rst{background:none;border:1px solid var(--border);color:var(--muted);padding:10px 20px;font-size:12px;border-radius:6px;cursor:pointer}
+.btn-rst:hover{border-color:var(--gold);color:var(--gold)}
+.rpt-loader{text-align:center;padding:44px 20px;display:none}
+.rpt-spin{width:50px;height:50px;border:2px solid rgba(212,168,83,0.12);border-top-color:var(--gold);border-radius:50%;animation:rot 1s linear infinite;margin:0 auto 16px}
+.load-steps{list-style:none;max-width:250px;margin:14px auto 0;text-align:left}
+.load-steps li{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);padding:4px 0;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--border)}
+.load-steps li:last-child{border:none}
+.load-steps li.on{color:var(--gold)}.load-steps li.dn{color:var(--green)}
+.lpip{width:4px;height:4px;border-radius:50%;background:currentColor;flex-shrink:0}
+/* PREMIUM PANEL */
+.premium-wrap{background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(74,124,255,0.05));border:1px solid rgba(139,92,246,0.2);border-radius:10px;padding:26px;text-align:center}
+.premium-wrap h2{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:8px}
+.premium-wrap>p{font-size:14px;color:var(--muted);max-width:440px;margin:0 auto 20px;line-height:1.8}
+.prem-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px;margin-bottom:22px;text-align:left}
+.prem-item{background:var(--card);border:1px solid rgba(139,92,246,0.2);border-radius:8px;padding:14px}
+.prem-icon{font-size:20px;margin-bottom:6px}
+.prem-item h4{font-size:13px;font-weight:700;margin-bottom:3px}
+.prem-item p{font-size:11px;color:var(--muted);line-height:1.5}
+.btn-prem{background:linear-gradient(135deg,var(--purple),var(--blue));color:#fff;border:none;padding:12px 26px;font-size:14px;font-weight:700;border-radius:6px;cursor:pointer}
+/* PRICE ROW */
+.price-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:0 auto 28px;max-width:760px}
+.ppill{padding:12px 18px;border-radius:8px;border:1px solid var(--border);text-align:center;min-width:120px}
+.ppill-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px}
+.ppill-price{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;line-height:1}
+.ppill-sub{font-size:10px;color:var(--muted);margin-top:2px}
+.ppill-f{border-color:rgba(61,186,111,0.3);background:rgba(61,186,111,0.05)}.ppill-f .ppill-lbl{color:var(--green)}.ppill-f .ppill-price{color:var(--green)}
+.ppill-p{border-color:var(--gold-border);background:var(--gold-lite);position:relative}.ppill-p .ppill-lbl{color:var(--gold)}.ppill-p .ppill-price{color:var(--gold)}
+.ppill-m{border-color:rgba(139,92,246,0.3);background:rgba(139,92,246,0.07)}.ppill-m .ppill-lbl{color:var(--purple)}.ppill-m .ppill-price{color:var(--purple)}
+.ppill-n{border-color:rgba(74,124,255,0.3);background:rgba(74,124,255,0.06)}.ppill-n .ppill-lbl{color:var(--blue)}.ppill-n .ppill-price{color:var(--blue)}
+.pop-tag{position:absolute;top:-8px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:700;background:var(--gold);color:#0D0F14;padding:2px 9px;border-radius:10px;white-space:nowrap}
+/* MODAL */
+.modal{display:none;position:fixed;inset:0;background:rgba(13,15,20,0.95);z-index:500;overflow-y:auto;padding:24px 16px}
+.modal.open{display:flex;align-items:flex-start;justify-content:center}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;max-width:480px;width:100%;position:relative}
+.modal-close{position:absolute;top:12px;right:14px;background:none;border:none;color:var(--muted);font-size:19px;cursor:pointer}
+.modal-hd{padding:22px 24px 16px;border-bottom:1px solid var(--border)}
+.modal-hd h2{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:3px}
+.modal-hd p{font-size:12px;color:var(--muted)}
+.modal-body{padding:18px 24px}
+.plan-opts{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.popt{border:1px solid var(--border);border-radius:8px;padding:13px;cursor:pointer;position:relative;transition:all .2s}
+.popt:hover,.popt.on{border-color:var(--gold);background:var(--gold-lite)}
+.popt-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.popt-name{font-size:13px;font-weight:700}
+.popt-price{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:var(--gold)}
+.popt-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.popt-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.ptag{font-size:9px;background:rgba(61,186,111,0.08);color:var(--green);padding:2px 7px;border-radius:3px}
+.pbest{position:absolute;top:-7px;right:10px;font-size:9px;font-weight:700;background:var(--gold);color:#0D0F14;padding:2px 7px;border-radius:8px;letter-spacing:1px}
+.pay-tabs{display:flex;gap:2px;background:var(--card);border-radius:4px;padding:3px;margin-bottom:10px}
+.ptab{flex:1;padding:6px;text-align:center;font-size:11px;font-weight:600;cursor:pointer;border-radius:3px;border:none;background:none;color:var(--muted);transition:all .2s}
+.ptab.on{background:var(--surface);color:var(--text)}
+.upi-apps{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px}
+.upi-app{background:var(--card);border:1px solid var(--border);color:var(--text);padding:5px 11px;font-size:11px;font-weight:600;border-radius:4px;cursor:pointer;transition:all .2s}
+.upi-app.on{border-color:var(--green);color:var(--green)}
+.btn-pay{width:100%;background:linear-gradient(135deg,var(--gold),#E8C96A);color:#0D0F14;border:none;padding:12px;font-size:14px;font-weight:700;border-radius:6px;cursor:pointer;margin-top:10px}
+.btn-pay:hover{opacity:.88}
+.pay-note{text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-top:7px}
+.gbox{background:rgba(61,186,111,0.06);border:1px solid rgba(61,186,111,0.15);border-radius:4px;padding:8px 12px;font-size:11px;color:var(--green);text-align:center;margin-top:6px}
+footer{border-top:1px solid var(--border);padding:16px 32px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);line-height:2}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hd">
+  <div class="hd-logo">
+    <div class="hd-logo-icon">📊</div>
+    <div class="hd-logo-text">MF Analyzer <em>Bot</em></div>
+  </div>
+  <div class="hd-right">
+    <span class="badge badge-live"><span class="live-dot"></span>AI Active</span>
+    <span class="badge badge-paid" id="hd-tier" style="display:none;">FREE PLAN</span>
+    <button id="hd-upgrade" onclick="openModal('report')">Upgrade ₹399 →</button>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-kicker">India's Complete Investment Analyzer</div>
+  <h1>All your investments.<br><em>One clear picture.</em></h1>
+  <p class="hero-desc">Upload your CAS report to analyze your MF portfolio — or enter investments manually. Then get AI-powered wealth planning across MF, Gold, Bonds, Real Estate and more.</p>
+  <div class="hero-pills">
+    <div class="hero-pill"><span class="pnum">1</span> Upload CAS PDF or add manually</div>
+    <div class="hero-pill"><span class="pnum">2</span> AI analyzes your holdings</div>
+    <div class="hero-pill"><span class="pnum">3</span> Get your wealth plan</div>
+  </div>
+  <div class="hero-cta">
+    <button class="btn-primary" onclick="switchNav('analyzer')">🔍 Analyze My Portfolio</button>
+    <button class="btn-secondary" onclick="switchNav('plan')">💰 Get Investment Plan</button>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-tabs">
+  <div class="nav-tabs-inner">
+    <button class="ntab on" id="nt-analyzer" onclick="switchNav('analyzer')">📊 MF Analyzer</button>
+    <button class="ntab" id="nt-plan" onclick="switchNav('plan')">🆓 Free Tools <span class="ntab-note" style="color:var(--green);">Free</span></button>
+    <button class="ntab" id="nt-report" onclick="switchNav('report')">📋 Full Report <span class="ntab-note" style="color:var(--gold);">₹399</span></button>
+    <button class="ntab" id="nt-premium" onclick="switchNav('premium')">👑 Premium <span class="ntab-note" style="color:var(--purple);">₹299/mo</span></button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ═══ ANALYZER PANEL ═══ -->
+  <div class="panel on" id="panel-analyzer">
+
+    <!-- CAS GUIDE -->
+    <div class="card">
+      <div class="sec-hd">
+        <div class="sec-icon">📄</div>
+        <div><div class="sec-title">Step 1: Get Your CAS Report</div><div class="sec-sub">Free from CAMS or KFintech — covers all MF holdings across all platforms</div></div>
+      </div>
+      <div class="cas-info">
+        <strong>💡 What is a CAS Report?</strong>
+        CAS (Consolidated Account Statement) shows <strong>all your Mutual Fund investments in one place</strong> — whether you invested via Groww, Zerodha, Paytm Money, HDFC MF, or any platform. Issued by CAMS and KFintech (SEBI-registered registrars). It is free, safe, and arrives in your email within minutes.
+      </div>
+      <div class="portal-grid">
+        <div class="portal-card">
+          <div class="pcard-name">🏦 CAMS Online</div>
+          <div class="pcard-desc">Covers Franklin, HDFC, ICICI, SBI, Nippon, Axis, DSP, Kotak, and more. Enter PAN + email. Report arrives in minutes.</div>
+          <a class="pcard-link" href="https://www.camsonline.com/Investors/Statements/Consolidated-Account-Statement" target="_blank">Open CAMS ↗</a>
+        </div>
+        <div class="portal-card">
+          <div class="pcard-name">🏦 KFintech</div>
+          <div class="pcard-desc">Covers Mirae, Quant, PPFAS (Parag Parikh), Edelweiss, UTI and more. Same process — PAN + email.</div>
+          <a class="pcard-link" href="https://mfs.kfintech.com/investor/General/ConsolidatedAccountStatement" target="_blank">Open KFintech ↗</a>
+        </div>
+      </div>
+      <ul class="steps-list">
+        <li><span class="step-num">1</span> Click either portal link above</li>
+        <li><span class="step-num">2</span> Enter your <strong>PAN number</strong> and the <strong>email linked to your investments</strong></li>
+        <li><span class="step-num">3</span> Select <strong>"Detailed"</strong> statement · Date range: "Since Inception"</li>
+        <li><span class="step-num">4</span> PDF arrives in your email in 5–10 minutes</li>
+        <li><span class="step-num">5</span> Download and upload it below ↓</li>
+      </ul>
+    </div>
+
+    <!-- UPLOAD CARD -->
+    <div class="card">
+      <div class="sec-hd">
+        <div class="sec-icon">⬆️</div>
+        <div><div class="sec-title">Step 2: Upload PDF + Add Investments</div><div class="sec-sub">Your PDF stays on your device — never sent to any server</div></div>
+      </div>
+      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+        <div class="upload-icon">📂</div>
+        <div class="upload-title">Drop your CAS PDF here</div>
+        <div class="upload-sub">or click to browse your files</div>
+        <button class="upload-btn" onclick="event.stopPropagation();document.getElementById('fileInput').click()">Choose PDF File</button>
+      </div>
+      <input type="file" id="fileInput" accept=".pdf" style="display:none">
+      <div class="file-ok" id="fileOk"><span>✅</span><span id="fileOkText"></span></div>
+
+      <div class="or-div">Also add manually</div>
+
+      <div class="manual-grid">
+        <div><label class="lbl">Investment Type</label>
+          <select class="inp" id="assetType">
+            <option value="">Select type...</option>
+            <option value="Mutual Fund">Mutual Fund</option>
+            <option value="Stock">Stock / Share</option>
+            <option value="Gold">Gold (Physical / Digital)</option>
+            <option value="Silver">Silver</option>
+            <option value="Sovereign Gold Bond">Sovereign Gold Bond (SGB)</option>
+            <option value="FD">Fixed Deposit (FD)</option>
+            <option value="RD">Recurring Deposit (RD)</option>
+            <option value="PPF">PPF</option>
+            <option value="EPF">EPF / PF</option>
+            <option value="NPS">NPS</option>
+            <option value="Property">Property / Real Estate</option>
+            <option value="REIT">REIT</option>
+            <option value="InvIT">InvIT</option>
+            <option value="Insurance">Life Insurance / ULIP</option>
+            <option value="Bond">Bond / Debenture</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div><label class="lbl">Investment Name</label><input class="inp" type="text" id="assetName" placeholder="e.g. HDFC Top 100 Fund"></div>
+        <div><label class="lbl">Amount Invested (₹)</label><input class="inp" type="number" id="assetInvested" placeholder="e.g. 50000"></div>
+        <div><label class="lbl">Current Value (₹)</label><input class="inp" type="number" id="assetCurrent" placeholder="e.g. 68000"></div>
+      </div>
+      <button class="add-btn" onclick="addManualEntry()">+ Add to Portfolio</button>
+      <div class="added-list" id="addedList"></div>
+    </div>
+
+    <div class="privacy-note">🔒 <strong>Your Privacy is Protected.</strong> This tool runs entirely in your browser. Your CAS PDF and investment data are never uploaded to any server. Everything is processed locally on your device only.</div>
+
+    <button class="analyze-btn" id="analyzeBtn" onclick="analyzePortfolio()">
+      <span>🔍</span> Analyze My Complete Portfolio
+    </button>
+
+    <!-- LOADING -->
+    <div class="analyzer-loader" id="analyzerLoader">
+      <div class="spin"></div>
+      <div class="load-text">Reading your investments...</div>
+      <div class="load-sub">AI is extracting your portfolio data</div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results" id="results">
+      <div class="total-banner">
+        <div class="total-lbl">Total Portfolio Value</div>
+        <div class="total-amt" id="totalValue">₹<span>0</span></div>
+        <div class="total-note" id="totalSub">Across all your investments</div>
+        <div class="total-grid">
+          <div class="total-stat"><div class="total-stat-lbl">Total Invested</div><div class="total-stat-val" id="totalInvested">₹0</div></div>
+          <div class="total-stat"><div class="total-stat-lbl">Total Gain / Loss</div><div class="total-stat-val" id="totalGain">₹0</div></div>
+          <div class="total-stat"><div class="total-stat-lbl">Returns</div><div class="total-stat-val" id="totalReturn">0%</div></div>
+          <div class="total-stat"><div class="total-stat-lbl">Asset Classes</div><div class="total-stat-val" id="assetCount">0</div></div>
+        </div>
+      </div>
+
+      <div class="export-bar">
+        <button class="export-btn" onclick="exportCSV()">📥 Export CSV</button>
+        <button class="export-btn" onclick="window.print()">🖨️ Print Report</button>
+        <button class="export-btn" onclick="switchNav('report')">📋 Get Full AI Report →</button>
+      </div>
+
+      <div class="chart-grid">
+        <div class="chart-card"><div class="chart-title">🥧 Asset Allocation</div><div class="chart-wrap"><canvas id="pieChart"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">📊 Invested vs Current Value</div><div class="chart-wrap"><canvas id="barChart"></canvas></div></div>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-hd"><div class="insight-icon">🤖</div><h3>AI Portfolio Insights</h3></div>
+        <div class="insight-text" id="insightText">Analyzing your portfolio...</div>
+        <ul class="insight-points" id="insightPoints"></ul>
+      </div>
+
+      <div class="holdings-card">
+        <div class="holdings-hd">
+          <div style="font-size:16px;font-weight:700;">All Holdings</div>
+          <div class="filter-tabs" id="filterTabs"><div class="filter-tab active" onclick="filterHoldings('All',this)">All</div></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Investment</th><th>Type</th><th>Invested</th><th>Current Value</th><th>Gain / Loss</th><th>Returns</th></tr></thead>
+            <tbody id="holdingsBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- UPGRADE CTA after analysis -->
+      <div class="trigger">
+        <h4>Want a complete <span class="hl-g">Wealth Plan</span> based on your portfolio?</h4>
+        <p>Your portfolio has been analyzed. Now get a personalised 100% allocation plan, overlap detection, tax saving audit, second income roadmap, and a 90-day action plan.</p>
+        <div class="findings">
+          <div class="finding go">💡 Full ₹399 report shows exactly which funds to keep, switch, or add — and how to save ₹6,000+ per year</div>
+        </div>
+        <button class="btn-unlock" onclick="switchNav('report');openModal('report')">📋 Get Full Report — ₹399</button>
+        <button class="btn-dismiss" onclick="this.closest('.trigger').style.display='none'">Maybe later</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FREE TOOLS PANEL ═══ -->
+  <div class="panel" id="panel-plan">
+    <div class="card">
+      <span class="free-tag">✓ FREE FOREVER</span>
+      <h3>SIP Calculator</h3>
+      <p class="card-sub">See how your monthly investment grows vs a bank FD — live as you type.</p>
+      <div class="grid3">
+        <div class="g-item"><label class="lbl">Monthly SIP (₹)</label><input class="inp" id="s-amt" type="number" value="5000" oninput="calcSIP()"></div>
+        <div class="g-item"><label class="lbl">Years</label><input class="inp" id="s-yrs" type="number" value="10" oninput="calcSIP()"></div>
+        <div class="g-item"><label class="lbl">Expected Return %</label><input class="inp" id="s-rate" type="number" value="12" oninput="calcSIP()"></div>
+      </div>
+      <div class="sip-result">
+        <div class="sr-item"><div class="sr-val a" id="r-inv">₹6L</div><div class="sr-lbl">INVESTED</div></div>
+        <div class="sr-item"><div class="sr-val g" id="r-mf">₹11.6L</div><div class="sr-lbl">MF VALUE</div></div>
+        <div class="sr-item"><div class="sr-val r" id="r-fd">₹8.7L</div><div class="sr-lbl">FD VALUE</div></div>
+        <div class="sr-item"><div class="sr-val g" id="r-xtra">+₹2.9L</div><div class="sr-lbl">EXTRA vs FD</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="free-tag">✓ FREE FOREVER</span>
+      <h3>Portfolio Guide by Age</h3>
+      <p class="card-sub">Tap your age group to see the recommended split used by professional advisors.</p>
+      <div class="age-grid">
+        <div class="age-card" onclick="showAge(20,this)"><div class="age-big">20s</div><div class="age-title">Wealth Builder</div><div class="age-sub">Time is your superpower.</div><div class="age-split">70% Equity · 15% Gold · 15% Debt</div></div>
+        <div class="age-card" onclick="showAge(30,this)"><div class="age-big">30s</div><div class="age-title">Family Planner</div><div class="age-sub">Balance growth with safety.</div><div class="age-split">60% Equity · 15% Gold · 25% Debt</div></div>
+        <div class="age-card" onclick="showAge(40,this)"><div class="age-big">40s</div><div class="age-title">Peak Earner</div><div class="age-sub">AI risk is real. Diversify now.</div><div class="age-split">50% Equity · 20% Gold · 30% Debt</div></div>
+        <div class="age-card" onclick="showAge(50,this)"><div class="age-big">50s</div><div class="age-title">Pre-Retirement</div><div class="age-sub">Protect capital + earn income.</div><div class="age-split">35% Equity · 20% Gold · 45% Debt</div></div>
+      </div>
+      <div class="age-out" id="age-out"></div>
+    </div>
+
+    <div class="card">
+      <span class="free-tag">✓ FREE · 3 PICKS</span>
+      <h3>Top Fund Picks for Beginners</h3>
+      <p class="card-sub">3 hand-picked funds across asset classes — a solid starting point for any Indian investor.</p>
+      <div class="fund-card"><div class="f-rank">1</div><div><div class="f-name">Parag Parikh Flexi Cap Fund</div><div class="f-cat">Flexi Cap · Direct Plan · Groww / Zerodha</div><div class="f-why">Indian + international stocks in one fund. Best long-term wealth builder with built-in global diversification.</div></div><div><div class="f-cagr">16.2%</div><div class="f-min">Min ₹1,000/mo</div></div></div>
+      <div class="fund-card"><div class="f-rank">2</div><div><div class="f-name">Sovereign Gold Bond (SGB)</div><div class="f-cat">Gold · Government of India · RBI</div><div class="f-why">2.5% annual interest + gold price gain. No storage risk, no making charges. Best way to hold gold in India.</div></div><div><div class="f-cagr">10–12%</div><div class="f-min">Min ₹5,000</div></div></div>
+      <div class="fund-card"><div class="f-rank">3</div><div><div class="f-name">Mirae Asset Tax Saver (ELSS)</div><div class="f-cat">ELSS · 80C Tax Benefit · Direct Plan</div><div class="f-why">Saves up to ₹46,800/year in tax under 80C. Only 3-year lock-in. Excellent equity performance.</div></div><div><div class="f-cagr">14.8%</div><div class="f-min">Min ₹500/mo</div></div></div>
+      <div class="trigger" id="tr1">
+        <h4>Are your current funds <span class="hl">costing you money?</span></h4>
+        <p>Most Indian investors lose ₹3,000–₹15,000/year without knowing it — from fund overlap, Regular plans, and wrong asset mix.</p>
+        <div class="findings">
+          <div class="finding">📌 67% of investors with 3+ funds have over 40% overlap — paying double fees for identical stocks</div>
+          <div class="finding">📌 Regular vs Direct plan = ₹2,000–₹8,000/year lost on a ₹5L portfolio</div>
+          <div class="finding go">💡 Average ₹399 report uncovers ₹6,200/year in savings. ROI in 3 weeks.</div>
+        </div>
+        <button class="btn-unlock" onclick="switchNav('report');openModal('report')">🔍 Analyse My Portfolio — ₹399</button>
+        <button class="btn-dismiss" onclick="document.getElementById('tr1').style.display='none'">Not now</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="free-tag">✓ FREE · 3 QUESTIONS/DAY</span>
+      <h3>Ask the AI Advisor</h3>
+      <p class="card-sub">Real financial advice — gold vs FD, AI job risk, second income, fund picks.</p>
+      <div class="qs-bar"><span style="font-size:12px;color:var(--muted);">Questions used today</span><span class="qs-count"><span id="q-used" style="color:var(--green)">0</span> / 3 free</span></div>
+      <div class="chip-row">
+        <button class="chip" onclick="askQ(this.textContent)">I am 40 — where should I invest?</button>
+        <button class="chip" onclick="askQ(this.textContent)">Gold vs FD — which is better?</button>
+        <button class="chip" onclick="askQ(this.textContent)">My job may be replaced by AI. What now?</button>
+        <button class="chip" onclick="askQ(this.textContent)">How to build ₹1 Crore in 10 years?</button>
+        <button class="chip" onclick="askQ(this.textContent)">Best second income for salaried person?</button>
+        <button class="chip" onclick="askQ(this.textContent)">What is InvIT? Should I invest?</button>
+      </div>
+      <div class="chat-box" id="free-chat"></div>
+      <div class="chat-row">
+        <input class="chat-inp" id="q-inp" placeholder="Ask any financial question..." onkeydown="if(event.key==='Enter')sendQ()">
+        <button class="btn-send" id="q-btn" onclick="sendQ()">Ask →</button>
+      </div>
+      <div class="trigger" id="tr2" style="margin-top:12px;display:none;">
+        <h4>You've used <span class="hl-g">2 of 3</span> free questions</h4>
+        <p>Upgrade for unlimited AI advisor, full portfolio report, overlap analysis, tax saving audit, and a 90-day action plan.</p>
+        <div class="findings"><div class="finding go">💡 Premium users save ₹8,000+ in their first month optimising their portfolio</div></div>
+        <button class="btn-unlock" onclick="switchNav('report');openModal('report')">🚀 Upgrade — ₹399 Full Report</button>
+        <button class="btn-dismiss" onclick="document.getElementById('tr2').style.display='none'">Use my last free question</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FULL REPORT PANEL ═══ -->
+  <div class="panel" id="panel-report">
+    <div class="price-row">
+      <div class="ppill ppill-f"><div class="ppill-lbl">Always Free</div><div class="ppill-price">₹0</div><div class="ppill-sub">SIP calc · AI Q&A · Fund picks</div></div>
+      <div class="ppill ppill-p"><div class="pop-tag">MOST POPULAR</div><div class="ppill-lbl">Full Report</div><div class="ppill-price">₹399</div><div class="ppill-sub">Portfolio analysis · PDF report</div></div>
+      <div class="ppill ppill-m"><div class="ppill-lbl">Monthly Advisor</div><div class="ppill-price">₹299<span style="font-size:12px;font-weight:400;">/mo</span></div><div class="ppill-sub">Unlimited AI · Monthly review</div></div>
+      <div class="ppill ppill-n"><div class="ppill-lbl">NRI Special</div><div class="ppill-price">₹999</div><div class="ppill-sub">NRE/NRO · FEMA · FATCA</div></div>
+    </div>
+
+    <div id="rpt-form">
+      <div class="card">
+        <span class="paid-tag">₹399 REPORT UNLOCKED ✓</span>
+        <h3>Enter Your Details</h3>
+        <p class="card-sub">The more honest you are, the better your plan. Everything stays private.</p>
+        <div class="grid3">
+          <div class="g-item"><label class="lbl">Your Age</label><input class="inp" id="r-age" type="number" placeholder="e.g. 40"></div>
+          <div class="g-item"><label class="lbl">Monthly Income (₹)</label><input class="inp" id="r-inc" type="number" placeholder="e.g. 80000"></div>
+          <div class="g-item"><label class="lbl">Monthly Expenses (₹)</label><input class="inp" id="r-exp" type="number" placeholder="e.g. 55000"></div>
+        </div>
+        <div class="grid3">
+          <div class="g-item"><label class="lbl">Job Type</label>
+            <select class="inp" id="r-job"><option value="salaried">Salaried Private</option><option value="govt">Government</option><option value="business">Business Owner</option><option value="freelance">Freelancer</option><option value="nri">NRI</option></select>
+          </div>
+          <div class="g-item"><label class="lbl">Primary Goal</label>
+            <select class="inp" id="r-goal"><option value="retire">Comfortable Retirement</option><option value="wealth">Maximum Wealth</option><option value="passive">Passive Income</option><option value="safety">Protect Against Job Loss</option><option value="child">Child's Future</option></select>
+          </div>
+          <div class="g-item"><label class="lbl">Risk Appetite</label>
+            <select class="inp" id="r-risk"><option value="low">Conservative (FD-like safety)</option><option value="moderate" selected>Moderate (some ups/downs OK)</option><option value="high">Aggressive (max growth)</option></select>
+          </div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label class="lbl" style="display:block;margin-bottom:10px;">Current Investments (leave blank if none)</label>
+          <div id="fund-list">
+            <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:8px;">
+              <input class="inp fn" placeholder="Fund / Asset (e.g. SBI Bluechip)">
+              <input class="inp fa" placeholder="₹ Current value">
+              <button onclick="removeF(this)" style="background:none;border:1px solid rgba(224,82,82,0.3);color:var(--red);padding:8px 11px;border-radius:4px;cursor:pointer;">✕</button>
+            </div>
+          </div>
+          <button onclick="addF()" style="background:none;border:1px dashed var(--border);color:var(--muted);width:100%;padding:8px;border-radius:6px;cursor:pointer;font-size:12px;">+ Add Investment</button>
+        </div>
+        <button onclick="buildReport()" style="width:100%;background:linear-gradient(135deg,var(--gold),#E8C96A);color:#0D0F14;border:none;padding:14px;font-size:14px;font-weight:700;border-radius:6px;cursor:pointer;">⚡ Generate My Full Report</button>
+      </div>
+    </div>
+
+    <div class="rpt-loader" id="rpt-loading">
+      <div class="rpt-spin"></div>
+      <h3 style="font-family:'Playfair Display',serif;font-size:20px;margin-bottom:5px;">Building your report...</h3>
+      <p style="font-size:12px;color:var(--muted);">Analysing your portfolio across all asset classes</p>
+      <ul class="load-steps">
+        <li id="ls1"><span class="lpip"></span>Scanning for fund overlap...</li>
+        <li id="ls2"><span class="lpip"></span>Calculating Direct vs Regular savings...</li>
+        <li id="ls3"><span class="lpip"></span>Building 100% balanced allocation...</li>
+        <li id="ls4"><span class="lpip"></span>Finding second income opportunities...</li>
+        <li id="ls5"><span class="lpip"></span>Writing personalised action plan...</li>
+      </ul>
+    </div>
+
+    <div id="rpt-out" style="display:none;">
+      <div class="rpt-header">
+        <div><div class="rpt-h2" id="o-title">Your Wealth Report</div><div class="rpt-sub" id="o-sub">—</div></div>
+        <div class="rpt-score-box"><div class="rpt-score-num" id="o-score">—</div><div class="rpt-score-lbl">FINANCIAL HEALTH</div></div>
+      </div>
+      <div class="rgrid">
+        <div class="rcard"><h3>Your Numbers</h3><div id="o-nums"></div></div>
+        <div class="rcard"><h3>Risk Flags</h3><div id="o-flags"></div></div>
+        <div class="rcard rcol"><h3>Recommended Portfolio — 100% Balanced</h3><div class="alloc-list" id="o-alloc"></div></div>
+        <div class="rcard rcol"><h3>Fund-by-Fund Verdict</h3><div id="o-funds"></div></div>
+        <div class="rcard rcol" style="border-top:2px solid var(--gold);"><h3>Your Personal Advisor Analysis</h3><div class="narrative" id="o-narr"></div></div>
+        <div class="rcard rcol"><h3>Second Income — Start This Month</h3><div class="income-grid" id="o-income"></div></div>
+        <div class="rcard"><h3>₹10,000/month for 10 Years</h3><div id="o-proj"></div></div>
+        <div class="rcard"><h3>Your 90-Day Action Plan</h3><div id="o-actions"></div></div>
+      </div>
+      <div class="wa-bar"><p>📱 Send this report to your WhatsApp</p><button class="btn-wa" onclick="sendWA()">Send to WhatsApp</button></div>
+      <div class="act-bar">
+        <button class="btn-dl" onclick="dlRpt()">⬇ Download Report</button>
+        <button class="btn-rst" onclick="resetRpt()">↺ New Analysis</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PREMIUM PANEL ═══ -->
+  <div class="panel" id="panel-premium">
+    <div class="premium-wrap">
+      <h2>👑 MF Analyzer Bot Premium</h2>
+      <p>Your personal AI financial advisor — available every day. Monthly portfolio review, unlimited questions, second income coaching.</p>
+      <div class="prem-grid">
+        <div class="prem-item"><div class="prem-icon">💬</div><h4>Unlimited AI Advisor</h4><p>Ask as many questions as you want — gold, stocks, AI job risk, tax, anything.</p></div>
+        <div class="prem-item"><div class="prem-icon">📅</div><h4>Monthly Review</h4><p>AI reviews your portfolio every month and flags what needs attention.</p></div>
+        <div class="prem-item"><div class="prem-icon">💡</div><h4>Second Income Roadmap</h4><p>6-month personalised plan to build income outside your primary job.</p></div>
+        <div class="prem-item"><div class="prem-icon">📱</div><h4>WhatsApp Alerts</h4><p>Market alerts, fund news, and tax deadline reminders on WhatsApp.</p></div>
+        <div class="prem-item"><div class="prem-icon">🌏</div><h4>NRI Guidance</h4><p>NRE/NRO, FEMA, FATCA — fully covered for overseas Indians.</p></div>
+        <div class="prem-item"><div class="prem-icon">🔒</div><h4>Cancel Anytime</h4><p>No lock-in. Full refund if not satisfied in 7 days.</p></div>
+      </div>
+      <button class="btn-prem" onclick="openModal('premium')">Start Premium — ₹299/month →</button>
+      <p style="font-size:12px;color:var(--muted);margin-top:10px;">First month ₹1 trial · Then ₹299/mo · Cancel anytime</p>
+    </div>
+  </div>
+
+</div><!-- end wrap -->
+
+<footer>
+  MF Analyzer Bot · India's Complete Investment Analyzer · Free to start · Pay when you see value<br>
+  MF · Gold · Silver · Bonds · Real Estate · InvIT · PPF · Stocks · CAS PDF Analysis<br>
+  Not SEBI-registered · Educational purposes only · © 2026 MF Analyzer Bot · salarybit.in
+</footer>
+
+<!-- PAYMENT MODAL -->
+<div class="modal" id="pay-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-hd">
+      <h2>Unlock Your Report</h2>
+      <p>One payment · Instant access · 100% money-back guarantee</p>
+    </div>
+    <div class="modal-body">
+      <div class="plan-opts">
+        <div class="popt on" id="pl-report" onclick="selPlan(this,'report')">
+          <div class="pbest">MOST POPULAR</div>
+          <div class="popt-hd"><span class="popt-name">₹399 One-Time Report</span><span class="popt-price">₹399</span></div>
+          <div class="popt-desc">Full portfolio analysis, overlap detection, tax saving audit, 100% allocation, second income ideas, PDF download.</div>
+          <div class="popt-tags"><span class="ptag">Overlap Analysis</span><span class="ptag">Tax Saving</span><span class="ptag">PDF Report</span><span class="ptag">WhatsApp</span></div>
+        </div>
+        <div class="popt" id="pl-premium" onclick="selPlan(this,'premium')">
+          <div class="popt-hd"><span class="popt-name">₹299/month Premium</span><span class="popt-price" style="color:var(--purple);">₹1 <span style="font-size:11px;font-weight:400;">first month</span></span></div>
+          <div class="popt-desc">Everything in report + unlimited AI, monthly reviews, WhatsApp alerts, NRI guidance. Cancel anytime.</div>
+          <div class="popt-tags"><span class="ptag">Unlimited AI</span><span class="ptag">Monthly Review</span><span class="ptag">Cancel Anytime</span></div>
+        </div>
+        <div class="popt" id="pl-nri" onclick="selPlan(this,'nri')">
+          <div class="popt-hd"><span class="popt-name">₹999 NRI Report</span><span class="popt-price" style="color:var(--blue);">₹999</span></div>
+          <div class="popt-desc">NRI-specific: NRE/NRO strategy, FEMA compliance, FATCA rules, repatriation planning, currency-adjusted allocation.</div>
+          <div class="popt-tags"><span class="ptag">NRE/NRO</span><span class="ptag">FEMA</span><span class="ptag">FATCA</span></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div><label class="lbl">Full Name</label><input class="inp" id="m-name" placeholder="Rahul Sharma"></div>
+        <div><label class="lbl">Mobile</label><input class="inp" id="m-mobile" placeholder="98765 43210" type="tel"></div>
+        <div><label class="lbl">Email</label><input class="inp" id="m-email" placeholder="rahul@gmail.com" type="email"></div>
+        <div>
+          <label class="lbl" style="margin-bottom:7px;">Payment Method</label>
+          <div class="pay-tabs">
+            <button class="ptab on" onclick="swPayTab('upi',this)">📱 UPI</button>
+            <button class="ptab" onclick="swPayTab('card',this)">💳 Card</button>
+            <button class="ptab" onclick="swPayTab('nb',this)">🏦 Net Banking</button>
+          </div>
+          <div id="upi-sec">
+            <div class="upi-apps"><div class="upi-app" onclick="selUPI(this)">📱 GPay</div><div class="upi-app" onclick="selUPI(this)">💜 PhonePe</div><div class="upi-app" onclick="selUPI(this)">🟠 Paytm</div><div class="upi-app" onclick="selUPI(this)">🔵 BHIM</div></div>
+            <input class="inp" id="upi-id" placeholder="yourname@upi">
+          </div>
+          <div id="card-sec" style="display:none;">
+            <input class="inp" id="c-num" placeholder="4242 4242 4242 4242" maxlength="19" style="margin-bottom:8px;">
+            <div class="grid2"><input class="inp" id="c-exp" placeholder="MM / YY" maxlength="7"><input class="inp" id="c-cvv" placeholder="CVV" maxlength="3"></div>
+          </div>
+          <div id="nb-sec" style="display:none;">
+            <select class="inp"><option>SBI</option><option>HDFC Bank</option><option>ICICI Bank</option><option>Axis Bank</option><option>Kotak</option><option>PNB</option><option>Other</option></select>
+          </div>
+        </div>
+        <button class="btn-pay" id="pay-btn" onclick="doPay()">PAY ₹399 — GET INSTANT ACCESS</button>
+        <div class="pay-note">🔒 Razorpay Secured · UPI · Cards · Net Banking</div>
+        <div class="gbox">✅ 100% Money-Back Guarantee — Not satisfied? Full refund, no questions asked.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── PDF.js ──
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// ── STATE ──
+let manualEntries=[],allHoldings=[],pieChartInst=null,barChartInst=null,uploadedPDFText='';
+let qUsed=0,freeHistory=[],selPlanId='report',userData={},rProfile={};
+
+// ── UTILS ──
+const $=id=>document.getElementById(id);
+const fmt=n=>n?Number(n).toLocaleString('en-IN'):'0';
+const fmtL=n=>n>=1e7?'₹'+(n/1e7).toFixed(2)+' Cr':n>=1e5?'₹'+(n/1e5).toFixed(2)+' L':'₹'+Number(n).toLocaleString('en-IN');
+const fmtM=v=>v>=1e7?'₹'+(v/1e7).toFixed(1)+'Cr':v>=1e5?'₹'+(v/1e5).toFixed(1)+'L':'₹'+Math.round(v).toLocaleString('en-IN');
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+function showToast(msg,type=''){const t=$('toast');t.textContent=msg;t.className='toast '+type;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+
+// ── NAV ──
+function switchNav(tab){
+  ['analyzer','plan','report','premium'].forEach(t=>{
+    $('panel-'+t).classList.toggle('on',t===tab);
+    $('nt-'+t).classList.toggle('on',t===tab);
+  });
+  if(tab==='report'&&!userData.paid)openModal('report');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── DRAG DROP ──
+const uZone=$('uploadZone');
+uZone.addEventListener('dragover',e=>{e.preventDefault();uZone.classList.add('dragover');});
+uZone.addEventListener('dragleave',()=>uZone.classList.remove('dragover'));
+uZone.addEventListener('drop',e=>{
+  e.preventDefault();uZone.classList.remove('dragover');
+  const f=e.dataTransfer.files[0];
+  if(f&&f.type==='application/pdf')handleFile(f);
+  else showToast('Please drop a PDF file','error');
+});
+$('fileInput').addEventListener('change',e=>{if(e.target.files[0])handleFile(e.target.files[0]);});
+
+function handleFile(file){
+  $('fileOkText').textContent=file.name+' ('+(file.size/1024).toFixed(0)+' KB)';
+  $('fileOk').style.display='flex';
+  showToast('✅ PDF uploaded: '+file.name,'success');
+  const reader=new FileReader();
+  reader.onload=async function(e){
+    const arr=new Uint8Array(e.target.result);
+    try{
+      const pdf=await pdfjsLib.getDocument(arr).promise;
+      let text='';
+      for(let i=1;i<=Math.min(pdf.numPages,30);i++){
+        const page=await pdf.getPage(i);
+        const content=await page.getTextContent();
+        text+=content.items.map(s=>s.str).join(' ')+'\n';
+      }
+      uploadedPDFText=text;
+    }catch(err){uploadedPDFText='PDF uploaded but could not extract text. Please add investments manually.';}
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ── MANUAL ENTRY ──
+function addManualEntry(){
+  const type=$('assetType').value,name=$('assetName').value.trim();
+  const invested=parseFloat($('assetInvested').value)||0,current=parseFloat($('assetCurrent').value)||0;
+  if(!type||!name||!invested){showToast('Please fill Investment Type, Name, and Amount Invested','error');return;}
+  manualEntries.push({type,name,invested,current:current||invested});
+  renderAddedList();
+  $('assetType').value='';$('assetName').value='';$('assetInvested').value='';$('assetCurrent').value='';
+  showToast('✅ Added: '+name,'success');
+}
+function removeEntry(idx){manualEntries.splice(idx,1);renderAddedList();}
+function renderAddedList(){
+  const list=$('addedList');
+  if(!manualEntries.length){list.innerHTML='';return;}
+  list.innerHTML=manualEntries.map((e,i)=>`<div class="added-item"><div class="added-item-left"><span class="asset-badge badge-${e.type.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z-]/g,'')}">${e.type}</span><div><div class="added-item-name">${e.name}</div><div class="added-item-meta">Invested: ₹${fmt(e.invested)} · Current: ₹${fmt(e.current)}</div></div></div><button class="remove-btn" onclick="removeEntry(${i})">✕</button></div>`).join('');
+}
+
+// ── ANALYZE PORTFOLIO ──
+async function analyzePortfolio(){
+  if(!uploadedPDFText&&!manualEntries.length){showToast('Please upload a CAS PDF or add investments manually','error');return;}
+  $('analyzerLoader').style.display='block';$('results').style.display='none';$('analyzeBtn').disabled=true;
+  try{
+    let prompt='';
+    if(uploadedPDFText){
+      prompt=`You are an expert Indian investment analyst. Analyze this CAS (Consolidated Account Statement) text and extract all investments.
+CAS TEXT:
+${uploadedPDFText.substring(0,8000)}
+${manualEntries.length?`Also include these manually added investments: ${JSON.stringify(manualEntries)}`:''}
+Extract all investments and return ONLY a JSON object (no markdown, no explanation):
+{"holdings":[{"name":"Fund Name","type":"Mutual Fund","invested":50000,"current":68000}],"insights":{"summary":"2-3 sentence overall assessment","points":["insight 1","insight 2","insight 3","insight 4"]}}
+Types to use: Mutual Fund, Stock, Gold, Silver, Sovereign Gold Bond, FD, RD, PPF, EPF, NPS, Property, REIT, InvIT, Insurance, Bond, Other.`;
+    }else{
+      prompt=`You are an expert Indian investment analyst. Analyze this portfolio.
+Investments: ${JSON.stringify(manualEntries)}
+Return ONLY a JSON object (no markdown, no explanation):
+{"holdings":[{"name":"Fund Name","type":"Mutual Fund","invested":50000,"current":68000}],"insights":{"summary":"2-3 sentence overall assessment in simple language for a common Indian investor","points":["actionable insight 1","insight 2","insight 3","insight 4"]}}`;
+    }
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    const text=data.content.map(i=>i.text||'').join('');
+    const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
+    if(uploadedPDFText&&manualEntries.length){
+      manualEntries.forEach(m=>{
+        const exists=parsed.holdings.some(h=>h.name.toLowerCase().includes(m.name.toLowerCase()));
+        if(!exists)parsed.holdings.push(m);
+      });
+    }
+    allHoldings=parsed.holdings;
+    renderResults(parsed);
+  }catch(err){
+    if(manualEntries.length){
+      allHoldings=manualEntries;
+      renderResults({holdings:manualEntries,insights:{summary:'Your portfolio has been analyzed based on your manual entries.',points:['Diversify across asset classes: Mutual Funds, Gold, and FDs provide good balance','Review your FD rates — if below 7%, consider Debt MFs for better post-tax returns','Ensure life insurance coverage of at least 10x annual income','Consider Sovereign Gold Bonds (SGB) for gold exposure — they also pay 2.5% interest']}});
+    }else{showToast('Could not analyze PDF. Please add investments manually.','error');$('analyzerLoader').style.display='none';$('analyzeBtn').disabled=false;}
+  }
+}
+
+function renderResults(data){
+  $('analyzerLoader').style.display='none';$('results').style.display='block';$('analyzeBtn').disabled=false;
+  const holdings=data.holdings||[];
+  if(!holdings.length){showToast('No investments found. Please add manually.','error');return;}
+  const totInv=holdings.reduce((s,h)=>s+(h.invested||0),0);
+  const totCur=holdings.reduce((s,h)=>s+(h.current||h.invested||0),0);
+  const gain=totCur-totInv,ret=totInv>0?((gain/totInv)*100).toFixed(1):0;
+  const assetTypes=[...new Set(holdings.map(h=>h.type))];
+  $('totalValue').innerHTML='₹<span>'+fmtL(totCur).replace('₹','')+'</span>';
+  $('totalSub').textContent=`Across ${holdings.length} investment${holdings.length>1?'s':''} in ${assetTypes.length} asset class${assetTypes.length>1?'es':''}`;
+  $('totalInvested').textContent='₹'+fmtL(totInv).replace('₹','');
+  $('totalGain').innerHTML=`<span class="${gain>=0?'clr-g':'clr-r'}">${gain>=0?'+':''}₹${fmtL(Math.abs(gain)).replace('₹','')}</span>`;
+  $('totalReturn').innerHTML=`<span class="${ret>=0?'clr-g':'clr-r'}">${ret>=0?'+':''}${ret}%</span>`;
+  $('assetCount').textContent=assetTypes.length;
+  const COLORS=['#FF6B35','#3DBA6F','#D4A853','#4A7CFF','#E05252','#8B5CF6','#276749','#2C7A7B','#7B341E','#3C366B','#97266D','#4A5568'];
+  const typeGroups={};
+  holdings.forEach(h=>{typeGroups[h.type]=(typeGroups[h.type]||0)+(h.current||h.invested||0);});
+  if(pieChartInst)pieChartInst.destroy();
+  if(barChartInst)barChartInst.destroy();
+  pieChartInst=new Chart($('pieChart'),{type:'doughnut',data:{labels:Object.keys(typeGroups),datasets:[{data:Object.values(typeGroups),backgroundColor:COLORS,borderWidth:2,borderColor:'#1C2130'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10,padding:6,color:'#E8E4DC'}},tooltip:{callbacks:{label:ctx=>` ₹${fmtL(ctx.parsed)} (${((ctx.parsed/totCur)*100).toFixed(1)}%)`}}}}});
+  const top=holdings.slice(0,6);
+  barChartInst=new Chart($('barChart'),{type:'bar',data:{labels:top.map(h=>h.name.length>12?h.name.substring(0,12)+'…':h.name),datasets:[{label:'Invested',data:top.map(h=>h.invested||0),backgroundColor:'rgba(255,255,255,0.1)',borderRadius:3},{label:'Current',data:top.map(h=>h.current||h.invested||0),backgroundColor:'#FF6B35',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10,padding:6,color:'#E8E4DC'}}},scales:{y:{ticks:{callback:v=>'₹'+fmtL(v).replace('₹',''),font:{size:9},color:'#E8E4DC'},grid:{color:'rgba(255,255,255,0.05)'}},x:{ticks:{font:{size:9},color:'#E8E4DC'},grid:{display:false}}}}});
+  if(data.insights){
+    $('insightText').textContent=data.insights.summary||'';
+    $('insightPoints').innerHTML=(data.insights.points||[]).map(p=>`<li>${p}</li>`).join('');
+  }
+  const ft=$('filterTabs');
+  ft.innerHTML=`<div class="filter-tab active" onclick="filterHoldings('All',this)">All (${holdings.length})</div>`;
+  assetTypes.forEach(t=>{const c=holdings.filter(h=>h.type===t).length;ft.innerHTML+=`<div class="filter-tab" onclick="filterHoldings('${t}',this)">${t} (${c})</div>`;});
+  renderTable(holdings);
+  $('results').scrollIntoView({behavior:'smooth',block:'start'});
+  showToast('✅ Portfolio analyzed successfully!','success');
+}
+
+function renderTable(holdings){
+  const body=$('holdingsBody');
+  if(!holdings.length){body.innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted)">No holdings in this category</td></tr>';return;}
+  body.innerHTML=holdings.map(h=>{
+    const gain=(h.current||h.invested||0)-(h.invested||0);
+    const ret=h.invested>0?((gain/h.invested)*100).toFixed(1):0;
+    const bc='badge-'+((h.type||'other').toLowerCase().replace(/\s+/g,'-').replace(/[^a-z-]/g,''));
+    return`<tr><td style="font-weight:600;min-width:130px">${h.name}</td><td><span class="asset-badge ${bc}">${h.type}</span></td><td>₹${fmt(h.invested||0)}</td><td style="font-weight:600">₹${fmt(h.current||h.invested||0)}</td><td class="${gain>=0?'pnl-pos':'pnl-neg'}">${gain>=0?'+':''}₹${fmt(Math.abs(gain))}</td><td class="${ret>=0?'pnl-pos':'pnl-neg'}">${ret>=0?'+':''}${ret}%</td></tr>`;
+  }).join('');
+}
+function filterHoldings(type,el){
+  document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
+  renderTable(type==='All'?allHoldings:allHoldings.filter(h=>h.type===type));
+}
+function exportCSV(){
+  if(!allHoldings.length){showToast('No data to export','error');return;}
+  const rows=[['Investment Name','Type','Invested (₹)','Current Value (₹)','Gain/Loss (₹)','Returns (%)']];
+  allHoldings.forEach(h=>{const gain=(h.current||h.invested||0)-(h.invested||0),ret=h.invested>0?((gain/h.invested)*100).toFixed(1):0;rows.push([h.name,h.type,h.invested||0,h.current||h.invested||0,gain.toFixed(0),ret]);});
+  const csv=rows.map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='MFAnalyzerBot_Portfolio.csv';a.click();
+  showToast('📥 CSV downloaded!','success');
+}
+
+// ── FREE TOOLS ──
+function calcSIP(){
+  const s=parseFloat($('s-amt').value)||5000,y=parseFloat($('s-yrs').value)||10,r=parseFloat($('s-rate').value)/100||0.12,fd=0.071,n=y*12;
+  const mf=s*(Math.pow(1+r/12,n)-1)/(r/12)*(1+r/12),fdv=s*(Math.pow(1+fd/12,n)-1)/(fd/12)*(1+fd/12),inv=s*n;
+  $('r-inv').textContent=fmtM(inv);$('r-mf').textContent=fmtM(mf);$('r-fd').textContent=fmtM(fdv);$('r-xtra').textContent='+'+fmtM(mf-fdv);
+}
+calcSIP();
+
+const AGE_DATA={
+  20:{title:'Your 20s — Time is your superpower',body:'You have 35+ years of compounding. Put 70% in equity. Even ₹1,000/month started today beats ₹10,000/month started at 35. Start a SIP in Parag Parikh Flexi Cap Fund on Groww. Add ₹5,000 in Sovereign Gold Bonds this year. Open a PPF account for tax-free retirement base.',alloc:[{n:'Equity MF (Large+Flexi)',p:50,c:'#4A7CFF'},{n:'Mid/Small Cap MF',p:20,c:'#3DBA6F'},{n:'Gold/SGB',p:15,c:'#D4A853'},{n:'PPF/NPS',p:10,c:'#64B5F6'},{n:'Emergency Fund',p:5,c:'#E8C96A'}]},
+  30:{title:'Your 30s — Balance growth with responsibility',body:'EMIs and family expenses are real. Keep 60% equity, add 15% gold as inflation hedge, 15% in REC/NHAI bonds at 7.5%. Build a 6-month emergency fund FIRST — this is non-negotiable. Maximise 80C via ELSS or PPF to save ₹46,800/year in taxes.',alloc:[{n:'Equity MF (Large+Flexi)',p:45,c:'#4A7CFF'},{n:'Mid Cap/ELSS',p:15,c:'#3DBA6F'},{n:'Gold/SGB',p:15,c:'#D4A853'},{n:'Bonds/FD',p:15,c:'#8B5CF6'},{n:'Emergency Fund',p:10,c:'#E8C96A'}]},
+  40:{title:'Your 40s — The AI decade. Act now.',body:'This is the most critical decade financially AND the decade of highest AI displacement risk. Build income from at least 2 sources this year. 50% equity in proven large caps only. 20% gold including SGB. 10% REITs like Nexus Select Trust for passive income. Build your second income this month — not next year.',alloc:[{n:'Equity MF (Large Cap)',p:35,c:'#4A7CFF'},{n:'Flexi Cap/ELSS',p:15,c:'#3DBA6F'},{n:'Gold (SGB+Physical)',p:20,c:'#D4A853'},{n:'Bonds/FD',p:15,c:'#8B5CF6'},{n:'REITs/InvITs',p:10,c:'#FF7043'},{n:'Emergency Fund',p:5,c:'#E8C96A'}]},
+  50:{title:'Your 50s — Protect and generate income',body:'10 years to retirement. Goal shifts from maximum growth to protect + generate income. Reduce equity to 35%. Increase bonds and debt to 35%. Keep 20% gold — best inflation and crisis hedge. Add REITs for passive rental income without property headaches. Move ₹1.5L/year to PPF for tax-free corpus.',alloc:[{n:'Equity MF (Large Cap)',p:25,c:'#4A7CFF'},{n:'Hybrid MF',p:10,c:'#3DBA6F'},{n:'Gold/SGB',p:20,c:'#D4A853'},{n:'Bonds/Debt/FD',p:30,c:'#8B5CF6'},{n:'REITs/InvITs',p:10,c:'#FF7043'},{n:'Emergency Fund',p:5,c:'#E8C96A'}]}
+};
+function showAge(a,el){
+  document.querySelectorAll('.age-card').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');
+  const d=AGE_DATA[a];if(!d)return;
+  const bars=d.alloc.map(x=>`<div class="alloc-row"><div class="alloc-lbl"><span class="a-dot" style="background:${x.c}"></span>${x.n}</div><div class="alloc-bg"><div class="alloc-fill" style="width:${x.p}%;background:${x.c}"></div></div><div class="alloc-pct" style="color:${x.c}">${x.p}%</div></div>`).join('');
+  $('age-out').style.display='block';
+  $('age-out').innerHTML=`<div class="age-out-title">${d.title}</div><div class="age-out-body">${d.body}</div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--gold);margin-bottom:8px;">RECOMMENDED SPLIT</div><div class="alloc-list">${bars}</div>`;
+}
+
+async function askQ(q){$('q-inp').value=q;await sendQ();}
+async function sendQ(){
+  if(qUsed>=3){showLockedQ();return;}
+  const q=$('q-inp').value.trim();if(!q)return;
+  $('q-inp').value='';$('q-btn').disabled=true;
+  addCMsg('user',q);freeHistory.push({role:'user',content:q});
+  qUsed++;$('q-used').textContent=qUsed;
+  if(qUsed===2)setTimeout(()=>$('tr2').style.display='block',1500);
+  addTyping();
+  const sys='You are a warm expert Indian personal financial advisor. Give specific, actionable advice in plain English. Mention real products: Parag Parikh Flexi Cap, Mirae Asset, SGB, Zerodha, Groww, NPS, Nexus Select REIT, IRB InvIT. Keep under 160 words. End with one specific action they can take TODAY.';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:sys+'\n\nUser question: '+q+'\n\nPrevious context:\n'+freeHistory.slice(-4).map(m=>m.role+': '+m.content).join('\n')}]})});
+    const data=await res.json();
+    const reply=data.content.map(c=>c.text||'').join('').trim();
+    removeTyping();addCMsg('ai',reply);freeHistory.push({role:'assistant',content:reply});
+  }catch(e){removeTyping();addCMsg('ai','Connection issue. Please try again.');}
+  $('q-btn').disabled=false;
+  if(qUsed>=3)setTimeout(showLockedQ,2000);
+}
+function showLockedQ(){
+  $('tr2').style.display='block';
+  $('tr2').querySelector('h4').innerHTML='You\'ve used all <span class="hl">3 free questions</span> today';
+  $('tr2').querySelector('p').textContent='Upgrade to ₹399 for unlimited AI advisor, full portfolio analysis, and personalised 90-day action plan.';
+  const d=$('tr2').querySelector('.btn-dismiss');if(d)d.style.display='none';
+}
+function addCMsg(role,text){const box=$('free-chat'),d=document.createElement('div');d.className='cmsg '+role;d.textContent=text;box.appendChild(d);box.scrollTop=box.scrollHeight;}
+function addTyping(){const box=$('free-chat'),d=document.createElement('div');d.className='cmsg ai';d.id='typing-el';d.innerHTML='<div class="typing"><div class="td"></div><div class="td"></div><div class="td"></div></div>';box.appendChild(d);box.scrollTop=box.scrollHeight;}
+function removeTyping(){const t=$('typing-el');if(t)t.remove();}
+
+// ── MODAL ──
+function openModal(plan){
+  selPlanId=plan||'report';
+  $('pay-modal').classList.add('open');document.body.style.overflow='hidden';
+  document.querySelectorAll('.popt').forEach(p=>p.classList.remove('on'));
+  const el=$('pl-'+selPlanId);if(el)el.classList.add('on');
+  updatePayBtn();
+}
+function closeModal(){$('pay-modal').classList.remove('open');document.body.style.overflow='';}
+function selPlan(el,plan){document.querySelectorAll('.popt').forEach(p=>p.classList.remove('on'));el.classList.add('on');selPlanId=plan;updatePayBtn();}
+function updatePayBtn(){const p={report:'₹399',premium:'₹1 (then ₹299/mo)',nri:'₹999'}[selPlanId]||'₹399';$('pay-btn').textContent='PAY '+p+' — GET INSTANT ACCESS';}
+function swPayTab(tab,btn){
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  $('upi-sec').style.display=tab==='upi'?'block':'none';
+  $('card-sec').style.display=tab==='card'?'block':'none';
+  $('nb-sec').style.display=tab==='nb'?'block':'none';
+}
+function selUPI(el){document.querySelectorAll('.upi-app').forEach(a=>a.classList.remove('on'));el.classList.add('on');}
+function doPay(){
+  const name=$('m-name').value.trim(),mobile=$('m-mobile').value.trim(),email=$('m-email').value.trim();
+  if(!name||!mobile||!email){alert('Please fill in your name, mobile number, and email.');return;}
+  userData={name,mobile,email,plan:selPlanId,paid:true};
+  const btn=$('pay-btn');btn.textContent='Processing...';btn.disabled=true;
+  setTimeout(()=>{
+    closeModal();
+    $('hd-tier').style.display='flex';$('hd-upgrade').style.display='none';
+    $('hd-tier').textContent={report:'REPORT ✓',premium:'PREMIUM ✓',nri:'NRI REPORT ✓'}[selPlanId]||'PAID ✓';
+    switchNav('report');
+    btn.textContent='PAY — GET INSTANT ACCESS';btn.disabled=false;
+  },1800);
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  const cn=$('c-num');if(cn)cn.addEventListener('input',e=>{let v=e.target.value.replace(/\D/g,'').slice(0,16);e.target.value=v.replace(/(.{4})/g,'$1 ').trim();});
+  const ce=$('c-exp');if(ce)ce.addEventListener('input',e=>{let v=e.target.value.replace(/\D/g,'').slice(0,4);if(v.length>=2)v=v.slice(0,2)+' / '+v.slice(2);e.target.value=v;});
+});
+
+// ── FULL REPORT ──
+function addF(){
+  const list=$('fund-list'),d=document.createElement('div');
+  d.style.cssText='display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:8px;';
+  d.innerHTML='<input class="inp fn" placeholder="Fund / Asset name"><input class="inp fa" placeholder="₹ Value"><button onclick="removeF(this)" style="background:none;border:1px solid rgba(224,82,82,0.3);color:var(--red);padding:8px 10px;border-radius:4px;cursor:pointer;">✕</button>';
+  list.appendChild(d);
+}
+function removeF(btn){const rows=document.querySelectorAll('#fund-list > div');if(rows.length>1)btn.closest('div').remove();}
+
+async function buildReport(){
+  const age=parseInt($('r-age').value),inc=parseInt($('r-inc').value),exp=parseInt($('r-exp').value);
+  if(!age||!inc||!exp){alert('Please fill in your age, income, and expenses.');return;}
+  const job=$('r-job').value,goal=$('r-goal').value,risk=$('r-risk').value;
+  const funds=[...document.querySelectorAll('.fn')].map((n,i)=>({name:n.value.trim(),amount:document.querySelectorAll('.fa')[i].value.trim()})).filter(f=>f.name);
+  rProfile={age,inc,exp,job,goal,risk,funds,sav:inc-exp,name:userData.name||'Investor'};
+  $('rpt-form').style.display='none';$('rpt-loading').style.display='block';
+  const steps=['ls1','ls2','ls3','ls4','ls5'];
+  for(let i=0;i<steps.length;i++){
+    await delay(680);
+    if(i>0){$(steps[i-1]).classList.remove('on');$(steps[i-1]).classList.add('dn');}
+    $(steps[i]).classList.add('on');
+  }
+  const result=await callReportAPI(rProfile);
+  $(steps[steps.length-1]).classList.add('dn');
+  await delay(300);
+  $('rpt-loading').style.display='none';$('rpt-out').style.display='block';
+  renderReport(result);
+  $('rpt-out').scrollIntoView({behavior:'smooth'});
+}
+
+async function callReportAPI(p){
+  const gmap={retire:'Comfortable retirement',wealth:'Maximum wealth',passive:'Passive income',safety:'Protect against AI/job loss',child:"Child's education & marriage"};
+  const fundsText=p.funds.length?p.funds.map(f=>`- ${f.name}: ₹${f.amount}`).join('\n'):'No existing investments entered.';
+  const prompt=`You are India's best personal financial advisor. Full analysis for this client:
+Name: ${p.name} | Age: ${p.age} | Income: ₹${p.inc.toLocaleString('en-IN')}/mo | Expenses: ₹${p.exp.toLocaleString('en-IN')}/mo | Saves: ₹${p.sav.toLocaleString('en-IN')}/mo
+Job: ${p.job} | Goal: ${gmap[p.goal]||p.goal} | Risk: ${p.risk}
+Investments: ${fundsText}
+Return ONLY valid JSON (no markdown, no extra text):
+{"healthScore":<0-100>,"healthColor":"<#3DBA6F good/#D4A853 moderate/#E05252 poor>","savingsRate":"<X%>","monthlyInvestable":"<₹X,XXX>","emergencyTarget":"<₹X,XX,XXX>","yearsToRetirement":<number>,"overlapAlert":"<finding or No overlap detected>","directSaving":"<₹X,XXX/yr>","taxSaving":"<₹X,XXX possible via ELSS/PPF>","riskFlags":[{"label":"<short label>","level":"<high/mid/low>"}],"allocation":[{"name":"<asset>","pct":<number>,"color":"<hex>","example":"<specific product>"}],"fundAnalysis":[{"name":"<fund>","value":"<amount>","verdict":"<Keep/Switch/Add/Reduce>","reason":"<one line>"}],"secondIncome":[{"icon":"<emoji>","title":"<idea>","desc":"<2 sentences India-specific>","earning":"<₹X,XXX–₹X,XX,XXX/mo>"}],"projection":[{"asset":"<class>","value10yr":"<₹XL>","cagr":"<X%>"}],"actionPlan":["<Month 1 specific>","<Month 1-2 specific>","<Month 2-3 specific>","<Month 3+ specific>"],"narrative":"<5 paragraphs warm Indian advisor: 1) Honest assessment with real numbers 2) 100% portfolio allocation with real products 3) AI/job risk concrete steps 4) Second income this month 5) Where they will be in 5 and 10 years with real numbers>"}
+RULES: allocation must sum to 100%. Always include emergency fund, gold, bonds, equity, real estate.`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    return JSON.parse(data.content.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim());
+  }catch(e){return reportFallback(p);}
+}
+
+function reportFallback(p){
+  const age=p.age,sav=p.sav,sr=Math.round(sav/p.inc*100);
+  return{healthScore:age<35?74:age<45?65:58,healthColor:age<45?'#D4A853':'#E05252',savingsRate:sr+'%',monthlyInvestable:fmtM(sav*0.8),emergencyTarget:fmtM(p.exp*6),yearsToRetirement:Math.max(60-age,5),overlapAlert:p.funds.length>2?'Potential overlap detected — consolidate into 1 large cap + 1 flexi cap.':'No overlap detected.',directSaving:'₹2,400–₹8,000/yr',taxSaving:'₹46,800 via ELSS or PPF',riskFlags:[{label:'Single Income Source',level:'high'},{label:'AI Job Displacement',level:age>38?'high':'mid'},{label:'No Passive Income',level:'high'},{label:'Tax Not Optimised',level:'mid'}],allocation:[{name:'Equity MF (Large+Flexi)',pct:30,color:'#4A7CFF',example:'Parag Parikh Flexi Cap + Mirae Large Cap'},{name:'Mid/Small Cap MF',pct:10,color:'#3DBA6F',example:'SBI Small Cap Fund (Direct)'},{name:'Gold/SGB',pct:15,color:'#D4A853',example:'Sovereign Gold Bonds — RBI, 2.5% interest'},{name:'Silver ETF',pct:5,color:'#A8B2C0',example:'Mirae Asset Silver ETF'},{name:'Bonds/FD',pct:15,color:'#8B5CF6',example:'REC/NHAI Bonds 7.5% or HDFC FD'},{name:'REITs/InvITs',pct:10,color:'#FF7043',example:'Nexus Select Trust REIT — 6-8% yield'},{name:'PPF/NPS',pct:10,color:'#64B5F6',example:'PPF ₹1.5L/year + NPS Tier 1'},{name:'Emergency Fund',pct:5,color:'#E8C96A',example:'Liquid MF — 6 months expenses'}],fundAnalysis:p.funds.length?p.funds.map(f=>({name:f.name,value:'₹'+f.amount,verdict:'Keep',reason:'Solid choice. Switch to Direct Plan to save 0.5–1% annually.'})):[{name:'No investments yet',value:'—',verdict:'Start',reason:'Begin with ₹500/month SIP in Parag Parikh Flexi Cap on Groww.'}],secondIncome:[{icon:'💻',title:'Freelance Your Core Skills',desc:'Register on Upwork or Toptal today. Your professional skills have international demand.',earning:'₹25,000–₹1,50,000/mo'},{icon:'📹',title:'YouTube / Paid Newsletter',desc:'Share expertise on any topic you know deeply. Monetise via sponsors after 6–12 months.',earning:'₹5,000–₹80,000/mo'},{icon:'🤖',title:'AI-Powered Services',desc:'Use AI tools to offer content writing, social media, or automation to small businesses.',earning:'₹20,000–₹80,000/mo'},{icon:'📚',title:'Teach Online',desc:'Create a course on Udemy or teach live on Unacademy. One course earns passive income for years.',earning:'₹10,000–₹60,000/mo'}],projection:[{asset:'Equity MF (12% CAGR)',value10yr:fmtM(10000*(Math.pow(1.01,120)-1)/0.01*1.01),cagr:'12%'},{asset:'Gold/SGB (8% CAGR)',value10yr:fmtM(10000*(Math.pow(1+0.08/12,120)-1)/(0.08/12)*1.007),cagr:'8%'},{asset:'Bonds/FD (7.5%)',value10yr:fmtM(10000*(Math.pow(1+0.075/12,120)-1)/(0.075/12)*1.006),cagr:'7.5%'}],actionPlan:['Month 1: Open Zerodha/Groww. Start ₹3,000 SIP in Parag Parikh Flexi Cap (Direct Plan). Buy ₹25,000 SGB at next RBI issue.','Month 1–2: Open PPF account at SBI. Deposit ₹1.5L for 80C — saves ₹46,800 in taxes.','Month 2–3: Build emergency fund of '+fmtM(p.exp*6)+' in a Liquid MF. Auto-debit ₹5,000/month.','Month 3+: Register on Upwork. Send 10 proposals using your current job skills. First freelance income = financial freedom begins.'],narrative:`Let me be direct with you, ${p.name}.\n\nAt age ${age} with a ${sr}% savings rate, you ${sr<20?'are behind where you need to be — but every person in this situation has fixed it once they started':'are in a solid position — now the question is where the money goes'}. With ₹${sav.toLocaleString('en-IN')}/month available to invest, the math works in your favour if you act now.\n\nHere is the portfolio: 30% equity mutual funds — Parag Parikh Flexi Cap because it holds Indian AND international stocks. 15% Sovereign Gold Bonds from RBI — they pay 2.5% interest annually on top of gold price gains. 15% REC or NHAI bonds at 7.5%, better than most FDs. 10% REITs like Nexus Select Trust — real estate rental income without buying property. 10% PPF or NPS for tax-free retirement savings. 5% Silver ETF. 5% liquid emergency fund.\n\nThe AI risk is real and specific. Mid-level roles in IT, finance, content, and operations are being automated right now. Companies won't announce this — they will quietly stop replacing people who leave. The smartest move you can make is building income that has NOTHING to do with your employer. Even ₹15,000/month from freelance changes your entire financial position.\n\nStart this month: Register on Upwork in the next 48 hours. Build a profile using your current job skills. Send 10 proposals this week. Your first goal is ₹10,000/month from freelance — enough to cover your SIP.\n\nIn 5 years with disciplined investing, your corpus could reach ${fmtM(sav*0.8*60*1.12)}+. In 10 years, ${fmtM(sav*0.8*120*1.14)}+. At that level, your portfolio generates more monthly income than most salaried jobs. Work becomes a choice, not a necessity. The only variable is whether you start this week.`};
+}
+
+function renderReport(d){
+  $('o-title').textContent=rProfile.name+"'s Wealth Report";
+  $('o-sub').textContent='Generated '+new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  const sn=$('o-score');sn.textContent=d.healthScore+'/100';sn.style.color=d.healthColor;
+  $('o-nums').innerHTML=[['Monthly Savings','₹'+rProfile.sav.toLocaleString('en-IN'),'g'],['Savings Rate',d.savingsRate,parseInt(d.savingsRate)<20?'r':'g'],['Monthly Investable',d.monthlyInvestable,'g'],['Emergency Fund Target',d.emergencyTarget,'a'],['Years to Retirement',d.yearsToRetirement+' years',''],['Overlap Alert',d.overlapAlert,'r'],['Direct Plan Saving',d.directSaving,'g'],['80C Tax Saving',d.taxSaving,'g']].map(([l,v,c])=>`<div class="mrow"><span class="mlbl">${l}</span><span class="mval ${c}" style="max-width:170px;text-align:right;font-size:10px;">${v}</span></div>`).join('');
+  $('o-flags').innerHTML=(d.riskFlags||[]).map(f=>{const c=f.level==='high'?'var(--red)':f.level==='mid'?'var(--gold)':'var(--green)';return`<div class="flag"><span class="fdot" style="background:${c}"></span><span>${f.label}</span><span class="flvl" style="color:${c}">${f.level.toUpperCase()}</span></div>`;}).join('');
+  $('o-alloc').innerHTML=(d.allocation||[]).map(a=>`<div class="alloc-row"><div class="alloc-lbl"><span class="a-dot" style="background:${a.color}"></span><span>${a.name}</span></div><div class="alloc-bg"><div class="alloc-fill" style="width:${a.pct}%;background:${a.color}"></div></div><div class="alloc-pct" style="color:${a.color}">${a.pct}%</div></div><div class="alloc-eg">${a.example}</div>`).join('');
+  $('o-funds').innerHTML=`<table class="ftable"><thead><tr><th>FUND / ASSET</th><th>VALUE</th><th>VERDICT</th><th>REASON</th></tr></thead><tbody>${(d.fundAnalysis||[]).map(f=>`<tr><td><strong>${f.name}</strong></td><td>${f.value}</td><td style="color:${f.verdict==='Keep'?'var(--green)':f.verdict==='Switch'||f.verdict==='Reduce'?'var(--red)':'var(--gold)'}">${f.verdict}</td><td>${f.reason}</td></tr>`).join('')}</tbody></table>`;
+  $('o-narr').textContent=d.narrative||'';
+  $('o-income').innerHTML=(d.secondIncome||[]).map(i=>`<div class="ic"><div class="ic-icon">${i.icon}</div><div class="ic-title">${i.title}</div><div class="ic-desc">${i.desc}</div><div class="ic-earn">Est. ${i.earning}</div></div>`).join('');
+  $('o-proj').innerHTML=(d.projection||[]).map(pr=>`<div class="mrow"><span class="mlbl">${pr.asset}</span><span class="mval g">${pr.value10yr} <span style="font-size:9px;color:var(--muted);">(${pr.cagr})</span></span></div>`).join('');
+  $('o-actions').innerHTML=(d.actionPlan||[]).map((a,i)=>`<div class="astep"><span class="anum">${i+1}</span><span class="atext">${a}</span></div>`).join('');
+}
+function sendWA(){window.open('https://wa.me/?text='+encodeURIComponent('MF Analyzer Bot Report\nScore: '+$('o-score').textContent+'\n\nGet free analysis at salarybit.in'),'_blank');}
+function dlRpt(){
+  const c=`MF ANALYZER BOT — PERSONAL WEALTH REPORT\n${'='.repeat(46)}\nClient: ${rProfile.name} | Age: ${rProfile.age}\nGenerated: ${new Date().toLocaleDateString('en-IN')}\nHealth Score: ${$('o-score').textContent}\n\n${'='.repeat(46)}\nFULL ADVISOR ANALYSIS\n${'='.repeat(46)}\n\n${$('o-narr').textContent}\n\n${'='.repeat(46)}\nNot SEBI-registered. Educational purposes only.\nMF Analyzer Bot · salarybit.in`;
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/plain'}));a.download=`MFBot-${rProfile.name||'Report'}-${new Date().toISOString().split('T')[0]}.txt`;a.click();
+}
+function resetRpt(){$('rpt-out').style.display='none';$('rpt-form').style.display='block';['ls1','ls2','ls3','ls4','ls5'].forEach(id=>{$(id).classList.remove('on','dn');});window.scrollTo({top:0,behavior:'smooth'});}
+</script>
+</body>
+</html>

@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Token Reducer — Prompt Engineering Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --card: #1a1a24;
+    --border: #2a2a3a;
+    --accent: #7c3aed;
+    --accent2: #06b6d4;
+    --accent3: #10b981;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0a0a0f 0%, #1a0a2e 50%, #0a0a0f 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 2rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -10%;
+    width: 40%;
+    height: 200%;
+    background: radial-gradient(ellipse, rgba(124,58,237,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(124,58,237,0.15);
+    border: 1px solid rgba(124,58,237,0.3);
+    color: #a78bfa;
+    font-size: 0.7rem;
+    font-family: var(--mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #e2e8f0, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .subtitle span { color: #06b6d4; }
+
+  /* NAV TABS */
+  nav {
+    display: flex;
+    gap: 0.25rem;
+    padding: 1rem 2rem 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 0.6rem 1.1rem;
+    border-radius: 8px 8px 0 0;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    white-space: nowrap;
+    transition: all 0.2s;
+    border-bottom: 2px solid transparent;
+  }
+  .tab:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+  .tab.active {
+    color: #a78bfa;
+    border-bottom-color: var(--accent);
+    background: rgba(124,58,237,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .card-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  /* COMPARE BOXES */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 0.75rem 0;
+  }
+  @media(max-width: 600px) { .compare { grid-template-columns: 1fr; } }
+
+  .bad, .good {
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    line-height: 1.6;
+    position: relative;
+  }
+  .bad {
+    background: rgba(239,68,68,0.07);
+    border: 1px solid rgba(239,68,68,0.25);
+  }
+  .good {
+    background: rgba(16,185,129,0.07);
+    border: 1px solid rgba(16,185,129,0.25);
+  }
+  .bad::before {
+    content: '✗ BLOATED';
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #ef4444;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+    font-family: var(--sans);
+  }
+  .good::before {
+    content: '✓ CAVEMAN';
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #10b981;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+    font-family: var(--sans);
+  }
+  .savings {
+    display: inline-block;
+    background: rgba(16,185,129,0.15);
+    color: #10b981;
+    font-size: 0.72rem;
+    font-family: var(--mono);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+  }
+
+  /* LIVE CONVERTER */
+  .converter {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+  .converter-header {
+    background: rgba(124,58,237,0.1);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .converter-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #a78bfa;
+  }
+  .converter-body {
+    padding: 1.5rem;
+  }
+  .converter-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+  @media(max-width:600px) {
+    .converter-grid { grid-template-columns: 1fr; }
+    .arrow-col { display: none; }
+  }
+  textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    padding: 0.9rem;
+    resize: vertical;
+    min-height: 130px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  textarea:focus { border-color: var(--accent); }
+  textarea[readonly] {
+    background: rgba(124,58,237,0.05);
+    border-color: rgba(124,58,237,0.2);
+    color: #a78bfa;
+    cursor: default;
+  }
+  .arrow-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 3rem;
+    color: var(--muted);
+    font-size: 1.5rem;
+  }
+  .label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+  .stats-row {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+  .stat-chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+  }
+  .stat-chip span { color: #a78bfa; font-weight: 700; }
+  .stat-chip.green span { color: #10b981; }
+  .stat-chip.yellow span { color: #f59e0b; }
+
+  .btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--sans);
+  }
+  .btn:hover { background: #6d28d9; transform: translateY(-1px); }
+  .btn-sm {
+    padding: 0.35rem 0.8rem;
+    font-size: 0.75rem;
+    border-radius: 6px;
+  }
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: #a78bfa; background: rgba(124,58,237,0.08); }
+
+  /* RULES TABLE */
+  .rules-list { list-style: none; }
+  .rule-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid rgba(42,42,58,0.5);
+  }
+  .rule-item:last-child { border-bottom: none; }
+  .rule-num {
+    background: rgba(124,58,237,0.15);
+    color: #a78bfa;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+  .rule-text { font-size: 0.88rem; }
+  .rule-text strong { color: var(--text); display: block; margin-bottom: 0.2rem; }
+  .rule-text .eg {
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+  }
+  .rule-text .eg b { color: #06b6d4; }
+
+  /* SYMBOLS TABLE */
+  .sym-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.6rem;
+  }
+  .sym-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .sym { font-family: var(--mono); font-size: 1.1rem; font-weight: 700; color: #06b6d4; min-width: 2rem; }
+  .sym-desc { font-size: 0.8rem; color: var(--muted); }
+
+  /* CONTEXT TEMPLATE */
+  .template-box {
+    background: var(--surface);
+    border: 1px solid rgba(6,182,212,0.3);
+    border-radius: 8px;
+    padding: 1.2rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    line-height: 1.8;
+    color: #a78bfa;
+    position: relative;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: rgba(124,58,237,0.2);
+    border: 1px solid rgba(124,58,237,0.3);
+    color: #a78bfa;
+    font-size: 0.7rem;
+    font-family: var(--sans);
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { background: rgba(124,58,237,0.4); }
+  .copy-btn.copied { color: #10b981; border-color: #10b981; background: rgba(16,185,129,0.1); }
+
+  /* TIER BADGES */
+  .tier {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-family: var(--mono);
+    letter-spacing: 0.05em;
+    margin-left: 0.5rem;
+  }
+  .tier-high { background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+  .tier-med { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
+  .tier-low { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+
+  /* CHECKLIST */
+  .checklist { list-style: none; }
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(42,42,58,0.4);
+    cursor: pointer;
+    user-select: none;
+  }
+  .check-item:last-child { border-bottom: none; }
+  .check-box {
+    width: 18px; height: 18px;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    font-size: 11px;
+  }
+  .check-item.done .check-box {
+    background: var(--accent3);
+    border-color: var(--accent3);
+    color: white;
+  }
+  .check-item.done .check-text { text-decoration: line-through; color: var(--muted); }
+  .check-text { font-size: 0.85rem; }
+
+  /* PROGRESS BAR */
+  .progress-wrap { margin-bottom: 1.5rem; }
+  .progress-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.4rem; display: flex; justify-content: space-between; }
+  .progress-bar { height: 6px; background: var(--surface); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 3px; transition: width 0.4s ease; }
+
+  /* FOOTER */
+  .footer-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.75rem;
+    padding: 2rem;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+  }
+  .footer-note span { color: #a78bfa; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-badge">⚡ Token Efficiency</div>
+  <h1>Token Reducer</h1>
+  <p class="subtitle">Prompt engineering for <span>caveman mode</span> — say more with less</p>
+</header>
+
+<nav>
+  <button class="tab active" onclick="showTab('converter')">🔄 Live Converter</button>
+  <button class="tab" onclick="showTab('rules')">📋 10 Rules</button>
+  <button class="tab" onclick="showTab('symbols')">⚡ RTK Symbols</button>
+  <button class="tab" onclick="showTab('examples')">💡 Examples</button>
+  <button class="tab" onclick="showTab('templates')">📦 Templates</button>
+  <button class="tab" onclick="showTab('checklist')">✅ Checklist</button>
+</nav>
+
+<main>
+
+<!-- TAB 1: LIVE CONVERTER -->
+<div id="tab-converter" class="section active">
+  <div class="converter">
+    <div class="converter-header">
+      <span class="converter-title">⚡ Caveman Converter — paste your bloated prompt, get compressed version</span>
+      <button class="btn btn-sm" onclick="convertPrompt()">Compress →</button>
+    </div>
+    <div class="converter-body">
+      <div class="converter-grid">
+        <div>
+          <div class="label">Your prompt (bloated)</div>
+          <textarea id="input-prompt" placeholder="e.g. Can you please help me write a Python function that connects to my Google Sheets spreadsheet and reads data from it? I need it to work with the gspread library..."></textarea>
+        </div>
+        <div class="arrow-col">→</div>
+        <div>
+          <div class="label">Caveman version</div>
+          <textarea id="output-prompt" readonly placeholder="Output appears here..."></textarea>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-chip">Input: <span id="in-tokens">0</span> tokens</div>
+        <div class="stat-chip green">Output: <span id="out-tokens">0</span> tokens</div>
+        <div class="stat-chip yellow">Saved: <span id="saved-tokens">0</span> tokens (<span id="saved-pct">0</span>%)</div>
+        <button class="btn btn-sm btn-ghost" onclick="copyOutput()">📋 Copy</button>
+        <button class="btn btn-sm btn-ghost" onclick="clearAll()">🗑 Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚡ Quick Rules Applied by Converter</div>
+    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap:0.5rem; font-size:0.8rem; font-family: var(--mono);">
+      <div style="padding:0.5rem; background:var(--surface); border-radius:6px; color:var(--muted);">Remove: <span style="color:#ef4444">can you / please / I need / I want</span></div>
+      <div style="padding:0.5rem; background:var(--surface); border-radius:6px; color:var(--muted);">Remove: <span style="color:#ef4444">Could you help me with / I was wondering</span></div>
+      <div style="padding:0.5rem; background:var(--surface); border-radius:6px; color:var(--muted);">Remove: <span style="color:#ef4444">please / kindly / thank you</span></div>
+      <div style="padding:0.5rem; background:var(--surface); border-radius:6px; color:var(--muted);">Replace: <span style="color:#f59e0b">that → </span><span style="color:#10b981">→</span></div>
+      <div style="padding:0.5rem; background:var(--surface); border-radius:6px; color:var(--muted);">Replace: <span style="color:#f59e0b">and → </span><span style="color:#10b981">+</span></div>
+      <div style="padding:0.5rem; background:var(--surface); border-radius:6px; color:var(--muted);">Remove: <span style="color:#ef4444">articles: a / an / the</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2: RULES -->
+<div id="tab-rules" class="section">
+  <div class="card">
+    <div class="card-title">10 Core Token Reduction Rules</div>
+    <ul class="rules-list">
+      <li class="rule-item">
+        <span class="rule-num">R01</span>
+        <div class="rule-text">
+          <strong>Kill filler phrases <span class="tier tier-high">HIGH IMPACT</span></strong>
+          <span class="eg">Remove: <b>"Can you please help me..."</b> → just say what you want</span>
+          <span class="eg">Remove: <b>"I was wondering if..."</b> / <b>"Could you kindly..."</b> / <b>"I'd like you to..."</b></span>
+        </div>
+      </li>
+      <li class="rule-item">
+        <span class="rule-num">R02</span>
+        <div class="rule-text">
+          <strong>Drop articles + prepositions <span class="tier tier-high">HIGH IMPACT</span></strong>
+          <span class="eg">❌ <b>"Write a function that connects to the database"</b></span>
+          <span class="eg">✓ <b>"fn: connect database"</b></span>
+        </div>
+      </li>
+      <li class="rule-item">
+        <span class="rule-num">R03</span>
+        <div class="rule-text">
+          <strong>Use RTK symbols instead of words <span class="tier tier-high">HIGH IMPACT</span></strong>
+          <span class="eg">→ = results in / leads to / gives</span>
+          <span class="eg">+ = and / with / plus | ~ = approx | ? = question</span>
+        </div>
+      </li>
+      <li class="rule-item">
+        <span class="rule-num">R04</span>
+        <div class="rule-text">
+          <strong>Paste errors directly — no wrapper text <span class="tier tier-med">MED IMPACT</span></strong>
+          <span class="eg">❌ <b>"I'm getting this error when I run my code: [error]"</b></span>
+          <span class="eg">✓ <b>"fix: [paste error]"</b></span>
+        </div>
+      </li>
+      <li class="rule-item">
+        <span class="rule-num">R05</span>
+        <div class="rule-text">
+          <strong>Limit code pasting — only relevant snippet <span class="tier tier-high">HIGH IMPACT</span></strong>
+          <span class="eg">Don't paste 200 lines when the bug is in 10 lines</span>
+          <span class="eg">✓ <b>"line 45-60 broken: [snippet]"</b></span>
+        </div>
+      </li>
+      <li class="rule-item">
+        <span class="rule-num">R06</span>
+        <div class="rule-text">
+          <strong>Use "short" / "brief" / "1 line" to control output length <span class="tier tier-med">MED IMPACT</span></strong>
+          <span class="eg">✓ <b>"explain JWT. short."</b> — saves tokens on Claude's response too</span>
+        </div>
+      </li>
+      <li class="rule-item">
+        <span class="rule-num">R07</span>
+        <div class="rule-text">
+          <strong>Refer to previous message with ^ or "above" <span class="tier tier-low">LOW IMPACT</span></strong>
+          <span class="eg">❌ <b>"Based on the code you wrote earlier for the Flask app..."</b></span>
+          <span class="eg">✓ <b>"^ add error handling"</b></span>
+        </div>
+      </li>
+      <li class="rule-item">
+        <span class="rule-num">R08</span>
+        <div class="rule-text">
+          <strong>Use colons to define task type <span class="tier tier-med">MED IMPACT</span></strong>
+          <span class="eg"><b>fix: / add: / explain: / rewrite: / debug: / review:</b></span>
+          <span class="eg">✓ <b>"rewrite: [code] → cleaner"</b></span>
+        </div>
+      </li>
+      <li class="rule-item">
+        <span class="rule-num">R09</span>
+        <div class="rule-text">
+          <strong>Avoid repeating context Claude already has <span class="tier tier-high">HIGH IMPACT</span></strong>
+          <span class="eg">If you gave context at chat start, don't re-explain every message</span>
+          <span class="eg">✓ Use a context block ONCE at top, then reference it with "^ context"</span>
+        </div>
+      </li>
+      <li class="rule-item">
+        <span class="rule-num">R10</span>
+        <div class="rule-text">
+          <strong>Specify format to avoid verbose responses <span class="tier tier-med">MED IMPACT</span></strong>
+          <span class="eg">✓ <b>"list only" / "code only" / "yes/no" / "2 sentences"</b></span>
+          <span class="eg">✓ <b>"no explanation, just code"</b></span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- TAB 3: SYMBOLS -->
+<div id="tab-symbols" class="section">
+  <div class="card">
+    <div class="card-title">RTK — Reduce Token Keywords Symbol System</div>
+    <div class="sym-grid">
+      <div class="sym-item"><span class="sym">→</span><span class="sym-desc">results in / gives / leads to / convert</span></div>
+      <div class="sym-item"><span class="sym">+</span><span class="sym-desc">and / with / plus / also</span></div>
+      <div class="sym-item"><span class="sym">^</span><span class="sym-desc">previous / above / that / the above</span></div>
+      <div class="sym-item"><span class="sym">~</span><span class="sym-desc">approximately / around / similar to</span></div>
+      <div class="sym-item"><span class="sym">?</span><span class="sym-desc">question / clarify / is this / check</span></div>
+      <div class="sym-item"><span class="sym">>></span><span class="sym-desc">transform / refactor / convert into</span></div>
+      <div class="sym-item"><span class="sym">!</span><span class="sym-desc">important / must / critical / required</span></div>
+      <div class="sym-item"><span class="sym">@</span><span class="sym-desc">at / using / via / with (tool/service)</span></div>
+      <div class="sym-item"><span class="sym">#</span><span class="sym-desc">number / count / total / quantity</span></div>
+      <div class="sym-item"><span class="sym">✗</span><span class="sym-desc">not / don't / avoid / remove / no</span></div>
+      <div class="sym-item"><span class="sym">✓</span><span class="sym-desc">yes / keep / use / include / do this</span></div>
+      <div class="sym-item"><span class="sym">vs</span><span class="sym-desc">compare / difference / versus</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Common Abbreviations</div>
+    <div class="sym-grid">
+      <div class="sym-item"><span class="sym" style="font-size:0.85rem">fn</span><span class="sym-desc">function</span></div>
+      <div class="sym-item"><span class="sym" style="font-size:0.85rem">db</span><span class="sym-desc">database</span></div>
+      <div class="sym-item"><span class="sym" style="font-size:0.85rem">cfg</span><span class="sym-desc">config / configuration</span></div>
+      <div class="sym-item"><span class="sym" style="font-size:0.85rem">env</span><span class="sym-desc">environment variables</span></div>
+      <div class="sym-item"><span class="sym" style="font-size:0.85rem">err</span><span class="sym-desc">error</span></div>
+      <div class="sym-item"><span class="sym" style="font-size:0.85rem">req</span><span class="sym-desc">request / required</span></div>
+      <div class="sym-item"><span class="sym" style="font-size:0.85rem">res</span><span class="sym-desc">response / result</span></div>
+      <div class="sym-item"><span class="sym" style="font-size:0.85rem">auth</span><span class="sym-desc">authentication</span></div>
+      <div class="sym-item"><span class="sym" style="font-size:0.85rem">py</span><span class="sym-desc">Python</span></div>
+      <div class="sym-item"><span class="sym" style="font-size:0.85rem">js</span><span class="sym-desc">JavaScript</span></div>
+      <div class="sym-item"><span class="sym" style="font-size:0.85rem">api</span><span class="sym-desc">API endpoint/call</span></div>
+      <div class="sym-item"><span class="sym" style="font-size:0.85rem">msg</span><span class="sym-desc">message</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4: EXAMPLES -->
+<div id="tab-examples" class="section">
+
+  <div class="card">
+    <div class="card-title">Real Examples — Deepak's Stack</div>
+
+    <div class="compare">
+      <div class="bad">Can you please help me write a Python Flask route that receives a WhatsApp webhook message, extracts the user's phone number and text, and then stores it in Google Sheets using gspread?</div>
+      <div class="good">py flask route: recv WA webhook → extract phone+text → store @gspread</div>
+    </div>
+    <div class="savings">~65% token reduction</div>
+
+    <div class="compare" style="margin-top:1.2rem">
+      <div class="bad">I'm getting an error when I try to deploy my Flask app to Railway. The error says that the port binding is failing. Could you help me understand why this might be happening and how I can fix it?</div>
+      <div class="good">fix: Railway deploy err → port binding fail. Flask. why + fix?</div>
+    </div>
+    <div class="savings">~70% token reduction</div>
+
+    <div class="compare" style="margin-top:1.2rem">
+      <div class="bad">I need you to review my existing Python code that sends messages to WhatsApp using the Meta Cloud API and tell me if there are any issues with how I'm handling the authentication token and if the error handling is good enough</div>
+      <div class="good">review: py code @Meta WA CloudAPI → auth token handling + err handling ok?</div>
+    </div>
+    <div class="savings">~68% token reduction</div>
+
+    <div class="compare" style="margin-top:1.2rem">
+      <div class="bad">Can you write a JavaScript function that takes a salary amount in Indian Rupees and calculates the take-home salary after applying the new tax regime for FY 2026-27, including all the standard deductions?</div>
+      <div class="good">js fn: INR salary → takehome @new tax regime FY26-27 + std deductions</div>
+    </div>
+    <div class="savings">~60% token reduction</div>
+
+  </div>
+</div>
+
+<!-- TAB 5: TEMPLATES -->
+<div id="tab-templates" class="section">
+  <div class="card">
+    <div class="card-title">Your Personal Context Block — Paste at Start of New Chats</div>
+    <div style="position:relative;">
+      <div class="template-box" id="template-main">[CTX] Deepak. SAP consultant Hoskote/BLR.
+Projects: HoskoteClassifieds(Flask/Railway/WA-bot/GSheets/Cloudinary), salarybit.in(tools/blog/adsense), VahanClear, CreditVaidya.
+Stack: Python, Claude API, Groq, Railway, GSheets, Razorpay, Cloudinary, Meta WA CloudAPI.
+[RULES] Short Q = short A. No intros. No summaries. Code only if asked. Assume ^ ctx always.</div>
+      <button class="copy-btn" onclick="copyTemplate('template-main', this)">Copy</button>
+    </div>
+    <p style="font-size:0.75rem; color:var(--muted); margin-top:0.75rem;">Paste this ONCE at the start of a new chat. Saves ~50-80 tokens per message by not re-explaining context.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Task Starter Templates</div>
+
+    <div style="margin-bottom:1rem; position:relative;">
+      <div class="label">Debug / Fix</div>
+      <div class="template-box" id="t2">fix: [paste error or broken code]
+lang: py/js | context: [1 line what it should do]</div>
+      <button class="copy-btn" onclick="copyTemplate('t2', this)">Copy</button>
+    </div>
+
+    <div style="margin-bottom:1rem; position:relative;">
+      <div class="label">Write New Code</div>
+      <div class="template-box" id="t3">fn: [what it does] → [output]
+lang: py | use: [library if any] | ✗ [what to avoid]</div>
+      <button class="copy-btn" onclick="copyTemplate('t3', this)">Copy</button>
+    </div>
+
+    <div style="margin-bottom:1rem; position:relative;">
+      <div class="label">Review / Audit</div>
+      <div class="template-box" id="t4">review: [paste code]
+check: security + perf + edge cases. short findings only.</div>
+      <button class="copy-btn" onclick="copyTemplate('t4', this)">Copy</button>
+    </div>
+
+    <div style="margin-bottom:1rem; position:relative;">
+      <div class="label">Explain Concept</div>
+      <div class="template-box" id="t5">explain: [topic]. 3 sentences. no jargon. eg included.</div>
+      <button class="copy-btn" onclick="copyTemplate('t5', this)">Copy</button>
+    </div>
+
+    <div style="position:relative;">
+      <div class="label">Continue / Iterate</div>
+      <div class="template-box" id="t6">^ add: [what to add]
+^ fix: [what's broken]
+^ rewrite → [improvement goal]</div>
+      <button class="copy-btn" onclick="copyTemplate('t6', this)">Copy</button>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 6: CHECKLIST -->
+<div id="tab-checklist" class="section">
+  <div class="card">
+    <div class="card-title">Pre-Send Checklist — Run this before every prompt</div>
+
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>Compression score</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+
+    <ul class="checklist" id="checklist">
+      <li class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <span class="check-text">Removed "Can you please / I need / I want / Could you help me"</span>
+      </li>
+      <li class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <span class="check-text">Dropped unnecessary articles (a, an, the)</span>
+      </li>
+      <li class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <span class="check-text">Used symbols where possible (→, +, ^, ~)</span>
+      </li>
+      <li class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <span class="check-text">Pasted only relevant code snippet, not entire file</span>
+      </li>
+      <li class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <span class="check-text">Used task prefix (fix: / add: / explain: / review:)</span>
+      </li>
+      <li class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <span class="check-text">Specified output format (short / code only / list / yes-no)</span>
+      </li>
+      <li class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <span class="check-text">Not re-explaining context already given earlier in chat</span>
+      </li>
+      <li class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"></div>
+        <span class="check-text">Used ^ to refer to previous output instead of repeating it</span>
+      </li>
+    </ul>
+    <button class="btn btn-ghost" style="margin-top:1rem; width:100%; font-size:0.8rem;" onclick="resetChecklist()">↺ Reset</button>
+  </div>
+</div>
+
+</main>
+
+<div class="footer-note">token-reducer.html • built for <span>Deepak @ Hoskote</span> • caveman mode activated ⚡</div>
+
+<script>
+  // TAB SWITCHING
+  function showTab(name) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  // TOKEN ESTIMATOR (rough: 1 token ≈ 4 chars)
+  function estimateTokens(text) {
+    return Math.max(0, Math.round(text.trim().length / 4));
+  }
+
+  // CAVEMAN CONVERTER
+  const fillerPhrases = [
+    /can you please\s*/gi, /could you please\s*/gi, /could you kindly\s*/gi,
+    /please help me\s*/gi, /i need you to\s*/gi, /i want you to\s*/gi,
+    /i would like you to\s*/gi, /i'd like you to\s*/gi, /i was wondering if\s*/gi,
+    /can you help me\s*/gi, /could you help me\s*/gi, /help me\s+/gi,
+    /can you\s*/gi, /could you\s*/gi, /please\s*/gi, /kindly\s*/gi,
+    /i need\s+/gi, /i want\s+/gi, /i am trying to\s*/gi, /i'm trying to\s*/gi,
+    /basically\s*/gi, /essentially\s*/gi, /just\s+/gi, /really\s+/gi,
+    /\bthe\b\s*/gi, /\ba\b\s*/gi, /\ban\b\s*/gi,
+    /in order to\s*/gi, /so that\s*/gi, /make sure to\s*/gi,
+    /that is\s*/gi, /which is\s*/gi,
+  ];
+
+  const replacements = [
+    [/\band\b/gi, '+'],
+    [/\bthat\b/gi, '→'],
+    [/\bresults in\b/gi, '→'],
+    [/\bleads to\b/gi, '→'],
+    [/\bfunction\b/gi, 'fn'],
+    [/\bdatabase\b/gi, 'db'],
+    [/\bconfiguration\b/gi, 'cfg'],
+    [/\bapproximately\b/gi, '~'],
+    [/\baround\b/gi, '~'],
+    [/\bversus\b/gi, 'vs'],
+    [/\bwith\b/gi, '+'],
+    [/\busing\b/gi, '@'],
+    [/\bPython\b/gi, 'py'],
+    [/\bJavaScript\b/gi, 'js'],
+    [/\berror\b/gi, 'err'],
+    [/\bresponse\b/gi, 'res'],
+    [/\brequest\b/gi, 'req'],
+  ];
+
+  function convertPrompt() {
+    const input = document.getElementById('input-prompt').value;
+    if (!input.trim()) return;
+
+    let output = input;
+    fillerPhrases.forEach(p => { output = output.replace(p, ''); });
+    replacements.forEach(([from, to]) => { output = output.replace(from, to); });
+    output = output.replace(/\s{2,}/g, ' ').trim();
+    // Capitalize first letter
+    output = output.charAt(0).toUpperCase() + output.slice(1);
+
+    document.getElementById('output-prompt').value = output;
+
+    const inTok = estimateTokens(input);
+    const outTok = estimateTokens(output);
+    const saved = inTok - outTok;
+    const pct = inTok > 0 ? Math.round((saved / inTok) * 100) : 0;
+
+    document.getElementById('in-tokens').textContent = inTok;
+    document.getElementById('out-tokens').textContent = outTok;
+    document.getElementById('saved-tokens').textContent = saved;
+    document.getElementById('saved-pct').textContent = pct;
+  }
+
+  // Auto-convert on input
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('input-prompt').addEventListener('input', () => {
+      const v = document.getElementById('input-prompt').value;
+      document.getElementById('in-tokens').textContent = estimateTokens(v);
+    });
+  });
+
+  function copyOutput() {
+    const v = document.getElementById('output-prompt').value;
+    if (v) navigator.clipboard.writeText(v);
+  }
+
+  function clearAll() {
+    document.getElementById('input-prompt').value = '';
+    document.getElementById('output-prompt').value = '';
+    ['in-tokens','out-tokens','saved-tokens','saved-pct'].forEach(id => document.getElementById(id).textContent = '0');
+  }
+
+  // COPY TEMPLATE
+  function copyTemplate(id, btn) {
+    const text = document.getElementById(id).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  // CHECKLIST
+  function toggleCheck(item) {
+    item.classList.toggle('done');
+    if (item.classList.contains('done')) item.querySelector('.check-box').textContent = '✓';
+    else item.querySelector('.check-box').textContent = '';
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const items = document.querySelectorAll('.check-item');
+    const done = document.querySelectorAll('.check-item.done').length;
+    const pct = Math.round((done / items.length) * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-pct').textContent = pct + '%';
+  }
+
+  function resetChecklist() {
+    document.querySelectorAll('.check-item').forEach(i => {
+      i.classList.remove('done');
+      i.querySelector('.check-box').textContent = '';
+    });
+    updateProgress();
+  }
+</script>
+
+</body>
+</html>

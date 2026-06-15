@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Business Finder India | SalaryBit</title>
+    <meta name="description" content="Discover personalized business ideas in India based on your budget, skills, city, time, and risk appetite.">
+    <meta name="keywords" content="business ideas India, side income India, business under 5000, student business ideas, women business ideas">
+    <meta property="og:title" content="AI Business Finder India">
+    <meta property="og:description" content="Find suitable business ideas with startup cost, income potential, risks, marketing ideas, and action plans.">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#0f766e">
+    <link rel="canonical" href="https://salarybit.in/ai-business-finder-india/">
+    <link rel="stylesheet" href="assets/styles.css">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="AI Business Finder India home">
+        <span class="brand-mark">A</span>
+        <span>AI Business Finder India</span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#finder">Finder</a>
+        <a href="#finder">Check Eligibility</a>
+        <a href="#free">Free Tool</a>
+        <a href="#seo">SEO Pages</a>
+        <a href="#admin">Admin</a>
+      </nav>
+      <a class="nav-cta" href="#finder">Start</a>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">A free SalaryBit tool</p>
+          <h1>AI Business Finder India</h1>
+          <p class="hero-text">Answer a few questions about minimum investment, location, available time, skills, and income goal. The website then prepares a matched business report instead of showing every idea upfront.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#finder">Find ideas</a>
+            <a class="button secondary" href="#free">What is included</a>
+          </div>
+          <div class="trust-row" aria-label="Target users">
+            <span>Salaried employees</span>
+            <span>Students</span>
+            <span>Women</span>
+            <span>Retired people</span>
+          </div>
+        </div>
+        <div class="hero-visual" aria-label="Business opportunity dashboard preview">
+          <div class="market-card card-one">
+            <strong>Investment</strong>
+            <span>Start from your budget range</span>
+          </div>
+          <div class="market-card card-two">
+            <strong>Match</strong>
+            <span>Location and skill based</span>
+          </div>
+          <div class="market-card card-three">
+            <strong>Report</strong>
+            <span>Free roadmap included</span>
+          </div>
+          <div class="city-map">
+            <span class="pin pin-a"></span>
+            <span class="pin pin-b"></span>
+            <span class="pin pin-c"></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section finder-band" id="finder">
+        <div class="section-heading">
+          <p class="eyebrow">Start here</p>
+          <h2>Tell us your minimum investment and goal.</h2>
+        </div>
+        <div class="finder-layout">
+          <form class="finder-form" id="finderForm">
+            <label>
+              Minimum investment
+              <select id="budget" required>
+                <option value="0-5k">₹0-5k</option>
+                <option value="5k-25k">₹5k-25k</option>
+                <option value="25k-1l">₹25k-1L</option>
+                <option value="1l-plus">₹1L+</option>
+              </select>
+            </label>
+            <label>
+              City or location
+              <input id="city" type="text" placeholder="Bengaluru, Pune, Mysuru, rural district" required>
+            </label>
+            <label>
+              Available time
+              <select id="time" required>
+                <option value="weekend">Weekend</option>
+                <option value="part-time">Part-time</option>
+                <option value="full-time">Full-time</option>
+              </select>
+            </label>
+            <label>
+              Skills or interests
+              <input id="skills" type="text" placeholder="cooking, teaching, sales, farming, design">
+            </label>
+            <label>
+              Monthly income goal
+              <select id="incomeGoal" required>
+                <option value="10000">₹10,000+</option>
+                <option value="25000">₹25,000+</option>
+                <option value="50000">₹50,000+</option>
+                <option value="100000">₹1,00,000+</option>
+              </select>
+            </label>
+            <fieldset>
+              <legend>Risk appetite</legend>
+              <div class="segmented">
+                <label><input type="radio" name="risk" value="low" checked> Low</label>
+                <label><input type="radio" name="risk" value="medium"> Medium</label>
+                <label><input type="radio" name="risk" value="high"> High</label>
+              </div>
+            </fieldset>
+            <label class="checkbox">
+              <input id="emailOptIn" type="checkbox">
+              Email me new free business ideas
+            </label>
+            <button class="button primary full" type="submit">Check suitable business ideas</button>
+          </form>
+
+          <aside class="signup-panel">
+            <h3>Create your free account</h3>
+            <p>Save your search, favorite ideas, and action roadmap for later.</p>
+            <form id="registerForm" class="mini-form">
+              <input id="name" type="text" placeholder="Name" required>
+              <input id="email" type="email" placeholder="Email" required>
+              <button class="button secondary full" type="submit">Register</button>
+            </form>
+            <p class="small" id="registerStatus">No account registered yet.</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section results-section" id="ideas">
+        <div class="section-heading split">
+          <div>
+            <p class="eyebrow">Matched report</p>
+            <h2>Results appear after users answer the questions.</h2>
+          </div>
+          <div class="search-row hidden" id="resultsTools">
+            <input id="ideaSearch" type="search" placeholder="Search ideas, e.g. food, online, rural">
+            <select id="categoryFilter" aria-label="Filter by category">
+              <option value="all">All categories</option>
+              <option value="Online">Online</option>
+              <option value="Food">Food</option>
+              <option value="Education">Education</option>
+              <option value="Services">Services</option>
+              <option value="Rural">Rural</option>
+              <option value="Retail">Retail</option>
+            </select>
+          </div>
+        </div>
+        <div id="results" class="idea-grid locked-results" aria-live="polite">
+          <article class="locked-card">
+            <h3>Business list is not public.</h3>
+            <p>Enter your investment range, city, time, skills, and income goal to unlock suitable ideas. This keeps visitors interested and moves them into the inquiry flow.</p>
+            <a class="button primary" href="#finder">Start now</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="free">
+        <div class="section-heading">
+          <p class="eyebrow">100% free</p>
+          <h2>Everything here is included for free.</h2>
+        </div>
+        <div class="pricing-grid">
+          <article class="price-card">
+            <h3>Free Finder</h3>
+            <p class="price">₹0</p>
+            <ul>
+              <li>Personalized recommendations after form submit</li>
+              <li>Startup cost and expected timeline</li>
+              <li>Save favorite ideas</li>
+              <li>Mobile-friendly experience</li>
+            </ul>
+            <a class="button secondary full" href="#finder">Start free</a>
+          </article>
+          <article class="price-card highlighted">
+            <h3>Free Action Plan</h3>
+            <p class="price">Included</p>
+            <ul>
+              <li>Step-by-step launch plan</li>
+              <li>Risks and marketing ideas</li>
+              <li>First 30-day roadmap</li>
+              <li>WhatsApp sharing</li>
+            </ul>
+            <a class="button primary full" href="#finder">Generate free plan</a>
+          </article>
+          <article class="price-card">
+            <h3>Free Updates</h3>
+            <p class="price">Optional</p>
+            <ul>
+              <li>Collect email only if user wants updates</li>
+              <li>New business idea alerts</li>
+              <li>SEO pages for common searches</li>
+              <li>No login required to try the finder</li>
+            </ul>
+            <a class="button secondary full" href="#footerEmail">Subscribe free</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="section seo-band" id="seo">
+        <div class="section-heading split">
+          <div>
+            <p class="eyebrow">SEO landing pages</p>
+            <h2>Pages built for high-intent searches.</h2>
+          </div>
+          <a class="button secondary" href="sitemap.xml">Sitemap</a>
+        </div>
+        <div class="seo-grid">
+          <a href="seo/under-5000.html">Business ideas under ₹5000</a>
+          <a href="seo/students.html">Business ideas for students</a>
+          <a href="seo/women.html">Business ideas for women</a>
+          <a href="seo/karnataka.html">Business ideas in Karnataka</a>
+          <a href="seo/weekend.html">Weekend business ideas</a>
+          <a href="seo/rural.html">Rural business ideas</a>
+        </div>
+      </section>
+
+      <section class="section admin-section" id="admin">
+        <div class="section-heading">
+          <p class="eyebrow">Admin panel</p>
+          <h2>Monitor searches, users, templates, and revenue levers.</h2>
+        </div>
+        <div class="admin-grid">
+          <article class="metric"><span id="metricUsers">0</span><p>Users</p></article>
+          <article class="metric"><span id="metricSearches">0</span><p>Searches</p></article>
+          <article class="metric"><span id="metricSaved">0</span><p>Saved ideas</p></article>
+          <article class="metric"><span>6</span><p>SEO pages</p></article>
+        </div>
+        <div class="admin-panels">
+          <article class="admin-card">
+            <h3>Recent searches</h3>
+            <div id="searchLog" class="table-like"></div>
+          </article>
+          <article class="admin-card">
+            <h3>Add business template</h3>
+            <form id="templateForm" class="mini-form">
+              <input id="templateTitle" type="text" placeholder="Idea title" required>
+              <input id="templateCategory" type="text" placeholder="Category" required>
+              <input id="templateCost" type="text" placeholder="Startup cost" required>
+              <button class="button secondary full" type="submit">Add template</button>
+            </form>
+            <div id="templateList" class="tag-list"></div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div>
+        <strong>AI Business Finder India</strong>
+        <p>Free business idea discovery with saved ideas, analytics-ready pages, and SEO landing pages.</p>
+      </div>
+      <form id="emailForm" class="email-form">
+        <input id="footerEmail" type="email" placeholder="Get weekly business ideas" required>
+        <button class="button primary" type="submit">Subscribe</button>
+      </form>
+    </footer>
+
+    <script src="assets/app.js"></script>
+  </body>
+</html>

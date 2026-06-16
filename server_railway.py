@@ -1,3 +1,8 @@
+import io
+from asn1crypto import pem, x509 as asn1_x509
+from pyhanko.pdf_utils.reader import PdfFileReader
+from pyhanko.sign.validation import validate_pdf_signature, EmbeddedPdfSignature
+from pyhanko_certvalidator import ValidationContext
 import os
 import hmac
 import hashlib

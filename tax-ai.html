@@ -429,20 +429,11 @@
       <label class="input-label">Your PAN Number</label>
       <div class="pan-input-row">
         <input class="input-field" id="panInput" placeholder="ABCDE1234F" maxlength="10" oninput="this.value=this.value.toUpperCase()">
-        <button class="btn btn-primary" onclick="sendOTP()">Send OTP</button>
+        <button class="btn btn-primary" onclick="verifyPAN()">Verify PAN →</button>
       </div>
-      <div id="otp-section" style="display:none">
-        <label class="input-label" style="margin-top:16px">Enter the 6-digit OTP sent to your mobile</label>
-        <div class="otp-row">
-          <input class="otp-box" maxlength="1" oninput="otpMove(this,0)">
-          <input class="otp-box" maxlength="1" oninput="otpMove(this,1)">
-          <input class="otp-box" maxlength="1" oninput="otpMove(this,2)">
-          <input class="otp-box" maxlength="1" oninput="otpMove(this,3)">
-          <input class="otp-box" maxlength="1" oninput="otpMove(this,4)">
-          <input class="otp-box" maxlength="1" oninput="otpMove(this,5)">
-        </div>
-        <button class="btn btn-primary" style="margin-top:12px" onclick="verifyOTP()">Verify OTP</button>
-        <p class="verify-note" style="margin-top:8px">Didn't receive? <a href="#" style="color:var(--accent)">Resend in 30s</a></p>
+      <p style="font-size:13px; color:var(--ink-muted); margin-top:8px;">We'll fetch your tax profile instantly. No OTP needed.</p>
+      <div id="pan-fetching" style="display:none; margin-top:16px; padding:14px; background:var(--accent-light); border-radius:var(--radius-sm); color:var(--accent); font-weight:600; font-size:14px;">
+        ⏳ Fetching your tax profile...
       </div>
       <div id="pan-success" style="display:none; margin-top:16px; padding:14px; background:var(--green-light); border-radius:var(--radius-sm); color:var(--green); font-weight:600; font-size:14px;">
         ✅ PAN verified! Redirecting to document upload...
@@ -466,14 +457,19 @@
         <span class="doc-chip" onclick="toggleChip(this)">Crypto CSV</span>
         <span class="doc-chip" onclick="toggleChip(this)">RSU / ESPP</span>
       </div>
-      <div class="upload-zone" onclick="simulateUpload()">
+      <input type="file" id="fileInput" multiple accept=".pdf,.xls,.xlsx,.csv,.jpg,.jpeg,.png" style="display:none" onchange="handleFileSelect(this)">
+      <div class="upload-zone" onclick="document.getElementById('fileInput').click()" id="uploadZone"
+        ondragover="event.preventDefault(); this.style.borderColor='var(--accent)'; this.style.background='var(--accent-light)'"
+        ondragleave="this.style.borderColor=''; this.style.background=''"
+        ondrop="event.preventDefault(); this.style.borderColor=''; this.style.background=''; handleFileDrop(event)">
         <div class="upload-icon">📎</div>
         <h3>Drag files here, or tap to browse</h3>
         <p>PDF · Excel · CSV · JPG · PNG · Screenshots</p>
       </div>
-      <div id="upload-status" style="display:none; padding:12px 16px; background:var(--green-light); border-radius:var(--radius-sm); font-size:13px; color:var(--green); font-weight:600;">
-        ✅ Form 16.pdf uploaded · AI is reading your document...
+      <div id="upload-status" style="display:none; padding:12px 16px; background:var(--green-light); border-radius:var(--radius-sm); font-size:13px; color:var(--green); font-weight:600; margin-bottom:8px;">
+        ✅ <span id="upload-status-text">File uploaded · AI is reading your document...</span>
       </div>
+      <div id="uploaded-files-list" style="display:flex; flex-direction:column; gap:6px; margin-bottom:4px;"></div>
       <button class="btn btn-primary" style="margin-top:16px; width:100%" onclick="switchTabByName('analysis')">Analyse My Documents →</button>
     </div>
 

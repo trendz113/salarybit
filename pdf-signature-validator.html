@@ -1,7 +1,522 @@
-<iframe 
-  src="https://web-production-456eb.up.railway.app/validate-signature"
-  width="100%" 
-  height="850" 
-  frameborder="0"
-  style="border:none; border-radius:12px;">
-</iframe>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Validate Digital Signature on Form 16 PDF – Free Tool & Guide | SalaryBit</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f7fa; color: #222; }
+
+  header {
+    background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+    color: #fff;
+    padding: 28px 20px 22px;
+    text-align: center;
+  }
+  header h1 { font-size: 1.55rem; margin-bottom: 6px; }
+  header p { font-size: 0.95rem; opacity: 0.88; }
+  .badge {
+    display: inline-block;
+    background: #43a047;
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-top: 10px;
+    text-transform: uppercase;
+  }
+
+  .container { max-width: 820px; margin: 0 auto; padding: 28px 16px 60px; }
+
+  h2 {
+    font-size: 1.15rem;
+    color: #1a237e;
+    margin: 32px 0 12px;
+    border-bottom: 2px solid #e3e8f0;
+    padding-bottom: 6px;
+  }
+
+  p { line-height: 1.7; margin-bottom: 12px; font-size: 0.97rem; }
+
+  /* ── VALIDATOR TOOL EMBED ── */
+  .validator-hero {
+    background: linear-gradient(135deg, #0d1b6e 0%, #1a237e 60%, #283593 100%);
+    border-radius: 14px;
+    padding: 28px 24px 24px;
+    margin: 8px 0 32px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(26,35,126,0.18);
+  }
+  .validator-hero h2 {
+    color: #fff;
+    border-bottom: none;
+    font-size: 1.2rem;
+    margin: 0 0 6px;
+    padding: 0;
+  }
+  .validator-hero p {
+    color: rgba(255,255,255,0.82);
+    font-size: 0.92rem;
+    margin-bottom: 18px;
+  }
+  .validator-frame-wrap {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+  }
+  .validator-frame-wrap iframe {
+    display: block;
+    width: 100%;
+    height: 600px;
+    border: none;
+  }
+  .validator-tags {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+  .vtag {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    font-size: 0.78rem;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  /* ── WHY BOX ── */
+  .why-box {
+    background: #e8eaf6;
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin-bottom: 28px;
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+  .why-box ul { margin-top: 8px; padding-left: 20px; }
+  .why-box li { margin-bottom: 6px; }
+
+  /* ── STEPS ── */
+  .steps { counter-reset: step-counter; }
+  .step {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 20px 22px;
+    margin-bottom: 18px;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+  }
+  .step-num {
+    background: #1a237e;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    min-width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-body h3 { font-size: 1rem; color: #1a237e; margin-bottom: 6px; }
+  .step-body p { font-size: 0.93rem; margin-bottom: 6px; }
+  .step-body .note {
+    font-size: 0.88rem;
+    background: #f3f4f6;
+    border-radius: 5px;
+    padding: 8px 12px;
+    margin-top: 6px;
+    color: #444;
+  }
+  .step-body .note strong { color: #c62828; }
+
+  /* ── FAQ ── */
+  .faq-item { background: #fff; border-radius: 8px; box-shadow: 0 1px 5px rgba(0,0,0,0.06); padding: 16px 20px; margin-bottom: 14px; }
+  .faq-item h4 { font-size: 0.97rem; color: #283593; margin-bottom: 6px; }
+  .faq-item p { font-size: 0.92rem; }
+
+  /* ── AFFILIATE SECTION ── */
+  .affiliate-section {
+    margin: 40px 0 10px;
+  }
+  .affiliate-section h2 {
+    font-size: 1.1rem;
+    color: #1a237e;
+    border-bottom: 2px solid #e3e8f0;
+    padding-bottom: 6px;
+    margin-bottom: 6px;
+  }
+  .affiliate-note {
+    font-size: 0.82rem;
+    color: #888;
+    margin-bottom: 18px;
+  }
+  .affiliate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+  }
+  .aff-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-top: 3px solid #1a237e;
+    transition: box-shadow 0.2s;
+  }
+  .aff-card:hover { box-shadow: 0 4px 16px rgba(26,35,126,0.13); }
+  .aff-card .aff-logo {
+    font-size: 1.5rem;
+    margin-bottom: 2px;
+  }
+  .aff-card .aff-name {
+    font-weight: 700;
+    font-size: 0.97rem;
+    color: #1a237e;
+  }
+  .aff-card .aff-desc {
+    font-size: 0.85rem;
+    color: #555;
+    line-height: 1.5;
+    flex: 1;
+  }
+  .aff-card .aff-offer {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #2e7d32;
+    background: #e8f5e9;
+    border-radius: 4px;
+    padding: 3px 8px;
+    display: inline-block;
+  }
+  .aff-btn {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 8px 16px;
+    background: #1a237e;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-align: center;
+    transition: background 0.2s;
+  }
+  .aff-btn:hover { background: #283593; }
+  .aff-btn.green { background: #43a047; }
+  .aff-btn.green:hover { background: #2e7d32; }
+  .aff-btn.orange { background: #e65100; }
+  .aff-btn.orange:hover { background: #bf360c; }
+  .aff-btn.darkblue { background: #0d47a1; }
+  .aff-btn.darkblue:hover { background: #0a3880; }
+  .aff-btn.yellow { background: #f9a825; color: #222; }
+  .aff-btn.yellow:hover { background: #f57f17; }
+
+  /* ── CTA ── */
+  .download-section {
+    background: #e8f5e9;
+    border: 1.5px solid #81c784;
+    border-radius: 10px;
+    padding: 20px 22px;
+    margin: 32px 0 20px;
+    text-align: center;
+  }
+  .download-section h3 { color: #2e7d32; margin-bottom: 8px; font-size: 1.05rem; }
+  .download-section p { font-size: 0.92rem; color: #444; margin-bottom: 14px; }
+  .dl-link {
+    display: inline-block;
+    background: #43a047;
+    color: #fff;
+    padding: 10px 28px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  footer {
+    background: #1a237e;
+    color: #cfd8dc;
+    text-align: center;
+    padding: 18px;
+    font-size: 0.87rem;
+    margin-top: 40px;
+  }
+  footer a { color: #90caf9; text-decoration: none; }
+
+  @media (max-width: 500px) {
+    header h1 { font-size: 1.2rem; }
+    .step { flex-direction: column; gap: 10px; }
+    .validator-frame-wrap iframe { height: 520px; }
+    .affiliate-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>✅ Validate Digital Signature on Form 16 PDF</h1>
+  <p>Fix "Validity Unknown" errors instantly — free tool + step-by-step guide</p>
+  <span class="badge">100% Free · 2 Minutes · Works on Windows · Updated 2026</span>
+</header>
+
+<div class="container">
+
+  <!-- ── EMBEDDED VALIDATOR TOOL ── -->
+  <div class="validator-hero">
+    <h2>🔍 Try It Now — Upload Your PDF Below</h2>
+    <p>Instantly check if your Form 16, ITR acknowledgement, or any signed PDF is valid and trusted</p>
+    <div class="validator-frame-wrap">
+      <iframe
+        src="https://web-production-456eb.up.railway.app/validate-signature"
+        title="PDF Digital Signature Validator"
+        loading="lazy"
+        allowfullscreen>
+      </iframe>
+    </div>
+    <div class="validator-tags">
+      <span class="vtag">🔒 Private</span>
+      <span class="vtag">📄 Form 16</span>
+      <span class="vtag">📋 ITR Acknowledgement</span>
+      <span class="vtag">🏢 GST Certificate</span>
+      <span class="vtag">🏠 Property Docs</span>
+    </div>
+  </div>
+
+  <!-- ── WHY THIS HAPPENS ── -->
+  <h2>Why Does "Validity Unknown" or ❓ Appear on Form 16?</h2>
+  <div class="why-box">
+    <p>Form 16 is digitally signed by your employer using a <strong>DSC (Digital Signature Certificate)</strong> issued by a Certifying Authority (CA) — like eMudhra, Sify, NSDL, etc.</p>
+    <p>When Adobe Reader opens the file, it checks whether the certificate chain is trusted. The error appears because:</p>
+    <ul>
+      <li>Your computer does not have the <strong>Root CA certificate</strong> of the Indian certifying authority installed</li>
+      <li>Adobe's default "Trusted Identities" list does not include Indian CAs by default</li>
+      <li>The PDF is signed correctly — but your Reader hasn't been told to trust that CA yet</li>
+    </ul>
+    <p style="margin-top:10px;"><strong>Fix = Add the Indian CCA Root Certificate to Adobe's Trusted Identities. One-time setup. Free.</strong></p>
+  </div>
+
+  <!-- ── STEPS ── -->
+  <h2>Step-by-Step Fix (Adobe Acrobat Reader — Windows)</h2>
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>Download Adobe Acrobat Reader (if not installed)</h3>
+        <p>Go to <strong>get.adobe.com/reader</strong> and install the free version. Make sure it is set as your default PDF viewer.</p>
+        <div class="note">⚠️ <strong>Do not use</strong> Chrome's built-in PDF viewer, Edge PDF, or Foxit for signature validation — they don't support full certificate trust management.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Download the India CCA Root Certificate</h3>
+        <p>Go to the official <strong>Controller of Certifying Authorities (CCA), India</strong> website:</p>
+        <p>🔗 <strong>cca.gov.in</strong> → "Download" section → <em>"CCA India Root Certifying Authority Certificate"</em></p>
+        <p>Download the file (typically named <strong>CCA_India_2022.cer</strong> or latest). Save it to your Desktop.</p>
+        <div class="note">This is the root certificate for all Indian DSCs — issued by Ministry of Electronics &amp; IT (MeitY). Completely safe and official.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>Open Adobe Reader → Go to Preferences</h3>
+        <p>Open Adobe Acrobat Reader. Go to:<br>
+        <strong>Edit → Preferences → Signatures → Identities &amp; Trusted Certificates → More...</strong></p>
+        <p>A new window called <em>"Digital ID and Trusted Certificate Settings"</em> will open.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h3>Import the CCA Root Certificate</h3>
+        <p>In the left panel, click <strong>"Trusted Certificates"</strong>.</p>
+        <p>Click <strong>"Import"</strong> at the top → Browse and select the <strong>CCA_India_2022.cer</strong> file you downloaded.</p>
+        <p>Click <strong>Open</strong> → Click <strong>"Trust"</strong> in the popup → Check both:</p>
+        <ul style="margin: 8px 0 8px 20px; font-size:0.93rem;">
+          <li>✅ Use this certificate as a trusted root</li>
+          <li>✅ Certified documents (and optionally "Signed documents or data")</li>
+        </ul>
+        <p>Click <strong>OK → Close</strong>.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h3>Reopen Your Form 16 PDF</h3>
+        <p>Close the Form 16 PDF (if already open). Reopen it in Adobe Reader.</p>
+        <p>You should now see a <strong>green tick ✅</strong> with the message:</p>
+        <p style="background:#e8f5e9; padding: 8px 12px; border-radius:5px; font-style:italic; color:#2e7d32;">"Signed and all signatures are valid."</p>
+        <div class="note"><strong>Still showing yellow or unknown?</strong> Close Adobe completely and reopen. If the issue persists, contact your employer's HR/payroll team to recheck the signing certificate.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <h3>Verify Signature Details (Optional)</h3>
+        <p>Click on the <strong>signature panel</strong> or the signature strip at the top of the PDF.</p>
+        <p>You'll see the signer's name, certificate validity dates, and the CA that issued it. Confirm the signer name matches your employer's authorized signatory.</p>
+        <div class="note">This is your proof that the document is authentic and hasn't been tampered with after signing.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── FAQ ── -->
+  <h2>Common Mistakes to Avoid</h2>
+  <div class="faq-item">
+    <h4>❌ "I'm using Chrome / Edge to open the PDF"</h4>
+    <p>Browser-based PDF viewers do not support digital signature validation. Always download the PDF and open with Adobe Acrobat Reader.</p>
+  </div>
+  <div class="faq-item">
+    <h4>❌ "I downloaded a tool / app that charges ₹299 to validate"</h4>
+    <p>Completely unnecessary. Adobe Reader is free, CCA certificate is from a government website. Total cost = ₹0.</p>
+  </div>
+  <div class="faq-item">
+    <h4>❌ "The signature still shows invalid after the fix"</h4>
+    <p>This means the PDF has an underlying signing issue — certificate may have expired, or the PDF was altered after signing. Contact your employer's HR/payroll team to get a fresh Form 16.</p>
+  </div>
+  <div class="faq-item">
+    <h4>✅ "Do I need to repeat this every year?"</h4>
+    <p>No. Once the CCA root certificate is added to Adobe's trusted list, it stays permanently. All future digitally signed PDFs (Form 16, ITR acknowledgements, etc.) will validate automatically.</p>
+  </div>
+  <div class="faq-item">
+    <h4>✅ "Does this work for Form 16 from any employer?"</h4>
+    <p>Yes — as long as the employer's DSC was issued by a CCA-recognised Indian Certifying Authority (eMudhra, Sify, NSDL, Capricorn, etc.), the fix works universally.</p>
+  </div>
+
+  <!-- ── AFFILIATE LINKS ── -->
+  <div class="affiliate-section">
+    <h2>💰 Recommended Apps &amp; Offers for Salaried Indians</h2>
+    <p class="affiliate-note">These are affiliate/referral links. Using them costs you nothing extra and helps support free tools on SalaryBit.</p>
+    <div class="affiliate-grid">
+
+      <!-- Groww -->
+      <div class="aff-card" style="border-top-color:#00b386;">
+        <div class="aff-logo">📈</div>
+        <div class="aff-name">Groww</div>
+        <div class="aff-desc">Invest in mutual funds, stocks, and more. India's most popular investment app for beginners and pros alike.</div>
+        <span class="aff-offer">Start investing in 5 min</span>
+        <a class="aff-btn green" href="https://app.groww.in/v3cO/tpwi2524" target="_blank" rel="noopener">Open Groww Account →</a>
+      </div>
+
+      <!-- Amazon -->
+      <div class="aff-card" style="border-top-color:#ff9900;">
+        <div class="aff-logo">🛒</div>
+        <div class="aff-name">Amazon India</div>
+        <div class="aff-desc">Shop electronics, books, kitchen essentials and more. Great deals every day — especially on Pay Day sales.</div>
+        <span class="aff-offer">Save on every order</span>
+        <a class="aff-btn yellow" href="https://www.amazon.in?tag=hoskoclass-21" target="_blank" rel="noopener">Shop on Amazon →</a>
+      </div>
+
+      <!-- Razorpay -->
+      <div class="aff-card" style="border-top-color:#528ff0;">
+        <div class="aff-logo">💳</div>
+        <div class="aff-name">Pay via Razorpay</div>
+        <div class="aff-desc">Quick and secure payments for SalaryBit premium tools. Supports UPI, cards, net banking and wallets.</div>
+        <span class="aff-offer">Safe &amp; instant payment</span>
+        <a class="aff-btn darkblue" href="https://rzp.io/rzp/Yt46LnKX" target="_blank" rel="noopener">Pay Now →</a>
+      </div>
+
+      <!-- Airtel Wi-Fi -->
+      <div class="aff-card" style="border-top-color:#e53935;">
+        <div class="aff-logo">📶</div>
+        <div class="aff-name">Airtel Wi-Fi</div>
+        <div class="aff-desc">Get new Airtel broadband connection with up to 1 Gbps speed, unlimited data, and 22+ OTT apps included.</div>
+        <span class="aff-offer">₹300 OFF first bill</span>
+        <a class="aff-btn orange" href="https://u.airtel.in/NBHCjC" target="_blank" rel="noopener">Get Airtel Wi-Fi →</a>
+      </div>
+
+      <!-- Airtel Prepaid -->
+      <div class="aff-card" style="border-top-color:#e53935;">
+        <div class="aff-logo">📱</div>
+        <div class="aff-name">Airtel Prepaid SIM</div>
+        <div class="aff-desc">Switch to Airtel prepaid for the best network coverage in India. Home delivery of SIM at no extra cost.</div>
+        <span class="aff-offer">₹100 OFF on joining</span>
+        <a class="aff-btn orange" href="https://u.airtel.in/LHXtfz" target="_blank" rel="noopener">Get Airtel Prepaid →</a>
+      </div>
+
+      <!-- Airtel Axis Credit Card -->
+      <div class="aff-card" style="border-top-color:#e53935;">
+        <div class="aff-logo">💎</div>
+        <div class="aff-name">Airtel Axis Bank Credit Card</div>
+        <div class="aff-desc">Up to 25% cashback on Airtel bills every month. Complimentary lounge access and welcome benefits worth ₹500.</div>
+        <span class="aff-offer">₹300 OFF on apply</span>
+        <a class="aff-btn orange" href="https://u.airtel.in/RtvIiK" target="_blank" rel="noopener">Apply Credit Card →</a>
+      </div>
+
+      <!-- Airtel Black -->
+      <div class="aff-card" style="border-top-color:#e53935;">
+        <div class="aff-logo">⚫</div>
+        <div class="aff-name">Airtel Black</div>
+        <div class="aff-desc">Bundle your mobile, broadband, and DTH into one bill. One account, 24x7 priority support, single payment.</div>
+        <span class="aff-offer">₹300 OFF on joining</span>
+        <a class="aff-btn orange" href="https://u.airtel.in/3PdzQa" target="_blank" rel="noopener">Get Airtel Black →</a>
+      </div>
+
+      <!-- Flipkart Axis Credit Card -->
+      <div class="aff-card" style="border-top-color:#2874f0;">
+        <div class="aff-logo">🛍️</div>
+        <div class="aff-name">Flipkart Axis Bank Card</div>
+        <div class="aff-desc">5% cashback on Flipkart, 7.5% on Myntra, 4% on Swiggy &amp; Uber. ₹350 welcome benefits on activation.</div>
+        <span class="aff-offer">Up to 7.5% cashback</span>
+        <a class="aff-btn darkblue" href="https://sales.gromo.in/ac/0B8mUBKDx4" target="_blank" rel="noopener">Apply Now →</a>
+      </div>
+
+      <!-- Binance -->
+      <div class="aff-card" style="border-top-color:#f0b90b;">
+        <div class="aff-logo">₿</div>
+        <div class="aff-name">Binance</div>
+        <div class="aff-desc">World's largest crypto exchange. Trade Bitcoin, Ethereum, and 350+ coins with low fees and deep liquidity.</div>
+        <span class="aff-offer">Referral bonus on signup</span>
+        <a class="aff-btn yellow" href="https://www.binance.com/register?ref=12669852" target="_blank" rel="noopener">Join Binance →</a>
+      </div>
+
+      <!-- Weex -->
+      <div class="aff-card" style="border-top-color:#7c4dff;">
+        <div class="aff-logo">🔗</div>
+        <div class="aff-name">Weex Exchange</div>
+        <div class="aff-desc">Fast-growing crypto derivatives exchange with competitive fees, high leverage options, and reliable payouts.</div>
+        <span class="aff-offer">VIP bonus with referral</span>
+        <a class="aff-btn" style="background:#7c4dff;" href="https://weex.com/register?vipCode=8goqk" target="_blank" rel="noopener">Join Weex →</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── MAIN CTA ── -->
+  <div class="download-section">
+    <h3>🎯 More Free Salary &amp; Tax Tools</h3>
+    <p>India's simplest salary calculator, HRA exemption tool, new vs old tax regime comparison, and more — all free.</p>
+    <a class="dl-link" href="https://salarybit.in" target="_blank">Visit SalaryBit.in →</a>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 <a href="https://salarybit.in">SalaryBit.in</a> &nbsp;|&nbsp; Free personal finance tools for India</p>
+  <p style="margin-top:6px; font-size:0.82rem;">For official CCA certificates, always download from cca.gov.in &nbsp;|&nbsp; Affiliate disclosure: some links on this page earn a small referral commission at no cost to you.</p>
+</footer>
+
+</body>
+</html>

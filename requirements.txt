@@ -7,3 +7,6 @@ pyzbar==0.1.9
 pillow==10.4.0
 gunicorn==22.0.0
 requests
+pyhanko>=0.21.0
+pyhanko-certvalidator>=0.26.0
+asn1crypto>=1.5.1

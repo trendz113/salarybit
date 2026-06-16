@@ -267,14 +267,14 @@ footer a { color: #90caf9; text-decoration: none; }
   <p>2026 <a href="https://salarybit.in">SalaryBit.in</a> - Free personal finance and tax tools for India</p>
 </footer>
 <script>
-const pdfInput = document.getElementById('pdfInput');
-const validateBtn = document.getElementById('validateBtn');
-const fileName = document.getElementById('fileName');
-const dropZone = document.getElementById('dropZone');
-const resultsDiv = document.getElementById('results');
-const loadingDiv = document.getElementById('loading');
-const uploaderDiv = document.getElementById('uploader');
-let selectedFile = null;
+var pdfInput = document.getElementById('pdfInput');
+var validateBtn = document.getElementById('validateBtn');
+var fileName = document.getElementById('fileName');
+var dropZone = document.getElementById('dropZone');
+var resultsDiv = document.getElementById('results');
+var loadingDiv = document.getElementById('loading');
+var uploaderDiv = document.getElementById('uploader');
+var selectedFile = null;
 
 pdfInput.addEventListener('change', function() {
   if (pdfInput.files[0]) selectFile(pdfInput.files[0]);
@@ -294,53 +294,54 @@ function selectFile(file) {
   validateBtn.disabled = false;
 }
 
-async function validateFile() {
+function validateFile() {
   if (!selectedFile) return;
   uploaderDiv.style.display = 'none';
   loadingDiv.style.display = 'block';
   resultsDiv.style.display = 'none';
-  const formData = new FormData();
+  var formData = new FormData();
   formData.append('pdf', selectedFile);
-  try {
-    const response = await fetch('/validate-signature', { method: 'POST', body: formData });
-    const data = await response.json();
-    renderResults(data);
-  } catch (err) {
-    renderError('Network error. Please try again.');
-  } finally {
-    loadingDiv.style.display = 'none';
-  }
+  fetch('/validate-signature', { method: 'POST', body: formData })
+    .then(function(response) { return response.json(); })
+    .then(function(data) { renderResults(data); })
+    .catch(function(err) { renderError('Network error. Please try again.'); })
+    .finally(function() { loadingDiv.style.display = 'none'; });
 }
 
 function renderResults(data) {
   resultsDiv.style.display = 'block';
-  let html = '';
+  var html = '';
   if (data.error === 'no_signatures') {
     html = '<div class="no-sig-box"><div class="icon">&#128275;</div><h3 style="margin-bottom:8px;color:#444;">No Digital Signatures Found</h3><p>This PDF does not contain any embedded digital signatures.</p></div>';
   } else if (data.error) {
     html = '<div class="no-sig-box"><div class="icon">&#9888;</div><h3 style="margin-bottom:8px;color:#c62828;">Could Not Read PDF</h3><p>' + escHtml(data.error) + '</p></div>';
   } else {
-    let bannerClass, bannerIcon, bannerTitle, bannerMsg;
+    var bannerClass, bannerIcon, bannerTitle, bannerMsg;
     if (data.overall_valid) {
-      bannerClass = 'valid'; bannerIcon = 'OK';
+      bannerClass = 'valid'; bannerIcon = '&#9989;';
       bannerTitle = 'All Signatures Valid';
       bannerMsg = data.signature_count + ' signature(s) found - all intact and trusted.';
     } else {
-      const hasIntact = data.signatures.some(function(s) { return s.status === 'intact_untrusted'; });
+      var hasIntact = false;
+      for (var i = 0; i < data.signatures.length; i++) {
+        if (data.signatures[i].status === 'intact_untrusted') { hasIntact = true; break; }
+      }
       if (hasIntact) {
-        bannerClass = 'warning'; bannerIcon = 'WARN';
+        bannerClass = 'warning'; bannerIcon = '&#9888;&#65039;';
         bannerTitle = 'Signature Intact but Certificate Not Trusted';
         bannerMsg = 'The document has not been altered, but the signing authority certificate is not trusted on this server. The signature itself is mathematically valid.';
       } else {
-        bannerClass = 'invalid'; bannerIcon = 'FAIL';
+        bannerClass = 'invalid'; bannerIcon = '&#10060;';
         bannerTitle = 'Signature Invalid';
         bannerMsg = 'One or more signatures are invalid. The document may have been tampered with after signing.';
       }
     }
     html += '<div class="overall-banner ' + bannerClass + '"><div class="overall-icon">' + bannerIcon + '</div><div class="overall-text"><h3>' + bannerTitle + '</h3><p>' + bannerMsg + '</p></div></div>';
-    data.signatures.forEach(function(sig, i) {
-      const statusLabel = { valid: 'Valid and Trusted', intact_untrusted: 'Intact - Certificate Untrusted', invalid: 'Invalid', error: 'Could Not Validate' }[sig.status] || sig.status;
-      html += '<div class="sig-card"><h4>Signature ' + (i+1) + (sig.field_name ? ' - Field: ' + escHtml(sig.field_name) : '') + '</h4>';
+    for (var j = 0; j < data.signatures.length; j++) {
+      var sig = data.signatures[j];
+      var statusLabels = { valid: 'Valid and Trusted', intact_untrusted: 'Intact - Certificate Untrusted', invalid: 'Invalid', error: 'Could Not Validate' };
+      var statusLabel = statusLabels[sig.status] || sig.status;
+      html += '<div class="sig-card"><h4>Signature ' + (j+1) + (sig.field_name ? ' - Field: ' + escHtml(sig.field_name) : '') + '</h4>';
       html += '<div class="sig-status ' + sig.status + '">' + statusLabel + '</div>';
       html += '<div class="sig-detail-grid">';
       html += sigDetail('Signer', sig.signer_name);
@@ -351,7 +352,7 @@ function renderResults(data) {
       if (sig.cert_valid_from && sig.cert_valid_to) html += sigDetail('Certificate Valid', sig.cert_valid_from + ' to ' + sig.cert_valid_to);
       html += '</div>';
       html += '<div class="status-detail-msg">' + escHtml(sig.status_detail) + '</div></div>';
-    });
+    }
   }
   html += '<div style="text-align:center;margin-top:20px;"><button class="reset-btn" onclick="resetTool()">Validate Another PDF</button></div>';
   resultsDiv.innerHTML = html;
@@ -565,7 +566,10 @@ def fifa():
 # ── PDF SIGNATURE VALIDATOR ───────────────────────────────
 @app.route('/validate-signature', methods=['GET'])
 def validate_signature_page():
-    return render_template_string(EMBED_HTML)
+    # FIXED: Use Response() instead of render_template_string() to prevent
+    # Jinja2 from misinterpreting JavaScript curly braces as template variables,
+    # which caused the "Uncaught SyntaxError: Unexpected identifier" error.
+    return Response(EMBED_HTML, mimetype='text/html')
 
 
 @app.route('/validate-signature', methods=['POST'])

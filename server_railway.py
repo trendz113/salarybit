@@ -264,7 +264,612 @@ def fifa():
 @app.route("/", methods=["GET"])
 def health():
     return jsonify({"status": "ok", "service": "SalaryBit QR Decoder"})
+"""
+PDF Digital Signature Validator
+Flask route for SalaryBit.in Railway deployment
 
+Validates digital signatures in any PDF — works for:
+- Form 16 (employer DSC)
+- ITR acknowledgement
+- GST certificates
+- Property documents
+- Any PDF with embedded digital signature
+
+Add to your existing Railway Flask app.
+"""
+
+import io
+import os
+import asyncio
+import tempfile
+from datetime import datetime
+from flask import Flask, request, jsonify, render_template_string
+from pyhanko.pdf_utils.reader import PdfFileReader
+from pyhanko.sign.validation import validate_pdf_signature, EmbeddedPdfSignature
+from pyhanko_certvalidator import ValidationContext
+from pyhanko_certvalidator.registry import SimpleCertificateStore
+from asn1crypto import pem, x509 as asn1_x509
+
+app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10MB max
+
+
+# ─── CCA India Root Certificates ───────────────────────────────────────────────
+# Source: https://cca.gov.in/cca/?q=download_cca
+# These are the official Indian Government CCA root certificates.
+# Covers eMudhra, Sify, NSDL, Capricorn, (n)Code, e-Mudhra DSCs.
+# Update these periodically from cca.gov.in
+
+CCA_CERT_URLS = [
+    # Bundled as PEM strings below — fetch fresh ones from cca.gov.in
+    # and run: openssl x509 -in cert.cer -outform PEM
+]
+
+# Place your downloaded CCA .cer files in the /certs/ folder alongside app.py
+# The validator will auto-load all .cer / .pem files from that folder.
+CERTS_FOLDER = os.path.join(os.path.dirname(__file__), "certs")
+
+
+def load_trust_roots():
+    """Load all CCA/CA root certificates from the /certs folder."""
+    certs = []
+    if not os.path.exists(CERTS_FOLDER):
+        return certs
+
+    for fname in os.listdir(CERTS_FOLDER):
+        if not fname.lower().endswith(('.cer', '.pem', '.crt')):
+            continue
+        fpath = os.path.join(CERTS_FOLDER, fname)
+        try:
+            with open(fpath, 'rb') as f:
+                data = f.read()
+            # Handle both PEM and DER
+            if pem.detect(data):
+                _, _, der = pem.unarmor(data)
+                certs.append(asn1_x509.Certificate.load(der))
+            else:
+                certs.append(asn1_x509.Certificate.load(data))
+        except Exception as e:
+            print(f"[WARN] Could not load cert {fname}: {e}")
+
+    return certs
+
+
+def get_signer_info(embedded_sig: EmbeddedPdfSignature) -> dict:
+    """Extract human-readable signer details from embedded signature."""
+    info = {
+        "signer_name": "Unknown",
+        "organization": None,
+        "email": None,
+        "cert_valid_from": None,
+        "cert_valid_to": None,
+        "cert_issuer": None,
+        "signing_time": None,
+        "field_name": embedded_sig.field_name,
+    }
+    try:
+        cert = embedded_sig.signer_cert
+        if cert is None:
+            return info
+
+        subject = cert.subject
+        # Extract CN, O, E from subject
+        for rdn in subject.chosen:
+            for atv in rdn:
+                oid = atv['type'].dotted
+                val = str(atv['value'].chosen) if hasattr(atv['value'], 'chosen') else str(atv['value'])
+                if oid == '2.5.4.3':   # CN
+                    info['signer_name'] = val
+                elif oid == '2.5.4.10':  # O
+                    info['organization'] = val
+                elif oid == '1.2.840.113549.1.9.1':  # email
+                    info['email'] = val
+
+        # Validity dates
+        validity = cert['tbs_certificate']['validity']
+        info['cert_valid_from'] = validity['not_before'].native.strftime('%d %b %Y') if validity['not_before'].native else None
+        info['cert_valid_to'] = validity['not_after'].native.strftime('%d %b %Y') if validity['not_after'].native else None
+
+        # Issuer CN
+        issuer = cert.issuer
+        for rdn in issuer.chosen:
+            for atv in rdn:
+                if atv['type'].dotted == '2.5.4.3':
+                    info['cert_issuer'] = str(atv['value'].chosen) if hasattr(atv['value'], 'chosen') else str(atv['value'])
+
+        # Signing time
+        ts = embedded_sig.self_reported_timestamp
+        if ts:
+            info['signing_time'] = ts.strftime('%d %b %Y, %I:%M %p')
+
+    except Exception as e:
+        print(f"[WARN] signer_info extraction error: {e}")
+
+    return info
+
+
+def validate_pdf_file(pdf_bytes: bytes) -> dict:
+    """
+    Core validation logic.
+    Returns a dict with all signature results.
+    """
+    result = {
+        "has_signatures": False,
+        "signature_count": 0,
+        "signatures": [],
+        "overall_valid": False,
+        "error": None,
+    }
+
+    try:
+        reader = PdfFileReader(io.BytesIO(pdf_bytes), strict=False)
+        embedded_sigs = reader.embedded_signatures
+
+        if not embedded_sigs:
+            result["error"] = "no_signatures"
+            return result
+
+        result["has_signatures"] = True
+        result["signature_count"] = len(embedded_sigs)
+
+        # Load trust roots (CCA certs)
+        trust_roots = load_trust_roots()
+        if trust_roots:
+            vc = ValidationContext(trust_roots=trust_roots, allow_fetching=True)
+        else:
+            # No bundled certs — use system trust store + allow fetching (OCSP/CRL)
+            vc = ValidationContext(allow_fetching=True)
+
+        all_valid = True
+        for sig in embedded_sigs:
+            signer_info = get_signer_info(sig)
+            sig_result = {
+                "field_name": signer_info["field_name"],
+                "signer_name": signer_info["signer_name"],
+                "organization": signer_info["organization"],
+                "email": signer_info["email"],
+                "cert_valid_from": signer_info["cert_valid_from"],
+                "cert_valid_to": signer_info["cert_valid_to"],
+                "cert_issuer": signer_info["cert_issuer"],
+                "signing_time": signer_info["signing_time"],
+                "intact": False,
+                "trusted": False,
+                "status": "unknown",
+                "status_detail": "",
+            }
+
+            try:
+                status = validate_pdf_signature(sig, signer_validation_context=vc)
+                sig_result["intact"] = status.intact
+                sig_result["trusted"] = status.trusted
+                sig_result["coverage"] = str(status.coverage) if status.coverage else None
+
+                if status.intact and status.trusted:
+                    sig_result["status"] = "valid"
+                    sig_result["status_detail"] = "Signature is valid and trusted ✅"
+                elif status.intact and not status.trusted:
+                    sig_result["status"] = "intact_untrusted"
+                    sig_result["status_detail"] = "Signature is mathematically intact but the certificate is not in a trusted chain. Install CCA India root certificate."
+                    all_valid = False
+                elif not status.intact:
+                    sig_result["status"] = "invalid"
+                    sig_result["status_detail"] = "Signature is INVALID — document may have been modified after signing."
+                    all_valid = False
+
+            except Exception as e:
+                err_str = str(e)
+                sig_result["status"] = "error"
+                sig_result["status_detail"] = f"Validation error: {err_str}"
+                all_valid = False
+
+            result["signatures"].append(sig_result)
+
+        result["overall_valid"] = all_valid
+
+    except Exception as e:
+        result["error"] = str(e)
+
+    return result
+
+
+# ─── Flask Routes ───────────────────────────────────────────────────────────────
+
+@app.route('/validate-signature', methods=['POST'])
+def validate_signature():
+    """
+    POST /validate-signature
+    Accepts: multipart/form-data with field 'pdf'
+    Returns: JSON
+    """
+    if 'pdf' not in request.files:
+        return jsonify({"error": "No file uploaded. Send PDF as 'pdf' field."}), 400
+
+    f = request.files['pdf']
+    if not f.filename.lower().endswith('.pdf'):
+        return jsonify({"error": "Only PDF files are supported."}), 400
+
+    pdf_bytes = f.read()
+    if len(pdf_bytes) == 0:
+        return jsonify({"error": "Uploaded file is empty."}), 400
+
+    result = validate_pdf_file(pdf_bytes)
+    result["filename"] = f.filename
+    result["file_size_kb"] = round(len(pdf_bytes) / 1024, 1)
+
+    return jsonify(result)
+
+
+@app.route('/validate-signature', methods=['GET'])
+def validate_signature_page():
+    """Serve the embed page for salarybit.in"""
+    return render_template_string(EMBED_HTML)
+
+
+# ─── Embed HTML (served at /validate-signature GET) ────────────────────────────
+
+EMBED_HTML = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF Digital Signature Validator – Free | SalaryBit</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f7fa; color: #222; min-height: 100vh; }
+
+header {
+  background: linear-gradient(135deg, #1a237e, #283593);
+  color: #fff; padding: 28px 20px 22px; text-align: center;
+}
+header h1 { font-size: 1.45rem; margin-bottom: 6px; }
+header p { font-size: 0.93rem; opacity: 0.88; }
+.badge {
+  display: inline-block; background: #43a047; color: #fff;
+  font-size: 0.75rem; font-weight: 700; padding: 3px 12px;
+  border-radius: 20px; margin-top: 10px; text-transform: uppercase;
+}
+
+.container { max-width: 700px; margin: 0 auto; padding: 28px 16px 60px; }
+
+/* Upload zone */
+.upload-zone {
+  border: 2.5px dashed #9fa8da;
+  border-radius: 14px;
+  background: #fff;
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 20px;
+  position: relative;
+}
+.upload-zone:hover, .upload-zone.dragover {
+  border-color: #3949ab; background: #f0f2ff;
+}
+.upload-zone input[type=file] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.upload-icon { font-size: 3rem; margin-bottom: 12px; }
+.upload-zone h2 { font-size: 1.1rem; color: #1a237e; margin-bottom: 8px; }
+.upload-zone p { font-size: 0.88rem; color: #666; }
+.upload-zone .file-name {
+  margin-top: 14px; font-size: 0.9rem; font-weight: 600; color: #3949ab;
+}
+
+.btn-validate {
+  width: 100%; padding: 14px;
+  background: #1a237e; color: #fff;
+  border: none; border-radius: 8px;
+  font-size: 1rem; font-weight: 700;
+  cursor: pointer; transition: background 0.2s;
+  margin-bottom: 20px;
+}
+.btn-validate:hover { background: #283593; }
+.btn-validate:disabled { background: #9fa8da; cursor: not-allowed; }
+
+/* Results */
+#results { display: none; }
+.overall-banner {
+  border-radius: 10px; padding: 18px 20px; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 14px;
+}
+.overall-banner.valid { background: #e8f5e9; border: 2px solid #43a047; }
+.overall-banner.invalid { background: #fce4ec; border: 2px solid #e53935; }
+.overall-banner.warning { background: #fff8e1; border: 2px solid #f9a825; }
+.overall-icon { font-size: 2.2rem; }
+.overall-text h3 { font-size: 1.05rem; margin-bottom: 4px; }
+.overall-text p { font-size: 0.88rem; color: #555; }
+
+.sig-card {
+  background: #fff; border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+  padding: 20px 22px; margin-bottom: 16px;
+}
+.sig-card h4 {
+  font-size: 0.95rem; color: #1a237e;
+  margin-bottom: 14px; padding-bottom: 8px;
+  border-bottom: 1.5px solid #e8eaf6;
+}
+.sig-status {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-weight: 700; font-size: 0.95rem;
+  padding: 6px 14px; border-radius: 20px; margin-bottom: 14px;
+}
+.sig-status.valid { background: #e8f5e9; color: #2e7d32; }
+.sig-status.intact_untrusted { background: #fff8e1; color: #e65100; }
+.sig-status.invalid { background: #fce4ec; color: #c62828; }
+.sig-status.error { background: #f5f5f5; color: #555; }
+
+.sig-detail-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+.sig-detail { font-size: 0.85rem; }
+.sig-detail .label { color: #888; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.sig-detail .val { font-weight: 600; color: #222; word-break: break-word; }
+
+.status-detail-msg {
+  margin-top: 12px; font-size: 0.88rem;
+  background: #f5f7fa; border-radius: 6px; padding: 10px 14px; color: #444;
+}
+
+/* No sig */
+.no-sig-box {
+  background: #fff; border-radius: 10px; border: 2px solid #e0e0e0;
+  padding: 30px; text-align: center; color: #666;
+}
+.no-sig-box .icon { font-size: 2.5rem; margin-bottom: 10px; }
+
+/* Loading */
+.loading { text-align: center; padding: 30px; display: none; }
+.spinner {
+  width: 40px; height: 40px; margin: 0 auto 14px;
+  border: 4px solid #e8eaf6; border-top-color: #1a237e;
+  border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.reset-btn {
+  background: none; border: 1.5px solid #9fa8da; color: #3949ab;
+  padding: 8px 20px; border-radius: 6px; cursor: pointer;
+  font-size: 0.88rem; margin-top: 10px;
+}
+.reset-btn:hover { background: #e8eaf6; }
+
+.privacy-note {
+  text-align: center; font-size: 0.8rem; color: #888; margin-top: 20px;
+}
+
+footer {
+  background: #1a237e; color: #cfd8dc;
+  text-align: center; padding: 16px;
+  font-size: 0.85rem; margin-top: 40px;
+}
+footer a { color: #90caf9; text-decoration: none; }
+
+@media(max-width:500px) {
+  header h1 { font-size: 1.15rem; }
+  .sig-detail-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🔏 PDF Digital Signature Validator</h1>
+  <p>Instantly check if signatures in any PDF are valid &amp; trusted</p>
+  <span class="badge">Free · Private · No Registration · Works for Form 16, ITR, GST &amp; more</span>
+</header>
+
+<div class="container">
+
+  <div id="uploader">
+    <div class="upload-zone" id="dropZone">
+      <input type="file" id="pdfInput" accept=".pdf">
+      <div class="upload-icon">📄</div>
+      <h2>Drop your PDF here or click to browse</h2>
+      <p>Form 16 · ITR Acknowledgement · GST Certificate · Property Documents · Any signed PDF</p>
+      <p>Max 10MB · PDF only</p>
+      <div class="file-name" id="fileName"></div>
+    </div>
+
+    <button class="btn-validate" id="validateBtn" disabled onclick="validateFile()">
+      🔍 Validate Signature
+    </button>
+
+    <p class="privacy-note">🔒 Your file is processed on-server and immediately discarded. Nothing is stored.</p>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p style="color:#555;">Validating signature chain...</p>
+  </div>
+
+  <div id="results"></div>
+
+</div>
+
+<footer>
+  <p>© 2026 <a href="https://salarybit.in">SalaryBit.in</a> · Free personal finance &amp; tax tools for India</p>
+</footer>
+
+<script>
+const pdfInput = document.getElementById('pdfInput');
+const validateBtn = document.getElementById('validateBtn');
+const fileName = document.getElementById('fileName');
+const dropZone = document.getElementById('dropZone');
+const resultsDiv = document.getElementById('results');
+const loadingDiv = document.getElementById('loading');
+const uploaderDiv = document.getElementById('uploader');
+
+let selectedFile = null;
+
+pdfInput.addEventListener('change', () => {
+  if (pdfInput.files[0]) selectFile(pdfInput.files[0]);
+});
+
+dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault(); dropZone.classList.remove('dragover');
+  if (e.dataTransfer.files[0]) selectFile(e.dataTransfer.files[0]);
+});
+
+function selectFile(file) {
+  if (!file.name.toLowerCase().endsWith('.pdf')) {
+    alert('Please select a PDF file.'); return;
+  }
+  selectedFile = file;
+  fileName.textContent = '📎 ' + file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+  validateBtn.disabled = false;
+}
+
+async function validateFile() {
+  if (!selectedFile) return;
+
+  uploaderDiv.style.display = 'none';
+  loadingDiv.style.display = 'block';
+  resultsDiv.style.display = 'none';
+
+  const formData = new FormData();
+  formData.append('pdf', selectedFile);
+
+  try {
+    const response = await fetch('/validate-signature', { method: 'POST', body: formData });
+    const data = await response.json();
+    renderResults(data);
+  } catch (err) {
+    renderError('Network error. Please try again.');
+  } finally {
+    loadingDiv.style.display = 'none';
+  }
+}
+
+function renderResults(data) {
+  resultsDiv.style.display = 'block';
+  let html = '';
+
+  if (data.error === 'no_signatures') {
+    html = `<div class="no-sig-box">
+      <div class="icon">🔓</div>
+      <h3 style="margin-bottom:8px;color:#444;">No Digital Signatures Found</h3>
+      <p>This PDF does not contain any embedded digital signatures.<br>
+      Try opening it in Adobe Reader to confirm.</p>
+    </div>`;
+  } else if (data.error) {
+    html = `<div class="no-sig-box">
+      <div class="icon">⚠️</div>
+      <h3 style="margin-bottom:8px;color:#c62828;">Could Not Read PDF</h3>
+      <p>${escHtml(data.error)}</p>
+    </div>`;
+  } else {
+    // Overall banner
+    let bannerClass, bannerIcon, bannerTitle, bannerMsg;
+    if (data.overall_valid) {
+      bannerClass = 'valid'; bannerIcon = '✅';
+      bannerTitle = 'All Signatures Valid';
+      bannerMsg = `${data.signature_count} signature(s) found — all intact and trusted.`;
+    } else {
+      const hasIntact = data.signatures.some(s => s.status === 'intact_untrusted');
+      if (hasIntact) {
+        bannerClass = 'warning'; bannerIcon = '⚠️';
+        bannerTitle = 'Signature Intact but Certificate Not Trusted';
+        bannerMsg = 'The document hasn\'t been altered, but your system doesn\'t trust the signing authority. Install the CCA India root certificate in Adobe Reader. See our guide below.';
+      } else {
+        bannerClass = 'invalid'; bannerIcon = '❌';
+        bannerTitle = 'Signature Invalid';
+        bannerMsg = 'One or more signatures are invalid. The document may have been tampered with after signing.';
+      }
+    }
+
+    html += `<div class="overall-banner ${bannerClass}">
+      <div class="overall-icon">${bannerIcon}</div>
+      <div class="overall-text">
+        <h3>${bannerTitle}</h3>
+        <p>${bannerMsg}</p>
+      </div>
+    </div>`;
+
+    // Per-signature cards
+    data.signatures.forEach((sig, i) => {
+      const statusLabel = {
+        valid: '✅ Valid & Trusted',
+        intact_untrusted: '⚠️ Intact — Certificate Untrusted',
+        invalid: '❌ Invalid',
+        error: '⚠️ Could Not Validate',
+      }[sig.status] || sig.status;
+
+      html += `<div class="sig-card">
+        <h4>Signature ${i+1} ${sig.field_name ? '— Field: ' + escHtml(sig.field_name) : ''}</h4>
+        <div class="sig-status ${sig.status}">${statusLabel}</div>
+        <div class="sig-detail-grid">
+          ${sigDetail('Signer', sig.signer_name)}
+          ${sig.organization ? sigDetail('Organisation', sig.organization) : ''}
+          ${sig.email ? sigDetail('Email', sig.email) : ''}
+          ${sig.signing_time ? sigDetail('Signed On', sig.signing_time) : ''}
+          ${sig.cert_issuer ? sigDetail('Issued By', sig.cert_issuer) : ''}
+          ${sig.cert_valid_from && sig.cert_valid_to ? sigDetail('Certificate Valid', sig.cert_valid_from + ' – ' + sig.cert_valid_to) : ''}
+        </div>
+        <div class="status-detail-msg">${escHtml(sig.status_detail)}</div>
+      </div>`;
+    });
+
+    // If untrusted, show fix link
+    if (!data.overall_valid) {
+      html += `<div style="text-align:center;margin-top:8px;">
+        <a href="/form16-signature-guide" style="font-size:0.9rem;color:#1a237e;font-weight:600;">
+          📖 How to fix: Install CCA India Root Certificate →
+        </a>
+      </div>`;
+    }
+  }
+
+  html += `<div style="text-align:center;margin-top:20px;">
+    <button class="reset-btn" onclick="resetTool()">← Validate Another PDF</button>
+  </div>`;
+
+  resultsDiv.innerHTML = html;
+}
+
+function sigDetail(label, val) {
+  if (!val) return '';
+  return `<div class="sig-detail">
+    <div class="label">${label}</div>
+    <div class="val">${escHtml(String(val))}</div>
+  </div>`;
+}
+
+function renderError(msg) {
+  resultsDiv.style.display = 'block';
+  resultsDiv.innerHTML = `<div class="no-sig-box">
+    <div class="icon">⚠️</div>
+    <h3 style="margin-bottom:8px;color:#c62828;">Error</h3>
+    <p>${escHtml(msg)}</p>
+    <button class="reset-btn" onclick="resetTool()" style="margin-top:16px;">← Try Again</button>
+  </div>`;
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function resetTool() {
+  selectedFile = null;
+  fileName.textContent = '';
+  validateBtn.disabled = true;
+  pdfInput.value = '';
+  resultsDiv.style.display = 'none';
+  resultsDiv.innerHTML = '';
+  uploaderDiv.style.display = 'block';
+}
+</script>
+</body>
+</html>
+"""
+
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5001))
+    app.run(host='0.0.0.0', port=port, debug=False)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

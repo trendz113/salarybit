@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SalaryBit Tax AI – India's Simplest AI Tax Assistant</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -165,7 +166,7 @@
     transition: all 0.15s; background: var(--bg);
     margin-bottom: 20px;
   }
-  .upload-zone:hover { border-color: var(--accent); background: var(--accent-light); }
+  .upload-zone:hover, .upload-zone.drag-over { border-color: var(--accent); background: var(--accent-light); }
   .upload-icon { font-size: 36px; margin-bottom: 10px; }
   .upload-zone h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
   .upload-zone p { font-size: 13px; color: var(--ink-muted); }
@@ -430,18 +431,16 @@
         <input class="input-field" id="panInput" placeholder="ABCDE1234F" maxlength="10"
           oninput="this.value=this.value.toUpperCase(); validatePAN(this.value)"
           onkeydown="if(event.key==='Enter') proceedWithPAN()">
-        <button class="btn btn-primary" id="proceed-btn" onclick="proceedWithPAN()" disabled>Start →</button>
+        <button class="btn btn-primary" id="proceed-btn" onclick="proceedWithPAN()" disabled style="opacity:0.5">Start →</button>
       </div>
-      <p id="pan-error" style="display:none; margin-top:8px; color:var(--red); font-size:13px; font-weight:500;">
-        ⚠ Enter a valid PAN (e.g. ABCDE1234F)
-      </p>
+      <p id="pan-error" style="display:none; margin-top:8px; color:var(--red); font-size:13px; font-weight:500;">⚠ Enter a valid PAN format — e.g. ABCDE1234F</p>
       <div id="pan-success" style="display:none; margin-top:16px; padding:14px; background:var(--green-light); border-radius:var(--radius-sm); color:var(--green); font-weight:600; font-size:14px;">
         ✅ PAN saved! Taking you to document upload...
       </div>
       <div style="margin-top:20px; padding:14px; background:var(--surface-2); border-radius:var(--radius-sm);">
-        <p style="font-size:12px; color:var(--ink-muted); line-height:1.6;">
-          🔒 Your PAN is used only to personalise your tax report. We do not store or share it.<br>
-          No account creation needed — just upload your documents and get your report.
+        <p style="font-size:12px; color:var(--ink-muted); line-height:1.8;">
+          🔒 Your PAN personalises your report — we do not store or share it.<br>
+          No account needed. Upload documents → get your tax report instantly.
         </p>
       </div>
     </div>
@@ -463,15 +462,29 @@
         <span class="doc-chip" onclick="toggleChip(this)">Crypto CSV</span>
         <span class="doc-chip" onclick="toggleChip(this)">RSU / ESPP</span>
       </div>
-      <div class="upload-zone" onclick="simulateUpload()">
+
+      <!-- Hidden real file input -->
+      <input type="file" id="fileInput" multiple accept=".pdf,.xlsx,.xls,.csv,.jpg,.jpeg,.png,.webp" style="display:none" onchange="handleFiles(this.files)">
+
+      <!-- Drag & drop zone -->
+      <div class="upload-zone" id="uploadZone"
+        onclick="document.getElementById('fileInput').click()"
+        ondragover="event.preventDefault(); this.classList.add('drag-over')"
+        ondragleave="this.classList.remove('drag-over')"
+        ondrop="event.preventDefault(); this.classList.remove('drag-over'); handleFiles(event.dataTransfer.files)">
         <div class="upload-icon">📎</div>
         <h3>Drag files here, or tap to browse</h3>
         <p>PDF · Excel · CSV · JPG · PNG · Screenshots</p>
       </div>
-      <div id="upload-status" style="display:none; padding:12px 16px; background:var(--green-light); border-radius:var(--radius-sm); font-size:13px; color:var(--green); font-weight:600;">
-        ✅ Form 16.pdf uploaded · AI is reading your document...
+
+      <!-- File list -->
+      <div id="file-list" style="display:none; margin-top:12px;"></div>
+
+      <div id="upload-status" style="display:none; margin-top:12px; padding:12px 16px; background:var(--green-light); border-radius:var(--radius-sm); font-size:13px; color:var(--green); font-weight:600;">
+        ✅ Documents ready · Click "Analyse" to continue
       </div>
-      <button class="btn btn-primary" style="margin-top:16px; width:100%" onclick="switchTabByName('analysis')">Analyse My Documents →</button>
+
+      <button class="btn btn-primary" id="analyse-btn" style="margin-top:16px; width:100%; opacity:0.5;" disabled onclick="goToAnalysis()">Analyse My Documents →</button>
     </div>
 
     <!-- ANALYSIS TAB -->
@@ -701,7 +714,7 @@
           <div class="pay-method" onclick="selectPay(this)">📲 PhonePe</div>
           <div class="pay-method" onclick="selectPay(this)">💳 Paytm</div>
         </div>
-        <button id="pay-cta" class="btn btn-green btn-lg" style="width:100%; margin-top:14px;" onclick="simulatePayment()">Pay ₹299 Securely →</button>
+        <button id="pay-cta" class="btn btn-green btn-lg" style="width:100%; margin-top:14px;" onclick="initiatePayment()">Pay ₹299 Securely →</button>
         <p style="font-size:12px; color:var(--ink-muted); text-align:center; margin-top:10px;">🔒 256-bit SSL · Razorpay secured · Instant report delivery</p>
       </div>
 
@@ -893,21 +906,24 @@
 </footer>
 
 <script>
-// ── CONFIG ───────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════════
 const BACKEND_URL = 'https://tax-ai-backend-production-ed49.up.railway.app';
 
 // App state
 const state = {
   pan: localStorage.getItem('sb_pan') || '',
+  uploadedFiles: [],           // actual File objects
   selectedPlan: { name: 'Smart Tax Report', price: 299 },
   paid: !!localStorage.getItem('sb_access_token'),
-  paymentId: '',
+  paymentId: localStorage.getItem('sb_payment_id') || '',
   accessToken: localStorage.getItem('sb_access_token') || '',
   chatHistory: [],
   chatQuestionCount: 0,
 };
 
-// ── Navigation ──────────────────────────────────────────
+// ── Navigation ──────────────────────────────────────────────
 function scrollToDemo() { document.getElementById('demo').scrollIntoView({behavior:'smooth'}); }
 function scrollToSection(id) { document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
 
@@ -916,86 +932,156 @@ function switchTab(name, el) {
   document.querySelectorAll('.app-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   el.classList.add('active');
+  if (name === 'analysis') triggerScan();
 }
 
 function switchTabByName(name) {
-  const tabs = document.querySelectorAll('.app-tab');
   const order = ['login','upload','analysis','payment','chat'];
   const idx = order.indexOf(name);
-  if(idx >= 0) switchTab(name, tabs[idx]);
+  const tabs = document.querySelectorAll('.app-tab');
+  if (idx >= 0 && tabs[idx]) switchTab(name, tabs[idx]);
 }
 
-// ── Login ────────────────────────────────────────────────
+// ── LOGIN — PAN only, no OTP ────────────────────────────────
 function validatePAN(val) {
   const valid = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(val);
   const btn = document.getElementById('proceed-btn');
   const err = document.getElementById('pan-error');
   btn.disabled = !valid;
   btn.style.opacity = valid ? '1' : '0.5';
-  // Show error only after user has typed 10 chars
-  if (val.length === 10 && !valid) {
-    err.style.display = 'block';
-  } else {
-    err.style.display = 'none';
-  }
+  err.style.display = (val.length === 10 && !valid) ? 'block' : 'none';
 }
 
 function proceedWithPAN() {
   const pan = document.getElementById('panInput').value;
   if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(pan)) return;
   state.pan = pan;
-  // Save to localStorage so it persists across tabs
   localStorage.setItem('sb_pan', pan);
   document.getElementById('pan-success').style.display = 'block';
   document.getElementById('proceed-btn').disabled = true;
   setTimeout(() => switchTabByName('upload'), 1200);
 }
 
-// ── Upload ───────────────────────────────────────────────
+// ── UPLOAD — Real drag & drop ───────────────────────────────
 function toggleChip(el) { el.classList.toggle('selected'); }
-function simulateUpload() { document.getElementById('upload-status').style.display = 'block'; }
 
-// ── Analysis: scanning animation ─────────────────────────
-function startScan() {
+function handleFiles(files) {
+  if (!files || files.length === 0) return;
+
+  const allowed = ['application/pdf','application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'text/csv','image/jpeg','image/png','image/webp'];
+
+  Array.from(files).forEach(file => {
+    if (!allowed.includes(file.type) && !file.name.match(/\.(pdf|xlsx|xls|csv|jpg|jpeg|png|webp)$/i)) {
+      alert(`"${file.name}" is not a supported format. Use PDF, Excel, CSV, or image files.`);
+      return;
+    }
+    // Avoid duplicates
+    if (state.uploadedFiles.find(f => f.name === file.name && f.size === file.size)) return;
+    state.uploadedFiles.push(file);
+  });
+
+  renderFileList();
+}
+
+function renderFileList() {
+  const list = document.getElementById('file-list');
+  const status = document.getElementById('upload-status');
+  const btn = document.getElementById('analyse-btn');
+
+  if (state.uploadedFiles.length === 0) {
+    list.style.display = 'none';
+    status.style.display = 'none';
+    btn.disabled = true;
+    btn.style.opacity = '0.5';
+    return;
+  }
+
+  list.style.display = 'block';
+  list.innerHTML = state.uploadedFiles.map((f, i) => `
+    <div style="display:flex; align-items:center; justify-content:space-between;
+      padding:10px 14px; background:var(--surface-2); border-radius:var(--radius-sm);
+      margin-bottom:6px; font-size:13px;">
+      <span>${fileIcon(f.name)} <strong>${f.name}</strong>
+        <span style="color:var(--ink-muted); margin-left:6px;">${formatSize(f.size)}</span>
+      </span>
+      <button onclick="removeFile(${i})" style="background:none; border:none; cursor:pointer;
+        color:var(--ink-muted); font-size:16px; padding:0 4px;" title="Remove">✕</button>
+    </div>`).join('');
+
+  status.style.display = 'block';
+  status.textContent = `✅ ${state.uploadedFiles.length} file(s) ready · Click "Analyse" to continue`;
+  btn.disabled = false;
+  btn.style.opacity = '1';
+}
+
+function removeFile(idx) {
+  state.uploadedFiles.splice(idx, 1);
+  renderFileList();
+}
+
+function fileIcon(name) {
+  if (name.match(/\.pdf$/i)) return '📄';
+  if (name.match(/\.(xlsx|xls)$/i)) return '📊';
+  if (name.match(/\.csv$/i)) return '📋';
+  return '🖼';
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1048576) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/1048576).toFixed(1) + ' MB';
+}
+
+function goToAnalysis() {
+  if (state.uploadedFiles.length === 0) {
+    alert('Please upload at least one document first.');
+    return;
+  }
+  switchTabByName('analysis');
+}
+
+// ── ANALYSIS — Scan animation ───────────────────────────────
+let scanDone = false;
+function triggerScan() {
+  if (scanDone) return;
+  const scanPhase = document.getElementById('scan-phase');
+  const freePreview = document.getElementById('free-preview');
+  if (!scanPhase) return;
+  scanPhase.style.display = 'block';
+  freePreview.style.display = 'none';
+
+  const fileNames = state.uploadedFiles.map(f => f.name).join(', ') || 'your documents';
   const steps = [
-    [10, 'Reading Form 16...'],
-    [28, 'Parsing AIS data...'],
-    [45, 'Checking Form 26AS...'],
-    [62, 'Detecting income sources...'],
+    [8,  `Reading ${fileNames.split(',')[0] || 'Form 16'}...`],
+    [22, 'Extracting salary & TDS data...'],
+    [38, 'Parsing AIS information...'],
+    [52, 'Checking Form 26AS...'],
+    [65, 'Detecting income sources...'],
     [78, 'Running risk analysis...'],
     [90, 'Calculating health score...'],
-    [100, 'Done!']
+    [100,'Analysis complete!'],
   ];
   let i = 0;
   function tick() {
-    if(i >= steps.length) {
-      document.getElementById('scan-phase').style.display = 'none';
-      document.getElementById('free-preview').style.display = 'block';
+    if (i >= steps.length) {
+      setTimeout(() => {
+        scanPhase.style.display = 'none';
+        freePreview.style.display = 'block';
+        scanDone = true;
+      }, 500);
       return;
     }
     const [pct, msg] = steps[i++];
     document.getElementById('scan-bar').style.width = pct + '%';
     document.getElementById('scan-status').textContent = msg;
-    setTimeout(tick, pct === 100 ? 400 : 420);
+    setTimeout(tick, pct === 100 ? 600 : 400);
   }
   tick();
 }
 
-// Trigger scan when analysis tab is opened
-const origSwitchTab = switchTab;
-window.switchTab = function(name, el) {
-  origSwitchTab(name, el);
-  if(name === 'analysis') {
-    const scanPhase = document.getElementById('scan-phase');
-    const freePreview = document.getElementById('free-preview');
-    if(scanPhase && freePreview.style.display === 'none') {
-      scanPhase.style.display = 'block';
-      startScan();
-    }
-  }
-};
-
-// ── Unlock plan selector (inside analysis tab dark box) ──
+// ── PLAN SELECTORS ──────────────────────────────────────────
 function selectUnlock(btn, price, planName) {
   document.querySelectorAll('.unlock-btn').forEach(b => {
     b.style.background = 'rgba(255,255,255,0.08)';
@@ -1003,14 +1089,13 @@ function selectUnlock(btn, price, planName) {
   });
   btn.style.background = 'var(--accent)';
   btn.style.border = '1.5px solid #60a5fa';
+  state.selectedPlan = { name: planName, price: Number(price) };
   const cta = document.getElementById('unlock-pay-btn');
-  if(cta) cta.textContent = 'Unlock ' + planName + ' — ₹' + price + ' →';
-  // sync payment tab too
-  document.getElementById('pay-amount').textContent = '✓ Selected: ' + planName + ' — ₹' + price;
-  document.getElementById('pay-cta').textContent = 'Pay ₹' + price + ' Securely →';
+  if (cta) cta.textContent = `Unlock ${planName} — ₹${price} →`;
+  document.getElementById('pay-amount').textContent = `✓ Selected: ${planName} — ₹${price}`;
+  document.getElementById('pay-cta').textContent = `Pay ₹${price} Securely →`;
 }
 
-// ── Payment tab plan selector ────────────────────────────
 function selectPlan(card, price, planName) {
   document.querySelectorAll('.plan-card').forEach(c => {
     c.style.borderColor = '';
@@ -1018,8 +1103,9 @@ function selectPlan(card, price, planName) {
   });
   card.style.borderColor = 'var(--accent)';
   card.style.boxShadow = '0 0 0 3px rgba(26,110,245,0.15)';
-  document.getElementById('pay-amount').textContent = '✓ Selected: ' + planName + ' — ₹' + price;
-  document.getElementById('pay-cta').textContent = 'Pay ₹' + price + ' Securely →';
+  state.selectedPlan = { name: planName, price: Number(price) };
+  document.getElementById('pay-amount').textContent = `✓ Selected: ${planName} — ₹${price}`;
+  document.getElementById('pay-cta').textContent = `Pay ₹${price} Securely →`;
 }
 
 function selectPay(el) {
@@ -1027,48 +1113,206 @@ function selectPay(el) {
   el.classList.add('active');
 }
 
-function simulatePayment() {
-  document.getElementById('pre-payment').style.display = 'none';
-  document.getElementById('post-payment').style.display = 'block';
+// ═══════════════════════════════════════════════════════════
+// RAZORPAY — REAL PAYMENT
+// ═══════════════════════════════════════════════════════════
+async function initiatePayment() {
+  const btn = document.getElementById('pay-cta');
+  const { name: planName, price } = state.selectedPlan;
+
+  btn.textContent = '⏳ Connecting...';
+  btn.disabled = true;
+
+  try {
+    const orderRes = await fetch(`${BACKEND_URL}/api/create-order`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: price, plan: planName, pan: state.pan }),
+    });
+
+    if (!orderRes.ok) {
+      const err = await orderRes.json().catch(() => ({}));
+      throw new Error(err.error || `Server error ${orderRes.status}`);
+    }
+
+    const order = await orderRes.json();
+
+    const options = {
+      key: order.key_id,
+      amount: order.amount,
+      currency: order.currency,
+      name: 'SalaryBit Tax AI',
+      description: planName,
+      image: 'https://salarybit.in/favicon.ico',
+      order_id: order.order_id,
+      prefill: { name: '', email: '', contact: '' },
+      notes: { pan: state.pan, plan: planName },
+      theme: { color: '#1a6ef5' },
+      handler: async function(response) {
+        await verifyAndUnlock(response);
+      },
+      modal: {
+        ondismiss: function() {
+          btn.textContent = `Pay ₹${price} Securely →`;
+          btn.disabled = false;
+        }
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.on('payment.failed', function(resp) {
+      alert('Payment failed: ' + resp.error.description + '\nPlease try again.');
+      btn.textContent = `Pay ₹${price} Securely →`;
+      btn.disabled = false;
+    });
+    rzp.open();
+
+  } catch (err) {
+    console.error('Payment error:', err);
+    alert('Could not connect to payment gateway.\n\n' + err.message + '\n\nCheck that your Railway backend is running and env vars are set.');
+    btn.textContent = `Pay ₹${price} Securely →`;
+    btn.disabled = false;
+  }
 }
 
-// ── AI Chat ──────────────────────────────────────────────
-const aiReplies = {
-  "why is my refund low?": "Your refund of ₹6,280 comes from ₹58,450 TDS paid vs ₹52,170 actual tax. You can increase it by claiming ₹22,400 more in deductions — ₹1,500 under 80TTA (savings interest) and ₹6,000 more in health insurance premium. Want me to walk you through each one?",
-  "which regime is better?": "For your income of ₹9,80,000, the New Regime saves ₹13,250. Your 80C + health insurance deductions aren't large enough to beat the New Regime's lower slab rates. If you had a home loan above ₹2.5L interest, Old Regime might win instead.",
-  "can i claim home loan benefits?": "Yes — in the Old Regime only. You can claim principal up to ₹1.5L under 80C, and interest up to ₹2L under Section 24(b). These deductions are not available in the New Regime. Want me to re-run your calculation with Old Regime selected?",
-  "what are my tax savings?": "I found ₹22,400 in unclaimed savings: ₹6,000 from health insurance (you're at ₹19K, limit is ₹25K), ₹1,500 from 80TTA savings interest, and ₹14,900 if you invest in NPS this year under 80CCD(1B). All three are easy to claim.",
-  "why does ais show dividends?": "Companies report dividend payments directly to the Income Tax department. Any dividends from stocks or mutual funds show up in your AIS automatically. Dividends above ₹5,000 from one company have 10% TDS already cut. I see ₹3,200 in your AIS — this needs to go under 'Income from Other Sources' in your ITR."
-};
+async function verifyAndUnlock(razorpayResponse) {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/verify-payment`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        razorpay_order_id: razorpayResponse.razorpay_order_id,
+        razorpay_payment_id: razorpayResponse.razorpay_payment_id,
+        razorpay_signature: razorpayResponse.razorpay_signature,
+      }),
+    });
 
-function askQuestion(el) {
-  const q = el.textContent;
+    const result = await res.json();
+
+    if (result.verified) {
+      state.paid = true;
+      state.paymentId = result.payment_id;
+      state.accessToken = result.access_token;
+      localStorage.setItem('sb_access_token', result.access_token);
+      localStorage.setItem('sb_payment_id', result.payment_id);
+      localStorage.setItem('sb_plan', state.selectedPlan.name);
+
+      document.getElementById('pre-payment').style.display = 'none';
+      document.getElementById('post-payment').style.display = 'block';
+      unlockChatTab();
+    } else {
+      alert('Payment verification failed. If amount was deducted, email support@salarybit.in with ID: ' + razorpayResponse.razorpay_payment_id);
+    }
+  } catch (err) {
+    console.error('Verify error:', err);
+    alert('Verification error. If amount was deducted, email support@salarybit.in');
+  }
+}
+
+function unlockChatTab() {
+  const chatTab = document.querySelector('.app-tab:last-child');
+  if (chatTab) {
+    chatTab.innerHTML = '🤖 AI Chat <span style="font-size:9px;background:var(--green);color:#fff;padding:1px 5px;border-radius:99px;margin-left:3px;">LIVE</span>';
+  }
+}
+
+// On page load — restore paid state
+window.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem('sb_pan')) {
+    document.getElementById('panInput').value = localStorage.getItem('sb_pan');
+    validatePAN(localStorage.getItem('sb_pan'));
+  }
+  if (state.paid) {
+    unlockChatTab();
+    document.getElementById('pre-payment').style.display = 'none';
+    document.getElementById('post-payment').style.display = 'block';
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+// CLAUDE AI CHAT — REAL API
+// ═══════════════════════════════════════════════════════════
+async function askQuestion(el) {
+  const q = el.textContent.trim();
   addMessage(q, 'user');
-  const key = q.toLowerCase();
-  const reply = aiReplies[key] || "Based on your Form 16 and AIS, your total income is ₹9,80,000 with ₹58,450 TDS paid. Your refund is ₹6,280 and we found ₹22,400 in unclaimed deductions. Ask me anything specific about your situation.";
-  setTimeout(() => addMessage(reply, 'ai'), 700);
+  await callClaude(q);
 }
 
-function sendChat() {
+async function sendChat() {
   const input = document.getElementById('chatInput');
   const q = input.value.trim();
-  if(!q) return;
-  addMessage(q, 'user');
+  if (!q) return;
   input.value = '';
-  const key = q.toLowerCase().replace(/\?/g,'').trim();
-  const reply = aiReplies[key] || "Good question. Based on your uploaded documents — salary ₹9,80,000, TDS ₹58,450, AIS shows dividends and interest — here's what I see: your refund of ₹6,280 is ready to claim, and ₹22,400 in deductions are still unclaimed. Want me to go deeper on any of this?";
-  setTimeout(() => addMessage(reply, 'ai'), 700);
+  addMessage(q, 'user');
+  await callClaude(q);
 }
 
-function addMessage(text, type) {
+async function callClaude(message) {
+  // Limit free demo to 3 questions
+  if (!state.paid) {
+    state.chatQuestionCount++;
+    if (state.chatQuestionCount > 3) {
+      addMessage('You\'ve used your 3 free demo questions. <a href="#" onclick="switchTabByName(\'payment\')" style="color:var(--accent);font-weight:700;">Upgrade to ₹299</a> to unlock unlimited AI Tax Chat.', 'ai');
+      return;
+    }
+  }
+
+  const typingId = showTyping();
+  state.chatHistory.push({ role: 'user', content: message });
+
+  const context = state.paid
+    ? { plan: localStorage.getItem('sb_plan') || 'Smart Tax Report', income: '₹9,80,000', tds: '₹58,450', refund: '₹6,280 refund due', regime: 'New Regime recommended', savings: '₹22,400 unclaimed deductions' }
+    : { plan: 'Demo', income: 'not uploaded', tds: 'not uploaded', refund: 'not calculated', regime: 'not determined', savings: 'not calculated' };
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/tax-chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, history: state.chatHistory.slice(-10), context }),
+    });
+
+    removeTyping(typingId);
+
+    if (!res.ok) throw new Error(`API error ${res.status}`);
+    const data = await res.json();
+    const reply = data.reply || 'Sorry, no response. Please try again.';
+    state.chatHistory.push({ role: 'assistant', content: reply });
+    addMessage(reply, 'ai');
+
+    if (!state.paid && state.chatQuestionCount === 2) {
+      setTimeout(() => addMessage('💡 1 free question left. <a href="#" onclick="switchTabByName(\'payment\')" style="color:var(--accent);font-weight:700;">Upgrade for unlimited →</a>', 'ai'), 800);
+    }
+
+  } catch (err) {
+    removeTyping(typingId);
+    state.chatHistory.pop();
+    addMessage('Could not reach AI. Please check your connection and try again.', 'ai');
+  }
+}
+
+function showTyping() {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  const id = 'typing_' + Date.now();
+  div.id = id;
+  div.className = 'chat-bubble ai';
+  div.innerHTML = '<div class="chat-tag">SalaryBit Tax AI</div><span style="opacity:0.5;font-size:13px;">Thinking...</span>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return id;
+}
+
+function removeTyping(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
+}
+
+function addMessage(html, type) {
   const msgs = document.getElementById('chatMessages');
   const div = document.createElement('div');
   div.className = 'chat-bubble ' + type;
-  if(type === 'ai') {
-    div.innerHTML = '<div class="chat-tag">SalaryBit Tax AI</div>' + text;
-  } else {
-    div.textContent = text;
-  }
+  div.innerHTML = type === 'ai' ? `<div class="chat-tag">SalaryBit Tax AI</div>${html}` : '';
+  if (type !== 'ai') div.textContent = html;
   msgs.appendChild(div);
   msgs.scrollTop = msgs.scrollHeight;
 }

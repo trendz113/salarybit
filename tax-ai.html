@@ -8,53 +8,26 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --ink: #0f1923;
-    --ink-soft: #3a4a5a;
-    --ink-muted: #6b7e91;
-    --bg: #f7f9fb;
-    --surface: #ffffff;
-    --surface-2: #eef2f7;
-    --accent: #1a6ef5;
-    --accent-light: #e8f0fe;
-    --green: #0fa86b;
-    --green-light: #e6f7f1;
-    --amber: #f59e0b;
-    --amber-light: #fef3c7;
-    --red: #e53e3e;
-    --red-light: #fff5f5;
+    --ink: #0f1923; --ink-soft: #3a4a5a; --ink-muted: #6b7e91;
+    --bg: #f7f9fb; --surface: #ffffff; --surface-2: #eef2f7;
+    --accent: #1a6ef5; --accent-light: #e8f0fe;
+    --green: #0fa86b; --green-light: #e6f7f1;
+    --amber: #f59e0b; --amber-light: #fef3c7;
+    --red: #e53e3e; --red-light: #fff5f5;
     --border: #dde4ee;
     --shadow: 0 2px 16px rgba(15,25,35,0.08);
     --shadow-md: 0 8px 32px rgba(15,25,35,0.12);
-    --radius: 14px;
-    --radius-sm: 8px;
+    --radius: 14px; --radius-sm: 8px;
   }
-
-  body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background: var(--bg);
-    color: var(--ink);
-    line-height: 1.6;
-    font-size: 15px;
-  }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; font-size: 15px; }
 
   /* NAV */
-  nav {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(247,249,251,0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 24px;
-    display: flex; align-items: center; justify-content: space-between;
-    height: 60px;
-  }
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(247,249,251,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 60px; }
   .logo { font-weight: 800; font-size: 18px; color: var(--ink); }
   .logo span { color: var(--accent); }
   nav .nav-right { display: flex; gap: 10px; align-items: center; }
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-    padding: 9px 18px; border-radius: var(--radius-sm); font-weight: 600;
-    font-size: 14px; cursor: pointer; border: none; transition: all 0.15s; font-family: inherit; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 18px; border-radius: var(--radius-sm); font-weight: 600; font-size: 14px; cursor: pointer; border: none; transition: all 0.15s; font-family: inherit; }
   .btn-ghost { background: transparent; color: var(--ink-soft); }
   .btn-ghost:hover { background: var(--surface-2); }
   .btn-primary { background: var(--accent); color: #fff; }
@@ -66,210 +39,107 @@
   .btn-green:hover { background: #0d9460; transform: translateY(-1px); }
 
   /* HERO */
-  .hero {
-    max-width: 900px; margin: 0 auto; padding: 72px 24px 48px;
-    text-align: center;
-  }
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--accent-light); color: var(--accent);
-    padding: 6px 14px; border-radius: 99px; font-size: 13px; font-weight: 600;
-    margin-bottom: 24px;
-  }
+  .hero { max-width: 900px; margin: 0 auto; padding: 72px 24px 48px; text-align: center; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--accent-light); color: var(--accent); padding: 6px 14px; border-radius: 99px; font-size: 13px; font-weight: 600; margin-bottom: 24px; }
   .hero-badge .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 1.8s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
-  .hero h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: clamp(36px, 5vw, 60px);
-    line-height: 1.1; color: var(--ink); margin-bottom: 20px;
-  }
+  .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(36px, 5vw, 60px); line-height: 1.1; color: var(--ink); margin-bottom: 20px; }
   .hero h1 em { font-style: italic; color: var(--accent); }
   .hero p { font-size: 18px; color: var(--ink-soft); max-width: 560px; margin: 0 auto 32px; }
-
   .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
   .hero-trust { margin-top: 20px; font-size: 13px; color: var(--ink-muted); display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
   .hero-trust span::before { content: "✓ "; color: var(--green); }
 
-  /* STEPS FLOW */
+  /* SECTION */
   .section { max-width: 1000px; margin: 0 auto; padding: 56px 24px; }
   .section-label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
   .section-title { font-family: 'DM Serif Display', serif; font-size: clamp(26px, 3.5vw, 40px); color: var(--ink); margin-bottom: 12px; line-height: 1.2; }
   .section-sub { font-size: 16px; color: var(--ink-soft); max-width: 520px; }
 
-  .steps-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px; margin-top: 40px;
-  }
-  .step-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 24px 20px;
-    position: relative; transition: box-shadow 0.2s, transform 0.2s;
-  }
+  /* STEPS */
+  .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-top: 40px; }
+  .step-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px 20px; transition: box-shadow 0.2s, transform 0.2s; }
   .step-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
-  .step-num {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: var(--accent-light); color: var(--accent);
-    font-weight: 800; font-size: 15px;
-    display: flex; align-items: center; justify-content: center; margin-bottom: 14px;
-  }
+  .step-num { width: 36px; height: 36px; border-radius: 50%; background: var(--accent-light); color: var(--accent); font-weight: 800; font-size: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
   .step-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
   .step-card p { font-size: 13px; color: var(--ink-soft); }
-  .step-arrow { display: flex; align-items: center; justify-content: center; color: var(--border); font-size: 20px; }
 
-  /* DEMO APP */
-  .app-wrapper {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 20px; overflow: hidden;
-    box-shadow: var(--shadow-md); max-width: 780px; margin: 40px auto;
-  }
-  .app-bar {
-    background: var(--ink); padding: 14px 20px;
-    display: flex; align-items: center; gap: 10px;
-  }
+  /* APP SHELL */
+  .app-wrapper { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-md); max-width: 780px; margin: 40px auto; }
+  .app-bar { background: var(--ink); padding: 14px 20px; display: flex; align-items: center; gap: 10px; }
   .app-bar-dot { width: 12px; height: 12px; border-radius: 50%; }
   .app-bar-title { color: #fff; font-size: 13px; font-weight: 600; margin-left: 4px; opacity: 0.7; }
-
-  .app-tabs {
-    display: flex; border-bottom: 1px solid var(--border);
-    background: var(--surface-2);
-  }
-  .app-tab {
-    padding: 12px 20px; font-size: 13px; font-weight: 600;
-    color: var(--ink-muted); cursor: pointer; border: none; background: none;
-    border-bottom: 2px solid transparent; transition: all 0.15s; font-family: inherit;
-  }
+  .app-tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--surface-2); }
+  .app-tab { padding: 12px 20px; font-size: 13px; font-weight: 600; color: var(--ink-muted); cursor: pointer; border: none; background: none; border-bottom: 2px solid transparent; transition: all 0.15s; font-family: inherit; }
   .app-tab.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--surface); }
-
   .tab-content { display: none; padding: 28px; }
   .tab-content.active { display: block; }
 
-  /* Login Tab */
+  /* FORM ELEMENTS */
   .pan-input-row { display: flex; gap: 10px; margin-bottom: 12px; }
-  .input-field {
-    flex: 1; padding: 12px 16px; border: 1.5px solid var(--border);
-    border-radius: var(--radius-sm); font-size: 15px; font-family: inherit;
-    color: var(--ink); outline: none; transition: border-color 0.15s;
-    text-transform: uppercase; letter-spacing: 0.05em;
-  }
+  .input-field { flex: 1; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 15px; font-family: inherit; color: var(--ink); outline: none; transition: border-color 0.15s; text-transform: uppercase; letter-spacing: 0.05em; }
   .input-field:focus { border-color: var(--accent); }
   .input-label { font-size: 13px; font-weight: 600; color: var(--ink-soft); margin-bottom: 6px; display: block; }
-  .otp-row { display: flex; gap: 8px; margin: 16px 0; }
-  .otp-box { width: 44px; height: 48px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); text-align: center; font-size: 18px; font-weight: 700; font-family: inherit; outline: none; }
-  .otp-box:focus { border-color: var(--accent); }
-  .verify-note { font-size: 13px; color: var(--ink-muted); margin-top: 8px; }
 
-  /* Upload Tab */
-  .upload-zone {
-    border: 2px dashed var(--border); border-radius: var(--radius);
-    padding: 36px 24px; text-align: center; cursor: pointer;
-    transition: all 0.15s; background: var(--bg);
-    margin-bottom: 20px;
-  }
+  /* UPLOAD */
+  .upload-zone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 36px 24px; text-align: center; cursor: pointer; transition: all 0.15s; background: var(--bg); margin-bottom: 20px; }
   .upload-zone:hover, .upload-zone.drag-over { border-color: var(--accent); background: var(--accent-light); }
   .upload-icon { font-size: 36px; margin-bottom: 10px; }
   .upload-zone h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
   .upload-zone p { font-size: 13px; color: var(--ink-muted); }
-
   .doc-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-  .doc-chip {
-    padding: 5px 12px; border-radius: 99px; font-size: 12px; font-weight: 600;
-    border: 1.5px solid var(--border); color: var(--ink-soft); cursor: pointer;
-    transition: all 0.15s;
-  }
+  .doc-chip { padding: 5px 12px; border-radius: 99px; font-size: 12px; font-weight: 600; border: 1.5px solid var(--border); color: var(--ink-soft); cursor: pointer; transition: all 0.15s; }
   .doc-chip:hover, .doc-chip.selected { background: var(--accent); color: #fff; border-color: var(--accent); }
-  .doc-chip.uploaded { background: var(--green-light); color: var(--green); border-color: var(--green); }
 
-  /* Analysis Tab */
+  /* ANALYSIS */
   .score-ring-wrap { text-align: center; margin-bottom: 28px; }
-  .score-circle {
-    width: 120px; height: 120px; border-radius: 50%;
-    background: conic-gradient(var(--green) 0% 92%, var(--surface-2) 92% 100%);
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 10px; position: relative;
-  }
-  .score-inner {
-    width: 90px; height: 90px; background: var(--surface); border-radius: 50%;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-  }
+  .score-circle { width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
+  .score-inner { width: 90px; height: 90px; background: var(--surface); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .score-num { font-size: 26px; font-weight: 800; color: var(--ink); }
   .score-denom { font-size: 11px; color: var(--ink-muted); font-weight: 600; }
-  .score-label { font-size: 14px; font-weight: 700; color: var(--green); }
-
+  .score-label { font-size: 14px; font-weight: 700; }
   .checks-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
-  .check-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 14px; border-radius: var(--radius-sm);
-    background: var(--bg); font-size: 13px;
-  }
+  .check-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--radius-sm); font-size: 13px; }
   .check-icon { font-size: 16px; flex-shrink: 0; }
   .check-item.ok { background: var(--green-light); }
   .check-item.warn { background: var(--amber-light); }
   .check-item.issue { background: var(--red-light); }
-
   .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
-  .summary-card {
-    background: var(--bg); border-radius: var(--radius-sm);
-    padding: 14px 16px; border: 1px solid var(--border);
-  }
+  .summary-card { background: var(--bg); border-radius: var(--radius-sm); padding: 14px 16px; border: 1px solid var(--border); }
   .summary-card .sc-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted); margin-bottom: 4px; }
   .summary-card .sc-val { font-size: 20px; font-weight: 800; color: var(--ink); }
   .summary-card .sc-sub { font-size: 12px; color: var(--ink-muted); margin-top: 2px; }
   .sc-positive { color: var(--green) !important; }
   .sc-negative { color: var(--red) !important; }
-
-  .regime-banner {
-    background: linear-gradient(135deg, #1a6ef5 0%, #0f4cc7 100%);
-    border-radius: var(--radius); padding: 18px 20px; color: #fff;
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
-  }
+  .regime-banner { background: linear-gradient(135deg, #1a6ef5 0%, #0f4cc7 100%); border-radius: var(--radius); padding: 18px 20px; color: #fff; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
   .regime-banner strong { display: block; font-size: 16px; }
   .regime-banner span { font-size: 13px; opacity: 0.8; }
   .regime-save { background: rgba(255,255,255,0.2); border-radius: 99px; padding: 4px 12px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+  .analyse-error { background: var(--red-light); border: 1px solid var(--red); border-radius: var(--radius); padding: 20px; text-align: center; color: var(--red); }
+  .analyse-error h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
 
-  /* Payment Tab */
+  /* PAYMENT */
   .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 24px; }
-  .plan-card {
-    border: 2px solid var(--border); border-radius: var(--radius);
-    padding: 20px 18px; position: relative; cursor: pointer; transition: all 0.15s;
-  }
+  .plan-card { border: 2px solid var(--border); border-radius: var(--radius); padding: 20px 18px; position: relative; cursor: pointer; transition: all 0.15s; }
   .plan-card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
   .plan-card.popular { border-color: var(--accent); }
-  .plan-badge {
-    position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-    background: var(--accent); color: #fff; font-size: 11px; font-weight: 700;
-    padding: 3px 10px; border-radius: 99px; white-space: nowrap;
-  }
+  .plan-badge { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px; white-space: nowrap; }
   .plan-name { font-size: 13px; font-weight: 700; color: var(--ink-soft); margin-bottom: 4px; }
   .plan-price { font-size: 28px; font-weight: 800; color: var(--ink); margin-bottom: 12px; }
   .plan-price span { font-size: 14px; font-weight: 500; color: var(--ink-muted); }
   .plan-features { list-style: none; display: flex; flex-direction: column; gap: 5px; }
   .plan-features li { font-size: 12px; color: var(--ink-soft); display: flex; align-items: flex-start; gap: 5px; }
   .plan-features li::before { content: "✓"; color: var(--green); font-weight: 700; flex-shrink: 0; }
-
-  .teaser-box {
-    background: var(--surface-2); border-radius: var(--radius); padding: 20px;
-    margin-bottom: 20px; border-left: 4px solid var(--accent);
-  }
-  .teaser-box h3 { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
-  .teaser-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-soft); margin-bottom: 6px; }
-  .teaser-row .ti { font-size: 15px; }
-
   .payment-methods { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
-  .pay-method {
-    padding: 7px 14px; border-radius: var(--radius-sm); border: 1.5px solid var(--border);
-    font-size: 12px; font-weight: 600; color: var(--ink-soft); cursor: pointer;
-    transition: all 0.15s;
-  }
+  .pay-method { padding: 7px 14px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); font-size: 12px; font-weight: 600; color: var(--ink-soft); cursor: pointer; transition: all 0.15s; }
   .pay-method:hover, .pay-method.active { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
 
-  /* AI Chat Tab */
+  /* CHAT */
   .chat-messages { max-height: 340px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
   .chat-bubble { max-width: 85%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; }
   .chat-bubble.ai { background: var(--surface-2); color: var(--ink); border-bottom-left-radius: 4px; align-self: flex-start; }
   .chat-bubble.user { background: var(--accent); color: #fff; border-bottom-right-radius: 4px; align-self: flex-end; }
-  .chat-bubble .chat-tag { font-size: 11px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+  .chat-bubble .chat-tag { font-size: 11px; font-weight: 700; margin-bottom: 4px; }
   .chat-bubble.ai .chat-tag { color: var(--green); }
   .chat-input-row { display: flex; gap: 8px; }
   .chat-input-row .input-field { flex: 1; text-transform: none; letter-spacing: 0; }
@@ -278,49 +148,27 @@
   .quick-q:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
 
   /* FEATURES */
-  .features-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;
-    margin-top: 40px;
-  }
-  .feat-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 24px 22px;
-    transition: box-shadow 0.2s, transform 0.2s;
-  }
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 40px; }
+  .feat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px 22px; transition: box-shadow 0.2s, transform 0.2s; }
   .feat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
   .feat-icon { font-size: 28px; margin-bottom: 12px; }
   .feat-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
   .feat-card p { font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
 
   /* TRUST BAR */
-  .trust-bar {
-    background: var(--ink); color: #fff; padding: 40px 24px;
-    text-align: center; margin-top: 40px;
-  }
+  .trust-bar { background: var(--ink); color: #fff; padding: 40px 24px; text-align: center; margin-top: 40px; }
   .trust-bar h2 { font-family: 'DM Serif Display', serif; font-size: 28px; margin-bottom: 8px; }
   .trust-bar p { color: rgba(255,255,255,0.6); font-size: 14px; margin-bottom: 24px; }
   .trust-items { display: flex; justify-content: center; flex-wrap: wrap; gap: 24px; }
   .trust-item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: rgba(255,255,255,0.8); }
-  .trust-item .ti { font-size: 20px; }
 
-  /* PRICING SECTION */
+  /* PRICING */
   .pricing-section { background: var(--surface-2); }
-  .pricing-cards {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    gap: 16px; margin-top: 40px;
-  }
-  .pricing-card {
-    background: var(--surface); border: 2px solid var(--border);
-    border-radius: var(--radius); padding: 28px 22px; position: relative;
-    transition: all 0.2s;
-  }
+  .pricing-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-top: 40px; }
+  .pricing-card { background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius); padding: 28px 22px; position: relative; transition: all 0.2s; }
   .pricing-card:hover { border-color: var(--accent); box-shadow: var(--shadow-md); }
   .pricing-card.featured { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(26,110,245,0.12); }
-  .feat-ribbon {
-    position: absolute; top: -1px; right: 18px;
-    background: var(--accent); color: #fff; font-size: 11px;
-    font-weight: 700; padding: 4px 10px; border-radius: 0 0 8px 8px;
-  }
+  .feat-ribbon { position: absolute; top: -1px; right: 18px; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 0 0 8px 8px; }
   .pc-name { font-size: 13px; font-weight: 700; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
   .pc-price { font-size: 36px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
   .pc-desc { font-size: 13px; color: var(--ink-muted); margin-bottom: 18px; }
@@ -328,14 +176,9 @@
   .pc-features li { font-size: 13px; color: var(--ink-soft); display: flex; gap: 6px; }
   .pc-features li::before { content: "✓"; color: var(--green); font-weight: 700; flex-shrink: 0; }
 
-  /* FOOTER */
-  footer {
-    border-top: 1px solid var(--border); padding: 28px 24px;
-    text-align: center; font-size: 13px; color: var(--ink-muted);
-  }
+  footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; font-size: 13px; color: var(--ink-muted); }
   footer strong { color: var(--ink); }
 
-  /* RESPONSIVE */
   @media (max-width: 600px) {
     .steps-grid { grid-template-columns: 1fr 1fr; }
     .summary-grid { grid-template-columns: 1fr; }
@@ -354,12 +197,8 @@
   </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
-  <div class="hero-badge">
-    <span class="dot"></span>
-    Powered by AI · FY 2024–25
-  </div>
+  <div class="hero-badge"><span class="dot"></span>Powered by AI · FY 2024–25</div>
   <h1>Your taxes, handled by <em>AI.</em><br>No CA needed.</h1>
   <p>Upload your documents. Get a complete tax report in minutes — refund estimate, tax savings, risk alerts, and filing checklist.</p>
   <div class="hero-actions">
@@ -374,31 +213,14 @@
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
 <section class="section">
   <div class="section-label">How it works</div>
   <div class="section-title">4 steps to your complete tax report</div>
   <div class="steps-grid">
-    <div class="step-card">
-      <div class="step-num">1</div>
-      <h3>Enter PAN</h3>
-      <p>We verify your PAN and create a secure profile instantly.</p>
-    </div>
-    <div class="step-card">
-      <div class="step-num">2</div>
-      <h3>Verify with OTP</h3>
-      <p>Quick OTP on your registered mobile. No passwords to remember.</p>
-    </div>
-    <div class="step-card">
-      <div class="step-num">3</div>
-      <h3>Upload Documents</h3>
-      <p>Form 16, AIS, broker reports, bank statements — any format.</p>
-    </div>
-    <div class="step-card">
-      <div class="step-num">4</div>
-      <h3>Pay & Get Report</h3>
-      <p>Starting ₹99. Get your full tax report, refund estimate, and AI chat access.</p>
-    </div>
+    <div class="step-card"><div class="step-num">1</div><h3>Enter PAN</h3><p>We verify your PAN and create a secure profile instantly.</p></div>
+    <div class="step-card"><div class="step-num">2</div><h3>Verify with OTP</h3><p>Quick OTP on your registered mobile. No passwords to remember.</p></div>
+    <div class="step-card"><div class="step-num">3</div><h3>Upload Documents</h3><p>Form 16, AIS, broker reports, bank statements — any format.</p></div>
+    <div class="step-card"><div class="step-num">4</div><h3>Pay & Get Report</h3><p>Starting ₹99. Get your full tax report, refund estimate, and AI chat access.</p></div>
   </div>
 </section>
 
@@ -407,7 +229,6 @@
   <div class="section-label">Live Preview</div>
   <div class="section-title">See how it works</div>
   <div class="section-sub">Click through the tabs to experience the full flow.</div>
-
   <div class="app-wrapper">
     <div class="app-bar">
       <div class="app-bar-dot" style="background:#ff5f57"></div>
@@ -415,7 +236,6 @@
       <div class="app-bar-dot" style="background:#28ca41"></div>
       <span class="app-bar-title">salarybit.in/tax-ai</span>
     </div>
-
     <div class="app-tabs">
       <button class="app-tab active" onclick="switchTab('login', this)">🔐 Login</button>
       <button class="app-tab" onclick="switchTab('upload', this)">📂 Upload</button>
@@ -438,10 +258,7 @@
         ✅ PAN saved! Taking you to document upload...
       </div>
       <div style="margin-top:20px; padding:14px; background:var(--surface-2); border-radius:var(--radius-sm);">
-        <p style="font-size:12px; color:var(--ink-muted); line-height:1.8;">
-          🔒 Your PAN personalises your report — we do not store or share it.<br>
-          No account needed. Upload documents → get your tax report instantly.
-        </p>
+        <p style="font-size:12px; color:var(--ink-muted); line-height:1.8;">🔒 Your PAN personalises your report — we do not store or share it.<br>No account needed. Upload documents → get your tax report instantly.</p>
       </div>
     </div>
 
@@ -462,11 +279,7 @@
         <span class="doc-chip" onclick="toggleChip(this)">Crypto CSV</span>
         <span class="doc-chip" onclick="toggleChip(this)">RSU / ESPP</span>
       </div>
-
-      <!-- Hidden real file input -->
       <input type="file" id="fileInput" multiple accept=".pdf,.xlsx,.xls,.csv,.jpg,.jpeg,.png,.webp" style="display:none" onchange="handleFiles(this.files)">
-
-      <!-- Drag & drop zone -->
       <div class="upload-zone" id="uploadZone"
         onclick="document.getElementById('fileInput').click()"
         ondragover="event.preventDefault(); this.classList.add('drag-over')"
@@ -476,21 +289,13 @@
         <h3>Drag files here, or tap to browse</h3>
         <p>PDF · Excel · CSV · JPG · PNG · Screenshots</p>
       </div>
-
-      <!-- File list -->
       <div id="file-list" style="display:none; margin-top:12px;"></div>
-
-      <div id="upload-status" style="display:none; margin-top:12px; padding:12px 16px; background:var(--green-light); border-radius:var(--radius-sm); font-size:13px; color:var(--green); font-weight:600;">
-        ✅ Documents ready · Click "Analyse" to continue
-      </div>
-
+      <div id="upload-status" style="display:none; margin-top:12px; padding:12px 16px; background:var(--green-light); border-radius:var(--radius-sm); font-size:13px; color:var(--green); font-weight:600;"></div>
       <button class="btn btn-primary" id="analyse-btn" style="margin-top:16px; width:100%; opacity:0.5;" disabled onclick="goToAnalysis()">Analyse My Documents →</button>
     </div>
 
     <!-- ANALYSIS TAB -->
     <div id="tab-analysis" class="tab-content">
-
-      <!-- PHASE 1: AI Reading animation -->
       <div id="scan-phase" style="text-align:center; padding:20px 0;">
         <div style="font-size:36px; margin-bottom:12px;">🔍</div>
         <div style="font-size:15px; font-weight:700; color:var(--ink); margin-bottom:6px;">AI is reading your documents...</div>
@@ -500,75 +305,38 @@
         </div>
         <div id="scan-status" style="font-size:12px; color:var(--ink-muted); margin-top:10px;">Starting analysis...</div>
       </div>
-
-      <!-- PHASE 2: Real results rendered here by JS -->
-      <div id="free-preview" style="display:none;">
-        <!-- Dynamically populated by renderAnalysis() -->
-      </div>
+      <div id="free-preview" style="display:none;"></div>
     </div>
 
     <!-- PAYMENT TAB -->
     <div id="tab-payment" class="tab-content">
-
-      <!-- PRE-PAYMENT STATE -->
       <div id="pre-payment">
         <div style="font-size:14px; font-weight:700; color:var(--ink); margin-bottom:4px;">Choose your plan</div>
         <div style="font-size:13px; color:var(--ink-muted); margin-bottom:18px;">One-time payment. No subscription. Report ready in seconds.</div>
-
-        <div class="plans-grid" id="planSelector">
+        <div class="plans-grid">
           <div class="plan-card" onclick="selectPlan(this,'99','Tax Health Check')">
             <div class="plan-name">Tax Health Check</div>
             <div class="plan-price">₹99 <span>one-time</span></div>
-            <ul class="plan-features">
-              <li>Form 16 analysis</li>
-              <li>Tax Health Score (full reasons)</li>
-              <li>Exact refund / tax due</li>
-              <li>Old vs New Regime answer</li>
-            </ul>
+            <ul class="plan-features"><li>Form 16 analysis</li><li>Tax Health Score</li><li>Exact refund / tax due</li><li>Old vs New Regime answer</li></ul>
           </div>
           <div class="plan-card popular" onclick="selectPlan(this,'299','Smart Tax Report')">
             <div class="plan-badge">⭐ Recommended</div>
             <div class="plan-name">Smart Tax Report</div>
             <div class="plan-price">₹299 <span>one-time</span></div>
-            <ul class="plan-features">
-              <li>Everything in ₹99</li>
-              <li>AIS reconciliation</li>
-              <li>Form 26AS validation</li>
-              <li>Deduction discovery (80C, HRA, NPS)</li>
-              <li>PDF report download</li>
-              <li>AI Chat — 10 questions</li>
-            </ul>
+            <ul class="plan-features"><li>Everything in ₹99</li><li>AIS reconciliation</li><li>Form 26AS validation</li><li>Deduction discovery</li><li>PDF report download</li><li>AI Chat — 10 questions</li></ul>
           </div>
           <div class="plan-card" onclick="selectPlan(this,'499','Complete AI Report')">
             <div class="plan-name">Complete AI Report</div>
             <div class="plan-price">₹499 <span>one-time</span></div>
-            <ul class="plan-features">
-              <li>Everything in ₹299</li>
-              <li>Detailed capital gains</li>
-              <li>Crypto & MF analysis</li>
-              <li>Risk detector report</li>
-              <li>Filing readiness plan</li>
-              <li>Unlimited AI Chat</li>
-            </ul>
+            <ul class="plan-features"><li>Everything in ₹299</li><li>Capital gains</li><li>Crypto & MF analysis</li><li>Risk detector report</li><li>Unlimited AI Chat</li></ul>
           </div>
           <div class="plan-card" onclick="selectPlan(this,'999','Tax Pro Plus')">
             <div class="plan-name">Tax Pro Plus</div>
             <div class="plan-price">₹999 <span>one-time</span></div>
-            <ul class="plan-features">
-              <li>Everything in ₹499</li>
-              <li>RSU / ESPP analysis</li>
-              <li>Foreign asset reporting</li>
-              <li>Schedule FA / FSI / TR</li>
-              <li>Foreign tax credit</li>
-              <li>Priority support</li>
-            </ul>
+            <ul class="plan-features"><li>Everything in ₹499</li><li>RSU / ESPP analysis</li><li>Foreign asset reporting</li><li>Schedule FA / FSI / TR</li><li>Priority support</li></ul>
           </div>
         </div>
-
-        <div id="pay-amount" style="font-size:15px; font-weight:700; color:var(--ink); margin-bottom:12px; padding:12px 14px; background:var(--accent-light); border-radius:var(--radius-sm); color:var(--accent);">
-          ✓ Selected: Smart Tax Report — ₹299
-        </div>
-
+        <div id="pay-amount" style="margin-bottom:12px; padding:12px 14px; background:var(--accent-light); border-radius:var(--radius-sm); color:var(--accent); font-size:15px; font-weight:700;">✓ Selected: Smart Tax Report — ₹299</div>
         <div style="font-size:13px; font-weight:600; color:var(--ink-soft); margin-bottom:10px;">Pay with:</div>
         <div class="payment-methods">
           <div class="pay-method active" onclick="selectPay(this)">📱 UPI / GPay</div>
@@ -580,27 +348,14 @@
         <button id="pay-cta" class="btn btn-green btn-lg" style="width:100%; margin-top:14px;" onclick="initiatePayment()">Pay ₹299 Securely →</button>
         <p style="font-size:12px; color:var(--ink-muted); text-align:center; margin-top:10px;">🔒 256-bit SSL · Razorpay secured · Instant report delivery</p>
       </div>
-
-      <!-- POST-PAYMENT UNLOCKED STATE -->
       <div id="post-payment" style="display:none;">
         <div style="text-align:center; padding:10px 0 20px;">
           <div style="font-size:40px; margin-bottom:10px;">🎉</div>
           <div style="font-size:18px; font-weight:800; color:var(--green);">Payment Successful!</div>
           <div style="font-size:13px; color:var(--ink-muted); margin-top:4px;">Your complete report is now unlocked</div>
         </div>
-
         <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-muted); margin-bottom:10px;">What's now unlocked:</div>
-        <ul class="checks-list" style="gap:6px; margin-bottom:20px;">
-          <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> Exact refund amount: <strong>₹6,280</strong></li>
-          <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> Exact tax payable: <strong>₹0 (TDS covers it)</strong></li>
-          <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> Detailed capital gains breakdown</li>
-          <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> Deduction recommendations — save ₹22,400</li>
-          <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> AIS reconciliation complete</li>
-          <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> PDF report ready to download</li>
-          <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> AI Tax Chat — 10 questions</li>
-          <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> Filing readiness plan (100% detailed)</li>
-        </ul>
-
+        <ul class="checks-list" id="post-payment-list" style="gap:6px; margin-bottom:20px;"></ul>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
           <button class="btn btn-primary btn-lg" style="flex:1;" onclick="switchTabByName('chat')">💬 Chat with Tax AI →</button>
           <button class="btn btn-outline" style="flex:1; padding:14px;" onclick="alert('PDF report downloading...')">📥 Download PDF</button>
@@ -625,7 +380,7 @@
         </div>
       </div>
       <div class="chat-input-row">
-        <input class="input-field" id="chatInput" placeholder="Ask about your taxes..." onkeydown="if(event.key==='Enter') sendChat()">
+        <input class="input-field" id="chatInput" placeholder="Ask about your taxes..." onkeydown="if(event.key==='Enter') sendChat()" style="text-transform:none; letter-spacing:0;">
         <button class="btn btn-primary" onclick="sendChat()">Send</button>
       </div>
     </div>
@@ -637,127 +392,58 @@
   <div class="section-label">What the AI does</div>
   <div class="section-title">Everything, automatically</div>
   <div class="features-grid">
-    <div class="feat-card">
-      <div class="feat-icon">📄</div>
-      <h3>Reads your Form 16</h3>
-      <p>Extracts your salary, HRA, TDS, employer PAN and TAN — no manual entry needed.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon">🔍</div>
-      <h3>Checks AIS for hidden income</h3>
-      <p>Compares your AIS against Form 16. Flags missing interest, dividends, or stock sale income automatically.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon">📈</div>
-      <h3>Calculates capital gains</h3>
-      <p>Supports Zerodha, Groww, Upstox, Angel One. Calculates STCG, LTCG, and exact tax payable on your investments.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon">🌏</div>
-      <h3>Handles RSUs & foreign stocks</h3>
-      <p>RSUs, ESPPs, US stocks, foreign dividends — auto-prepares Schedule FA, FSI, and foreign tax credit.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon">₿</div>
-      <h3>Crypto tax calculation</h3>
-      <p>Supports Binance, CoinDCX, WazirX, Coinbase. Calculates 30% flat tax on gains and TDS impact.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon">💡</div>
-      <h3>Finds tax savings you missed</h3>
-      <p>80C, NPS, home loan, HRA, health insurance — shows exactly how much more you can save.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon">⚖️</div>
-      <h3>Old vs New Regime optimizer</h3>
-      <p>Calculates both regimes with your actual numbers. Tells you exactly which one saves more money.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon">🚨</div>
-      <h3>AI Risk Detector</h3>
-      <p>Flags AIS mismatches, unreported income, TDS gaps, and foreign asset issues before you file.</p>
-    </div>
-    <div class="feat-card">
-      <div class="feat-icon">💬</div>
-      <h3>AI Tax Chat</h3>
-      <p>Ask "Why is my refund low?" and get an answer based on YOUR documents — not generic advice.</p>
-    </div>
+    <div class="feat-card"><div class="feat-icon">📄</div><h3>Reads your Form 16</h3><p>Extracts your salary, HRA, TDS, employer PAN and TAN — no manual entry needed.</p></div>
+    <div class="feat-card"><div class="feat-icon">🔍</div><h3>Checks AIS for hidden income</h3><p>Compares your AIS against Form 16. Flags missing interest, dividends, or stock sale income automatically.</p></div>
+    <div class="feat-card"><div class="feat-icon">📈</div><h3>Calculates capital gains</h3><p>Supports Zerodha, Groww, Upstox, Angel One. Calculates STCG, LTCG, and exact tax payable on your investments.</p></div>
+    <div class="feat-card"><div class="feat-icon">🌏</div><h3>Handles RSUs & foreign stocks</h3><p>RSUs, ESPPs, US stocks, foreign dividends — auto-prepares Schedule FA, FSI, and foreign tax credit.</p></div>
+    <div class="feat-card"><div class="feat-icon">₿</div><h3>Crypto tax calculation</h3><p>Supports Binance, CoinDCX, WazirX, Coinbase. Calculates 30% flat tax on gains and TDS impact.</p></div>
+    <div class="feat-card"><div class="feat-icon">💡</div><h3>Finds tax savings you missed</h3><p>80C, NPS, home loan, HRA, health insurance — shows exactly how much more you can save.</p></div>
+    <div class="feat-card"><div class="feat-icon">⚖️</div><h3>Old vs New Regime optimizer</h3><p>Calculates both regimes with your actual numbers. Tells you exactly which one saves more money.</p></div>
+    <div class="feat-card"><div class="feat-icon">🚨</div><h3>AI Risk Detector</h3><p>Flags AIS mismatches, unreported income, TDS gaps, and foreign asset issues before you file.</p></div>
+    <div class="feat-card"><div class="feat-icon">💬</div><h3>AI Tax Chat</h3><p>Ask "Why is my refund low?" and get an answer based on YOUR documents — not generic advice.</p></div>
   </div>
 </section>
 
-<!-- TRUST BAR -->
 <div class="trust-bar">
   <h2>Your data is safe with us</h2>
   <p>We take financial data privacy as seriously as a bank does.</p>
   <div class="trust-items">
-    <div class="trust-item"><span class="ti">🔐</span> End-to-end encrypted</div>
-    <div class="trust-item"><span class="ti">🎭</span> PAN masked in all reports</div>
-    <div class="trust-item"><span class="ti">📋</span> Consent-based processing</div>
-    <div class="trust-item"><span class="ti">🔒</span> Read-only access</div>
-    <div class="trust-item"><span class="ti">🧾</span> Full audit log</div>
+    <div class="trust-item">🔐 End-to-end encrypted</div>
+    <div class="trust-item">🎭 PAN masked in all reports</div>
+    <div class="trust-item">📋 Consent-based processing</div>
+    <div class="trust-item">🔒 Read-only access</div>
+    <div class="trust-item">🧾 Full audit log</div>
   </div>
 </div>
 
-<!-- PRICING -->
 <section class="section pricing-section" id="pricing">
   <div class="section-label">Pricing</div>
   <div class="section-title">Pay once. Get everything.</div>
   <div class="section-sub">No subscriptions. No CA fees. No surprises.</div>
   <div class="pricing-cards">
     <div class="pricing-card">
-      <div class="pc-name">Tax Health Check</div>
-      <div class="pc-price">₹99</div>
+      <div class="pc-name">Tax Health Check</div><div class="pc-price">₹99</div>
       <div class="pc-desc">Quick check of your tax situation</div>
-      <ul class="pc-features">
-        <li>PAN + OTP verification</li>
-        <li>Form 16 analysis</li>
-        <li>Tax Health Score (out of 100)</li>
-        <li>Refund estimate</li>
-        <li>Old vs New Regime advice</li>
-      </ul>
+      <ul class="pc-features"><li>PAN + OTP verification</li><li>Form 16 analysis</li><li>Tax Health Score (out of 100)</li><li>Refund estimate</li><li>Old vs New Regime advice</li></ul>
       <button class="btn btn-outline" style="width:100%">Get Started →</button>
     </div>
     <div class="pricing-card featured">
       <div class="feat-ribbon">Recommended</div>
-      <div class="pc-name">Smart Tax Report</div>
-      <div class="pc-price">₹299</div>
+      <div class="pc-name">Smart Tax Report</div><div class="pc-price">₹299</div>
       <div class="pc-desc">Full analysis for most salaried people</div>
-      <ul class="pc-features">
-        <li>Everything in ₹99</li>
-        <li>AIS analysis & mismatch detection</li>
-        <li>Form 26AS validation</li>
-        <li>Deduction discovery (80C, HRA, NPS)</li>
-        <li>PDF report download</li>
-        <li>AI Chat (10 questions)</li>
-      </ul>
+      <ul class="pc-features"><li>Everything in ₹99</li><li>AIS analysis & mismatch detection</li><li>Form 26AS validation</li><li>Deduction discovery (80C, HRA, NPS)</li><li>PDF report download</li><li>AI Chat (10 questions)</li></ul>
       <button class="btn btn-primary" style="width:100%">Get Report →</button>
     </div>
     <div class="pricing-card">
-      <div class="pc-name">Complete AI Report</div>
-      <div class="pc-price">₹499</div>
+      <div class="pc-name">Complete AI Report</div><div class="pc-price">₹499</div>
       <div class="pc-desc">For traders, investors & freelancers</div>
-      <ul class="pc-features">
-        <li>Everything in ₹299</li>
-        <li>Capital gains (stocks & MF)</li>
-        <li>Crypto tax calculation</li>
-        <li>Dividend & interest income</li>
-        <li>Risk detector report</li>
-        <li>Unlimited AI Chat</li>
-      </ul>
+      <ul class="pc-features"><li>Everything in ₹299</li><li>Capital gains (stocks & MF)</li><li>Crypto tax calculation</li><li>Dividend & interest income</li><li>Risk detector report</li><li>Unlimited AI Chat</li></ul>
       <button class="btn btn-outline" style="width:100%">Get Report →</button>
     </div>
     <div class="pricing-card">
-      <div class="pc-name">Tax Pro Plus</div>
-      <div class="pc-price">₹999</div>
+      <div class="pc-name">Tax Pro Plus</div><div class="pc-price">₹999</div>
       <div class="pc-desc">For RSUs, foreign stocks & NRI income</div>
-      <ul class="pc-features">
-        <li>Everything in ₹499</li>
-        <li>RSU / ESPP analysis</li>
-        <li>US & foreign stock gains</li>
-        <li>Schedule FA / FSI preparation</li>
-        <li>Foreign tax credit calculation</li>
-        <li>Priority support</li>
-      </ul>
+      <ul class="pc-features"><li>Everything in ₹499</li><li>RSU / ESPP analysis</li><li>US & foreign stock gains</li><li>Schedule FA / FSI preparation</li><li>Foreign tax credit calculation</li><li>Priority support</li></ul>
       <button class="btn btn-outline" style="width:100%">Get Report →</button>
     </div>
   </div>
@@ -774,19 +460,19 @@
 // ═══════════════════════════════════════════════════════════
 const BACKEND_URL = 'https://tax-ai-backend-production-ed49.up.railway.app';
 
-// App state
 const state = {
   pan: localStorage.getItem('sb_pan') || '',
-  uploadedFiles: [],           // actual File objects
+  uploadedFiles: [],
   selectedPlan: { name: 'Smart Tax Report', price: 299 },
   paid: !!localStorage.getItem('sb_access_token'),
   paymentId: localStorage.getItem('sb_payment_id') || '',
   accessToken: localStorage.getItem('sb_access_token') || '',
   chatHistory: [],
   chatQuestionCount: 0,
+  analysisResult: null,   // ← real data from /api/analyse
 };
 
-// ── Navigation ──────────────────────────────────────────────
+// ── NAVIGATION ──────────────────────────────────────────────
 function scrollToDemo() { document.getElementById('demo').scrollIntoView({behavior:'smooth'}); }
 function scrollToSection(id) { document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
 
@@ -805,14 +491,13 @@ function switchTabByName(name) {
   if (idx >= 0 && tabs[idx]) switchTab(name, tabs[idx]);
 }
 
-// ── LOGIN — PAN only, no OTP ────────────────────────────────
+// ── LOGIN ───────────────────────────────────────────────────
 function validatePAN(val) {
   const valid = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(val);
   const btn = document.getElementById('proceed-btn');
-  const err = document.getElementById('pan-error');
   btn.disabled = !valid;
   btn.style.opacity = valid ? '1' : '0.5';
-  err.style.display = (val.length === 10 && !valid) ? 'block' : 'none';
+  document.getElementById('pan-error').style.display = (val.length === 10 && !valid) ? 'block' : 'none';
 }
 
 function proceedWithPAN() {
@@ -825,26 +510,22 @@ function proceedWithPAN() {
   setTimeout(() => switchTabByName('upload'), 1200);
 }
 
-// ── UPLOAD — Real drag & drop ───────────────────────────────
+// ── UPLOAD ──────────────────────────────────────────────────
 function toggleChip(el) { el.classList.toggle('selected'); }
 
 function handleFiles(files) {
   if (!files || files.length === 0) return;
-
   const allowed = ['application/pdf','application/vnd.ms-excel',
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     'text/csv','image/jpeg','image/png','image/webp'];
-
   Array.from(files).forEach(file => {
     if (!allowed.includes(file.type) && !file.name.match(/\.(pdf|xlsx|xls|csv|jpg|jpeg|png|webp)$/i)) {
-      alert(`"${file.name}" is not a supported format. Use PDF, Excel, CSV, or image files.`);
+      alert(`"${file.name}" is not a supported format.`);
       return;
     }
-    // Avoid duplicates
     if (state.uploadedFiles.find(f => f.name === file.name && f.size === file.size)) return;
     state.uploadedFiles.push(file);
   });
-
   renderFileList();
 }
 
@@ -852,118 +533,190 @@ function renderFileList() {
   const list = document.getElementById('file-list');
   const status = document.getElementById('upload-status');
   const btn = document.getElementById('analyse-btn');
-
   if (state.uploadedFiles.length === 0) {
-    list.style.display = 'none';
-    status.style.display = 'none';
-    btn.disabled = true;
-    btn.style.opacity = '0.5';
+    list.style.display = 'none'; status.style.display = 'none';
+    btn.disabled = true; btn.style.opacity = '0.5';
     return;
   }
-
   list.style.display = 'block';
   list.innerHTML = state.uploadedFiles.map((f, i) => `
-    <div style="display:flex; align-items:center; justify-content:space-between;
-      padding:10px 14px; background:var(--surface-2); border-radius:var(--radius-sm);
-      margin-bottom:6px; font-size:13px;">
-      <span>${fileIcon(f.name)} <strong>${f.name}</strong>
-        <span style="color:var(--ink-muted); margin-left:6px;">${formatSize(f.size)}</span>
-      </span>
-      <button onclick="removeFile(${i})" style="background:none; border:none; cursor:pointer;
-        color:var(--ink-muted); font-size:16px; padding:0 4px;" title="Remove">✕</button>
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--surface-2); border-radius:var(--radius-sm); margin-bottom:6px; font-size:13px;">
+      <span>${fileIcon(f.name)} <strong>${f.name}</strong> <span style="color:var(--ink-muted); margin-left:6px;">${formatSize(f.size)}</span></span>
+      <button onclick="removeFile(${i})" style="background:none; border:none; cursor:pointer; color:var(--ink-muted); font-size:16px; padding:0 4px;">✕</button>
     </div>`).join('');
-
   status.style.display = 'block';
   status.textContent = `✅ ${state.uploadedFiles.length} file(s) ready · Click "Analyse" to continue`;
-  btn.disabled = false;
-  btn.style.opacity = '1';
+  btn.disabled = false; btn.style.opacity = '1';
 }
 
-function removeFile(idx) {
-  state.uploadedFiles.splice(idx, 1);
-  renderFileList();
-}
+function removeFile(idx) { state.uploadedFiles.splice(idx, 1); renderFileList(); }
+function fileIcon(n) { return n.match(/\.pdf$/i) ? '📄' : n.match(/\.(xlsx|xls)$/i) ? '📊' : n.match(/\.csv$/i) ? '📋' : '🖼'; }
+function formatSize(b) { return b < 1024 ? b + ' B' : b < 1048576 ? (b/1024).toFixed(1) + ' KB' : (b/1048576).toFixed(1) + ' MB'; }
 
-function fileIcon(name) {
-  if (name.match(/\.pdf$/i)) return '📄';
-  if (name.match(/\.(xlsx|xls)$/i)) return '📊';
-  if (name.match(/\.csv$/i)) return '📋';
-  return '🖼';
-}
-
-function formatSize(bytes) {
-  if (bytes < 1024) return bytes + ' B';
-  if (bytes < 1048576) return (bytes/1024).toFixed(1) + ' KB';
-  return (bytes/1048576).toFixed(1) + ' MB';
-}
-
+// ── CHANGED: goToAnalysis — resets scan so fresh call happens
 function goToAnalysis() {
-  if (state.uploadedFiles.length === 0) {
-    alert('Please upload at least one document first.');
-    return;
-  }
+  if (state.uploadedFiles.length === 0) { alert('Please upload at least one document first.'); return; }
+  scanDone = false;
+  state.analysisResult = null;
   switchTabByName('analysis');
 }
 
-// ── ANALYSIS — Scan animation ───────────────────────────────
+// ── ANALYSIS ────────────────────────────────────────────────
 let scanDone = false;
+
+// ── CHANGED: triggerScan — runs animation AND real /api/analyse call in parallel
 function triggerScan() {
   if (scanDone) return;
+
   const scanPhase = document.getElementById('scan-phase');
   const freePreview = document.getElementById('free-preview');
-  if (!scanPhase) return;
   scanPhase.style.display = 'block';
   freePreview.style.display = 'none';
+  document.getElementById('scan-bar').style.width = '0%';
 
-  const fileNames = state.uploadedFiles.map(f => f.name).join(', ') || 'your documents';
+  const firstName = state.uploadedFiles.length ? state.uploadedFiles[0].name : 'your document';
   const steps = [
-    [8,  `Reading ${fileNames.split(',')[0] || 'Form 16'}...`],
-    [22, 'Extracting salary & TDS data...'],
-    [38, 'Parsing AIS information...'],
-    [52, 'Checking Form 26AS...'],
-    [65, 'Detecting income sources...'],
-    [78, 'Running risk analysis...'],
-    [90, 'Calculating health score...'],
-    [100,'Analysis complete!'],
+    [12, 'Reading ' + firstName + '...'],
+    [28, 'Extracting salary & TDS...'],
+    [44, 'Checking deductions...'],
+    [60, 'Running regime comparison...'],
+    [75, 'Detecting risk flags...'],
+    [88, 'Calculating health score...'],
+    [95, 'Almost done...'],
   ];
-  let i = 0;
-  function tick() {
-    if (i >= steps.length) {
-      setTimeout(() => {
-        scanPhase.style.display = 'none';
-        freePreview.style.display = 'block';
-        scanDone = true;
-      }, 500);
-      return;
-    }
-    const [pct, msg] = steps[i++];
+
+  let stepIdx = 0;
+  let animDone = false, apiDone = false;
+  let apiResult = null, apiError = null;
+
+  function tryFinish() {
+    if (!animDone || !apiDone) return;
+    document.getElementById('scan-bar').style.width = '100%';
+    document.getElementById('scan-status').textContent = apiError ? 'Analysis complete (check results below).' : 'Analysis complete!';
+    setTimeout(() => {
+      scanPhase.style.display = 'none';
+      freePreview.style.display = 'block';
+      scanDone = true;
+      if (apiError) renderAnalysisError(apiError);
+      else { state.analysisResult = apiResult; renderAnalysis(apiResult); }
+    }, 500);
+  }
+
+  function tickAnim() {
+    if (stepIdx >= steps.length) { animDone = true; tryFinish(); return; }
+    const [pct, msg] = steps[stepIdx++];
     document.getElementById('scan-bar').style.width = pct + '%';
     document.getElementById('scan-status').textContent = msg;
-    setTimeout(tick, pct === 100 ? 600 : 400);
+    setTimeout(tickAnim, 450);
   }
-  tick();
+  tickAnim();
+
+  // Real API call
+  (async () => {
+    try {
+      if (state.uploadedFiles.length === 0) throw new Error('No file to analyse.');
+      const formData = new FormData();
+      formData.append('file', state.uploadedFiles[0]);
+      formData.append('pan', state.pan || 'UNKNOWN');
+      const chip = document.querySelector('#docChips .doc-chip.selected');
+      formData.append('docType', chip ? chip.textContent.trim() : 'Form 16');
+
+      const res = await fetch(`${BACKEND_URL}/api/analyse`, { method: 'POST', body: formData });
+      if (!res.ok) {
+        const e = await res.json().catch(() => ({}));
+        throw new Error(e.error || `Server error ${res.status}`);
+      }
+      apiResult = await res.json();
+    } catch (err) {
+      apiError = err.message;
+    } finally {
+      apiDone = true;
+      tryFinish();
+    }
+  })();
 }
 
-// ── PLAN SELECTORS ──────────────────────────────────────────
-function selectUnlock(btn, price, planName) {
-  document.querySelectorAll('.unlock-btn').forEach(b => {
-    b.style.background = 'rgba(255,255,255,0.08)';
-    b.style.border = '1px solid rgba(255,255,255,0.2)';
-  });
-  btn.style.background = 'var(--accent)';
-  btn.style.border = '1.5px solid #60a5fa';
-  state.selectedPlan = { name: planName, price: Number(price) };
-  const cta = document.getElementById('unlock-pay-btn');
-  if (cta) cta.textContent = `Unlock ${planName} — ₹${price} →`;
-  document.getElementById('pay-amount').textContent = `✓ Selected: ${planName} — ₹${price}`;
-  document.getElementById('pay-cta').textContent = `Pay ₹${price} Securely →`;
+// ── CHANGED: renderAnalysis — uses real API response
+function renderAnalysis(d) {
+  const fmt = n => Number(n || 0).toLocaleString('en-IN');
+  const score = Math.min(100, Math.max(0, d.health_score || 0));
+  const scoreColor = score >= 75 ? 'var(--green)' : score >= 50 ? 'var(--amber)' : 'var(--red)';
+  const scoreLabel = score >= 75 ? 'Healthy' : score >= 50 ? 'Needs Attention' : 'Action Required';
+  const isRefund = (d.refund_estimate || 0) >= 0;
+  const refundAmt = Math.abs(d.refund_estimate || 0);
+  const regimeLabel = d.recommended_regime === 'new' ? 'New Regime' : 'Old Regime';
+
+  const checksHtml = (d.checks || []).map(c => {
+    const icons = { ok: '✅', warn: '⚠️', issue: '❌' };
+    return `<li class="check-item ${c.status}"><span class="check-icon">${icons[c.status] || 'ℹ️'}</span>${c.text}</li>`;
+  }).join('') || '<li class="check-item ok"><span class="check-icon">✅</span>Analysis complete — no issues found.</li>';
+
+  document.getElementById('free-preview').innerHTML = `
+    <div class="score-ring-wrap">
+      <div class="score-circle" style="background:conic-gradient(${scoreColor} 0% ${score}%, var(--surface-2) ${score}% 100%);">
+        <div class="score-inner"><span class="score-num">${score}</span><span class="score-denom">/100</span></div>
+      </div>
+      <div class="score-label" style="color:${scoreColor};">${scoreLabel}</div>
+      ${d.employer_name ? `<div style="font-size:12px;color:var(--ink-muted);margin-top:4px;">Employer: ${d.employer_name}</div>` : ''}
+      ${d.assessment_year ? `<div style="font-size:12px;color:var(--ink-muted);">AY ${d.assessment_year}</div>` : ''}
+    </div>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="sc-label">Gross Salary</div>
+        <div class="sc-val">₹${fmt(d.gross_salary)}</div>
+        <div class="sc-sub">FY 2024-25</div>
+      </div>
+      <div class="summary-card">
+        <div class="sc-label">TDS Deducted</div>
+        <div class="sc-val">₹${fmt(d.tds_deducted)}</div>
+        <div class="sc-sub">By employer</div>
+      </div>
+      <div class="summary-card">
+        <div class="sc-label">${isRefund ? 'Refund Due' : 'Tax Payable'}</div>
+        <div class="sc-val ${isRefund ? 'sc-positive' : 'sc-negative'}">₹${fmt(refundAmt)}</div>
+        <div class="sc-sub">${isRefund ? 'You get this back' : 'Additional tax due'}</div>
+      </div>
+      <div class="summary-card">
+        <div class="sc-label">Unclaimed Deductions</div>
+        <div class="sc-val sc-positive">₹${fmt(d.unclaimed_deductions)}</div>
+        <div class="sc-sub">Potential savings</div>
+      </div>
+    </div>
+
+    ${(d.regime_saving || 0) > 0 ? `
+    <div class="regime-banner">
+      <div><strong>${regimeLabel} recommended</strong><span>Based on your income & deductions</span></div>
+      <div class="regime-save">Save ₹${fmt(d.regime_saving)}</div>
+    </div>` : ''}
+
+    <ul class="checks-list">${checksHtml}</ul>
+
+    ${d.summary ? `
+    <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:14px 16px;font-size:13px;color:var(--ink-soft);line-height:1.7;margin-bottom:20px;">
+      <strong style="color:var(--ink);display:block;margin-bottom:4px;">AI Summary</strong>${d.summary}
+    </div>` : ''}
+
+    <div style="background:linear-gradient(135deg,#1a6ef5,#0f4cc7);border-radius:var(--radius);padding:20px;color:#fff;text-align:center;">
+      <div style="font-size:16px;font-weight:800;margin-bottom:6px;">Full report ready to unlock</div>
+      <div style="font-size:13px;opacity:0.85;margin-bottom:14px;">Deduction details, capital gains, PDF download & AI Chat</div>
+      <button class="btn" style="background:#fff;color:var(--accent);font-weight:700;" onclick="switchTabByName('payment')">Unlock Full Report →</button>
+    </div>`;
 }
 
+function renderAnalysisError(msg) {
+  document.getElementById('free-preview').innerHTML = `
+    <div class="analyse-error">
+      <h3>⚠️ Could not analyse document</h3>
+      <p>${msg}</p>
+      <p style="margin-top:10px;">Try uploading a different file, or ensure your Form 16 is not password-protected.</p>
+      <button class="btn btn-primary" style="margin-top:16px;" onclick="switchTabByName('upload')">← Back to Upload</button>
+    </div>`;
+}
+
+// ── PAYMENT ─────────────────────────────────────────────────
 function selectPlan(card, price, planName) {
-  document.querySelectorAll('.plan-card').forEach(c => {
-    c.style.borderColor = '';
-    c.style.boxShadow = '';
-  });
+  document.querySelectorAll('.plan-card').forEach(c => { c.style.borderColor = ''; c.style.boxShadow = ''; });
   card.style.borderColor = 'var(--accent)';
   card.style.boxShadow = '0 0 0 3px rgba(26,110,245,0.15)';
   state.selectedPlan = { name: planName, price: Number(price) };
@@ -976,82 +729,48 @@ function selectPay(el) {
   el.classList.add('active');
 }
 
-// ═══════════════════════════════════════════════════════════
-// RAZORPAY — REAL PAYMENT
-// ═══════════════════════════════════════════════════════════
 async function initiatePayment() {
   const btn = document.getElementById('pay-cta');
   const { name: planName, price } = state.selectedPlan;
-
-  btn.textContent = '⏳ Connecting...';
-  btn.disabled = true;
-
+  btn.textContent = '⏳ Connecting...'; btn.disabled = true;
   try {
     const orderRes = await fetch(`${BACKEND_URL}/api/create-order`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ amount: price, plan: planName, pan: state.pan }),
     });
-
-    if (!orderRes.ok) {
-      const err = await orderRes.json().catch(() => ({}));
-      throw new Error(err.error || `Server error ${orderRes.status}`);
-    }
-
+    if (!orderRes.ok) { const e = await orderRes.json().catch(() => ({})); throw new Error(e.error || `Server error ${orderRes.status}`); }
     const order = await orderRes.json();
-
-    const options = {
-      key: order.key_id,
-      amount: order.amount,
-      currency: order.currency,
-      name: 'SalaryBit Tax AI',
-      description: planName,
-      image: 'https://salarybit.in/favicon.ico',
-      order_id: order.order_id,
+    const rzp = new Razorpay({
+      key: order.key_id, amount: order.amount, currency: order.currency,
+      name: 'SalaryBit Tax AI', description: planName,
+      image: 'https://salarybit.in/favicon.ico', order_id: order.order_id,
       prefill: { name: '', email: '', contact: '' },
-      notes: { pan: state.pan, plan: planName },
-      theme: { color: '#1a6ef5' },
-      handler: async function(response) {
-        await verifyAndUnlock(response);
-      },
-      modal: {
-        ondismiss: function() {
-          btn.textContent = `Pay ₹${price} Securely →`;
-          btn.disabled = false;
-        }
-      }
-    };
-
-    const rzp = new Razorpay(options);
+      notes: { pan: state.pan, plan: planName }, theme: { color: '#1a6ef5' },
+      handler: async function(response) { await verifyAndUnlock(response); },
+      modal: { ondismiss: function() { btn.textContent = `Pay ₹${price} Securely →`; btn.disabled = false; } }
+    });
     rzp.on('payment.failed', function(resp) {
-      alert('Payment failed: ' + resp.error.description + '\nPlease try again.');
-      btn.textContent = `Pay ₹${price} Securely →`;
-      btn.disabled = false;
+      alert('Payment failed: ' + resp.error.description);
+      btn.textContent = `Pay ₹${price} Securely →`; btn.disabled = false;
     });
     rzp.open();
-
   } catch (err) {
-    console.error('Payment error:', err);
-    alert('Could not connect to payment gateway.\n\n' + err.message + '\n\nCheck that your Railway backend is running and env vars are set.');
-    btn.textContent = `Pay ₹${price} Securely →`;
-    btn.disabled = false;
+    alert('Could not connect to payment gateway.\n\n' + err.message);
+    btn.textContent = `Pay ₹${price} Securely →`; btn.disabled = false;
   }
 }
 
 async function verifyAndUnlock(razorpayResponse) {
   try {
     const res = await fetch(`${BACKEND_URL}/api/verify-payment`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         razorpay_order_id: razorpayResponse.razorpay_order_id,
         razorpay_payment_id: razorpayResponse.razorpay_payment_id,
         razorpay_signature: razorpayResponse.razorpay_signature,
       }),
     });
-
     const result = await res.json();
-
     if (result.verified) {
       state.paid = true;
       state.paymentId = result.payment_id;
@@ -1059,27 +778,48 @@ async function verifyAndUnlock(razorpayResponse) {
       localStorage.setItem('sb_access_token', result.access_token);
       localStorage.setItem('sb_payment_id', result.payment_id);
       localStorage.setItem('sb_plan', state.selectedPlan.name);
-
       document.getElementById('pre-payment').style.display = 'none';
       document.getElementById('post-payment').style.display = 'block';
+      renderPostPaymentList();
       unlockChatTab();
     } else {
       alert('Payment verification failed. If amount was deducted, email support@salarybit.in with ID: ' + razorpayResponse.razorpay_payment_id);
     }
   } catch (err) {
-    console.error('Verify error:', err);
     alert('Verification error. If amount was deducted, email support@salarybit.in');
+  }
+}
+
+// ── CHANGED: renderPostPaymentList — uses real analysisResult
+function renderPostPaymentList() {
+  const d = state.analysisResult;
+  const fmt = n => '₹' + Number(n || 0).toLocaleString('en-IN');
+  const listEl = document.getElementById('post-payment-list');
+  if (!listEl) return;
+
+  if (d) {
+    const isRefund = (d.refund_estimate || 0) >= 0;
+    listEl.innerHTML = `
+      <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> Gross Salary: <strong>${fmt(d.gross_salary)}</strong></li>
+      <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> ${isRefund ? 'Refund due' : 'Tax payable'}: <strong>${fmt(Math.abs(d.refund_estimate || 0))}</strong></li>
+      <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> Recommended: <strong>${d.recommended_regime === 'new' ? 'New Regime' : 'Old Regime'}</strong>${d.regime_saving ? ` — save ${fmt(d.regime_saving)}` : ''}</li>
+      <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> Unclaimed deductions: <strong>${fmt(d.unclaimed_deductions)}</strong></li>
+      <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> Tax Health Score: <strong>${d.health_score}/100</strong></li>
+      <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> PDF report ready to download</li>
+      <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> AI Tax Chat unlocked</li>`;
+  } else {
+    listEl.innerHTML = `
+      <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> Full tax analysis unlocked</li>
+      <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> PDF report ready to download</li>
+      <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> AI Tax Chat unlocked</li>`;
   }
 }
 
 function unlockChatTab() {
   const chatTab = document.querySelector('.app-tab:last-child');
-  if (chatTab) {
-    chatTab.innerHTML = '🤖 AI Chat <span style="font-size:9px;background:var(--green);color:#fff;padding:1px 5px;border-radius:99px;margin-left:3px;">LIVE</span>';
-  }
+  if (chatTab) chatTab.innerHTML = '🤖 AI Chat <span style="font-size:9px;background:var(--green);color:#fff;padding:1px 5px;border-radius:99px;margin-left:3px;">LIVE</span>';
 }
 
-// On page load — restore paid state
 window.addEventListener('DOMContentLoaded', () => {
   if (localStorage.getItem('sb_pan')) {
     document.getElementById('panInput').value = localStorage.getItem('sb_pan');
@@ -1089,17 +829,14 @@ window.addEventListener('DOMContentLoaded', () => {
     unlockChatTab();
     document.getElementById('pre-payment').style.display = 'none';
     document.getElementById('post-payment').style.display = 'block';
+    renderPostPaymentList();
   }
 });
 
 // ═══════════════════════════════════════════════════════════
-// CLAUDE AI CHAT — REAL API
+// AI CHAT — CHANGED: uses state.analysisResult for real context
 // ═══════════════════════════════════════════════════════════
-async function askQuestion(el) {
-  const q = el.textContent.trim();
-  addMessage(q, 'user');
-  await callClaude(q);
-}
+async function askQuestion(el) { const q = el.textContent.trim(); addMessage(q, 'user'); await callClaude(q); }
 
 async function sendChat() {
   const input = document.getElementById('chatInput');
@@ -1110,8 +847,8 @@ async function sendChat() {
   await callClaude(q);
 }
 
+// ── CHANGED: callClaude — builds context from state.analysisResult
 async function callClaude(message) {
-  // Limit free demo to 3 questions
   if (!state.paid) {
     state.chatQuestionCount++;
     if (state.chatQuestionCount > 3) {
@@ -1123,29 +860,49 @@ async function callClaude(message) {
   const typingId = showTyping();
   state.chatHistory.push({ role: 'user', content: message });
 
-  const context = state.paid
-    ? { plan: localStorage.getItem('sb_plan') || 'Smart Tax Report', income: '₹9,80,000', tds: '₹58,450', refund: '₹6,280 refund due', regime: 'New Regime recommended', savings: '₹22,400 unclaimed deductions' }
-    : { plan: 'Demo', income: 'not uploaded', tds: 'not uploaded', refund: 'not calculated', regime: 'not determined', savings: 'not calculated' };
+  // Build context from real analysis data if available
+  let context;
+  if (state.analysisResult) {
+    const d = state.analysisResult;
+    context = {
+      plan: localStorage.getItem('sb_plan') || state.selectedPlan.name,
+      gross_salary: d.gross_salary,
+      tds_deducted: d.tds_deducted,
+      net_taxable_income: d.net_taxable_income,
+      refund_estimate: d.refund_estimate,
+      recommended_regime: d.recommended_regime,
+      regime_saving: d.regime_saving,
+      unclaimed_deductions: d.unclaimed_deductions,
+      health_score: d.health_score,
+      employer_name: d.employer_name,
+      assessment_year: d.assessment_year,
+      standard_deduction: d.standard_deduction,
+      professional_tax: d.professional_tax,
+      hra_exempt: d.hra_exempt,
+      summary: d.summary,
+    };
+  } else {
+    context = {
+      plan: state.paid ? (localStorage.getItem('sb_plan') || 'Smart Tax Report') : 'Demo',
+      gross_salary: null, tds_deducted: null, net_taxable_income: null,
+      refund_estimate: null, recommended_regime: null, unclaimed_deductions: null,
+    };
+  }
 
   try {
     const res = await fetch(`${BACKEND_URL}/api/tax-chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message, history: state.chatHistory.slice(-10), context }),
     });
-
     removeTyping(typingId);
-
     if (!res.ok) throw new Error(`API error ${res.status}`);
     const data = await res.json();
     const reply = data.reply || 'Sorry, no response. Please try again.';
     state.chatHistory.push({ role: 'assistant', content: reply });
     addMessage(reply, 'ai');
-
     if (!state.paid && state.chatQuestionCount === 2) {
       setTimeout(() => addMessage('💡 1 free question left. <a href="#" onclick="switchTabByName(\'payment\')" style="color:var(--accent);font-weight:700;">Upgrade for unlimited →</a>', 'ai'), 800);
     }
-
   } catch (err) {
     removeTyping(typingId);
     state.chatHistory.pop();
@@ -1157,25 +914,20 @@ function showTyping() {
   const msgs = document.getElementById('chatMessages');
   const div = document.createElement('div');
   const id = 'typing_' + Date.now();
-  div.id = id;
-  div.className = 'chat-bubble ai';
+  div.id = id; div.className = 'chat-bubble ai';
   div.innerHTML = '<div class="chat-tag">SalaryBit Tax AI</div><span style="opacity:0.5;font-size:13px;">Thinking...</span>';
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
+  msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
   return id;
 }
 
-function removeTyping(id) {
-  const el = document.getElementById(id);
-  if (el) el.remove();
-}
+function removeTyping(id) { const el = document.getElementById(id); if (el) el.remove(); }
 
 function addMessage(html, type) {
   const msgs = document.getElementById('chatMessages');
   const div = document.createElement('div');
   div.className = 'chat-bubble ' + type;
-  div.innerHTML = type === 'ai' ? `<div class="chat-tag">SalaryBit Tax AI</div>${html}` : '';
-  if (type !== 'ai') div.textContent = html;
+  if (type === 'ai') div.innerHTML = `<div class="chat-tag">SalaryBit Tax AI</div>${html}`;
+  else div.textContent = html;
   msgs.appendChild(div);
   msgs.scrollTop = msgs.scrollHeight;
 }

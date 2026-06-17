@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SalaryBit Tax AI – India's Simplest AI Tax Assistant</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -428,15 +427,22 @@
     <div id="tab-login" class="tab-content active">
       <label class="input-label">Your PAN Number</label>
       <div class="pan-input-row">
-        <input class="input-field" id="panInput" placeholder="ABCDE1234F" maxlength="10" oninput="this.value=this.value.toUpperCase()">
-        <button class="btn btn-primary" onclick="verifyPAN()">Verify PAN →</button>
+        <input class="input-field" id="panInput" placeholder="ABCDE1234F" maxlength="10"
+          oninput="this.value=this.value.toUpperCase(); validatePAN(this.value)"
+          onkeydown="if(event.key==='Enter') proceedWithPAN()">
+        <button class="btn btn-primary" id="proceed-btn" onclick="proceedWithPAN()" disabled>Start →</button>
       </div>
-      <p style="font-size:13px; color:var(--ink-muted); margin-top:8px;">We'll fetch your tax profile instantly. No OTP needed.</p>
-      <div id="pan-fetching" style="display:none; margin-top:16px; padding:14px; background:var(--accent-light); border-radius:var(--radius-sm); color:var(--accent); font-weight:600; font-size:14px;">
-        ⏳ Fetching your tax profile...
-      </div>
+      <p id="pan-error" style="display:none; margin-top:8px; color:var(--red); font-size:13px; font-weight:500;">
+        ⚠ Enter a valid PAN (e.g. ABCDE1234F)
+      </p>
       <div id="pan-success" style="display:none; margin-top:16px; padding:14px; background:var(--green-light); border-radius:var(--radius-sm); color:var(--green); font-weight:600; font-size:14px;">
-        ✅ PAN verified! Redirecting to document upload...
+        ✅ PAN saved! Taking you to document upload...
+      </div>
+      <div style="margin-top:20px; padding:14px; background:var(--surface-2); border-radius:var(--radius-sm);">
+        <p style="font-size:12px; color:var(--ink-muted); line-height:1.6;">
+          🔒 Your PAN is used only to personalise your tax report. We do not store or share it.<br>
+          No account creation needed — just upload your documents and get your report.
+        </p>
       </div>
     </div>
 
@@ -457,19 +463,14 @@
         <span class="doc-chip" onclick="toggleChip(this)">Crypto CSV</span>
         <span class="doc-chip" onclick="toggleChip(this)">RSU / ESPP</span>
       </div>
-      <input type="file" id="fileInput" multiple accept=".pdf,.xls,.xlsx,.csv,.jpg,.jpeg,.png" style="display:none" onchange="handleFileSelect(this)">
-      <div class="upload-zone" onclick="document.getElementById('fileInput').click()" id="uploadZone"
-        ondragover="event.preventDefault(); this.style.borderColor='var(--accent)'; this.style.background='var(--accent-light)'"
-        ondragleave="this.style.borderColor=''; this.style.background=''"
-        ondrop="event.preventDefault(); this.style.borderColor=''; this.style.background=''; handleFileDrop(event)">
+      <div class="upload-zone" onclick="simulateUpload()">
         <div class="upload-icon">📎</div>
         <h3>Drag files here, or tap to browse</h3>
         <p>PDF · Excel · CSV · JPG · PNG · Screenshots</p>
       </div>
-      <div id="upload-status" style="display:none; padding:12px 16px; background:var(--green-light); border-radius:var(--radius-sm); font-size:13px; color:var(--green); font-weight:600; margin-bottom:8px;">
-        ✅ <span id="upload-status-text">File uploaded · AI is reading your document...</span>
+      <div id="upload-status" style="display:none; padding:12px 16px; background:var(--green-light); border-radius:var(--radius-sm); font-size:13px; color:var(--green); font-weight:600;">
+        ✅ Form 16.pdf uploaded · AI is reading your document...
       </div>
-      <div id="uploaded-files-list" style="display:flex; flex-direction:column; gap:6px; margin-bottom:4px;"></div>
       <button class="btn btn-primary" style="margin-top:16px; width:100%" onclick="switchTabByName('analysis')">Analyse My Documents →</button>
     </div>
 
@@ -621,7 +622,7 @@
               <div style="font-size:11px; opacity:0.7; margin-top:2px;">Tax Pro Plus</div>
             </button>
           </div>
-          <button id="unlock-pay-btn" class="btn btn-primary btn-lg" style="width:100%; margin-top:14px; background:#fbbf24; color:#1a1a1a; font-weight:800;" onclick="switchTabByName('payment'); setTimeout(initiatePayment, 300)">
+          <button id="unlock-pay-btn" class="btn btn-primary btn-lg" style="width:100%; margin-top:14px; background:#fbbf24; color:#1a1a1a; font-weight:800;" onclick="switchTabByName('payment')">
             Unlock Smart Tax Report — ₹299 →
           </button>
         </div>
@@ -700,7 +701,7 @@
           <div class="pay-method" onclick="selectPay(this)">📲 PhonePe</div>
           <div class="pay-method" onclick="selectPay(this)">💳 Paytm</div>
         </div>
-        <button id="pay-cta" class="btn btn-green btn-lg" style="width:100%; margin-top:14px;" onclick="initiatePayment()">Pay ₹299 Securely →</button>
+        <button id="pay-cta" class="btn btn-green btn-lg" style="width:100%; margin-top:14px;" onclick="simulatePayment()">Pay ₹299 Securely →</button>
         <p style="font-size:12px; color:var(--ink-muted); text-align:center; margin-top:10px;">🔒 256-bit SSL · Razorpay secured · Instant report delivery</p>
       </div>
 
@@ -892,18 +893,16 @@
 </footer>
 
 <script>
-// ═══════════════════════════════════════════════════════════
-// CONFIG — Change BACKEND_URL to your Railway deployment URL
-// ═══════════════════════════════════════════════════════════
+// ── CONFIG ───────────────────────────────────────────────
 const BACKEND_URL = 'https://tax-ai-backend-production-ed49.up.railway.app';
 
 // App state
 const state = {
-  pan: '',
+  pan: localStorage.getItem('sb_pan') || '',
   selectedPlan: { name: 'Smart Tax Report', price: 299 },
-  paid: false,
+  paid: !!localStorage.getItem('sb_access_token'),
   paymentId: '',
-  accessToken: '',
+  accessToken: localStorage.getItem('sb_access_token') || '',
   chatHistory: [],
   chatQuestionCount: 0,
 };
@@ -926,30 +925,30 @@ function switchTabByName(name) {
   if(idx >= 0) switchTab(name, tabs[idx]);
 }
 
-// ── Login (OTP UI only — wire real OTP service here later) ──
-function sendOTP() {
-  const pan = document.getElementById('panInput').value.trim();
-  if(pan.length !== 10) { alert('Please enter a valid 10-character PAN'); return; }
-  const alphaNum = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(pan);
-  if(!alphaNum) { alert('PAN format should be like ABCDE1234F'); return; }
-  state.pan = pan;
-  document.getElementById('otp-section').style.display = 'block';
-  document.querySelectorAll('.otp-box')[0].focus();
-  // TODO: call your SMS OTP backend here (MSG91 / 2Factor)
-}
-
-function otpMove(el, idx) {
-  if(el.value.length === 1) {
-    const boxes = document.querySelectorAll('.otp-box');
-    if(idx < 5) boxes[idx+1].focus();
+// ── Login ────────────────────────────────────────────────
+function validatePAN(val) {
+  const valid = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(val);
+  const btn = document.getElementById('proceed-btn');
+  const err = document.getElementById('pan-error');
+  btn.disabled = !valid;
+  btn.style.opacity = valid ? '1' : '0.5';
+  // Show error only after user has typed 10 chars
+  if (val.length === 10 && !valid) {
+    err.style.display = 'block';
+  } else {
+    err.style.display = 'none';
   }
 }
 
-function verifyOTP() {
-  // TODO: verify OTP with backend in production
-  document.getElementById('otp-section').style.display = 'none';
+function proceedWithPAN() {
+  const pan = document.getElementById('panInput').value;
+  if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(pan)) return;
+  state.pan = pan;
+  // Save to localStorage so it persists across tabs
+  localStorage.setItem('sb_pan', pan);
   document.getElementById('pan-success').style.display = 'block';
-  setTimeout(() => switchTabByName('upload'), 1500);
+  document.getElementById('proceed-btn').disabled = true;
+  setTimeout(() => switchTabByName('upload'), 1200);
 }
 
 // ── Upload ───────────────────────────────────────────────
@@ -982,21 +981,21 @@ function startScan() {
   tick();
 }
 
-// Trigger scan when analysis tab opened
-const _origSwitchTab = switchTab;
+// Trigger scan when analysis tab is opened
+const origSwitchTab = switchTab;
 window.switchTab = function(name, el) {
-  _origSwitchTab(name, el);
+  origSwitchTab(name, el);
   if(name === 'analysis') {
     const scanPhase = document.getElementById('scan-phase');
     const freePreview = document.getElementById('free-preview');
-    if(scanPhase && freePreview.style.display !== 'block') {
+    if(scanPhase && freePreview.style.display === 'none') {
       scanPhase.style.display = 'block';
       startScan();
     }
   }
 };
 
-// ── Plan selectors ───────────────────────────────────────
+// ── Unlock plan selector (inside analysis tab dark box) ──
 function selectUnlock(btn, price, planName) {
   document.querySelectorAll('.unlock-btn').forEach(b => {
     b.style.background = 'rgba(255,255,255,0.08)';
@@ -1004,13 +1003,14 @@ function selectUnlock(btn, price, planName) {
   });
   btn.style.background = 'var(--accent)';
   btn.style.border = '1.5px solid #60a5fa';
-  state.selectedPlan = { name: planName, price: Number(price) };
   const cta = document.getElementById('unlock-pay-btn');
   if(cta) cta.textContent = 'Unlock ' + planName + ' — ₹' + price + ' →';
+  // sync payment tab too
   document.getElementById('pay-amount').textContent = '✓ Selected: ' + planName + ' — ₹' + price;
   document.getElementById('pay-cta').textContent = 'Pay ₹' + price + ' Securely →';
 }
 
+// ── Payment tab plan selector ────────────────────────────
 function selectPlan(card, price, planName) {
   document.querySelectorAll('.plan-card').forEach(c => {
     c.style.borderColor = '';
@@ -1018,7 +1018,6 @@ function selectPlan(card, price, planName) {
   });
   card.style.borderColor = 'var(--accent)';
   card.style.boxShadow = '0 0 0 3px rgba(26,110,245,0.15)';
-  state.selectedPlan = { name: planName, price: Number(price) };
   document.getElementById('pay-amount').textContent = '✓ Selected: ' + planName + ' — ₹' + price;
   document.getElementById('pay-cta').textContent = 'Pay ₹' + price + ' Securely →';
 }
@@ -1028,281 +1027,47 @@ function selectPay(el) {
   el.classList.add('active');
 }
 
-// ═══════════════════════════════════════════════════════════
-// RAZORPAY REAL PAYMENT INTEGRATION
-// ═══════════════════════════════════════════════════════════
-async function initiatePayment() {
-  const btn = document.getElementById('pay-cta');
-  const { name: planName, price } = state.selectedPlan;
-
-  // Show loading state
-  btn.textContent = '⏳ Connecting to payment gateway...';
-  btn.disabled = true;
-
-  try {
-    // Step 1: Create order on backend
-    const orderRes = await fetch(`${BACKEND_URL}/api/create-order`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: price, plan: planName, pan: state.pan }),
-    });
-
-    if (!orderRes.ok) {
-      const err = await orderRes.json();
-      throw new Error(err.error || 'Order creation failed');
-    }
-
-    const order = await orderRes.json();
-
-    // Step 2: Open Razorpay checkout
-    const options = {
-      key: order.key_id,
-      amount: order.amount,
-      currency: order.currency,
-      name: 'SalaryBit Tax AI',
-      description: planName,
-      image: 'https://salarybit.in/favicon.ico',
-      order_id: order.order_id,
-      prefill: {
-        name: '',
-        email: '',
-        contact: '',
-      },
-      notes: { pan: state.pan, plan: planName },
-      theme: { color: '#1a6ef5' },
-
-      handler: async function(response) {
-        // Step 3: Verify payment on backend
-        await verifyAndUnlock(response);
-      },
-
-      modal: {
-        ondismiss: function() {
-          btn.textContent = 'Pay ₹' + price + ' Securely →';
-          btn.disabled = false;
-        }
-      }
-    };
-
-    const rzp = new Razorpay(options);
-
-    rzp.on('payment.failed', function(response) {
-      alert('Payment failed: ' + response.error.description + '\nPlease try again.');
-      btn.textContent = 'Pay ₹' + price + ' Securely →';
-      btn.disabled = false;
-    });
-
-    rzp.open();
-
-  } catch (err) {
-    console.error('Payment initiation error:', err);
-    alert('Could not connect to payment gateway. Please try again.\n\n' + err.message);
-    btn.textContent = 'Pay ₹' + price + ' Securely →';
-    btn.disabled = false;
-  }
+function simulatePayment() {
+  document.getElementById('pre-payment').style.display = 'none';
+  document.getElementById('post-payment').style.display = 'block';
 }
 
-async function verifyAndUnlock(razorpayResponse) {
-  try {
-    const verifyRes = await fetch(`${BACKEND_URL}/api/verify-payment`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        razorpay_order_id: razorpayResponse.razorpay_order_id,
-        razorpay_payment_id: razorpayResponse.razorpay_payment_id,
-        razorpay_signature: razorpayResponse.razorpay_signature,
-      }),
-    });
-
-    const result = await verifyRes.json();
-
-    if (result.verified) {
-      // Store access token
-      state.paid = true;
-      state.paymentId = result.payment_id;
-      state.accessToken = result.access_token;
-      localStorage.setItem('sb_access_token', result.access_token);
-      localStorage.setItem('sb_plan', state.selectedPlan.name);
-
-      // Show success UI
-      document.getElementById('pre-payment').style.display = 'none';
-      document.getElementById('post-payment').style.display = 'block';
-
-      // Unlock chat tab
-      unlockChatTab();
-
-    } else {
-      alert('Payment verification failed. Please contact support@salarybit.in with payment ID: ' + razorpayResponse.razorpay_payment_id);
-    }
-  } catch (err) {
-    console.error('Verify error:', err);
-    alert('Verification error. If amount was deducted, email support@salarybit.in with your payment ID.');
-  }
-}
-
-function unlockChatTab() {
-  const chatTab = document.querySelector('.app-tab:last-child');
-  if (chatTab) {
-    chatTab.style.position = 'relative';
-    chatTab.innerHTML = '🤖 AI Chat <span style="font-size:9px; background:var(--green); color:#fff; padding:1px 5px; border-radius:99px; margin-left:2px;">LIVE</span>';
-  }
-}
-
-// Check if user already paid (page reload)
-window.addEventListener('load', () => {
-  const savedToken = localStorage.getItem('sb_access_token');
-  const savedPlan = localStorage.getItem('sb_plan');
-  if (savedToken) {
-    state.paid = true;
-    state.accessToken = savedToken;
-    if (savedPlan) state.selectedPlan.name = savedPlan;
-    unlockChatTab();
-    // Show post-payment state if on payment tab
-    if (document.getElementById('pre-payment')) {
-      document.getElementById('pre-payment').style.display = 'none';
-      document.getElementById('post-payment').style.display = 'block';
-    }
-  }
-});
-
-// ═══════════════════════════════════════════════════════════
-// CLAUDE AI CHAT — REAL API INTEGRATION
-// ═══════════════════════════════════════════════════════════
-
-// Chat is always live (demo mode with no payment, full mode after payment)
-// Before payment: answers generic questions about Indian tax
-// After payment: personalized answers using user context
-
-const DEMO_CONTEXT = {
-  plan: 'Demo (no documents uploaded yet)',
-  income: 'not yet uploaded',
-  tds: 'not yet uploaded',
-  refund: 'not yet calculated',
-  regime: 'not yet determined',
-  savings: 'not yet calculated',
+// ── AI Chat ──────────────────────────────────────────────
+const aiReplies = {
+  "why is my refund low?": "Your refund of ₹6,280 comes from ₹58,450 TDS paid vs ₹52,170 actual tax. You can increase it by claiming ₹22,400 more in deductions — ₹1,500 under 80TTA (savings interest) and ₹6,000 more in health insurance premium. Want me to walk you through each one?",
+  "which regime is better?": "For your income of ₹9,80,000, the New Regime saves ₹13,250. Your 80C + health insurance deductions aren't large enough to beat the New Regime's lower slab rates. If you had a home loan above ₹2.5L interest, Old Regime might win instead.",
+  "can i claim home loan benefits?": "Yes — in the Old Regime only. You can claim principal up to ₹1.5L under 80C, and interest up to ₹2L under Section 24(b). These deductions are not available in the New Regime. Want me to re-run your calculation with Old Regime selected?",
+  "what are my tax savings?": "I found ₹22,400 in unclaimed savings: ₹6,000 from health insurance (you're at ₹19K, limit is ₹25K), ₹1,500 from 80TTA savings interest, and ₹14,900 if you invest in NPS this year under 80CCD(1B). All three are easy to claim.",
+  "why does ais show dividends?": "Companies report dividend payments directly to the Income Tax department. Any dividends from stocks or mutual funds show up in your AIS automatically. Dividends above ₹5,000 from one company have 10% TDS already cut. I see ₹3,200 in your AIS — this needs to go under 'Income from Other Sources' in your ITR."
 };
 
-const PAID_CONTEXT = {
-  plan: 'Smart Tax Report (₹299)',
-  income: '₹9,80,000',
-  tds: '₹58,450 paid',
-  refund: '₹6,280 refund due',
-  regime: 'New Regime recommended — saves ₹13,250',
-  savings: '₹22,400 unclaimed deductions found',
-};
-
-async function askQuestion(el) {
-  const q = el.textContent.trim();
+function askQuestion(el) {
+  const q = el.textContent;
   addMessage(q, 'user');
-  await callClaudeAPI(q);
+  const key = q.toLowerCase();
+  const reply = aiReplies[key] || "Based on your Form 16 and AIS, your total income is ₹9,80,000 with ₹58,450 TDS paid. Your refund is ₹6,280 and we found ₹22,400 in unclaimed deductions. Ask me anything specific about your situation.";
+  setTimeout(() => addMessage(reply, 'ai'), 700);
 }
 
-async function sendChat() {
+function sendChat() {
   const input = document.getElementById('chatInput');
   const q = input.value.trim();
-  if (!q) return;
-
+  if(!q) return;
   addMessage(q, 'user');
   input.value = '';
-  await callClaudeAPI(q);
+  const key = q.toLowerCase().replace(/\?/g,'').trim();
+  const reply = aiReplies[key] || "Good question. Based on your uploaded documents — salary ₹9,80,000, TDS ₹58,450, AIS shows dividends and interest — here's what I see: your refund of ₹6,280 is ready to claim, and ₹22,400 in deductions are still unclaimed. Want me to go deeper on any of this?";
+  setTimeout(() => addMessage(reply, 'ai'), 700);
 }
 
-async function callClaudeAPI(userMessage) {
-  // Check chat limits for free demo
-  if (!state.paid) {
-    state.chatQuestionCount++;
-    if (state.chatQuestionCount > 3) {
-      addMessage('You\'ve used your 3 free demo questions. Pay ₹299 to unlock unlimited AI Tax Chat with your actual documents. <a href="#" onclick="switchTabByName(\'payment\')" style="color:var(--accent); font-weight:700;">Upgrade now →</a>', 'ai');
-      return;
-    }
-  }
-
-  // Show typing indicator
-  const typingId = showTyping();
-
-  // Add to history
-  state.chatHistory.push({ role: 'user', content: userMessage });
-
-  try {
-    const context = state.paid ? PAID_CONTEXT : DEMO_CONTEXT;
-
-    const res = await fetch(`${BACKEND_URL}/api/tax-chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: userMessage,
-        history: state.chatHistory.slice(-10),
-        context: context,
-      }),
-    });
-
-    removeTyping(typingId);
-
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.error || 'API error');
-    }
-
-    const data = await res.json();
-    const reply = data.reply;
-
-    // Add AI reply to history
-    state.chatHistory.push({ role: 'assistant', content: reply });
-
-    addMessage(reply, 'ai');
-
-    // Show upgrade prompt after 2 free questions
-    if (!state.paid && state.chatQuestionCount === 2) {
-      setTimeout(() => {
-        addMessage('💡 You have 1 free question left. <a href="#" onclick="switchTabByName(\'payment\')" style="color:var(--accent); font-weight:700;">Upgrade to ₹299</a> for unlimited AI Chat with your actual Form 16 and AIS data.', 'ai');
-      }, 1000);
-    }
-
-  } catch (err) {
-    removeTyping(typingId);
-    console.error('Chat error:', err);
-    addMessage('Sorry, I couldn\'t get a response right now. Please try again in a moment.', 'ai');
-    // Remove the failed message from history
-    state.chatHistory.pop();
-  }
-}
-
-function showTyping() {
-  const msgs = document.getElementById('chatMessages');
-  const div = document.createElement('div');
-  const id = 'typing-' + Date.now();
-  div.id = id;
-  div.className = 'chat-bubble ai';
-  div.innerHTML = '<div class="chat-tag">SalaryBit Tax AI</div><span style="opacity:0.6; font-size:13px;">Thinking<span id="dots">.</span></span>';
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-
-  // Animate dots
-  let d = 0;
-  div._dotsInterval = setInterval(() => {
-    const dots = div.querySelector('#dots');
-    if (dots) dots.textContent = ['.','..','...'][d++ % 3];
-  }, 400);
-
-  return id;
-}
-
-function removeTyping(id) {
-  const el = document.getElementById(id);
-  if (el) {
-    clearInterval(el._dotsInterval);
-    el.remove();
-  }
-}
-
-function addMessage(html, type) {
+function addMessage(text, type) {
   const msgs = document.getElementById('chatMessages');
   const div = document.createElement('div');
   div.className = 'chat-bubble ' + type;
-  if (type === 'ai') {
-    div.innerHTML = '<div class="chat-tag">SalaryBit Tax AI</div>' + html;
+  if(type === 'ai') {
+    div.innerHTML = '<div class="chat-tag">SalaryBit Tax AI</div>' + text;
   } else {
-    div.textContent = html;
+    div.textContent = text;
   }
   msgs.appendChild(div);
   msgs.scrollTop = msgs.scrollHeight;

@@ -490,157 +490,20 @@
     <!-- ANALYSIS TAB -->
     <div id="tab-analysis" class="tab-content">
 
-      <!-- PHASE 1: Scanning animation (shown briefly) -->
+      <!-- PHASE 1: AI Reading animation -->
       <div id="scan-phase" style="text-align:center; padding:20px 0;">
         <div style="font-size:36px; margin-bottom:12px;">🔍</div>
         <div style="font-size:15px; font-weight:700; color:var(--ink); margin-bottom:6px;">AI is reading your documents...</div>
-        <div style="font-size:13px; color:var(--ink-muted); margin-bottom:20px;">This usually takes 10–15 seconds</div>
+        <div style="font-size:13px; color:var(--ink-muted); margin-bottom:20px;">This usually takes 10–20 seconds</div>
         <div style="background:var(--surface-2); border-radius:99px; height:8px; overflow:hidden; max-width:320px; margin:0 auto;">
-          <div id="scan-bar" style="height:100%; background:var(--accent); border-radius:99px; width:0%; transition:width 0.4s;"></div>
+          <div id="scan-bar" style="height:100%; background:var(--accent); border-radius:99px; width:0%; transition:width 0.5s;"></div>
         </div>
         <div id="scan-status" style="font-size:12px; color:var(--ink-muted); margin-top:10px;">Starting analysis...</div>
       </div>
 
-      <!-- PHASE 2: Free preview results -->
+      <!-- PHASE 2: Real results rendered here by JS -->
       <div id="free-preview" style="display:none;">
-
-        <!-- AI Confidence -->
-        <div style="display:flex; align-items:center; justify-content:space-between; background:var(--accent-light); border-radius:var(--radius-sm); padding:12px 16px; margin-bottom:18px;">
-          <div style="font-size:13px; font-weight:700; color:var(--accent);">🤖 AI Confidence Score</div>
-          <div style="font-size:20px; font-weight:800; color:var(--accent);">93%</div>
-        </div>
-
-        <!-- Document Status -->
-        <div style="margin-bottom:20px;">
-          <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-muted); margin-bottom:10px;">Documents Detected</div>
-          <ul class="checks-list" style="gap:6px;">
-            <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> Form 16 detected</li>
-            <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> AIS uploaded</li>
-            <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> Form 26AS uploaded</li>
-            <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> Broker statement detected</li>
-          </ul>
-        </div>
-
-        <!-- Income Sources -->
-        <div style="margin-bottom:20px;">
-          <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-muted); margin-bottom:10px;">Income Sources Found</div>
-          <ul class="checks-list" style="gap:6px;">
-            <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> Salary income found</li>
-            <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> Dividend income found</li>
-            <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">✅</span> Interest income found</li>
-            <li class="check-item warn" style="padding:8px 12px;"><span class="check-icon">⚠️</span> Capital gains transactions found</li>
-          </ul>
-        </div>
-
-        <!-- Potential Findings -->
-        <div style="margin-bottom:20px;">
-          <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-muted); margin-bottom:10px;">Potential Findings</div>
-          <ul class="checks-list" style="gap:6px;">
-            <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">💰</span> Possible refund opportunity detected</li>
-            <li class="check-item ok" style="padding:8px 12px;"><span class="check-icon">💡</span> Tax saving opportunities detected</li>
-            <li class="check-item warn" style="padding:8px 12px;"><span class="check-icon">📈</span> Capital gains analysis required</li>
-            <li class="check-item issue" style="padding:8px 12px;"><span class="check-icon">🚨</span> 2 potential issues found</li>
-          </ul>
-        </div>
-
-        <!-- Score + Readiness Row -->
-        <div class="summary-grid" style="margin-bottom:20px;">
-          <div class="summary-card" style="text-align:center; position:relative; overflow:hidden;">
-            <div class="sc-label">Tax Health Score</div>
-            <div style="font-size:36px; font-weight:800; color:var(--ink); margin:4px 0;">78<span style="font-size:16px; color:var(--ink-muted); font-weight:500;">/100</span></div>
-            <div style="font-size:11px; color:var(--ink-muted); margin-bottom:8px;">Preview only</div>
-            <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to bottom, transparent, rgba(255,255,255,0.95)); padding:14px 10px 10px; backdrop-filter:blur(2px);">
-              <div style="display:flex; align-items:center; gap:4px; justify-content:center; font-size:11px; color:var(--ink-muted);">🔒 Detailed reasons locked</div>
-            </div>
-          </div>
-          <div class="summary-card" style="text-align:center; position:relative; overflow:hidden;">
-            <div class="sc-label">Filing Readiness</div>
-            <div style="font-size:36px; font-weight:800; color:var(--ink); margin:4px 0;">65<span style="font-size:16px; color:var(--ink-muted); font-weight:500;">%</span></div>
-            <div style="font-size:11px; color:var(--ink-muted); margin-bottom:8px;">Preview only</div>
-            <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to bottom, transparent, rgba(255,255,255,0.95)); padding:14px 10px 10px; backdrop-filter:blur(2px);">
-              <div style="display:flex; align-items:center; gap:4px; justify-content:center; font-size:11px; color:var(--ink-muted);">🔒 Action plan locked</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- LOCKED ITEMS BLUR PREVIEW -->
-        <div style="position:relative; margin-bottom:20px; border-radius:var(--radius); overflow:hidden; border:1px solid var(--border);">
-          <!-- blurred content behind -->
-          <div style="filter:blur(5px); pointer-events:none; padding:16px; background:var(--surface); user-select:none;">
-            <div style="font-size:13px; font-weight:700; margin-bottom:8px;">Your Exact Numbers</div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-              <div style="background:var(--bg); padding:12px; border-radius:8px;">
-                <div style="font-size:11px; color:var(--ink-muted);">Total Income</div>
-                <div style="font-size:20px; font-weight:800;">₹X,XX,XXX</div>
-              </div>
-              <div style="background:var(--bg); padding:12px; border-radius:8px;">
-                <div style="font-size:11px; color:var(--ink-muted);">Refund / Tax Due</div>
-                <div style="font-size:20px; font-weight:800; color:var(--green);">+₹X,XXX</div>
-              </div>
-              <div style="background:var(--bg); padding:12px; border-radius:8px;">
-                <div style="font-size:11px; color:var(--ink-muted);">Tax Savings Found</div>
-                <div style="font-size:20px; font-weight:800; color:var(--green);">₹XX,XXX</div>
-              </div>
-              <div style="background:var(--bg); padding:12px; border-radius:8px;">
-                <div style="font-size:11px; color:var(--ink-muted);">Capital Gains</div>
-                <div style="font-size:20px; font-weight:800;">₹X,XX,XXX</div>
-              </div>
-            </div>
-          </div>
-          <!-- Lock overlay -->
-          <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(255,255,255,0.55);">
-            <div style="font-size:28px; margin-bottom:6px;">🔒</div>
-            <div style="font-weight:700; font-size:14px; color:var(--ink);">Unlock to see your exact numbers</div>
-          </div>
-        </div>
-
-        <!-- PREMIUM UNLOCK SCREEN -->
-        <div style="background:linear-gradient(135deg, #0f1923 0%, #1a2d45 100%); border-radius:var(--radius); padding:22px 20px; color:#fff; margin-bottom:16px;">
-          <div style="font-size:15px; font-weight:700; margin-bottom:14px;">Your tax profile is ready. We found:</div>
-          <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:18px;">
-            <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:rgba(255,255,255,0.85);">
-              <span style="background:rgba(15,168,107,0.3); color:#4ade80; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; flex-shrink:0;">✓</span>
-              Potential refund opportunity
-            </div>
-            <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:rgba(255,255,255,0.85);">
-              <span style="background:rgba(15,168,107,0.3); color:#4ade80; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; flex-shrink:0;">✓</span>
-              Tax saving opportunities detected
-            </div>
-            <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:rgba(255,255,255,0.85);">
-              <span style="background:rgba(15,168,107,0.3); color:#4ade80; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; flex-shrink:0;">✓</span>
-              Capital gains transactions need reporting
-            </div>
-            <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:rgba(255,255,255,0.85);">
-              <span style="background:rgba(229,62,62,0.3); color:#fc8181; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; flex-shrink:0;">!</span>
-              2 issues that need attention before filing
-            </div>
-          </div>
-          <div style="font-size:14px; font-weight:700; color:rgba(255,255,255,0.6); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.05em; font-size:11px;">Unlock your complete report</div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-            <button class="unlock-btn" onclick="selectUnlock(this,'99','Tax Health Check')" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); border-radius:10px; padding:12px 10px; color:#fff; cursor:pointer; transition:all 0.15s; font-family:inherit; text-align:left;">
-              <div style="font-size:18px; font-weight:800;">₹99</div>
-              <div style="font-size:11px; opacity:0.7; margin-top:2px;">Tax Health Check</div>
-            </button>
-            <button class="unlock-btn selected-plan" onclick="selectUnlock(this,'299','Smart Tax Report')" style="background:var(--accent); border:1.5px solid var(--accent); border-radius:10px; padding:12px 10px; color:#fff; cursor:pointer; transition:all 0.15s; font-family:inherit; text-align:left; position:relative;">
-              <div style="position:absolute; top:-8px; right:8px; background:#fbbf24; color:#78350f; font-size:9px; font-weight:700; padding:2px 7px; border-radius:99px;">RECOMMENDED</div>
-              <div style="font-size:18px; font-weight:800;">₹299</div>
-              <div style="font-size:11px; opacity:0.85; margin-top:2px;">Smart Tax Report</div>
-            </button>
-            <button class="unlock-btn" onclick="selectUnlock(this,'499','Complete AI Report')" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); border-radius:10px; padding:12px 10px; color:#fff; cursor:pointer; transition:all 0.15s; font-family:inherit; text-align:left;">
-              <div style="font-size:18px; font-weight:800;">₹499</div>
-              <div style="font-size:11px; opacity:0.7; margin-top:2px;">Complete AI Report</div>
-            </button>
-            <button class="unlock-btn" onclick="selectUnlock(this,'999','Tax Pro Plus')" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); border-radius:10px; padding:12px 10px; color:#fff; cursor:pointer; transition:all 0.15s; font-family:inherit; text-align:left;">
-              <div style="font-size:18px; font-weight:800;">₹999</div>
-              <div style="font-size:11px; opacity:0.7; margin-top:2px;">Tax Pro Plus</div>
-            </button>
-          </div>
-          <button id="unlock-pay-btn" class="btn btn-primary btn-lg" style="width:100%; margin-top:14px; background:#fbbf24; color:#1a1a1a; font-weight:800;" onclick="switchTabByName('payment')">
-            Unlock Smart Tax Report — ₹299 →
-          </button>
-        </div>
-
-        <p style="text-align:center; font-size:12px; color:var(--ink-muted);">🔒 Razorpay secured · Pay once · No subscription</p>
+        <!-- Dynamically populated by renderAnalysis() -->
       </div>
     </div>
 

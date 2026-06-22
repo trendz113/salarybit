@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Middle-Class Escape 2.0</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #000; font-family: 'Segoe UI', sans-serif; overflow: hidden; color: #fff; touch-action: none; user-select: none; }
+  canvas { display: block; position: absolute; top: 0; left: 0; z-index: 1; }
+  
+  .ui { position: absolute; inset: 0; z-index: 10; pointer-events: none; }
+  .ui > * { pointer-events: auto; }
+  
+  #hud { position: absolute; top: 0; left: 0; right: 0; display: none; justify-content: space-between; padding: 15px 20px; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); }
+  #hud.active { display: flex; }
+  .hi { text-align: center; }
+  .hl { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .hv { font-size: 20px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+  #sBarBg { width: 80px; height: 8px; background: rgba(255,255,255,0.2); margin: 6px auto 0; border-radius: 4px; overflow: hidden; }
+  #sBar { height: 100%; width: 0%; background: #4caf50; border-radius: 4px; transition: width 0.2s, background 0.2s; }
+  
+  .screen { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; z-index: 20; background: rgba(10,10,26,0.95); backdrop-filter: blur(5px); }
+  .screen.active { display: flex; }
+  h1 { font-size: clamp(2rem, 8vw, 3.5rem); margin-bottom: 10px; background: linear-gradient(90deg, #f9a825, #ff6f00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .sub { color: #bbb; margin-bottom: 40px; max-width: 400px; line-height: 1.6; font-size: 1rem; }
+  .btn { background: linear-gradient(135deg, #f9a825, #ff6f00); border: none; color: white; font-size: 1.3rem; font-weight: bold; padding: 18px 50px; border-radius: 50px; cursor: pointer; box-shadow: 0 6px 20px rgba(249,168,37,0.4); margin: 10px; transition: transform 0.1s; }
+  .btn:active { transform: scale(0.95); box-shadow: 0 2px 10px rgba(249,168,37,0.4); }
+  
+  #decOverlay { position: absolute; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 30; backdrop-filter: blur(4px); }
+  #decOverlay.active { display: flex; }
+  #decCard { background: #1a1a2e; border: 2px solid #f9a825; border-radius: 16px; padding: 25px; max-width: 400px; width: 90%; box-shadow: 0 0 30px rgba(249,168,37,0.2); }
+  #decCard h2 { color: #f9a825; margin-bottom: 15px; font-size: 1.4rem; }
+  #decText { color: #ddd; margin-bottom: 25px; line-height: 1.5; font-size: 0.95rem; }
+  .dBtn { display: block; width: 100%; padding: 14px; margin-bottom: 12px; border: none; border-radius: 8px; color: white; font-weight: bold; font-size: 1rem; cursor: pointer; transition: opacity 0.1s; }
+  .dBtn:active { opacity: 0.8; }
+  .dBtn.red { background: #c62828; } .dBtn.green { background: #2e7d32; } .dBtn.blue { background: #1565c0; }
+  
+  #endStats { display: flex; gap: 15px; margin: 25px 0; flex-wrap: wrap; justify-content: center; }
+  .es { background: rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 12px; }
+  .es div:first-child { font-size: 0.8rem; color: #888; margin-bottom: 5px; } .es div:last-child { font-size: 1.5rem; font-weight: bold; }
+  .controls-hint { position: absolute; bottom: 30px; left: 0; right: 0; text-align: center; color: rgba(255,255,255,0.4); font-size: 12px; pointer-events: none; z-index: 5; }
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+<div class="controls-hint" id="controlsHint">SWIPE / ARROWS to move • UP / TAP to jump • DOWN to slide</div>
+
+<div class="ui">
+  <div id="hud">
+    <div class="hi"><div class="hl">Savings</div><div class="hv" style="color:#4caf50" id="hMoney">₹0</div></div>
+    <div class="hi"><div class="hl">Stage</div><div class="hv" id="hStage">Fresher</div></div>
+    <div class="hi"><div class="hl">Stress</div><div id="sBarBg"><div id="sBar"></div></div></div>
+  </div>
+
+  <div id="menu" class="screen active">
+    <h1>MIDDLE-CLASS ESCAPE</h1>
+    <div class="sub">Dodge EMIs, collect SIPs, and survive the ultimate Indian financial rat race.</div>
+    <button class="btn" id="startBtn">START ESCAPING</button>
+  </div>
+
+  <div id="over" class="screen">
+    <h1 id="endTitle" style="color:#ef5350">GAME OVER</h1>
+    <div class="sub" id="endReason">The loans got to you.</div>
+    <div id="endStats"></div>
+    <button class="btn" id="retryBtn">TRY AGAIN</button>
+  </div>
+
+  <div id="decOverlay">
+    <div id="decCard">
+      <h2 id="decTitle">Life Decision</h2>
+      <div id="decText">...</div>
+      <div id="decOpts"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // --- Setup ---
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  let W = 0, H = 0, GY = 0;
+  const LANES = 3;
+  let laneW = 0, roadL = 0, roadW = 0;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    GY = H * 0.82; // Ground Y (where feet touch)
+    roadW = Math.min(W * 0.7, 400); // Cap road width for aesthetics
+    roadL = (W - roadW) / 2;
+    laneW = roadW / LANES;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // --- Audio ---
+  let audioCtx;
+  function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+  function playTone(freq, dur, type, vol, slide) {
+    if(!audioCtx) return;
+    try {
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.connect(g); g.connect(audioCtx.destination);
+      o.type = type || 'sine'; 
+      o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      if(slide) o.frequency.exponentialRampToValueAtTime(Math.max(slide, 1), audioCtx.currentTime + dur);
+      g.gain.setValueAtTime(vol || 0.1, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+      o.start(); o.stop(audioCtx.currentTime + dur);
+    } catch(e) {}
+  }
+  const SFX = {
+    jump: () => playTone(400, 0.15, 'sine', 0.08, 800),
+    hit: () => playTone(150, 0.3, 'square', 0.1, 50),
+    coin: () => { playTone(880, 0.1, 'sine', 0.08); setTimeout(()=>playTone(1200, 0.1, 'sine', 0.08), 50); },
+    dec: () => { playTone(523, 0.2, 'sine', 0.08); setTimeout(()=>playTone(659, 0.3, 'sine', 0.08), 100); }
+  };
+
+  // --- Config ---
+  const GRAVITY = 2800;
+  const JUMP_FORCE = 900;
+  const SLIDE_TIME = 0.6;
+  const PLAYER_W = 30;
+  const PLAYER_H = 50;
+
+  // --- State ---
+  let state = 'MENU';
+  let player, obstacles, coins, particles, floatingTexts;
+  let money, stress, dist, speed, age, stageIdx;
+  let spawnTimer, nextDecDist;
+  let shakeX = 0, shakeY = 0, shakeMag = 0;
+  let flashAlpha = 0, flashColor = '#ff0000';
+  let bgOffset = 0;
+  let lastTime = 0;
+  let inputBuf = [];
+
+  const STAGES = [
+    { name:'Fresher 👨‍💻', age:23, maxAge:27, color:'#1565c0', bg1:'#0d1117', bg2:'#1a237e' },
+    { name:'Married 💍', age:27, maxAge:30, color:'#6a1b9a', bg1:'#120524', bg2:'#4a148c' },
+    { name:'Parent 👶', age:30, maxAge:35, color:'#1b5e20', bg1:'#071a07', bg2:'#2e7d32' },
+    { name:'Homeowner 🏠', age:35, maxAge:42, color:'#e65100', bg1:'#1a0f00', bg2:'#ef6c00' },
+    { name:'Mid-life 🧘', age:42, maxAge:50, color:'#880e4f', bg1:'#1a0510', bg2:'#ad1457' },
+    { name:'Freedom 🦅', age:50, maxAge:99, color:'#f9a825', bg1:'#1a1500', bg2:'#fbc02d' }
+  ];
+
+  const OBS_DATA = [
+    { id:'emi', w:35, h:45, type:'ground', color:'#d32f2f', dmg:15, draw: drawCreditCard },
+    { id:'wedding', w:40, h:40, type:'ground', color:'#e91e63', dmg:25, draw: drawGift },
+    { id:'school', w:35, h:35, type:'ground', color:'#0288d1', dmg:20, draw: drawBook },
+    { id:'health', w:30, h:40, type:'air', color:'#f44336', dmg:25, draw: drawPill },
+    { id:'gadget', w:20, h:35, type:'air', color:'#9c27b0', dmg:15, draw: drawPhone },
+    { id:'crypto', w:40, h:40, type:'ground', color:'#311b92', dmg:30, draw: drawCrypto }
+  ];
+
+  const DECISIONS = [
+    { t:"Goa Trip Dilemma", m:"Friends are going to Goa. ₹40k needed. Go or invest in index funds?", o:[
+      {l:"🏖️ YOLO! Goa chalo", c:"red", m:-2000, s:20},
+      {l:"📈 Index funds pe lagao", c:"green", m:1500, s:-10}
+    ]},
+    { t:"Gadget Temptation", m:"New iPhone launched. Your phone is fine, but 'camera tho dekhna hai bhai'. ₹1.2L.", o:[
+      {l:"📱 EMI pe le lo", c:"red", m:-1500, s:10},
+      {l:"💰 Purana phone chalega", c:"green", m:800, s:-5}
+    ]},
+    { t:"Crypto Whisper", m:"WhatsApp uncle: 'XYZ coin 10x guarantee, my cousin works in US crypto'.", o:[
+      {l:"💸 ₹50k lagadte hain", c:"red", m:-5000, s:30},
+      {l:"🚫 Block & Report", c:"green", m:200, s:-5}
+    ]}
+  ];
+
+  // --- Helper Drawing Functions for Obstacles ---
+  function drawCreditCard(x, y, w, h) {
+    ctx.fillStyle = '#fff'; ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = '#d32f2f'; ctx.fillRect(x, y, w, h*0.3);
+    ctx.fillStyle = '#ccc'; 
+    ctx.fillRect(x+5, y+h*0.45, w*0.6, 4);
+    ctx.fillStyle = '#ffeb3b'; ctx.beginPath(); ctx.arc(x+w-10, y+h*0.7, 5, 0, Math.PI*2); ctx.fill();
+  }
+  function drawGift(x, y, w, h) {
+    ctx.fillStyle = '#e91e63'; ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = '#f8bbd0'; ctx.fillRect(x+2, y+2, w-4, h-4);
+    ctx.fillStyle = '#ffeb3b'; ctx.fillRect(x+w/2-2, y, 4, h); ctx.fillRect(x, y+h/2-2, w, 4);
+  }
+  function drawBook(x, y, w, h) {
+    ctx.fillStyle = '#0288d1'; ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = '#fff'; ctx.fillRect(x+3, y+3, w-6, h-6);
+    ctx.fillStyle = '#0288d1'; ctx.fillRect(x+5, y+5, w-10, 3); ctx.fillRect(x+5, y+10, w-14, 2); ctx.fillRect(x+5, y+14, w-12, 2);
+  }
+  function drawPill(x, y, w, h) {
+    ctx.fillStyle = '#fff'; 
+    ctx.beginPath(); ctx.ellipse(x+w/2, y+h/2, w/2, h/2, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#f44336'; ctx.fillRect(x, y+h*0.45, w, h*0.1);
+  }
+  function drawPhone(x, y, w, h) {
+    ctx.fillStyle = '#333'; ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = '#9c27b0'; ctx.fillRect(x+2, y+2, w-4, h-4);
+    ctx.fillStyle = '#fff'; ctx.fillRect(x+4, y+4, w-8, h-8);
+  }
+  function drawCrypto(x, y, w, h) {
+    ctx.fillStyle = '#f9a825'; ctx.beginPath(); ctx.arc(x+w/2, y+h/2, w/2, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#311b92'; ctx.font = `bold ${w*0.6}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('₿', x+w/2, y+h/2+1);
+  }
+
+  function getLaneX(lane) { return roadL + laneW * lane + laneW / 2; }
+
+  function initGame() {
+    player = { 
+      lane: 1, visualX: getLaneX(1), y: GY, 
+      vy: 0, onGround: true, isSliding: false, slideTimer: 0, 
+      invTimer: 0 
+    };
+    obstacles = []; coins = []; particles = []; floatingTexts = [];
+    money = 0; stress = 0; dist = 0; speed = 300; age = 23; stageIdx = 0;
+    spawnTimer = 2; nextDecDist = 600;
+    shakeMag = 0; flashAlpha = 0; bgOffset = 0;
+    inputBuf = [];
+  }
+
+  function startGame() {
+    initAudio();
+    initGame();
+    document.getElementById('menu').classList.remove('active');
+    document.getElementById('over').classList.remove('active');
+    document.getElementById('decOverlay').classList.remove('active');
+    document.getElementById('hud').classList.add('active');
+    document.getElementById('controlsHint').style.display = 'block';
+    setTimeout(() => document.getElementById('controlsHint').style.display = 'none', 4000);
+    state = 'PLAY';
+  }
+
+  function endGame(win) {
+    state = 'OVER';
+    document.getElementById('hud').classList.remove('active');
+    document.getElementById('over').classList.add('active');
+    document.getElementById('endTitle').textContent = win ? 'FINANCIAL FREEDOM!' : 'BANKRUPT!';
+    document.getElementById('endTitle').style.color = win ? '#4caf50' : '#ef5350';
+    document.getElementById('endReason').textContent = win ? 'You survived the rat race and made it to 50!' : 'The EMIs, loans, and lifestyle inflation got to you.';
+    document.getElementById('endStats').innerHTML = `
+      <div class="es"><div>Final Savings</div><div style="color:#4caf50">₹${money.toLocaleString()}</div></div>
+      <div class="es"><div>Distance</div><div>${Math.floor(dist)}m</div></div>
+      <div class="es"><div>Final Age</div><div>${Math.min(age, 50)}</div></div>
+    `;
+    SFX.hit();
+  }
+
+  // --- Input ---
+  function queueInput(action) { inputBuf.push(action); }
+
+  document.getElementById('startBtn').addEventListener('click', startGame);
+  document.getElementById('retryBtn').addEventListener('click', startGame);
+
+  document.addEventListener('keydown', e => {
+    if(e.code === 'ArrowLeft' || e.code === 'KeyA') queueInput('left');
+    if(e.code === 'ArrowRight' || e.code === 'KeyD') queueInput('right');
+    if(e.code === 'ArrowUp' || e.code === 'Space' || e.code === 'KeyW') { e.preventDefault(); queueInput('up'); }
+    if(e.code === 'ArrowDown' || e.code === 'KeyS') queueInput('down');
+  });
+
+  let touchSX = 0, touchSY = 0;
+  canvas.addEventListener('touchstart', e => { e.preventDefault(); touchSX = e.touches[0].clientX; touchSY = e.touches[0].clientY; }, {passive:false});
+  canvas.addEventListener('touchend', e => {
+    e.preventDefault();
+    let dx = e.changedTouches[0].clientX - touchSX;
+    let dy = e.changedTouches[0].clientY - touchSY;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 30) queueInput(dx > 0 ? 'right' : 'left');
+    else if (dy < -30) queueInput('up');
+    else if (dy > 30) queueInput('down');
+    else queueInput('up');
+  }, {passive:false});
+
+  // --- Update ---
+  function update(dt) {
+    if (state !== 'PLAY') return;
+
+    // Process Inputs
+    while(inputBuf.length > 0) {
+      let act = inputBuf.shift();
+      if (act === 'left' && player.lane > 0) player.lane--;
+      if (act === 'right' && player.lane < LANES - 1) player.lane++;
+      if (act === 'up' && player.onGround && !player.isSliding) { player.vy = -JUMP_FORCE; player.onGround = false; SFX.jump(); }
+      if (act === 'down' && player.onGround) { player.isSliding = true; player.slideTimer = SLIDE_TIME; }
+    }
+
+    // Physics
+    if (!player.onGround) {
+      player.vy += GRAVITY * dt;
+      player.y += player.vy * dt;
+      if (player.y >= GY) { player.y = GY; player.vy = 0; player.onGround = true; }
+    }
+
+    if (player.isSliding) {
+      player.slideTimer -= dt;
+      if (player.slideTimer <= 0) player.isSliding = false;
+    }
+    if (player.invTimer > 0) player.invTimer -= dt;
+
+    // Smooth Lane Switch
+    let targetX = getLaneX(player.lane);
+    player.visualX += (targetX - player.visualX) * 12 * dt;
+
+    // World Scroll
+    speed = 300 + (stageIdx * 50) + (dist / 50);
+    bgOffset += speed * dt;
+    dist += speed * dt * 0.1;
+    age = 23 + Math.floor(dist / 80);
+
+    // Stage Progression
+    if (stageIdx < STAGES.length - 1 && age >= STAGES[stageIdx + 1].age) {
+      stageIdx++;
+      flashColor = STAGES[stageIdx].color; flashAlpha = 0.6;
+    }
+
+    // Spawning
+    spawnTimer -= dt;
+    if (spawnTimer <= 0) {
+      spawnObstacle();
+      spawnTimer = 1.2 - (stageIdx * 0.1) + Math.random() * 0.8;
+    }
+
+    if (Math.random() < 0.02 * (dt * 60)) {
+      let cl = Math.floor(Math.random() * LANES);
+      coins.push({ x: W + 20, y: GY - 40, lane: cl, r: 10 });
+    }
+
+    // Collisions & Movement
+    let pHitW = PLAYER_W;
+    let pHitH = player.isSliding ? PLAYER_H * 0.4 : PLAYER_H;
+    let pHitY = player.y - pHitH;
+    let pHitX = player.visualX;
+
+    for (let i = obstacles.length - 1; i >= 0; i--) {
+      let o = obstacles[i];
+      o.x -= speed * dt;
+      if (o.x < -100) { obstacles.splice(i, 1); continue; }
+
+      if (player.invTimer <= 0) {
+        let oHitX = o.x;
+        let oHitY = o.type === 'air' ? GY - 80 - o.h : GY - o.h;
+        
+        if (Math.abs(pHitX - oHitX) < (pHitW + o.w)/2 && 
+            (pHitY < oHitY + o.h && pHitY + pHitH > oHitY)) {
+          
+          money = Math.max(0, money - o.dmg * 50);
+          stress = Math.min(100, stress + o.dmg * 2);
+          player.invTimer = 1.5;
+          shakeMag = 15;
+          flashColor = '#ff0000'; flashAlpha = 0.5;
+          SFX.hit();
+          
+          emitParticles(o.x, oHitY + o.h/2, o.color, 12);
+          floatingTexts.push({ x: o.x, y: oHitY, text: '-₹'+(o.dmg*50), color: '#ff5252', life: 1 });
+          
+          obstacles.splice(i, 1);
+        }
+      }
+    }
+
+    for (let i = coins.length - 1; i >= 0; i--) {
+      let c = coins[i];
+      c.x -= speed * dt;
+      if (c.x < -50) { coins.splice(i, 1); continue; }
+
+      if (Math.abs(pHitX - c.x) < (pHitW + c.r*2)/2 && 
+          (pHitY < c.y + c.r && pHitY + pHitH > c.y - c.r)) {
+        money += 200;
+        SFX.coin();
+        emitParticles(c.x, c.y, '#ffd54f', 8);
+        floatingTexts.push({ x: c.x, y: c.y, text: '+₹200', color: '#4caf50', life: 1 });
+        coins.splice(i, 1);
+      }
+    }
+
+    // Stress Decay
+    stress = Math.max(0, stress - 2 * dt);
+
+    // FX Update
+    for (let i = particles.length - 1; i >= 0; i--) {
+      let p = particles[i];
+      p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 400 * dt; p.life -= dt * 2;
+      if(p.life <= 0) particles.splice(i, 1);
+    }
+    for (let i = floatingTexts.length - 1; i >= 0; i--) {
+      let t = floatingTexts[i];
+      t.y -= 60 * dt; t.life -= dt;
+      if(t.life <= 0) floatingTexts.splice(i, 1);
+    }
+
+    if (shakeMag > 0) shakeMag *= Math.pow(0.1, dt);
+    if (flashAlpha > 0) flashAlpha -= dt * 2;
+
+    // Decisions
+    if (dist >= nextDecDist) {
+      nextDecDist = dist + 400 + Math.random() * 300;
+      triggerDecision();
+    }
+
+    if (age >= 50) endGame(true);
+
+    updateHUD();
+  }
+
+  function spawnObstacle() {
+    let type = OBS_DATA[Math.floor(Math.random() * OBS_DATA.length)];
+    let lane = Math.floor(Math.random() * LANES);
+    let oX = W + 60;
+    
+    // Don't block all lanes simultaneously
+    let blockedLanes = obstacles.filter(o => Math.abs(o.x - oX) < 100).map(o => o.lane);
+    while(blockedLanes.includes(lane) && blockedLanes.length < LANES) {
+      lane = Math.floor(Math.random() * LANES);
+    }
+    if (blockedLanes.length >= LANES) return;
+
+    obstacles.push({ x: oX, lane, w: type.w, h: type.h, type: type.type, color: type.color, dmg: type.dmg, draw: type.draw });
+  }
+
+  function triggerDecision() {
+    state = 'DECISION';
+    SFX.dec();
+    let d = DECISIONS[Math.floor(Math.random() * DECISIONS.length)];
+    document.getElementById('decTitle').textContent = d.t;
+    document.getElementById('decText').textContent = d.m;
+    let opts = document.getElementById('decOpts');
+    opts.innerHTML = '';
+    d.o.forEach(opt => {
+      let b = document.createElement('button');
+      b.className = 'dBtn ' + opt.c; b.textContent = opt.l;
+      b.onclick = () => {
+        money = Math.max(0, money + opt.m);
+        stress = Math.min(100, Math.max(0, stress + opt.s));
+        document.getElementById('decOverlay').classList.remove('active');
+        state = 'PLAY';
+        if (opt.m > 0) { flashColor = '#00ff00'; flashAlpha = 0.4; SFX.coin(); }
+        else { flashColor = '#ff0000'; flashAlpha = 0.4; }
+      };
+      opts.appendChild(b);
+    });
+    document.getElementById('decOverlay').classList.add('active');
+  }
+
+  function emitParticles(x, y, color, count) {
+    for(let i=0; i<count; i++) {
+      particles.push({
+        x, y, vx: (Math.random()-0.5)*400, vy: -Math.random()*300 - 100,
+        life: 1, size: 3 + Math.random()*4, color
+      });
+    }
+  }
+
+  function updateHUD() {
+    document.getElementById('hMoney').textContent = '₹' + money.toLocaleString();
+    document.getElementById('hStage').textContent = STAGES[stageIdx].name;
+    let bar = document.getElementById('sBar');
+    bar.style.width = stress + '%';
+    bar.style.background = stress > 70 ? '#d32f2f' : stress > 40 ? '#ff9800' : '#4caf50';
+  }
+
+  // --- Render ---
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    
+    if (state === 'MENU') return;
+
+    let stage = STAGES[stageIdx];
+
+    ctx.save();
+    if (shakeMag > 0.5) {
+      shakeX = (Math.random()-0.5)*shakeMag;
+      shakeY = (Math.random()-0.5)*shakeMag;
+      ctx.translate(shakeX, shakeY);
+    }
+
+    // Sky
+    let skyGrad = ctx.createLinearGradient(0, 0, 0, GY);
+    skyGrad.addColorStop(0, stage.bg1);
+    skyGrad.addColorStop(1, stage.bg2);
+    ctx.fillStyle = skyGrad;
+    ctx.fillRect(0, 0, W, H);
+
+    // Parallax Buildings
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    let blds = [60, 100, 80, 120, 90, 140, 70, 110];
+    for(let i=0; i<blds.length; i++) {
+      let bx = ((i * 130 - bgOffset * 0.2) % (W + 300) + W + 300) % (W + 300) - 150;
+      ctx.fillRect(bx, GY - blds[i], 90, blds[i]);
+      // Windows
+      ctx.fillStyle = 'rgba(255,255,255,0.1)';
+      for(let wy = GY - blds[i] + 10; wy < GY - 10; wy += 20) {
+         for(let wx = bx + 10; wx < bx + 80; wx += 20) {
+            if(Math.random() > 0.3) ctx.fillRect(wx, wy, 8, 12);
+         }
+      }
+      ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    }
+
+    // Road
+    ctx.fillStyle = '#2c2c2c';
+    ctx.fillRect(roadL - 20, GY, roadW + 40, H - GY);
+    
+    // Road borders
+    ctx.fillStyle = '#f9a825';
+    ctx.fillRect(roadL - 20, GY, 4, H - GY);
+    ctx.fillRect(roadL + roadW + 16, GY, 4, H - GY);
+
+    // Lane Markings
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.setLineDash([40, 30]);
+    ctx.lineWidth = 2;
+    for(let i=1; i<LANES; i++) {
+      let lx = roadL + laneW * i;
+      ctx.beginPath(); ctx.moveTo(lx, GY + 10); ctx.lineTo(lx, H); ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // Coins
+    for (let c of coins) {
+      ctx.fillStyle = '#ffd54f';
+      ctx.beginPath(); ctx.arc(c.x, c.y, c.r, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('₹', c.x, c.y);
+    }
+
+    // Obstacles
+    for (let o of obstacles) {
+      let oy = o.type === 'air' ? GY - 80 - o.h : GY - o.h;
+      o.draw(o.x - o.w/2, oy, o.w, o.h);
+      // Shadow
+      ctx.fillStyle = 'rgba(0,0,0,0.4)';
+      ctx.beginPath(); ctx.ellipse(o.x, GY + 5, o.w/2 + 5, 4, 0, 0, Math.PI*2); ctx.fill();
+    }
+
+    // Player
+    if (player.invTimer <= 0 || Math.floor(player.invTimer * 10) % 2 === 0) {
+      drawPlayer(player.visualX, player.y, player.isSliding);
+    }
+
+    // Particles
+    for (let p of particles) {
+      ctx.globalAlpha = Math.max(0, p.life);
+      ctx.fillStyle = p.color;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // Floating Text
+    for (let t of floatingTexts) {
+      ctx.globalAlpha = Math.max(0, t.life);
+      ctx.fillStyle = t.color;
+      ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText(t.text, t.x, t.y);
+    }
+    ctx.globalAlpha = 1;
+
+    ctx.restore(); // End shake
+
+    // Post Processing
+    if (flashAlpha > 0) {
+      ctx.fillStyle = flashColor;
+      ctx.globalAlpha = Math.max(0, flashAlpha);
+      ctx.fillRect(0, 0, W, H);
+      ctx.globalAlpha = 1;
+    }
+
+    if (stress > 20) {
+      let vignette = ctx.createRadialGradient(W/2, H/2, W*0.3, W/2, H/2, W*0.8);
+      vignette.addColorStop(0, 'rgba(0,0,0,0)');
+      vignette.addColorStop(1, `rgba(255, 0, 0, ${Math.min(0.6, stress / 150)})`);
+      ctx.fillStyle = vignette;
+      ctx.fillRect(0, 0, W, H);
+    }
+  }
+
+  function drawPlayer(x, y, sliding) {
+    ctx.save();
+    ctx.translate(x, y);
+    
+    if (sliding) {
+      // Slide: horizontal body
+      ctx.fillStyle = '#fff'; // white shirt
+      ctx.fillRect(-20, -20, 40, 20);
+      ctx.fillStyle = '#2196f3'; // pants
+      ctx.fillRect(-20, -10, 40, 10);
+      ctx.fillStyle = '#ffcc80'; // head
+      ctx.beginPath(); ctx.arc(-15, -20, 8, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#333'; ctx.beginPath(); ctx.arc(-15, -25, 8, Math.PI, Math.PI*2); ctx.fill(); // hair
+    } else {
+      let legAnim = Math.sin(bgOffset * 0.05) * 15;
+      
+      // Legs
+      ctx.strokeStyle = '#333'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(-5, -15); ctx.lineTo(-10 + legAnim, 0); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(5, -15); ctx.lineTo(10 - legAnim, 0); ctx.stroke();
+      
+      // Body (White shirt)
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(-15, -45, 30, 30);
+      
+      // Tie
+      ctx.fillStyle = '#f44336';
+      ctx.beginPath(); ctx.moveTo(0, -45); ctx.lineTo(-4, -25); ctx.lineTo(4, -25); ctx.fill();
+      
+      // Arms
+      ctx.strokeStyle = '#ffcc80'; ctx.lineWidth = 4;
+      let armAnim = Math.sin(bgOffset * 0.05 + Math.PI) * 10;
+      ctx.beginPath(); ctx.moveTo(-15, -40); ctx.lineTo(-25, -25 + armAnim); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(15, -40); ctx.lineTo(25, -25 - armAnim); ctx.stroke();
+
+      // Head
+      ctx.fillStyle = '#ffcc80';
+      ctx.beginPath(); ctx.arc(0, -52, 10, 0, Math.PI*2); ctx.fill();
+      
+      // Hair
+      ctx.fillStyle = '#333';
+      ctx.beginPath(); ctx.arc(0, -56, 10, Math.PI, Math.PI*2); ctx.fill();
+      
+      // Eyes (look forward)
+      ctx.fillStyle = '#000';
+      ctx.fillRect(2, -54, 2, 2);
+    }
+    
+    // Shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.beginPath(); ctx.ellipse(0, 5, 18, 5, 0, 0, Math.PI*2); ctx.fill();
+
+    ctx.restore();
+  }
+
+  // --- Game Loop ---
+  const FIXED_DT = 1/60;
+  let accumulator = 0;
+
+  function loop(time) {
+    requestAnimationFrame(loop);
+    
+    if (lastTime === 0) { lastTime = time; return; }
+    let frameTime = (time - lastTime) / 1000;
+    lastTime = time;
+    
+    // Prevent spiral of death
+    if (frameTime > 0.1) frameTime = 0.1;
+    
+    accumulator += frameTime;
+    while (accumulator >= FIXED_DT) {
+      update(FIXED_DT);
+      accumulator -= FIXED_DT;
+    }
+    
+    render();
+  }
+
+  requestAnimationFrame(loop);
+
+})();
+</script>
+</body>
+</html>

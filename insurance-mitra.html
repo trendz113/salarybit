@@ -12,6 +12,7 @@
     in sync, so any future CSS/JS update on Railway shows up here too.
   -->
   <link rel="stylesheet" href="https://web-production-b0a7.up.railway.app/static/css/main.css">
+  <link rel="stylesheet" href="https://web-production-b0a7.up.railway.app/static/css/main-additions.css">
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
@@ -436,7 +437,10 @@
         </div>
 
         <div id="pr-step-result" style="display:none;">
-          <div class="box-title">Your personalized recommendation</div>
+          <div class="doc-header">
+            <div class="eyebrow">YOUR RECOMMENDATION</div>
+            <div class="doc-stamp">AI-ASSISTED</div>
+          </div>
           <p class="lede" id="pr-loading">Working on your recommendation…</p>
           <div class="letter-box" id="pr-result-box" style="display:none;"></div>
           <div class="btn-row" id="pr-result-actions" style="display:none;">
@@ -455,7 +459,12 @@
       <p class="lede">Government-backed health coverage that exists alongside any private policy you may have. Most of this needs no agent, no premium, and no paperwork beyond an Aadhaar card.</p>
 
       <div class="scheme-card">
-        <h3 class="scheme-card-title">Ayushman Bharat — Senior Citizen Scheme (AB PM-JAY, Vay Vandana)</h3>
+        <div class="scheme-card-header">
+          <div class="scheme-badge">
+            <div class="scheme-badge-inner">GOVT<br>SCHEME</div>
+          </div>
+          <h3 class="scheme-card-title">Ayushman Bharat — Senior Citizen Scheme (AB PM-JAY, Vay Vandana)</h3>
+        </div>
         <div class="scheme-highlight-row">
           <span class="scheme-highlight">₹5 lakh/year cover</span>
           <span class="scheme-highlight">No income limit</span>

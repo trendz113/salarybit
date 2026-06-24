@@ -30,6 +30,7 @@
       <button class="tab-btn" id="tab-life-btn" onclick="switchTab('life')">My life/death claim was rejected</button>
       <button class="tab-btn" id="tab-checklist-btn" onclick="switchTab('checklist')">I'm buying a new policy</button>
       <button class="tab-btn" id="tab-schemes-btn" onclick="switchTab('schemes')">Government schemes</button>
+      <button class="tab-btn" id="tab-mycases-btn" onclick="switchTab('mycases')">My cases</button>
     </div>
 
     <!-- ===================== HEALTH CLAIM ANALYZER TAB ===================== -->
@@ -115,7 +116,7 @@
             Once you've sent this letter, we can track your deadlines for you — when to follow up with the GRO, when to escalate to IRDAI, and when to file with the Ombudsman. This is free.
           </p>
           <div id="an-tracking-paid-view" style="display:none;">
-            <p class="box-text">✓ Tracking is active for this case.</p>
+            <p class="box-text">✓ Tracking is active for this case. Find it anytime in the <strong>My Cases</strong> tab — that's where your follow-up deadlines will show up.</p>
           </div>
           <button class="btn-primary" id="an-pay-btn" onclick="markGroSent()">I've sent the letter — start tracking</button>
         </div>
@@ -200,7 +201,7 @@
             Once you've sent this letter, we can track your deadlines for you — free of charge.
           </p>
           <div id="lf-tracking-started-view" style="display:none;">
-            <p class="box-text">✓ Tracking is active for this case.</p>
+            <p class="box-text">✓ Tracking is active for this case. Find it anytime in the <strong>My Cases</strong> tab.</p>
           </div>
           <button class="btn-primary" id="lf-track-btn" onclick="markLifeGroSent()">I've sent the letter — start tracking</button>
         </div>
@@ -211,7 +212,7 @@
     <!-- ===================== "BUYING A NEW POLICY" TAB (sub-tabs) ===================== -->
     <div class="tab-content" id="tab-checklist">
 
-      <div class="sub-tab-row">
+      <div class="sub-tab-row sub-tab-row-stacked">
         <button class="sub-tab-btn active" id="subtab-disclosure-btn" onclick="switchSubTab('disclosure')">Disclosure checklist</button>
         <button class="sub-tab-btn" id="subtab-recommend-btn" onclick="switchSubTab('recommend')">Which policy should I buy?</button>
       </div>
@@ -456,14 +457,49 @@
     <!-- ===================== GOVERNMENT SCHEMES TAB ===================== -->
     <div class="tab-content" id="tab-schemes">
 
-      <p class="lede">Government-backed health coverage that exists alongside any private policy you may have. Most of this needs no agent, no premium, and no paperwork beyond an Aadhaar card.</p>
+      <p class="lede">Government-backed health coverage that exists alongside any private policy you may have. There are two separate routes into Ayushman Bharat — most of this needs no agent, no premium, and no paperwork beyond an Aadhaar card.</p>
 
       <div class="scheme-card">
         <div class="scheme-card-header">
           <div class="scheme-badge">
             <div class="scheme-badge-inner">GOVT<br>SCHEME</div>
           </div>
-          <h3 class="scheme-card-title">Ayushman Bharat — Senior Citizen Scheme (AB PM-JAY, Vay Vandana)</h3>
+          <h3 class="scheme-card-title">Ayushman Bharat — PM-JAY (low-income / SECC families)</h3>
+        </div>
+        <div class="scheme-highlight-row">
+          <span class="scheme-highlight">₹5 lakh/family/year</span>
+          <span class="scheme-highlight">No premium, ever</span>
+          <span class="scheme-highlight">No waiting period</span>
+          <span class="scheme-highlight">Pre-existing diseases covered day one</span>
+        </div>
+        <p class="box-text">
+          This is the original, larger Ayushman Bharat scheme — it covers over 12 crore families nationwide and gives ₹5 lakh per family per year for hospital treatment, completely free, at any empanelled public or private hospital. Unlike most insurance, it covers pre-existing conditions from day one with no waiting period at all.
+        </p>
+        <p class="box-text"><strong>Who qualifies:</strong> eligibility is based on the 2011 Socio-Economic Caste Census (SECC), not your current income. You're likely covered if your household fits any of these:</p>
+        <ul>
+          <li><strong>Rural households:</strong> no adult member aged 16–59, headed by a woman with no adult male member in that age range, has a disabled member with no able-bodied adult, lives in a single-room kutcha house, or is a landless household dependent on manual labour</li>
+          <li><strong>Urban workers:</strong> street vendors, domestic helpers, rickshaw or cart pullers, construction workers, masons, painters, plumbers, welders, security guards, sweepers, or similar laborers in the unorganised sector</li>
+          <li>SC/ST households, bonded labourers, manual scavengers, primitive tribal groups, and similarly vulnerable groups are automatically included</li>
+          <li>ASHA workers, Anganwadi Workers, and Anganwadi Helpers are also covered as of a 2026 expansion</li>
+        </ul>
+        <p class="box-text">
+          <strong>Who's generally excluded:</strong> households where any member pays income tax, or has a regular (non-contractual) government job, typically don't qualify for this particular route — though the 70+ senior citizen scheme below has no such restriction.
+        </p>
+        <p class="box-text"><strong>How to check and apply:</strong></p>
+        <ul>
+          <li>Use the "Am I Eligible" tool on the official portal (pmjay.gov.in) or the Ayushman App with your mobile number, name, and state</li>
+          <li>Or visit your nearest empanelled hospital or Common Service Centre (CSC) and ask for the Ayushman Mitra help desk — bring your Aadhaar card and ration card</li>
+          <li>Call the toll-free helpline 14555 if you're unsure where to start</li>
+          <li>If you're SECC-listed, you don't "apply" in the usual sense — you're already entitled, you just need to verify identity to get your card issued</li>
+        </ul>
+      </div>
+
+      <div class="scheme-card">
+        <div class="scheme-card-header">
+          <div class="scheme-badge">
+            <div class="scheme-badge-inner">GOVT<br>SCHEME</div>
+          </div>
+          <h3 class="scheme-card-title">Ayushman Bharat — Senior Citizen Scheme (Vay Vandana, 70+)</h3>
         </div>
         <div class="scheme-highlight-row">
           <span class="scheme-highlight">₹5 lakh/year cover</span>
@@ -472,7 +508,7 @@
           <span class="scheme-highlight">Aadhaar only</span>
         </div>
         <p class="box-text">
-          Every Indian citizen aged 70 and above is eligible for ₹5 lakh of free hospital coverage per year, regardless of income or existing private insurance. This was expanded nationwide in 2024, and as of mid-2026 covers roughly 6 crore senior citizens. If your family already has a PM-JAY card from a lower-income eligibility category, a 70+ member gets an <em>additional</em> ₹5 lakh on top of that, just for themselves. Coverage starts immediately — there is no waiting period for any disease or treatment.
+          Every Indian citizen aged 70 and above is eligible for ₹5 lakh of free hospital coverage per year, regardless of income or existing private insurance — this is separate from the SECC-based scheme above and doesn't require meeting any of those low-income criteria. It was expanded nationwide in 2024, and as of mid-2026 covers roughly 6 crore senior citizens. If your family already has a PM-JAY card from the SECC route, a 70+ member gets an <em>additional</em> ₹5 lakh on top of that, just for themselves. Coverage starts immediately — there is no waiting period for any disease or treatment.
         </p>
         <p class="box-text"><strong>How to apply:</strong></p>
         <ul>
@@ -489,9 +525,24 @@
       <div class="box">
         <div class="box-title">A note on accuracy</div>
         <p class="box-text">
-          Government scheme rules can change with new notifications, and your state may have its own add-on scheme on top of the central one. Always confirm current details on the official PM-JAY portal or by calling the Ayushman Bharat helpline before relying on this for a real decision.
+          Government scheme rules can change with new notifications, and some states (Karnataka, Tamil Nadu, Rajasthan, Andhra Pradesh, Telangana, and others) run their own expanded eligibility lists on top of the central SECC data. Always confirm current details on the official PM-JAY portal or by calling the Ayushman Bharat helpline before relying on this for a real decision.
         </p>
       </div>
+
+    </div>
+
+    <!-- ===================== MY CASES / TRACK STATUS TAB ===================== -->
+    <div class="tab-content" id="tab-mycases">
+
+      <p class="lede">Every case you've opened in this browser, with its current stage and follow-up deadline. This list only shows cases from this browser/device — there's no login, so it won't follow you to a different phone or browser.</p>
+
+      <button class="btn-ghost" id="mc-refresh-btn" onclick="loadMyCases()">Refresh list</button>
+
+      <div id="mc-loading" class="lede" style="margin-top:14px;">Loading your cases…</div>
+      <div id="mc-empty" class="box" style="display:none; margin-top:14px;">
+        <p class="box-text">No open cases yet. Once you score a claim in the "My claim was rejected" tabs, it will appear here automatically.</p>
+      </div>
+      <div id="mc-list" style="margin-top:14px;"></div>
 
     </div>
 

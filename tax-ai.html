@@ -3,1087 +3,1132 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SalaryBit Tax AI – AIS Analysis | CA-Level ITR Report</title>
-<meta name="description" content="Upload your AIS from Income Tax portal. Get CA-level tax analysis, notice risk check, and step-by-step ITR filing guide in 60 seconds.">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<title>How to File ITR-2 with Foreign Assets (RSU/ESOP) — AY 2026-27 Complete Guide</title>
+<meta name="description" content="Step-by-step guide to filing ITR-2 if you hold foreign RSUs or ESOPs. Covers Schedule FA, Schedule CG, foreign tax credit, 112A, and common mistakes. Updated for AY 2026-27.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --ink:#0b1220;--ink-2:#2d3a4a;--ink-3:#5a6a7a;
-  --bg:#f0f4f8;--surface:#ffffff;--surface-2:#f7f9fb;
-  --accent:#1a6ef5;--accent-2:#0f4cc7;--accent-light:#e8f0fe;
-  --green:#059669;--green-light:#d1fae5;--green-dark:#065f46;
-  --amber:#d97706;--amber-light:#fef3c7;
-  --red:#dc2626;--red-light:#fee2e2;
-  --purple:#7c3aed;--purple-light:#ede9fe;
-  --border:#e2e8f0;--border-2:#cbd5e1;
-  --shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.06);
-  --shadow-lg:0 4px 6px rgba(0,0,0,0.05),0 10px 40px rgba(0,0,0,0.10);
-  --r:12px;--r-sm:8px;--r-lg:18px
-}
-html{scroll-behavior:smooth}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;font-size:15px;min-height:100vh}
+  :root {
+    --ink: #0f1923;
+    --ink-soft: #3d4f5c;
+    --ink-muted: #6b7f8e;
+    --bg: #f7f9fb;
+    --bg-white: #ffffff;
+    --accent: #1a6bff;
+    --accent-light: #e8f0ff;
+    --accent-dark: #0047cc;
+    --green: #00875a;
+    --green-light: #e3f5ee;
+    --amber: #b45309;
+    --amber-light: #fef3c7;
+    --red: #c0392b;
+    --red-light: #fdecea;
+    --border: #dde3ea;
+    --shadow: 0 2px 12px rgba(15,25,35,0.08);
+    --shadow-lg: 0 8px 32px rgba(15,25,35,0.12);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
 
-/* ── NAV ── */
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 28px}
-.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--ink);letter-spacing:-0.03em}
-.logo em{color:var(--accent);font-style:normal}
-.nav-right{display:flex;align-items:center;gap:10px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 20px;border-radius:var(--r-sm);font-weight:600;font-size:14px;cursor:pointer;border:none;transition:all .15s ease;font-family:inherit;line-height:1}
-.btn-primary{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(26,110,245,0.3)}.btn-primary:hover{background:var(--accent-2);transform:translateY(-1px)}
-.btn-green{background:var(--green);color:#fff;box-shadow:0 2px 8px rgba(5,150,105,0.3)}.btn-green:hover{background:var(--green-dark)}
-.btn-outline{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}.btn-outline:hover{background:var(--accent-light)}
-.btn-ghost{background:transparent;color:var(--ink-3);border:1.5px solid var(--border)}.btn-ghost:hover{background:var(--surface-2)}
-.btn-lg{padding:14px 28px;font-size:16px;border-radius:var(--r)}
-.btn-xl{padding:16px 32px;font-size:17px;border-radius:var(--r);font-weight:700}
-.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── HERO ── */
-.hero{max-width:700px;margin:0 auto;padding:64px 24px 40px;text-align:center}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--green-light);color:var(--green-dark);padding:6px 16px;border-radius:99px;font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:22px}
-.hero h1{font-family:'Syne',sans-serif;font-size:clamp(32px,5.5vw,54px);line-height:1.1;letter-spacing:-0.03em;margin-bottom:16px;color:var(--ink)}
-.hero h1 .hl{color:var(--accent);position:relative}
-.hero-sub{font-size:17px;color:var(--ink-2);line-height:1.7;max-width:520px;margin:0 auto 28px}
-.trust-row{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;font-size:12px;color:var(--ink-3);margin-top:16px}
-.trust-item{display:flex;align-items:center;gap:5px}
-.trust-item::before{content:"✓";color:var(--green);font-weight:700}
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 16px;
+  }
 
-/* ── HOW IT WORKS ── */
-.how{max-width:700px;margin:0 auto 48px;padding:0 24px}
-.how-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.how-step{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px 18px;text-align:center;position:relative}
-.how-step::after{content:"→";position:absolute;right:-14px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--border-2);font-weight:700}
-.how-step:last-child::after{display:none}
-.how-num{width:36px;height:36px;border-radius:50%;background:var(--accent-light);color:var(--accent);font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
-.how-icon{font-size:26px;margin-bottom:8px}
-.how-title{font-weight:700;font-size:13px;margin-bottom:4px}
-.how-desc{font-size:12px;color:var(--ink-3);line-height:1.5}
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0f1923 0%, #1a3a5c 50%, #0047cc 100%);
+    padding: 80px 24px 64px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(26,107,255,0.3) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(0,135,90,0.2) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(26,107,255,0.2);
+    border: 1px solid rgba(26,107,255,0.4);
+    color: #7eb8ff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.15;
+    max-width: 820px;
+    margin: 0 auto 20px;
+    letter-spacing: -0.02em;
+  }
+  .hero h1 span {
+    color: #5ba4ff;
+  }
+  .hero-sub {
+    font-size: 18px;
+    color: rgba(255,255,255,0.7);
+    max-width: 600px;
+    margin: 0 auto 36px;
+  }
+  .hero-meta {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .hero-meta span {
+    color: rgba(255,255,255,0.55);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .hero-meta span::before {
+    content: '•';
+    color: #5ba4ff;
+  }
 
-/* ── APP CARD ── */
-.app-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);max-width:700px;margin:0 auto 64px;overflow:hidden}
-.app-topbar{background:var(--ink);padding:12px 18px;display:flex;align-items:center;gap:8px}
-.app-dot{width:11px;height:11px;border-radius:50%}
-.app-topbar-title{color:rgba(255,255,255,0.45);font-size:12px;font-weight:600;margin-left:6px}
+  /* ALERT BOX */
+  .alert {
+    max-width: 860px;
+    margin: -28px auto 0;
+    position: relative;
+    z-index: 10;
+    padding: 0 24px;
+  }
+  .alert-inner {
+    background: var(--amber-light);
+    border: 1.5px solid #f59e0b;
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    box-shadow: var(--shadow);
+  }
+  .alert-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+  .alert-inner p { font-size: 14px; color: #78350f; line-height: 1.5; }
+  .alert-inner strong { color: #92400e; }
 
-/* ── PANELS ── */
-.panel{display:none;padding:32px}
-.panel.active{display:block}
+  /* LAYOUT */
+  .page-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
 
-/* ── UPLOAD PANEL ── */
-.upload-headline{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px}
-.upload-sub{font-size:14px;color:var(--ink-2);margin-bottom:24px}
+  /* TOC */
+  .toc {
+    background: var(--bg-white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 48px;
+    box-shadow: var(--shadow);
+  }
+  .toc-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .toc ol {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 24px;
+  }
+  @media (max-width: 600px) { .toc ol { grid-template-columns: 1fr; } }
+  .toc li { counter-increment: toc-counter; }
+  .toc a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 14px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    transition: color 0.15s;
+  }
+  .toc a:hover { color: var(--accent); }
+  .toc a::before {
+    content: counter(toc-counter, decimal-leading-zero);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .toc { counter-reset: toc-counter; }
 
-.ais-info-box{background:linear-gradient(135deg,var(--green-light),#a7f3d0);border:1px solid #6ee7b7;border-radius:var(--r);padding:16px 18px;margin-bottom:22px}
-.ais-info-title{font-weight:700;color:var(--green-dark);margin-bottom:6px;font-size:14px;display:flex;align-items:center;gap:7px}
-.ais-info-steps{display:flex;flex-direction:column;gap:4px;font-size:13px;color:#047857}
-.ais-step{display:flex;gap:8px;align-items:baseline}
-.ais-step-num{font-weight:800;color:var(--green);flex-shrink:0;font-size:12px}
+  /* SECTIONS */
+  .section {
+    background: var(--bg-white);
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    padding: 36px 40px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow);
+  }
+  @media (max-width: 600px) { .section { padding: 24px 20px; } }
 
-.dropzone{border:2px dashed var(--border-2);border-radius:var(--r);padding:40px 24px;text-align:center;cursor:pointer;transition:all .2s;background:var(--surface-2);position:relative;margin-bottom:16px}
-.dropzone:hover,.dropzone.over{border-color:var(--accent);background:var(--accent-light)}
-.dropzone.has-file{border-color:var(--green);background:var(--green-light);border-style:solid}
-.dz-icon{font-size:40px;margin-bottom:12px;display:block}
-.dz-title{font-weight:700;font-size:15px;margin-bottom:4px}
-.dz-sub{font-size:13px;color:var(--ink-3)}
-.dz-file-info{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;border-radius:var(--r-sm);padding:10px 16px;margin-top:12px;font-size:13px;font-weight:600;color:var(--green-dark)}
-.dz-remove{background:none;border:none;cursor:pointer;color:var(--ink-3);font-size:18px;padding:0;line-height:1}
+  .section-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 10px;
+  }
 
-input[type=file]{display:none}
+  .section h2 {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
 
-.privacy-note{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-3);background:var(--surface-2);padding:10px 14px;border-radius:var(--r-sm);margin-bottom:20px}
+  .section h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 28px 0 12px;
+    padding-left: 14px;
+    border-left: 3px solid var(--accent);
+  }
 
-/* ── PAYMENT GATE ── */
-.pay-gate{background:linear-gradient(135deg,#0f1923,#1a3a5c);border-radius:var(--r);padding:28px;color:#fff;text-align:center;margin-bottom:20px}
-.pay-gate-icon{font-size:40px;margin-bottom:12px}
-.pay-gate-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px;letter-spacing:-0.02em}
-.pay-gate-sub{font-size:14px;opacity:0.75;margin-bottom:22px;line-height:1.6;max-width:420px;margin-left:auto;margin-right:auto}
-.pay-price-badge{display:inline-flex;align-items:baseline;gap:4px;background:rgba(255,255,255,0.12);border-radius:99px;padding:8px 20px;margin-bottom:22px}
-.pay-price-amt{font-size:32px;font-weight:800}
-.pay-price-label{font-size:13px;opacity:0.7}
-.pay-features{display:flex;flex-direction:column;gap:6px;text-align:left;max-width:340px;margin:0 auto 22px;font-size:13px}
-.pay-feature{display:flex;align-items:flex-start;gap:8px}
-.pay-feature::before{content:"✓";color:#4ade80;font-weight:800;flex-shrink:0;margin-top:1px}
-.pay-secure{font-size:11px;opacity:0.5;margin-top:10px}
+  .section p {
+    color: var(--ink-soft);
+    margin-bottom: 16px;
+    font-size: 15.5px;
+  }
 
-/* ── SCANNING PANEL ── */
-.scan-center{text-align:center;padding:20px 0 28px}
-.scan-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:8px;letter-spacing:-0.02em}
-.scan-sub{font-size:13px;color:var(--ink-3);margin-bottom:24px}
-.scan-track{height:6px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-bottom:10px}
-.scan-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:99px;width:0;transition:width .6s ease}
-.scan-pct{font-size:12px;color:var(--ink-3);margin-bottom:24px}
-.scan-items{display:flex;flex-direction:column;gap:8px}
-.si{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:var(--r-sm);font-size:13px;background:var(--surface-2);color:var(--ink-3);transition:all .3s}
-.si.running{background:var(--accent-light);color:var(--accent);font-weight:600}
-.si.done{background:var(--green-light);color:var(--green-dark);font-weight:600}
-.si-dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0}
+  .section ul, .section ol {
+    padding-left: 20px;
+    color: var(--ink-soft);
+    font-size: 15.5px;
+    margin-bottom: 16px;
+  }
+  .section li { margin-bottom: 8px; }
 
-/* ── REPORT ── */
-.report-header{background:linear-gradient(135deg,#0b1220,#1a3a5c);border-radius:var(--r);padding:26px 28px;color:#fff;margin-bottom:20px}
-.rh-row{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:16px}
-.rh-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:4px;letter-spacing:-0.02em}
-.rh-meta{font-size:12px;opacity:0.55}
-.rh-summary{font-size:13px;opacity:0.8;line-height:1.65;margin-top:8px;max-width:480px}
-.score-pill{background:rgba(255,255,255,0.1);border-radius:var(--r-sm);padding:16px 20px;text-align:center;min-width:100px;flex-shrink:0}
-.score-num{font-size:40px;font-weight:800;line-height:1}
-.score-lbl{font-size:10px;opacity:0.65;margin-top:4px;text-transform:uppercase;letter-spacing:0.06em}
-.score-tag{font-size:11px;font-weight:700;margin-top:4px}
-.rh-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.kpi{background:rgba(255,255,255,0.08);border-radius:var(--r-sm);padding:12px 14px}
-.kpi-lbl{font-size:10px;opacity:0.55;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px}
-.kpi-val{font-size:19px;font-weight:800}
-.kpi-sub{font-size:11px;opacity:0.6;margin-top:2px}
+  /* TABLES */
+  .table-wrap { overflow-x: auto; margin: 20px 0; border-radius: var(--radius-sm); border: 1.5px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead { background: var(--accent); }
+  thead th { color: white; font-weight: 700; padding: 12px 16px; text-align: left; font-size: 13px; letter-spacing: 0.02em; }
+  tbody tr:nth-child(even) { background: var(--bg); }
+  tbody tr:hover { background: var(--accent-light); }
+  tbody td { padding: 11px 16px; color: var(--ink-soft); border-bottom: 1px solid var(--border); }
+  tbody tr:last-child td { border-bottom: none; }
 
-/* ── REPORT SECTIONS ── */
-.rs{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:14px;overflow:hidden}
-.rs-head{padding:15px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
-.rs-head:hover{background:var(--surface-2)}
-.rs-left{display:flex;align-items:center;gap:12px}
-.rs-icon{font-size:20px;flex-shrink:0}
-.rs-title{font-size:14px;font-weight:700}
-.rs-sub{font-size:12px;color:var(--ink-3);margin-top:1px}
-.rs-right{display:flex;align-items:center;gap:8px}
-.badge{padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700}
-.badge-red{background:var(--red-light);color:var(--red)}
-.badge-amber{background:var(--amber-light);color:var(--amber)}
-.badge-green{background:var(--green-light);color:var(--green-dark)}
-.badge-blue{background:var(--accent-light);color:var(--accent)}
-.badge-purple{background:var(--purple-light);color:var(--purple)}
-.rs-chevron{color:var(--ink-3);font-size:14px;transition:transform .2s;flex-shrink:0}
-.rs-body{display:none;padding:0 18px 18px;border-top:1px solid var(--border)}
-.rs-body.open{display:block}
+  /* CALLOUT BOXES */
+  .callout {
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    margin: 20px 0;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    font-size: 14.5px;
+  }
+  .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .callout p { margin: 0; line-height: 1.55; }
+  .callout strong { display: block; margin-bottom: 4px; }
+  .callout.tip { background: var(--green-light); border: 1.5px solid #34d399; color: #064e3b; }
+  .callout.warning { background: var(--amber-light); border: 1.5px solid #f59e0b; color: #78350f; }
+  .callout.danger { background: var(--red-light); border: 1.5px solid #f87171; color: #7f1d1d; }
+  .callout.info { background: var(--accent-light); border: 1.5px solid #93c5fd; color: #1e3a8a; }
 
-/* ── INSIDE SECTIONS ── */
-.alert{border-radius:var(--r-sm);padding:12px 14px;font-size:13px;display:flex;gap:10px;margin-bottom:12px}
-.alert-icon{flex-shrink:0;margin-top:1px;font-size:15px}
-.alert strong{display:block;font-size:12px;font-weight:700;margin-bottom:2px}
-.a-red{background:var(--red-light);border-left:4px solid var(--red)}
-.a-amber{background:var(--amber-light);border-left:4px solid var(--amber)}
-.a-green{background:var(--green-light);border-left:4px solid var(--green)}
-.a-blue{background:var(--accent-light);border-left:4px solid var(--accent)}
-.a-purple{background:var(--purple-light);border-left:4px solid var(--purple)}
+  /* STEP CARDS */
+  .step-grid { display: grid; gap: 16px; margin: 20px 0; }
+  .step-card {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .step-card:hover { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+  .step-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    background: var(--accent);
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-card h4 { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+  .step-card p { font-size: 13.5px; color: var(--ink-soft); margin: 0; }
 
-.risk-item{display:flex;gap:12px;padding:12px 14px;border-radius:var(--r-sm);margin-bottom:8px;font-size:13px;align-items:flex-start}
-.risk-high{background:#fef2f2;border-left:4px solid var(--red)}
-.risk-medium{background:var(--amber-light);border-left:4px solid var(--amber)}
-.risk-low{background:var(--green-light);border-left:4px solid var(--green)}
-.risk-badge{font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px}
-.risk-high .risk-badge{color:var(--red)}
-.risk-medium .risk-badge{color:var(--amber)}
-.risk-low .risk-badge{color:var(--green-dark)}
-.risk-fix{font-size:12px;color:var(--green-dark);font-weight:600;margin-top:4px}
+  /* MISTAKE CARDS */
+  .mistake {
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-left: 4px solid var(--red);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+    margin-bottom: 16px;
+  }
+  .mistake h4 { font-size: 15px; font-weight: 700; color: var(--red); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .mistake p { font-size: 14px; color: var(--ink-soft); margin: 0; }
 
-.num-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.num-card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px}
-.nc-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-3);margin-bottom:4px}
-.nc-val{font-size:20px;font-weight:800}
-.nc-sub{font-size:11px;color:var(--ink-3);margin-top:2px}
+  /* FAQ */
+  .faq-item {
+    border-bottom: 1.5px solid var(--border);
+    padding: 20px 0;
+  }
+  .faq-item:last-child { border-bottom: none; }
+  .faq-q {
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 15.5px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .faq-q::before {
+    content: 'Q';
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--accent);
+    color: white;
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .faq-a { font-size: 14.5px; color: var(--ink-soft); padding-left: 32px; }
 
-.regime-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
-.regime-card{border:2px solid var(--border);border-radius:var(--r-sm);padding:16px;text-align:center;transition:all .15s}
-.regime-card.winner{border-color:var(--green);background:var(--green-light)}
-.rc-name{font-size:12px;font-weight:700;margin-bottom:6px;color:var(--ink-2)}
-.rc-tax{font-size:26px;font-weight:800;color:var(--ink);margin-bottom:4px}
-.rc-note{font-size:11px;color:var(--ink-3)}
-.rc-win{font-size:11px;background:var(--green);color:#fff;padding:3px 10px;border-radius:99px;display:inline-block;margin-top:6px;font-weight:700}
+  /* CHECKLIST */
+  .checklist {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+  }
+  .checklist li::before {
+    content: '☐';
+    font-size: 17px;
+    color: var(--accent);
+    flex-shrink: 0;
+    line-height: 1.2;
+  }
 
-/* income table */
-.income-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:14px}
-.income-table th{background:var(--ink);color:#fff;padding:9px 14px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:0.06em;font-weight:600}
-.income-table td{padding:10px 14px;border-bottom:1px solid var(--border)}
-.income-table tr:nth-child(even) td{background:var(--surface-2)}
+  /* CODE */
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent-dark);
+  }
 
-/* filing guide */
-.guide-step{display:flex;gap:14px;margin-bottom:12px}
-.gs-num{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
-.gs-body{flex:1;background:var(--surface-2);border-radius:var(--r-sm);padding:12px 14px}
-.gs-title{font-size:13px;font-weight:700;margin-bottom:4px}
-.gs-desc{font-size:12px;color:var(--ink-2);line-height:1.65}
-.gs-source{font-size:11px;color:var(--accent);font-weight:600;margin-top:6px}
-.gs-mistake{background:var(--red-light);border-left:3px solid var(--red);padding:6px 10px;font-size:12px;margin-top:6px;border-radius:0 var(--r-sm) var(--r-sm) 0}
-.gs-tip{background:var(--green-light);border-left:3px solid var(--green);padding:6px 10px;font-size:12px;margin-top:6px;border-radius:0 var(--r-sm) var(--r-sm) 0;color:var(--green-dark)}
+  /* TAGS */
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .tag-required { background: var(--red-light); color: var(--red); }
+  .tag-optional { background: var(--green-light); color: var(--green); }
 
-/* action items */
-.action-item{display:flex;gap:12px;padding:12px 14px;background:var(--surface-2);border-radius:var(--r-sm);margin-bottom:8px;font-size:13px}
-.ai-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px}
-.ai-urgent{background:var(--red)}
-.ai-soon{background:var(--amber)}
-.ai-optional{background:var(--green)}
-.ai-title{font-weight:700;font-size:13px;margin-bottom:2px}
-.ai-save{font-size:12px;color:var(--green-dark);font-weight:600}
-.ai-deadline{font-size:11px;color:var(--ink-3);margin-top:2px}
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 32px 24px 48px;
+    color: var(--ink-muted);
+    font-size: 13px;
+    border-top: 1.5px solid var(--border);
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  .footer a { color: var(--accent); text-decoration: none; }
 
-/* deduction table */
-.ded-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:14px}
-.ded-table th{background:var(--surface-2);color:var(--ink-3);padding:8px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:0.06em;font-weight:700;border-bottom:2px solid var(--border)}
-.ded-table td{padding:9px 12px;border-bottom:1px solid var(--border)}
-.ded-claimed{font-weight:700;color:var(--green-dark)}
-.ded-gap{font-size:12px;color:var(--red);font-weight:600}
-
-/* foreign shares */
-.foreign-box{background:var(--purple-light);border:1px solid #c4b5fd;border-radius:var(--r);padding:20px;margin-top:14px}
-.foreign-title{font-weight:800;color:var(--purple);font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.fa-field{background:#fff;border-radius:var(--r-sm);padding:10px 14px;margin-bottom:8px;font-size:12px}
-.fa-field-name{font-weight:700;color:var(--purple);font-size:11px;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px}
-.fa-field-val{color:var(--ink-2);line-height:1.6}
-.fa-source{font-size:11px;color:var(--ink-3);margin-top:3px}
-
-/* paywall overlay */
-.paywall-overlay{position:relative;margin-top:20px}
-.paywall-blur{filter:blur(4px);pointer-events:none;user-select:none;opacity:0.4}
-.paywall-cta{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;background:linear-gradient(to bottom,rgba(240,244,248,0),rgba(240,244,248,0.7) 20%,rgba(240,244,248,0.97) 50%)}
-.paywall-cta-card{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:28px;box-shadow:var(--shadow-lg);max-width:360px}
-
-/* PDF upgrade */
-.pdf-upgrade{background:linear-gradient(135deg,var(--ink),#1a3a5c);border-radius:var(--r);padding:22px 24px;color:#fff;display:flex;align-items:center;gap:20px;margin-top:20px;flex-wrap:wrap}
-.pdf-upgrade-text{flex:1;min-width:200px}
-.pdf-upgrade-title{font-weight:800;font-size:16px;margin-bottom:4px}
-.pdf-upgrade-sub{font-size:13px;opacity:0.7}
-
-/* checks list */
-.check-item{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border-radius:var(--r-sm);margin-bottom:6px;font-size:13px}
-.check-ok{background:var(--green-light)}
-.check-warn{background:var(--amber-light)}
-.check-issue{background:var(--red-light)}
-
-/* itr badge */
-.itr-badge{display:inline-flex;align-items:center;gap:8px;background:var(--purple-light);color:var(--purple);padding:8px 16px;border-radius:99px;font-size:13px;font-weight:700;margin-bottom:16px}
-
-/* mistakes */
-.mistakes{background:var(--red-light);border-radius:var(--r-sm);padding:14px 16px;margin-top:14px}
-.mistakes-title{font-size:12px;font-weight:700;color:var(--red);margin-bottom:8px}
-.mistake{display:flex;gap:8px;font-size:12px;color:var(--ink-2);padding:3px 0}
-.mistake::before{content:"✗";color:var(--red);font-weight:700;flex-shrink:0}
-
-footer{text-align:center;padding:32px 24px;font-size:12px;color:var(--ink-3);border-top:1px solid var(--border);max-width:700px;margin:0 auto}
-
-@media(max-width:600px){
-  nav{padding:0 16px}.hero{padding:44px 16px 28px}
-  .how-steps{grid-template-columns:1fr}.how-step::after{display:none}
-  .panel{padding:20px}.rh-kpis{grid-template-columns:1fr 1fr}
-  .num-grid{grid-template-columns:1fr}.regime-grid{grid-template-columns:1fr}
-  .pdf-upgrade{flex-direction:column}
-}
+  /* PROGRESS BAR ACCENT */
+  .progress-bar {
+    height: 4px;
+    background: linear-gradient(90deg, #1a6bff, #00875a);
+    width: 100%;
+    position: fixed;
+    top: 0; left: 0;
+    z-index: 100;
+  }
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="logo">Salary<em>Bit</em> Tax AI</div>
-  <div class="nav-right">
-    <button class="btn btn-primary" onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'})">Analyse My AIS →</button>
-  </div>
-</nav>
+<div class="progress-bar"></div>
 
-<!-- ── HERO ── -->
-<section class="hero">
-  <div class="hero-eyebrow">🛡️ Notice Prevention · FY 2024–25</div>
-  <h1>Your AIS knows everything.<br>Do <span class="hl">you</span>?</h1>
-  <p class="hero-sub">The Income Tax department has a complete record of your income. We read it, find every mismatch, and show you exactly how to file — before they send you a notice.</p>
-  <div class="trust-row">
-    <div class="trust-item">AIS-powered analysis</div>
-    <div class="trust-item">CA-level accuracy</div>
-    <div class="trust-item">Full ITR filing guide</div>
-    <div class="trust-item">₹99 one-time</div>
-  </div>
-</section>
-
-<!-- ── HOW IT WORKS ── -->
-<div class="how">
-  <div class="how-steps">
-    <div class="how-step">
-      <div class="how-icon">📤</div>
-      <div class="how-title">Upload your AIS</div>
-      <div class="how-desc">Download free from incometax.gov.in. Upload the PDF here — takes 30 seconds.</div>
-    </div>
-    <div class="how-step">
-      <div class="how-icon">🤖</div>
-      <div class="how-title">Pay ₹99, get analysis</div>
-      <div class="how-desc">Our CA-level AI reads every line of your AIS and builds your personalised tax report.</div>
-    </div>
-    <div class="how-step">
-      <div class="how-icon">📋</div>
-      <div class="how-title">File with confidence</div>
-      <div class="how-desc">Step-by-step guide, notice risks flagged, refund calculated. No CA needed.</div>
-    </div>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">AY 2026-27 • Updated June 2026</div>
+  <h1>How to File <span>ITR-2</span> with Foreign Assets<br>RSU / ESOP Complete Guide</h1>
+  <p class="hero-sub">If you work at an MNC and hold foreign shares, this is the only guide you need. Every screen, every field, no CAs needed.</p>
+  <div class="hero-meta">
+    <span>Schedule FA Explained</span>
+    <span>Schedule CG for Foreign Loss</span>
+    <span>Foreign Tax Credit</span>
+    <span>112A Step-by-Step</span>
   </div>
 </div>
 
-<!-- ── APP ── -->
-<div id="app" class="app-card">
-  <div class="app-topbar">
-    <div class="app-dot" style="background:#ff5f57"></div>
-    <div class="app-dot" style="background:#ffbd2e"></div>
-    <div class="app-dot" style="background:#28c840"></div>
-    <div class="app-topbar-title">SalaryBit Tax AI — AIS Analyser</div>
+<!-- ALERT -->
+<div class="alert">
+  <div class="alert-inner">
+    <span class="alert-icon">⚠️</span>
+    <p><strong>Non-disclosure penalty:</strong> Failing to report foreign assets in Schedule FA attracts a penalty of <strong>₹10 lakh per year</strong> under the Black Money Act 2015 — even if the value is small. File ITR-2, not ITR-1, if you hold any foreign shares.</p>
   </div>
-
-  <!-- UPLOAD PANEL -->
-  <div id="panel-upload" class="panel active">
-    <div class="upload-headline">Upload your AIS document</div>
-    <p class="upload-sub">The Annual Information Statement (AIS) from the Income Tax portal contains all income the government has recorded for you. Upload it here.</p>
-
-    <div class="ais-info-box">
-      <div class="ais-info-title">📥 How to download your AIS (free, 2 minutes)</div>
-      <div class="ais-info-steps">
-        <div class="ais-step"><span class="ais-step-num">1.</span><span>Go to <strong>incometax.gov.in</strong> and login with your PAN + password</span></div>
-        <div class="ais-step"><span class="ais-step-num">2.</span><span>Click <strong>e-File → Income Tax Returns → View AIS</strong></span></div>
-        <div class="ais-step"><span class="ais-step-num">3.</span><span>Click <strong>Download</strong> and choose <strong>PDF format</strong></span></div>
-        <div class="ais-step"><span class="ais-step-num">4.</span><span>Upload that PDF below</span></div>
-      </div>
-    </div>
-
-    <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleDrop(event)">
-      <span class="dz-icon" id="dzIcon">📄</span>
-      <div class="dz-title" id="dzTitle">Click to upload AIS PDF</div>
-      <div class="dz-sub" id="dzSub">or drag and drop · PDF format · Max 20MB</div>
-      <div id="dzFileInfo" style="display:none" class="dz-file-info">
-        <span id="dzFileName"></span>
-        <button class="dz-remove" onclick="event.stopPropagation();removeFile()" title="Remove">✕</button>
-      </div>
-    </div>
-    <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(this.files)">
-
-    <div class="privacy-note">
-      🔒 <span>Your document is encrypted in transit, processed instantly, and deleted from our servers immediately after analysis. We never store your tax data.</span>
-    </div>
-
-    <!-- PAYMENT GATE — shown after file selected -->
-    <div id="payGate" style="display:none">
-      <div class="pay-gate">
-        <div class="pay-gate-icon">🔍</div>
-        <div class="pay-gate-title">Ready to analyse your AIS</div>
-        <p class="pay-gate-sub">Pay once to unlock your complete CA-level tax report. No subscription, no hidden fees.</p>
-        <div class="pay-price-badge">
-          <span class="pay-price-amt">₹99</span>
-          <span class="pay-price-label">one-time</span>
-        </div>
-        <div class="pay-features">
-          <div class="pay-feature">Complete AIS income breakdown — every rupee</div>
-          <div class="pay-feature">Notice risk check — mismatches flagged before you file</div>
-          <div class="pay-feature">Old vs New Regime — exact tax comparison</div>
-          <div class="pay-feature">Step-by-step ITR filing guide, section by section</div>
-          <div class="pay-feature">Foreign shares &amp; RSU guide (Schedule FA &amp; FSI)</div>
-          <div class="pay-feature">Deductions you're missing — 80C, 80D, HRA, NPS</div>
-          <div class="pay-feature">Refund calculation &amp; how to claim it</div>
-        </div>
-        <button class="btn btn-green btn-xl" id="payBtn" onclick="initiatePayment()">
-          Pay ₹99 &amp; Analyse My AIS →
-        </button>
-        <div class="pay-secure">🔒 Razorpay secured · 256-bit SSL · Instant access</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SCANNING PANEL -->
-  <div id="panel-scan" class="panel">
-    <div class="scan-center">
-      <div class="scan-title">🤖 Reading your AIS...</div>
-      <p class="scan-sub">Our CA-level AI is extracting every income source, checking notice risks, and building your personalised report.</p>
-      <div class="scan-track"><div class="scan-fill" id="scanFill"></div></div>
-      <div class="scan-pct" id="scanPct">Starting...</div>
-    </div>
-    <div class="scan-items">
-      <div class="si" id="si1"><div class="si-dot"></div>Extracting all income sources from AIS</div>
-      <div class="si" id="si2"><div class="si-dot"></div>Calculating TDS, salary &amp; other deductions</div>
-      <div class="si" id="si3"><div class="si-dot"></div>Detecting capital gains — RSU, MF, Property</div>
-      <div class="si" id="si4"><div class="si-dot"></div>Old vs New Regime comparison</div>
-      <div class="si" id="si5"><div class="si-dot"></div>Flagging AIS mismatches &amp; notice risks</div>
-      <div class="si" id="si6"><div class="si-dot"></div>Building step-by-step ITR filing guide</div>
-      <div class="si" id="si7"><div class="si-dot"></div>Checking foreign shares &amp; Schedule FA requirements</div>
-      <div class="si" id="si8"><div class="si-dot"></div>Generating your personalised CA-level report</div>
-    </div>
-  </div>
-
-  <!-- REPORT PANEL -->
-  <div id="panel-report" class="panel">
-    <div id="reportContent"></div>
-    <!-- PDF UPGRADE -->
-    <div class="pdf-upgrade" id="pdfUpgrade">
-      <div class="pdf-upgrade-text">
-        <div class="pdf-upgrade-title">📄 Download your full PDF report</div>
-        <div class="pdf-upgrade-sub">Formatted CA-level document — share with your accountant or keep for records</div>
-      </div>
-      <button class="btn btn-green" style="white-space:nowrap;padding:12px 22px" onclick="initiatePdfPayment()">Download PDF — ₹199 →</button>
-    </div>
-  </div>
-
-  <!-- ERROR PANEL -->
-  <div id="panel-error" class="panel">
-    <div style="text-align:center;padding:20px 0">
-      <div style="font-size:48px;margin-bottom:16px">⚠️</div>
-      <div style="font-size:18px;font-weight:700;color:var(--red);margin-bottom:8px">Analysis Failed</div>
-      <div id="errorMsg" style="font-size:14px;color:var(--ink-2);margin-bottom:24px"></div>
-      <button class="btn btn-primary" onclick="resetToUpload()">← Try Again</button>
-    </div>
-  </div>
-
 </div>
 
-<footer>
-  <strong>SalaryBit Tax AI</strong> · salarybit.in<br>
-  <span style="margin-top:4px;display:block">For informational purposes only. Verify with your CA before filing. AY 2025-26 · Powered by Claude AI</span>
-</footer>
+<!-- MAIN -->
+<div class="page-wrap">
 
-<script>
-// ─── CONFIG ───────────────────────────────────────────────
-const BACKEND = 'https://tax-ai-backend-production-ed49.up.railway.app';
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">Table of Contents</div>
+    <ol>
+      <li><a href="#who">Who Must File ITR-2</a></li>
+      <li><a href="#docs">Documents Needed</a></li>
+      <li><a href="#reason">Filing Reason Selection</a></li>
+      <li><a href="#schedules">Selecting Schedules</a></li>
+      <li><a href="#questionnaire">Schedule Questionnaire</a></li>
+      <li><a href="#salary">Schedule Salary</a></li>
+      <li><a href="#cg">Schedule Capital Gains (CG)</a></li>
+      <li><a href="#112a">Schedule 112A — LTCG</a></li>
+      <li><a href="#rsu-loss">Foreign RSU Loss Handling</a></li>
+      <li><a href="#os">Schedule Other Sources</a></li>
+      <li><a href="#via">Schedule VI-A Deductions</a></li>
+      <li><a href="#fa">Schedule FA — Foreign Assets</a></li>
+      <li><a href="#fsi">Schedule FSI & TR</a></li>
+      <li><a href="#tax">Final Tax & Payment</a></li>
+      <li><a href="#mistakes">7 Common Mistakes</a></li>
+      <li><a href="#faq">FAQs</a></li>
+      <li><a href="#troubleshooting">Real Errors We Fixed</a></li>
+    </ol>
+  </div>
 
-const state = {
-  file: null,
-  orderId: null,
-  paymentId: null,
-  accessToken: null,
-  analysisResult: null,
-};
-
-// ─── FILE HANDLING ────────────────────────────────────────
-function handleDrop(e) {
-  e.preventDefault();
-  document.getElementById('dropzone').classList.remove('over');
-  const files = e.dataTransfer.files;
-  if (files.length) setFile(files[0]);
-}
-function handleFileSelect(files) {
-  if (files.length) setFile(files[0]);
-}
-function setFile(file) {
-  const allowed = ['application/pdf','image/jpeg','image/png'];
-  if (!allowed.includes(file.type) && !file.name.match(/\.(pdf|jpg|jpeg|png)$/i)) {
-    alert('Please upload a PDF, JPG, or PNG file.');
-    return;
-  }
-  if (file.size > 20 * 1024 * 1024) { alert('File size must be under 20MB.'); return; }
-  state.file = file;
-  const dz = document.getElementById('dropzone');
-  dz.classList.add('has-file');
-  document.getElementById('dzIcon').textContent = '✅';
-  document.getElementById('dzTitle').textContent = file.name;
-  document.getElementById('dzSub').textContent = (file.size / 1024).toFixed(0) + ' KB · Ready to analyse';
-  document.getElementById('dzFileInfo').style.display = 'flex';
-  document.getElementById('dzFileName').textContent = '';
-  document.getElementById('payGate').style.display = 'block';
-  document.getElementById('payGate').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-function removeFile() {
-  state.file = null;
-  document.getElementById('dropzone').classList.remove('has-file');
-  document.getElementById('dzIcon').textContent = '📄';
-  document.getElementById('dzTitle').textContent = 'Click to upload AIS PDF';
-  document.getElementById('dzSub').textContent = 'or drag and drop · PDF format · Max 20MB';
-  document.getElementById('dzFileInfo').style.display = 'none';
-  document.getElementById('payGate').style.display = 'none';
-  document.getElementById('fileInput').value = '';
-}
-
-// ─── PANELS ───────────────────────────────────────────────
-function showPanel(name) {
-  ['upload','scan','report','error'].forEach(p => {
-    const el = document.getElementById('panel-' + p);
-    if (el) { el.classList.remove('active'); }
-  });
-  const target = document.getElementById('panel-' + name);
-  if (target) { target.classList.add('active'); }
-  document.getElementById('app').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function resetToUpload() { removeFile(); showPanel('upload'); }
-
-// ─── PAYMENT ──────────────────────────────────────────────
-async function initiatePayment() {
-  if (!state.file) { alert('Please upload your AIS PDF first.'); return; }
-  const btn = document.getElementById('payBtn');
-  btn.textContent = '⏳ Opening payment...'; btn.disabled = true;
-  try {
-    const orderRes = await fetch(`${BACKEND}/api/create-order`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: 99, plan: 'AIS Full Analysis' }),
-    });
-    if (!orderRes.ok) throw new Error('Could not create order. Please try again.');
-    const order = await orderRes.json();
-    state.orderId = order.order_id;
-
-    const rzp = new Razorpay({
-      key: order.key_id,
-      amount: order.amount,
-      currency: order.currency,
-      name: 'SalaryBit Tax AI',
-      description: 'AIS Full Analysis — FY 2024-25',
-      order_id: order.order_id,
-      theme: { color: '#1a6ef5' },
-      handler: async (resp) => {
-        btn.textContent = '✅ Payment done! Analysing...'; 
-        await verifyAndAnalyse(resp);
-      },
-      modal: {
-        ondismiss: () => {
-          btn.textContent = 'Pay ₹99 & Analyse My AIS →';
-          btn.disabled = false;
-        }
-      }
-    });
-    rzp.on('payment.failed', (r) => {
-      alert('Payment failed: ' + r.error.description);
-      btn.textContent = 'Pay ₹99 & Analyse My AIS →';
-      btn.disabled = false;
-    });
-    rzp.open();
-  } catch (err) {
-    alert(err.message || 'Payment error. Please try again.');
-    btn.textContent = 'Pay ₹99 & Analyse My AIS →';
-    btn.disabled = false;
-  }
-}
-
-async function verifyAndAnalyse(razorpayResp) {
-  try {
-    // Verify payment
-    const vRes = await fetch(`${BACKEND}/api/verify-payment`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        razorpay_order_id: razorpayResp.razorpay_order_id,
-        razorpay_payment_id: razorpayResp.razorpay_payment_id,
-        razorpay_signature: razorpayResp.razorpay_signature,
-      }),
-    });
-    const vData = await vRes.json();
-    if (!vData.verified) throw new Error('Payment verification failed. Email support@salarybit.in');
-    state.paymentId = vData.payment_id;
-    state.accessToken = vData.access_token;
-
-    // Now run analysis
-    showPanel('scan');
-    await runAnalysis();
-  } catch (err) {
-    document.getElementById('errorMsg').textContent = err.message;
-    showPanel('error');
-  }
-}
-
-// ─── SCAN ANIMATION + API CALL ────────────────────────────
-async function runAnalysis() {
-  const steps = [
-    { id: 'si1', pct: 12, msg: 'Extracting income sources...' },
-    { id: 'si2', pct: 25, msg: 'Calculating TDS & deductions...' },
-    { id: 'si3', pct: 38, msg: 'Detecting capital gains...' },
-    { id: 'si4', pct: 50, msg: 'Comparing tax regimes...' },
-    { id: 'si5', pct: 63, msg: 'Flagging notice risks...' },
-    { id: 'si6', pct: 76, msg: 'Building ITR filing guide...' },
-    { id: 'si7', pct: 88, msg: 'Checking foreign shares...' },
-    { id: 'si8', pct: 96, msg: 'Generating report...' },
-  ];
-
-  let animDone = false, apiDone = false, apiResult = null, apiError = null;
-
-  const tryFinish = () => {
-    if (!animDone || !apiDone) return;
-    document.getElementById('scanFill').style.width = '100%';
-    document.getElementById('scanPct').textContent = 'Analysis complete!';
-    document.getElementById('si8').classList.remove('running');
-    document.getElementById('si8').classList.add('done');
-    setTimeout(() => {
-      if (apiError) {
-        document.getElementById('errorMsg').textContent = apiError;
-        showPanel('error');
-      } else {
-        state.analysisResult = apiResult;
-        renderReport(apiResult);
-        showPanel('report');
-      }
-    }, 700);
-  };
-
-  let idx = 0;
-  const tick = () => {
-    if (idx >= steps.length) { animDone = true; tryFinish(); return; }
-    const s = steps[idx];
-    if (idx > 0) {
-      const prev = document.getElementById(steps[idx-1].id);
-      prev.classList.remove('running'); prev.classList.add('done');
-    }
-    document.getElementById(s.id).classList.add('running');
-    document.getElementById('scanFill').style.width = s.pct + '%';
-    document.getElementById('scanPct').textContent = s.msg;
-    idx++;
-    setTimeout(tick, 600);
-  };
-  tick();
-
-  // API call
-  try {
-    const fd = new FormData();
-    fd.append('file', state.file);
-    fd.append('access_token', state.accessToken);
-    const res = await fetch(`${BACKEND}/api/analyse`, { method: 'POST', body: fd });
-    if (!res.ok) {
-      const e = await res.json().catch(() => ({}));
-      throw new Error(e.error || `Server error ${res.status}`);
-    }
-    apiResult = await res.json();
-  } catch (err) {
-    apiError = err.message;
-  } finally {
-    apiDone = true;
-    tryFinish();
-  }
-}
-
-// ─── REPORT RENDERER ──────────────────────────────────────
-function fmt(n) { return '₹' + Number(n || 0).toLocaleString('en-IN'); }
-function maskPAN(p) { if (!p || p.length < 10) return p || '—'; return p.slice(0,2)+'XXXXX'+p.slice(7); }
-
-function renderReport(d) {
-  const score = Math.min(100, Math.max(0, d.health_score || 70));
-  const scoreColor = score >= 75 ? '#059669' : score >= 50 ? '#d97706' : '#dc2626';
-  const scoreTag = score >= 75 ? '✅ Tax Healthy' : score >= 50 ? '⚠️ Needs Attention' : '❌ Action Required';
-  const isRefund = (d.refund_estimate || 0) >= 0;
-
-  let html = `
-  <!-- HEADER -->
-  <div class="report-header">
-    <div class="rh-row">
-      <div>
-        <div class="rh-title">📊 Your CA-Level Tax Report</div>
-        <div class="rh-meta">FY 2024–25 · AY 2025-26${d.name ? ' · ' + d.name : ''}${d.pan ? ' · PAN: ' + maskPAN(d.pan) : ''}${d.employer_name ? ' · ' + d.employer_name : ''}</div>
-        ${d.key_numbers_narrative ? `<div class="rh-summary">${d.key_numbers_narrative}</div>` : ''}
+  <!-- WHO SHOULD FILE -->
+  <div class="section" id="who">
+    <div class="section-eyebrow">Step 0</div>
+    <h2>Who Must File ITR-2?</h2>
+    <p>ITR-2 is mandatory — not optional — if you are salaried and have any of the following:</p>
+    <div class="step-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div><h4>Foreign Assets or RSUs</h4><p>You hold shares, RSUs, or ESOPs in a company listed outside India (US, Germany, UK etc.)</p></div>
       </div>
-      <div class="score-pill">
-        <div class="score-num" style="color:${scoreColor}">${score}</div>
-        <div class="score-lbl">Tax Health</div>
-        <div class="score-tag" style="color:${scoreColor}">${scoreTag}</div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div><h4>Capital Gains</h4><p>You sold equity mutual funds, shares, or foreign securities during the year</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div><h4>Multiple Income Sources</h4><p>Income from more than one employer, or house property income/loss</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div><h4>Dividend or Interest Income</h4><p>Interest from FDs, savings accounts, or dividends from stocks/MFs exceeding ₹5,000</p></div>
       </div>
     </div>
-    <div class="rh-kpis">
-      <div class="kpi"><div class="kpi-lbl">Total Income</div><div class="kpi-val">${fmt(d.gross_total_income || d.gross_salary)}</div><div class="kpi-sub">FY 2024-25</div></div>
-      <div class="kpi"><div class="kpi-lbl">TDS Deducted</div><div class="kpi-val">${fmt(d.tds_deducted)}</div><div class="kpi-sub">Already paid</div></div>
-      <div class="kpi"><div class="kpi-lbl">${isRefund ? '🟢 Refund' : '🔴 Tax Due'}</div><div class="kpi-val">${fmt(Math.abs(d.refund_estimate||0))}</div><div class="kpi-sub">${isRefund ? 'Coming back' : 'Pay before filing'}</div></div>
-      <div class="kpi"><div class="kpi-lbl">Savings Found</div><div class="kpi-val">${fmt(d.unclaimed_deductions)}</div><div class="kpi-sub">Unclaimed</div></div>
+    <div class="callout danger">
+      <span class="callout-icon">🚫</span>
+      <p><strong>Do not file ITR-1 if you have foreign RSUs.</strong> ITR-1 has no Schedule FA or Schedule CG for foreign assets. Filing the wrong form is treated as a defective return.</p>
+    </div>
+    <h3>How RSU Taxation Works in India</h3>
+    <p>When your employer grants RSUs in a foreign-listed parent company, two separate tax events occur:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Event</th><th>Tax Treatment</th><th>Reported In</th></tr></thead>
+        <tbody>
+          <tr><td><strong>At Vesting</strong></td><td>FMV of shares = Perquisite under Sec 17(2). Added to salary, TDS deducted by employer.</td><td>Form 16 → Schedule Salary</td></tr>
+          <tr><td><strong>At Sale (within 24 months)</strong></td><td>STCG = Sale price minus FMV at vesting. Taxed at applicable slab rate.</td><td>Schedule CG → A5</td></tr>
+          <tr><td><strong>At Sale (after 24 months)</strong></td><td>LTCG = Sale price minus FMV at vesting. Taxed at 12.5% without indexation.</td><td>Schedule CG → B8</td></tr>
+          <tr><td><strong>Every Year (holding)</strong></td><td>Disclose holding value in Schedule FA. No tax on holding itself.</td><td>Schedule FA → A3</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
-  <!-- SUMMARY -->
-  ${d.summary ? `<div class="alert a-blue" style="margin-bottom:16px"><div class="alert-icon">🤖</div><div><strong>CA Summary</strong>${d.summary}</div></div>` : ''}
+  <!-- DOCUMENTS -->
+  <div class="section" id="docs">
+    <div class="section-eyebrow">Before You Start</div>
+    <h2>Documents to Collect</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Document</th><th>Why Needed</th><th>Where to Get</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Form 16 (Part A + B)</strong></td><td>Salary, TDS, perquisite value</td><td>HR/payroll portal</td></tr>
+          <tr><td><strong>AIS</strong></td><td>Cross-check all income, TDS, dividends</td><td>incometax.gov.in → Services → AIS</td></tr>
+          <tr><td><strong>ESOP Platform Statement</strong></td><td>RSU vesting, sale proceeds, taxes withheld</td><td>equateplus.com / fidelity.com</td></tr>
+          <tr><td><strong>MF Capital Gains Statement</strong></td><td>LTCG/STCG on mutual fund redemptions</td><td>CAMS, KFintech, or AMC website</td></tr>
+          <tr><td><strong>Bank Interest Certificates</strong></td><td>Savings + FD interest breakdown</td><td>Net banking → Statements</td></tr>
+          <tr><td><strong>Previous Year ITR PDF</strong></td><td>Schedule FA closing balance as this year's opening</td><td>incometax.gov.in → e-File → View Filed Returns</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-  <!-- ACTION ITEMS -->
-  ${renderActionItems(d, isRefund)}
+  <!-- FILING REASON -->
+  <div class="section" id="reason">
+    <div class="section-eyebrow">Step 1</div>
+    <h2>Select the Right Filing Reason</h2>
+    <p>The first portal question asks <em>why</em> you are filing. For most salaried employees:</p>
+    <div class="callout tip">
+      <span class="callout-icon">✅</span>
+      <p><strong>Select: "Taxable income is more than basic exemption limit"</strong><br>This is the correct choice if your gross salary exceeds ₹3 lakh (new regime) or ₹2.5 lakh (old regime).</p>
+    </div>
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <p><strong>Do NOT select "Seventh Proviso to Section 139(1)"</strong> — this is only for people whose income is below the exemption limit but are filing due to high-value transactions (₹1 crore+ in current account, ₹2 lakh+ foreign travel, etc.).</p>
+    </div>
+  </div>
 
-  <!-- INCOME SOURCES -->
-  ${renderIncomeSources(d)}
+  <!-- SCHEDULES -->
+  <div class="section" id="schedules">
+    <div class="section-eyebrow">Step 2</div>
+    <h2>Select the Right Schedules</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Schedule</th><th>Select?</th><th>Reason</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Part A-Gen</strong></td><td>✅ Always</td><td>Mandatory — auto-selected</td></tr>
+          <tr><td><strong>Schedule Salary</strong></td><td>✅ Always</td><td>Your primary income</td></tr>
+          <tr><td><strong>Schedule CG</strong></td><td>✅ Always for RSU holders</td><td>Foreign RSU gains/losses must be reported</td></tr>
+          <tr><td><strong>Schedule OS</strong></td><td>✅ If interest/dividend income</td><td>Savings interest, FD interest, dividends</td></tr>
+          <tr><td><strong>Schedule FA</strong></td><td>✅ Mandatory if foreign shares held</td><td>Disclosure under Black Money Act</td></tr>
+          <tr><td><strong>Schedule 112A</strong></td><td>✅ If sold domestic equity MF/shares</td><td>Transaction-level LTCG detail</td></tr>
+          <tr><td><strong>Schedule VI-A</strong></td><td>✅ If any deductions (80TTA etc.)</td><td>Savings interest deduction</td></tr>
+          <tr><td><strong>Schedule HP</strong></td><td>Only if house property</td><td>Home loan interest (not claimable in new regime)</td></tr>
+          <tr><td><strong>Schedule FSI/TR</strong></td><td>Only if claiming foreign tax credit</td><td>See Step 13</td></tr>
+          <tr><td><strong>Schedule 5A</strong></td><td>❌ Skip</td><td>Only for Goa/Daman residents (Portuguese Civil Code)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-  <!-- NOTICE RISK -->
-  ${renderNoticeRisk(d)}
+  <!-- QUESTIONNAIRE -->
+  <div class="section" id="questionnaire">
+    <div class="section-eyebrow">Step 3</div>
+    <h2>Schedule Questionnaire</h2>
+    <p>The portal asks several yes/no questions. Here are the answers for a typical salaried RSU holder:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Question</th><th>Answer</th></tr></thead>
+        <tbody>
+          <tr><td>Opt out of new tax regime (115BAC)?</td><td><strong>No</strong> — unless old regime saves more tax</td></tr>
+          <tr><td>Rule 2BB allowances (travel/daily allowance)?</td><td><strong>No</strong></td></tr>
+          <tr><td>Transport allowance for handicapped?</td><td><strong>No</strong></td></tr>
+          <tr><td>80CCD(2) employer NPS contribution?</td><td><strong>No</strong> — unless your employer contributes to NPS</td></tr>
+          <tr><td>Residential status condition?</td><td><strong>"In India for 182 days or more [Section 6(1)(a)]"</strong></td></tr>
+          <tr><td>Benefit u/s 115H?</td><td><strong>No</strong> — for NRIs becoming resident only</td></tr>
+          <tr><td>Portuguese Civil Code / Section 5A?</td><td><strong>No</strong></td></tr>
+          <tr><td>FPI (Foreign Portfolio Investor)?</td><td><strong>No</strong></td></tr>
+          <tr><td>Director in a company?</td><td><strong>No</strong> — if you are only an employee</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-  <!-- REGIME -->
-  ${renderRegime(d)}
-
-  <!-- FILING GUIDE -->
-  ${renderFilingGuide(d)}
-
-  <!-- FOREIGN SHARES -->
-  ${renderForeignShares(d)}
-
-  <!-- DEDUCTIONS -->
-  ${renderDeductions(d)}
+  <!-- SALARY -->
+  <div class="section" id="salary">
+    <div class="section-eyebrow">Step 4</div>
+    <h2>Schedule Salary</h2>
+    <p>This is pre-filled from your Form 16. Verify each field carefully:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Field</th><th>What It Should Show</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1a — Salary u/s 17(1)</strong></td><td>Basic salary + allowances from Form 16</td></tr>
+          <tr><td><strong>1b — Perquisites u/s 17(2)</strong></td><td>RSU vesting value — this is the FMV at vesting × number of shares</td></tr>
+          <tr><td><strong>Standard deduction u/s 16</strong></td><td>₹75,000 (auto-filled for FY 2025-26)</td></tr>
+          <tr><td><strong>Net taxable salary</strong></td><td>Gross salary minus standard deduction</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout info">
+      <span class="callout-icon">ℹ️</span>
+      <p>Your RSU vesting value appears under "Stock options (non-qualified options) other than ESOP" in the perquisites breakdown. This is correct — the perquisite is already included in your Form 16 and TDS has been deducted on it.</p>
+    </div>
+  </div>
 
   <!-- CAPITAL GAINS -->
-  ${d.capital_gains_detected ? renderCapitalGains(d) : ''}
-
-  <!-- REFUND / TAX PAYMENT GUIDE -->
-  ${renderRefundGuide(d, isRefund)}
-
-  <!-- ALL CHECKS -->
-  ${renderAllChecks(d)}
-  `;
-
-  document.getElementById('reportContent').innerHTML = html;
-}
-
-function renderActionItems(d, isRefund) {
-  const items = d.action_items && d.action_items.length ? d.action_items : [
-    { priority: 'urgent', action: 'File ITR before July 31, 2025 to avoid ₹5,000 late fee', deadline: 'July 31, 2025', potential_saving: 5000 },
-    { priority: 'urgent', action: 'Check all AIS income sources are reflected in your ITR — AIS mismatches trigger automatic notices', deadline: '', potential_saving: 0 },
-    { priority: 'soon', action: `Choose ${d.recommended_regime === 'new' ? 'New' : 'Old'} Tax Regime before filing — this choice is final for the year`, deadline: '', potential_saving: d.regime_saving || 0 },
-  ];
-  const icons = { urgent: '🔴', soon: '🟡', optional: '🟢' };
-  return `
-  <div class="rs">
-    <div class="rs-head" onclick="toggleRS(this)">
-      <div class="rs-left"><div class="rs-icon">✅</div><div><div class="rs-title">Your Action Checklist</div><div class="rs-sub">Do these before you file</div></div></div>
-      <div class="rs-right"><span class="badge badge-red">${items.filter(i=>i.priority==='urgent').length} Urgent</span><div class="rs-chevron">▾</div></div>
-    </div>
-    <div class="rs-body open">
-      ${items.map((a,i) => `
-      <div class="action-item">
-        <div class="ai-dot ai-${a.priority}" style="margin-top:5px"></div>
-        <div style="flex:1">
-          <div class="ai-title">${icons[a.priority]||'•'} ${a.action}</div>
-          ${a.potential_saving ? `<div class="ai-save">Saves ${fmt(a.potential_saving)}</div>` : ''}
-          ${a.deadline ? `<div class="ai-deadline">📅 ${a.deadline}</div>` : ''}
-        </div>
-      </div>`).join('')}
-    </div>
-  </div>`;
-}
-
-function renderIncomeSources(d) {
-  const sources = d.income_sources || [];
-  if (!sources.length) return '';
-  return `
-  <div class="rs">
-    <div class="rs-head" onclick="toggleRS(this)">
-      <div class="rs-left"><div class="rs-icon">💰</div><div><div class="rs-title">Income Sources (from AIS)</div><div class="rs-sub">All income the IT department has recorded for you</div></div></div>
-      <div class="rs-right"><span class="badge badge-blue">${sources.length} sources</span><div class="rs-chevron">▾</div></div>
-    </div>
-    <div class="rs-body open">
-      <div class="alert a-amber" style="margin-bottom:12px"><div class="alert-icon">⚠️</div><div><strong>You must report ALL of these in your ITR</strong>Every item below has been reported to the IT department. Missing any one of them can trigger an automated notice — even bank FD interest of ₹500.</div></div>
-      <table class="income-table">
-        <tr><th>Income Type</th><th>Amount</th><th>TDS Deducted</th><th>Reported By</th></tr>
-        ${sources.map(s => `<tr>
-          <td style="font-weight:600">${s.type}</td>
-          <td style="font-weight:700;color:var(--ink)">${fmt(s.amount)}</td>
-          <td style="color:${s.tds_deducted > 0 ? 'var(--green-dark)' : 'var(--ink-3)'}">${s.tds_deducted > 0 ? fmt(s.tds_deducted) : '—'}</td>
-          <td style="font-size:12px;color:var(--ink-3)">${s.reported_by || '—'}</td>
-        </tr>`).join('')}
-        <tr style="background:var(--ink);color:#fff">
-          <td style="font-weight:700;padding:10px 14px">Total</td>
-          <td style="font-weight:800;padding:10px 14px">${fmt(sources.reduce((s,i)=>s+(i.amount||0),0))}</td>
-          <td style="padding:10px 14px">${fmt(sources.reduce((s,i)=>s+(i.tds_deducted||0),0))}</td>
-          <td></td>
-        </tr>
+  <div class="section" id="cg">
+    <div class="section-eyebrow">Step 5</div>
+    <h2>Schedule Capital Gains (CG)</h2>
+    <p>This is the most important schedule for RSU holders. It has distinct sections for different asset types.</p>
+    <h3>A5 — Short-Term Capital Gains from Foreign RSU Sales</h3>
+    <p>Foreign shares are not listed on Indian exchanges, so they go under <strong>A5 — "From sale of assets other than at A1 or A2 or A3 or A4"</strong>.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Field</th><th>What to Enter</th></tr></thead>
+        <tbody>
+          <tr><td><strong>A5a(ii) — Full value of consideration</strong></td><td>Total sale proceeds in INR (convert using SBI TTBR rate on transaction date)</td></tr>
+          <tr><td><strong>A5b(i) — Cost of acquisition</strong></td><td>FMV at vesting date in INR × number of shares sold (this was taxed as salary — your cost basis)</td></tr>
+          <tr><td><strong>A5b(iii) — Expenditure on transfer</strong></td><td>Brokerage, transaction fees in INR (if any)</td></tr>
+          <tr><td><strong>A5e — STCG amount</strong></td><td>Auto-calculated. Negative = capital loss, positive = capital gain</td></tr>
+        </tbody>
       </table>
     </div>
-  </div>`;
-}
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <p><strong>Sell-to-cover transactions almost always result in a small loss.</strong> When your employer sells shares to cover tax at vesting, the sale happens on the same day at the same FMV — but brokerage and transaction costs create a small net loss. This loss is valid and should be reported.</p>
+    </div>
+    <h3>B3 — Long-Term Capital Gains from Domestic Equity (Section 112A)</h3>
+    <p>For domestic equity mutual funds and shares sold with STT paid, use B3. This section pulls from Schedule 112A which you fill separately (see next step).</p>
+    <h3>B8 — Long-Term Capital Gains from Foreign Shares (held 24+ months)</h3>
+    <p>If you held foreign RSU shares for more than 24 months from vesting date before selling, use B8 with the same cost basis logic as A5.</p>
+  </div>
 
-function renderNoticeRisk(d) {
-  const risks = d.notice_risk_flags || [];
-  const high = risks.filter(r=>r.risk==='high').length;
-  const med = risks.filter(r=>r.risk==='medium').length;
-  const badgeClass = high > 0 ? 'badge-red' : med > 0 ? 'badge-amber' : 'badge-green';
-  const badgeText = high > 0 ? `${high} High Risk` : med > 0 ? `${med} Medium Risk` : '✓ All Clear';
-  return `
-  <div class="rs">
-    <div class="rs-head" onclick="toggleRS(this)">
-      <div class="rs-left"><div class="rs-icon">🚨</div><div><div class="rs-title">Notice Risk Check</div><div class="rs-sub">AIS mismatches that could trigger IT department notices</div></div></div>
-      <div class="rs-right"><span class="badge ${badgeClass}">${badgeText}</span><div class="rs-chevron">▾</div></div>
+  <!-- 112A -->
+  <div class="section" id="112a">
+    <div class="section-eyebrow">Step 6</div>
+    <h2>Schedule 112A — LTCG on Domestic Equity & MF</h2>
+    <p>This schedule requires transaction-level detail for every equity MF or share sold with STT paid during the year.</p>
+    <h3>CSV Upload Option</h3>
+    <p>The portal supports CSV upload — but the column format must match exactly. Always download the template directly from the portal. The key dropdown in column 1a:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Your situation</th><th>Select in Column 1a</th></tr></thead>
+        <tbody>
+          <tr><td>Units/shares purchased after 1 Feb 2018</td><td><strong>"After 31st January 2018"</strong></td></tr>
+          <tr><td>Units/shares purchased on or before 1 Feb 2018</td><td><strong>"On or Before 31st January 2018"</strong> (FMV as on 31 Jan 2018 applies as grandfathered cost)</td></tr>
+        </tbody>
+      </table>
     </div>
-    <div class="rs-body open">
-      ${risks.length === 0 ? '<div class="alert a-green"><div class="alert-icon">✅</div><div><strong>No critical mismatches found</strong>Your AIS data appears clean. File on time and you should be notice-free.</div></div>' :
-        risks.map(r => `
-        <div class="risk-item risk-${r.risk}">
-          <div style="flex:1">
-            <div class="risk-badge">${r.risk.toUpperCase()} RISK${r.source ? ' — ' + r.source : ''}</div>
-            <div>${r.description}</div>
-            ${r.fix ? `<div class="risk-fix">✓ Fix: ${r.fix}</div>` : ''}
-          </div>
-        </div>`).join('')}
-      <div class="alert a-blue" style="margin-top:10px"><div class="alert-icon">💡</div><div><strong>How notices get triggered</strong>The IT portal auto-matches your ITR against AIS using software. Any number that appears in AIS but not in your ITR gets flagged — automatically, within weeks of filing.</div></div>
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <p><strong>Consolidation shortcut:</strong> If you have multiple SIP units of the same ISIN redeemed on the same date, you can consolidate them into a single row by summing the quantity, full value, and cost. No need to enter each SIP installment separately.</p>
     </div>
-  </div>`;
-}
+    <p>After all rows are entered, the total Balance (column 14) flows automatically into B3a of the main Schedule CG.</p>
+  </div>
 
-function renderRegime(d) {
-  const rec = d.recommended_regime || 'new';
-  return `
-  <div class="rs">
-    <div class="rs-head" onclick="toggleRS(this)">
-      <div class="rs-left"><div class="rs-icon">⚖️</div><div><div class="rs-title">Old vs New Tax Regime</div><div class="rs-sub">Which one saves you more this year</div></div></div>
-      <div class="rs-right"><span class="badge badge-green">${rec === 'new' ? 'New' : 'Old'} Regime saves ${fmt(d.regime_saving)}</span><div class="rs-chevron">▾</div></div>
-    </div>
-    <div class="rs-body open">
-      <div class="regime-grid">
-        <div class="regime-card ${rec === 'old' ? 'winner' : ''}">
-          <div class="rc-name">Old Regime</div>
-          <div class="rc-tax">${d.old_regime_tax ? fmt(d.old_regime_tax) : '—'}</div>
-          <div class="rc-note">With 80C, HRA, 80D deductions</div>
-          ${rec === 'old' ? `<div class="rc-win">✓ Saves ${fmt(d.regime_saving)}</div>` : ''}
-        </div>
-        <div class="regime-card ${rec === 'new' ? 'winner' : ''}">
-          <div class="rc-name">New Regime</div>
-          <div class="rc-tax">${d.new_regime_tax ? fmt(d.new_regime_tax) : '—'}</div>
-          <div class="rc-note">Lower slabs, no deductions</div>
-          ${rec === 'new' ? `<div class="rc-win">✓ Saves ${fmt(d.regime_saving)}</div>` : ''}
-        </div>
+  <!-- RSU LOSS -->
+  <div class="section" id="rsu-loss">
+    <div class="section-eyebrow">Step 7</div>
+    <h2>How Foreign RSU Losses Flow Through the Return</h2>
+    <p>If your foreign RSU sales result in a net loss, here is exactly how it flows:</p>
+    <div class="step-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div><h4>Schedule CG → A5e</h4><p>Loss appears as a negative figure (e.g., -₹20,000)</p></div>
       </div>
-      ${d.regime_reason ? `<div class="alert a-blue"><div class="alert-icon">💡</div><div><strong>Why ${rec === 'new' ? 'New' : 'Old'} Regime is better for you</strong>${d.regime_reason}</div></div>` : ''}
-      <div class="alert a-amber"><div class="alert-icon">⚠️</div><div><strong>This decision is permanent for the year</strong>Once you file with a regime, you cannot change it. Make sure you select the right one before submitting your ITR.</div></div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div><h4>Schedule CG → Section E</h4><p>Portal attempts to set off STCG loss against LTCG gains automatically</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div><h4>Schedule CYLA</h4><p>Any remaining unadjusted loss flows here</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div><h4>Schedule CFL → Row xi</h4><p>Remaining loss carried forward for up to 8 years to offset future capital gains</p></div>
+      </div>
     </div>
-  </div>`;
-}
+    <div class="callout info">
+      <span class="callout-icon">ℹ️</span>
+      <p><strong>Set-off rules:</strong> STCG loss can be set off against both STCG and LTCG gains. LTCG loss can only offset LTCG gains. The portal handles this automatically in the Section E set-off table.</p>
+    </div>
+  </div>
 
-function renderFilingGuide(d) {
-  const itr = d.itr_form || 'ITR-1';
-  const guide = d.section_wise_guide || [];
-  if (!guide.length) {
-    // Fallback default guide
-    guide.push(
-      { section: 'Open ITR on Income Tax Portal', what_to_enter: `Go to incometax.gov.in → e-File → File Income Tax Return → AY 2025-26 → Select ${itr} → Online mode → Start New Filing`, where_to_find: 'incometax.gov.in', common_mistake: 'Selecting wrong ITR form — use ITR-2 if you have capital gains, foreign income, or multiple salary sources', ca_tip: 'Always use the "Online" mode. It pre-validates fields and prevents common errors.' },
-      { section: 'Pre-fill — import your data', what_to_enter: "Click 'Pre-fill' button. This auto-imports your Form 16, TDS entries, and AIS data. Review every imported figure carefully against your AIS.", where_to_find: 'ITR portal pre-fill button', common_mistake: 'Trusting pre-fill blindly without checking — sometimes figures differ from your actual documents', ca_tip: 'Pre-fill saves 70% of the work. But always validate salary, TDS, and deduction figures manually.' },
-      { section: 'Schedule S — Salary Income', what_to_enter: 'Gross salary, standard deduction (₹75,000), professional tax, HRA exemption, perquisites (RSU/ESOP if any), other allowances', where_to_find: 'Form 16 Part B — section by section', common_mistake: 'Not entering the correct HRA exemption or missing perquisite income from RSUs', ca_tip: 'Standard deduction of ₹75,000 is automatic for FY 2024-25 under both regimes. Double check it is applied.' },
-      { section: 'Choose Tax Regime', what_to_enter: `Select ${d.recommended_regime === 'new' ? 'New Tax Regime' : 'Old Tax Regime'} — this saves you ${fmt(d.regime_saving)} based on your AIS analysis`, where_to_find: 'ITR → Part A General Information → Tax Regime selection', common_mistake: 'Selecting the wrong regime, or changing after filing (not possible)', ca_tip: 'Salaried employees can switch regime every year. Non-salaried with business income cannot switch as freely.' },
-      { section: 'Verify Tax Computation', what_to_enter: 'Check: Gross total income, total deductions, net taxable income, tax calculated, TDS already deducted, final refund or payable amount', where_to_find: 'ITR → Tax Computation summary tab', common_mistake: 'Not matching the final refund figure with your AIS-based calculation before submitting', ca_tip: 'If the refund shown differs by more than ₹1,000 from your manual calculation — stop and recheck Schedule S and TDS entries.' },
-      { section: 'e-Verify within 30 days', what_to_enter: 'After submitting: e-File → Income Tax Returns → e-Verify Return → Use Aadhaar OTP (fastest)', where_to_find: 'incometax.gov.in → e-File → e-Verify', common_mistake: 'Submitting ITR without e-verifying — the return is not processed until verified', ca_tip: 'Aadhaar OTP verification is instant and available 24/7. Bank login and DEMAT options also work.' }
-    );
+  <!-- OTHER SOURCES -->
+  <div class="section" id="os">
+    <div class="section-eyebrow">Step 8</div>
+    <h2>Schedule Other Sources (OS)</h2>
+    <p>Enter all passive income here. The breakdown between sub-fields matters:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Field</th><th>What to Enter</th><th>Why It Matters</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1a(i) — Dividend income</strong></td><td>Total dividends from Indian stocks and MFs</td><td>Reported to AIS by companies — must match</td></tr>
+          <tr><td><strong>1b(i) — Savings bank interest</strong></td><td>Interest from savings accounts only</td><td>Triggers 80TTA deduction in VI-A</td></tr>
+          <tr><td><strong>1b(ii) — Deposit interest</strong></td><td>FD, RD, post office interest</td><td>Not eligible for 80TTA</td></tr>
+          <tr><td><strong>1b(ix) — Others</strong></td><td>Interest from NBFCs, companies</td><td>Not eligible for 80TTA</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <p><strong>Common mistake:</strong> Entering all interest under "Others" (field ix) instead of splitting into savings (bi) vs deposits (bii). If savings interest is in the wrong field, the portal won't auto-populate 80TTA in Schedule VI-A.</p>
+    </div>
+  </div>
+
+  <!-- VI-A -->
+  <div class="section" id="via">
+    <div class="section-eyebrow">Step 9</div>
+    <h2>Schedule VI-A Deductions</h2>
+    <p>Under the new tax regime, most Chapter VI-A deductions are not available. For salaried RSU holders, typically only one applies:</p>
+    <div class="callout tip">
+      <span class="callout-icon">✅</span>
+      <p><strong>80TTA — Savings Bank Interest Deduction</strong><br>Maximum ₹10,000 per year on savings bank interest (not FD). Requires correct entry of savings interest in Schedule OS field 1b(i) first. Not available for senior citizens (80TTB applies instead).</p>
+    </div>
+  </div>
+
+  <!-- SCHEDULE FA -->
+  <div class="section" id="fa">
+    <div class="section-eyebrow">Step 10 — Most Critical</div>
+    <h2>Schedule FA — Foreign Asset Disclosure</h2>
+    <div class="callout danger">
+      <span class="callout-icon">🚨</span>
+      <p><strong>Mandatory every year.</strong> Schedule FA uses the <strong>calendar year (Jan–Dec)</strong>, not the financial year (Apr–Mar). For AY 2026-27, it covers January 1, 2025 to December 31, 2025.</p>
+    </div>
+    <h3>Section A3 — Foreign Equity and Debt Interest</h3>
+    <p>This is where you disclose your foreign company shares (RSUs/ESOPs).</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Field</th><th>What to Enter</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Country Name and Code</strong></td><td>e.g., 49-Germany, 01-USA</td><td>ITR country code list</td></tr>
+          <tr><td><strong>Name of entity</strong></td><td>Company name (e.g., XYZ Corp SE)</td><td>ESOP platform</td></tr>
+          <tr><td><strong>Nature of entity</strong></td><td>ESOP / Equity (RSU + Shares)</td><td>—</td></tr>
+          <tr><td><strong>Date of acquiring (field 7)</strong></td><td>Date of first RSU vesting still held</td><td>ESOP platform</td></tr>
+          <tr><td><strong>Initial value (field 8)</strong></td><td>INR value at Jan 1, 2025 = previous year's closing</td><td>Previous ITR Schedule FA</td></tr>
+          <tr><td><strong>Peak value (field 9)</strong></td><td>Highest INR value during Jan–Dec 2025</td><td>ESOP platform + exchange rate</td></tr>
+          <tr><td><strong>Closing balance (field 10)</strong></td><td>INR value of holding at Dec 31, 2025</td><td>ESOP platform + Dec 31 exchange rate</td></tr>
+          <tr><td><strong>Gross amount paid/credited (field 11)</strong></td><td>Dividends received (in INR) during calendar year</td><td>ESOP platform dividend history</td></tr>
+          <tr><td><strong>Gross proceeds from sale (field 12)</strong></td><td>Total sale proceeds (in INR) during calendar year</td><td>ESOP transaction statement</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <p><strong>Continuity tip:</strong> Always use your previous year ITR's Schedule FA closing balance as this year's opening (field 8). This creates an auditable chain across years and avoids scrutiny notices.</p>
+    </div>
+    <h3>Currency Conversion</h3>
+    <p>Use the <strong>SBI TTBR (Telegraphic Transfer Buying Rate)</strong> as specified under Rule 115A for converting foreign currency to INR on any transaction date. For year-end balances, use the Dec 31 RBI reference rate.</p>
+  </div>
+
+  <!-- FSI TR -->
+  <div class="section" id="fsi">
+    <div class="section-eyebrow">Step 11</div>
+    <h2>Schedule FSI & TR — Foreign Tax Credit</h2>
+    <p>Only fill these if <strong>all three conditions</strong> are met:</p>
+    <div class="step-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div><h4>Foreign tax was withheld</h4><p>Your ESOP platform withheld German/US/UK tax on RSU vesting or sale</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div><h4>Net capital gain (not loss)</h4><p>The same foreign transactions result in a net taxable income in India</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div><h4>Form 67 filed first</h4><p>You must file Form 67 on the portal BEFORE the ITR deadline — it's a separate form</p></div>
+      </div>
+    </div>
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <p><strong>If your RSU transactions resulted in a net loss</strong>, there is no Indian tax liability to offset. Do not fill Schedule FSI/TR. Unutilized foreign tax credit does not carry forward under Rule 128.</p>
+    </div>
+  </div>
+
+  <!-- FINAL TAX -->
+  <div class="section" id="tax">
+    <div class="section-eyebrow">Step 12 & 13</div>
+    <h2>Final Tax Computation & Payment</h2>
+    <h3>Verify Part B-TI Figures</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Line</th><th>What to Check</th></tr></thead>
+        <tbody>
+          <tr><td>Line 1 — Salaries</td><td>Net taxable salary after ₹75,000 standard deduction</td></tr>
+          <tr><td>Line 3 — Capital Gains</td><td>Net taxable CG after set-off (0 if below ₹1.25L exemption or net loss)</td></tr>
+          <tr><td>Line 11 — VI-A Deductions</td><td>80TTA amount if applicable</td></tr>
+          <tr><td>Line 16 — Losses to carry forward</td><td>STCG loss for future years (from Schedule CFL)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>If There's a Small Amount Payable</h3>
+    <p>Pay via <strong>e-Pay Tax → Challan 280 → Self Assessment Tax (300)</strong> using net banking or UPI. The challan auto-attaches to your return. After payment, submit the return.</p>
+    <h3>E-Verify Within 30 Days</h3>
+    <div class="callout danger">
+      <span class="callout-icon">🚨</span>
+      <p>Without e-verification, your return is treated as not filed. Use <strong>Aadhaar OTP</strong> (fastest — instant verification) under e-Verify Return on the portal.</p>
+    </div>
+  </div>
+
+  <!-- MISTAKES -->
+  <div class="section" id="mistakes">
+    <div class="section-eyebrow">Common Errors</div>
+    <h2>7 Mistakes That Attract Scrutiny Notices</h2>
+
+    <div class="mistake">
+      <h4>❌ Mistake 1: Skipping Schedule CG for RSU Losses</h4>
+      <p>Even if your foreign RSU sales net to a loss, you must report them. The loss carries forward 8 years and can offset future gains — skipping it means losing that benefit.</p>
+    </div>
+    <div class="mistake">
+      <h4>❌ Mistake 2: Not Disclosing in Schedule FA</h4>
+      <p>₹10 lakh penalty per year under the Black Money Act. Even a small holding must be disclosed every year without exception.</p>
+    </div>
+    <div class="mistake">
+      <h4>❌ Mistake 3: Filing ITR-1 Instead of ITR-2</h4>
+      <p>ITR-1 has no Schedule FA. If the department's FATCA/CRS data shows foreign holdings but your ITR has no Schedule FA, you will receive a scrutiny notice.</p>
+    </div>
+    <div class="mistake">
+      <h4>❌ Mistake 4: Using Financial Year Dates in Schedule FA</h4>
+      <p>Schedule FA uses calendar year (Jan–Dec). Entering April–March dates makes your return inconsistent with FATCA data the government receives from foreign financial institutions.</p>
+    </div>
+    <div class="mistake">
+      <h4>❌ Mistake 5: Claiming Foreign Tax Credit Without Form 67</h4>
+      <p>Form 67 must be filed before the ITR deadline, not after. If you only fill Schedule FSI/TR without Form 67, the credit claim will be disallowed during processing.</p>
+    </div>
+    <div class="mistake">
+      <h4>❌ Mistake 6: Lumping All Interest Under "Others" in Schedule OS</h4>
+      <p>80TTA only works if savings bank interest is in field 1b(i). If it's in field 1b(ix) "Others", the deduction won't auto-populate in Schedule VI-A.</p>
+    </div>
+    <div class="mistake">
+      <h4>❌ Mistake 7: Using Zero as RSU Cost Basis</h4>
+      <p>The cost of acquisition for capital gains is the FMV at vesting (which was already taxed as salary perquisite). Using zero results in double taxation — you pay tax on the same value twice.</p>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section" id="faq">
+    <div class="section-eyebrow">FAQs</div>
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <div class="faq-q">My employer deducted full TDS on RSU vesting. Do I still need Schedule CG?</div>
+      <div class="faq-a">Yes. TDS at vesting covers the perquisite income (salary component). The subsequent sale of those shares creates a separate capital gains event — gain or loss — that must be reported in Schedule CG regardless of the TDS already paid.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can I set off my foreign RSU STCG loss against domestic equity LTCG?</div>
+      <div class="faq-a">Yes. STCG losses can be set off against LTCG gains from any source. The portal's Schedule CG Section E handles this automatically once both entries are made correctly.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">My domestic MF LTCG is below ₹1.25 lakh. Do I still need to report it?</div>
+      <div class="faq-a">Yes. You must report the transactions in Schedule 112A and Schedule CG. The ₹1.25 lakh exemption (Section 112A) means no tax is payable below this threshold, but the transaction must still be disclosed. The portal will automatically compute nil tax on amounts within the limit.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">I have RSUs from two different vesting dates. How do I enter them in Schedule FA?</div>
+      <div class="faq-a">You can enter a single row for all holdings in the same company using the earliest vesting date as the "date of acquiring." The initial, peak, and closing values should reflect your total holding across all tranches combined.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What exchange rate should I use to convert foreign currency for Schedule CG?</div>
+      <div class="faq-a">Use the SBI TTBR (Telegraphic Transfer Buying Rate) for the date of each transaction, as specified under Rule 115A of the Income Tax Rules. For year-end balances in Schedule FA, use the RBI reference rate as of December 31.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">My ESOP platform withheld German tax on my RSU vesting. Can I get credit for it?</div>
+      <div class="faq-a">Only if the same transactions also result in net taxable income in India AND you file Form 67 before the ITR deadline. If your foreign RSU sales are a net loss (which is common for sell-to-cover transactions), there is no Indian tax liability to credit against, so the foreign withholding tax is not claimable.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">The Schedule 112A CSV upload keeps failing. What's wrong?</div>
+      <div class="faq-a">The column 1a value must exactly match the portal's dropdown text — "After 31st January 2018" (full spelling of "January", not "Jan"). Download the template directly from the portal each year as the format can change. If CSV upload fails for column 1a, enter rows manually using the "+ Add Another" button instead.</div>
+    </div>
+  </div>
+
+  <!-- TROUBLESHOOTING -->
+  <div class="section" id="troubleshooting">
+    <div class="section-eyebrow">Real Errors We Fixed</div>
+    <h2>Portal Validation Errors — What Actually Happened</h2>
+    <p>After completing all schedules, the Internal Validation threw 4 errors before submission. Here's exactly what they were and how to fix them — so you don't waste time:</p>
+
+    <div class="mistake">
+      <h4>🔴 Error 1: Secondary Address Not Selected (Part A-Gen)</h4>
+      <p><strong>Error:</strong> "Kindly select the appropriate option for secondary address in Schedule Part A General"<br>
+      <strong>Fix:</strong> Go to Part A-Gen → scroll to address section → find the question "Is secondary address same as primary address?" → select <strong>Yes</strong>. This field is easy to miss since it's not prominently visible.</p>
+    </div>
+
+    <div class="mistake">
+      <h4>🔴 Error 2: Nature of Employer Not Selected (Schedule Salary)</h4>
+      <p><strong>Error:</strong> "Please Select from the drop down at field Nature of Employer in Schedule Salary"<br>
+      <strong>Fix:</strong> Go to Schedule Salary → Edit employer → find "Nature of Employer" dropdown → select <strong>"Others"</strong> for private sector MNC employees. Do not leave it blank even if pre-filled data exists.</p>
+    </div>
+
+    <div class="mistake">
+      <h4>🔴 Error 3: Perquisite Description Missing (Schedule Salary 17(2))</h4>
+      <p><strong>Error:</strong> "Description is mandatory if Any Other is selected. Please enter Description in Value of perquisites as per section 17(2)"<br>
+      <strong>Fix:</strong> Go to Schedule Salary → perquisites section → change Nature of perquisites from "Other benefits or amenities" to <strong>"Stock options (non-qualified options)"</strong>. This removes the description requirement entirely and is the correct classification for RSUs.</p>
+    </div>
+
+    <div class="mistake">
+      <h4>🔴 Error 4: Profit in Lieu of Salary Dropdown Empty (Schedule Salary 17(3))</h4>
+      <p><strong>Error:</strong> "Please select dropdown in profit in lieu of salary as per section 17(3) in Schedule Salary"<br>
+      <strong>Fix:</strong> Even though the amount is ₹0, the portal requires a dropdown selection. Select <strong>"Any compensation due or received by an assessee from an employer in connection with the termination of his employment"</strong> (first option). Amount stays ₹0. This is a portal quirk — it forces a selection regardless of amount.</p>
+    </div>
+
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <p><strong>112A CSV Upload Tip:</strong> The portal's CSV upload for Schedule 112A rejects the column 1a value if it doesn't exactly match the dropdown. The correct text is <strong>"After 31st January 2018"</strong> — full spelling of "January", not "Jan". If CSV keeps failing, consolidate all same-ISIN transactions into one row and enter manually using "+ Add Another". Two rows (one per company) is perfectly acceptable.</p>
+    </div>
+
+    <div class="callout info">
+      <span class="callout-icon">ℹ️</span>
+      <p><strong>Schedule CG not in schedule list?</strong> If you don't see Schedule CG in your schedule list, go back to "Select Schedule" page and add it from the Capital Gains section. Without Schedule CG, CYLA/BFLA/CFL will show ₹0 for all CG rows and your RSU loss won't be captured or carried forward.</p>
+    </div>
+  </div>
+
+  <!-- GROWW CTA -->
+  <div class="section" style="background: linear-gradient(135deg, #e8f5e9 0%, #f1f8ff 100%); border-color: #34d399;">
+    <div class="section-eyebrow" style="color: #00875a;">Track Your Investments</div>
+    <h2 style="color: #0f1923;">Simplify Your Capital Gains Next Year</h2>
+    <p>One of the most time-consuming parts of ITR-2 is gathering your MF capital gains data across multiple SIPs. Groww automatically tracks all your mutual fund and stock transactions and generates a ready-to-use capital gains report — making Schedule 112A filing much faster.</p>
+    <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-top:20px;">
+      <a href="https://app.groww.in/v3cO/tpwi2524" target="_blank" rel="nofollow sponsored" style="display:inline-flex; align-items:center; gap:10px; background:#00875a; color:white; font-weight:700; font-size:15px; padding:14px 28px; border-radius:10px; text-decoration:none; box-shadow: 0 4px 14px rgba(0,135,90,0.3); transition: transform 0.15s;">
+        📈 Start Investing on Groww
+      </a>
+      <span style="font-size:13px; color:#6b7f8e;">Free account · Instant MF/stock CG report · Used by 5 crore+ investors</span>
+    </div>
+    <p style="font-size:12px; color:#6b7f8e; margin-top:12px;">*Affiliate link. We may earn a referral fee at no extra cost to you.</p>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div class="section">
+    <div class="section-eyebrow">Final Checklist</div>
+    <h2>Before You Submit — Verify Everything</h2>
+    <ul class="checklist">
+      <li>Collected Form 16, AIS, ESOP statement, MF CG statement, bank interest certificates</li>
+      <li>Selected ITR-2 (not ITR-1) on the portal</li>
+      <li>Filing reason: "Taxable income exceeds basic exemption limit"</li>
+      <li>Schedules selected: Salary, CG, OS, VI-A, FA, 112A (if applicable)</li>
+      <li>Schedule Salary verified against Form 16 — perquisite value matches</li>
+      <li>Nature of Employer set to "Others" in Schedule Salary</li>
+      <li>Perquisite nature set to "Stock options (non-qualified options)" for RSUs</li>
+      <li>17(3) dropdown selected even if amount is ₹0</li>
+      <li>Secondary address question answered in Part A-Gen</li>
+      <li>Schedule CG A5 filled for foreign RSU sale (even if it's a loss)</li>
+      <li>Schedule 112A filled for domestic equity/MF LTCG transactions</li>
+      <li>Interest breakdown in Schedule OS: savings (1b-i) vs deposits (1b-ii) split correctly</li>
+      <li>80TTA claimed in Schedule VI-A (up to ₹10,000 on savings interest)</li>
+      <li>Schedule FA A3 filled with calendar year values for all foreign holdings</li>
+      <li>Schedule FSI/TR skipped if net capital loss on foreign transactions</li>
+      <li>Internal Validation passes with zero errors</li>
+      <li>Self-assessment tax paid (if any amount payable in Line 16)</li>
+      <li>Return submitted and e-verified within 30 days using Aadhaar OTP</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- CHATBOT WIDGET -->
+<div id="chat-bubble" onclick="toggleChat()" style="position:fixed; bottom:24px; right:24px; z-index:300; width:56px; height:56px; background:linear-gradient(135deg,#1a6bff,#0047cc); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 4px 20px rgba(26,107,255,0.5); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+  <span style="font-size:24px;" id="chat-icon">💬</span>
+</div>
+
+<div id="chat-window" style="display:none; position:fixed; bottom:92px; right:24px; z-index:300; width:360px; max-width:calc(100vw - 48px); background:#ffffff; border-radius:16px; box-shadow:0 8px 40px rgba(15,25,35,0.18); overflow:hidden; font-family:'Plus Jakarta Sans',sans-serif;">
+  <!-- Header -->
+  <div style="background:linear-gradient(135deg,#0f1923,#0047cc); padding:16px 20px; display:flex; align-items:center; gap:12px;">
+    <div style="width:36px;height:36px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;">🤖</div>
+    <div>
+      <div style="color:white;font-weight:700;font-size:14px;">ITR-2 Assistant</div>
+      <div style="color:rgba(255,255,255,0.6);font-size:11px;">Answers about this guide · Powered by SalaryBit</div>
+    </div>
+    <button onclick="toggleChat()" style="margin-left:auto;background:none;border:none;color:rgba(255,255,255,0.6);font-size:20px;cursor:pointer;line-height:1;padding:0;">✕</button>
+  </div>
+
+  <!-- Messages -->
+  <div id="chat-messages" style="height:320px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:#f7f9fb;">
+    <div class="bot-msg" style="background:white;border:1.5px solid #dde3ea;border-radius:12px 12px 12px 4px;padding:12px 14px;font-size:13.5px;color:#3d4f5c;max-width:85%;line-height:1.5;">
+      👋 Hi! I can answer your questions about filing ITR-2 with foreign assets (RSU/ESOP).<br><br>Try asking something or pick a topic below:
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+      <button class="chip" onclick="askQ('Which ITR form should I file if I have RSUs?')">RSU & ITR form</button>
+      <button class="chip" onclick="askQ('What is Schedule FA and how to fill it?')">Schedule FA</button>
+      <button class="chip" onclick="askQ('How is RSU taxed in India?')">RSU taxation</button>
+      <button class="chip" onclick="askQ('What is the penalty for not disclosing foreign assets?')">FA penalty</button>
+      <button class="chip" onclick="askQ('How to fill Schedule 112A?')">Schedule 112A</button>
+      <button class="chip" onclick="askQ('Can I set off RSU loss against mutual fund gains?')">Loss set-off</button>
+      <button class="chip" onclick="askQ('What exchange rate to use for foreign shares?')">Exchange rate</button>
+      <button class="chip" onclick="askQ('What is the last date to file ITR-2?')">Filing deadline</button>
+    </div>
+  </div>
+
+  <!-- Input -->
+  <div style="padding:12px 16px;border-top:1.5px solid #dde3ea;background:white;display:flex;gap:8px;">
+    <input id="chat-input" type="text" placeholder="Type your question..." onkeydown="if(event.key==='Enter')sendMsg()" style="flex:1;border:1.5px solid #dde3ea;border-radius:8px;padding:10px 12px;font-size:13px;font-family:inherit;outline:none;color:#0f1923;" onfocus="this.style.borderColor='#1a6bff'" onblur="this.style.borderColor='#dde3ea'">
+    <button onclick="sendMsg()" style="background:#1a6bff;color:white;border:none;border-radius:8px;padding:10px 14px;font-size:16px;cursor:pointer;">➤</button>
+  </div>
+</div>
+
+<style>
+.chip{background:#e8f0ff;color:#0047cc;border:1.5px solid #93c5fd;border-radius:100px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.15s;}
+.chip:hover{background:#1a6bff;color:white;border-color:#1a6bff;}
+.bot-msg{background:white;border:1.5px solid #dde3ea;border-radius:12px 12px 12px 4px;padding:12px 14px;font-size:13.5px;color:#3d4f5c;max-width:85%;line-height:1.5;}
+.user-msg{background:#1a6bff;color:white;border-radius:12px 12px 4px 12px;padding:12px 14px;font-size:13.5px;max-width:85%;line-height:1.5;align-self:flex-end;}
+</style>
+
+<script>
+const QA = [
+  {
+    q: ['which itr','itr form','rsu itr','what form','should i file itr','itr-2 or itr-1'],
+    a: '📋 <strong>You must file ITR-2</strong> if you hold foreign RSUs or ESOPs — even if your only income is salary. ITR-1 has no Schedule FA or Schedule CG for foreign assets. Filing ITR-1 with foreign holdings is treated as a defective return.'
+  },
+  {
+    q: ['schedule fa','foreign asset','fa disclosure','a3','foreign equity'],
+    a: '🌍 <strong>Schedule FA</strong> is mandatory for all residents holding foreign shares. It uses the <strong>calendar year (Jan–Dec)</strong>, not financial year. Fill Section A3 for foreign equity (RSUs/ESOPs). Fields: initial value, peak value, closing balance, gross proceeds from sale. Use previous year\'s ITR closing balance as this year\'s opening value.'
+  },
+  {
+    q: ['rsu tax','how rsu taxed','rsu taxable','rsu income','perquisite'],
+    a: '💰 RSU taxation has two stages:<br><br>1. <strong>At vesting:</strong> FMV of shares = Perquisite under Sec 17(2). Added to salary, TDS deducted by employer, shows in Form 16.<br><br>2. <strong>At sale:</strong> Sale price minus FMV at vesting = Capital Gain/Loss. If held under 24 months → STCG at slab rate. If over 24 months → LTCG at 12.5%.'
+  },
+  {
+    q: ['penalty','black money','not disclose','non disclosure','forget to file fa'],
+    a: '⚠️ <strong>₹10 lakh penalty per year</strong> under the Black Money (Undisclosed Foreign Income and Assets) Act 2015 for non-disclosure of foreign assets in Schedule FA. This applies even if the holding value is small. Disclose every year without exception.'
+  },
+  {
+    q: ['112a','schedule 112a','mutual fund ltcg','equity ltcg','domestic fund'],
+    a: '📊 <strong>Schedule 112A</strong> requires transaction-level detail for domestic equity MF/shares sold with STT paid.<br><br>Tip: You can consolidate same-ISIN, same-date transactions into one row. CSV upload requires exact dropdown text: <strong>"After 31st January 2018"</strong> (full spelling). If CSV fails, enter manually using "+ Add Another".'
+  },
+  {
+    q: ['loss set off','rsu loss','stcg loss','capital loss','set off against','mutual fund gain'],
+    a: '✅ Yes — <strong>STCG loss from foreign RSU sales can be set off against LTCG gains</strong> from domestic equity/MF. The portal handles this automatically in Schedule CG Section E. Any remaining loss after set-off is carried forward for 8 years in Schedule CFL.'
+  },
+  {
+    q: ['exchange rate','conversion rate','inr','sbi ttbr','foreign currency','convert'],
+    a: '💱 Use <strong>SBI TTBR (Telegraphic Transfer Buying Rate)</strong> for the date of each transaction — this is specified under Rule 115A of the Income Tax Rules. For year-end balances in Schedule FA, use the RBI reference rate as of December 31.'
+  },
+  {
+    q: ['deadline','last date','due date','when to file','july 31'],
+    a: '📅 For salaried individuals (no audit), the ITR-2 filing deadline is <strong>July 31, 2026</strong> for AY 2026-27. If you have foreign assets and wish to claim foreign tax credit, also file <strong>Form 67 before the deadline</strong>. Late filing attracts ₹5,000 fee under Section 234F.'
+  },
+  {
+    q: ['foreign tax credit','form 67','fsi','schedule tr','german tax','us tax','double tax'],
+    a: '🌐 You can claim foreign tax credit only if:<br>1. Foreign tax was actually withheld on the same income<br>2. The same transactions result in net taxable income in India (not a loss)<br>3. You file <strong>Form 67 before the ITR deadline</strong><br><br>If your RSU sales are a net loss, skip Schedule FSI/TR — no credit to claim.'
+  },
+  {
+    q: ['validation error','error','nature of employer','17(3)','perquisite description','secondary address'],
+    a: '🔧 Common validation errors when submitting ITR-2:<br><br>1. <strong>Secondary address</strong> → Go to Part A-Gen, select "Yes" for same as primary<br>2. <strong>Nature of employer</strong> → Select "Others" in Schedule Salary<br>3. <strong>Perquisite description</strong> → Change nature to "Stock options (non-qualified options)"<br>4. <strong>17(3) dropdown</strong> → Select first option even if amount is ₹0'
+  },
+  {
+    q: ['80tta','savings interest','interest deduction','deduction','vi-a'],
+    a: '🏦 <strong>80TTA deduction</strong> (up to ₹10,000) applies only to savings bank interest — not FD interest. For it to auto-populate in Schedule VI-A, you must enter savings interest specifically in Schedule OS field <strong>1b(i)</strong>. Entering all interest under "Others" will not trigger 80TTA.'
+  },
+  {
+    q: ['new regime','old regime','115bac','which regime','tax regime'],
+    a: '⚖️ For salaried RSU holders with no major deductions, the <strong>new tax regime is usually better</strong>. The new regime has lower slab rates but disallows most deductions (80C, HRA, etc.). Only 80TTA savings interest deduction remains applicable under new regime. Use the income tax calculator on the portal to compare before deciding.'
+  },
+  {
+    q: ['cost','cost of acquisition','cost basis','fmv','vesting price','zero cost'],
+    a: '📌 <strong>Never use zero as your RSU cost basis.</strong> The cost of acquisition for capital gains is the <strong>FMV at vesting</strong> — the same value that was taxed as your salary perquisite in Form 16. Using zero will double-tax you on the same income. Cost = FMV at vesting × number of shares sold.'
+  },
+  {
+    q: ['e-verify','verify','aadhaar otp','not verified','30 days'],
+    a: '✅ After submitting your ITR, e-verify within <strong>30 days</strong> — otherwise the return is treated as not filed. Fastest method: <strong>Aadhaar OTP</strong> (instant). Go to e-File → Income Tax Returns → e-Verify Return on the portal.'
+  },
+  {
+    q: ['groww','track','mutual fund','investment','portfolio'],
+    a: '📈 Groww automatically tracks all your mutual fund and stock transactions and generates a ready-to-use capital gains report — making Schedule 112A filing much faster next year. <a href="https://app.groww.in/v3cO/tpwi2524" target="_blank" style="color:#1a6bff;font-weight:700;">Start investing on Groww →</a>'
+  },
+  {
+    q: ['salarybit','tax ai','analyze','report','help','ca','chartered accountant'],
+    a: '🤖 <strong>SalaryBit Tax AI</strong> at <a href="https://salarybit.in" target="_blank" style="color:#1a6bff;font-weight:700;">salarybit.in</a> provides CA-level tax analysis for Indian salaried employees. Tools include ITR calculator, MF analyser, gold/silver tracker, and more — all free. For complex cases involving large foreign holdings or DTAA, consult a qualified CA.'
   }
-  return `
-  <div class="rs">
-    <div class="rs-head" onclick="toggleRS(this)">
-      <div class="rs-left"><div class="rs-icon">📝</div><div><div class="rs-title">Step-by-Step ITR Filing Guide</div><div class="rs-sub">Personalised for your income — file it yourself without a CA</div></div></div>
-      <div class="rs-right"><span class="badge badge-purple">File: ${itr}</span><div class="rs-chevron">▾</div></div>
-    </div>
-    <div class="rs-body open">
-      <div class="itr-badge">📋 ${itr} for AY 2025-26${d.itr_form_reason ? ' — ' + d.itr_form_reason : ''}</div>
-      ${guide.map((s, i) => `
-      <div class="guide-step">
-        <div class="gs-num">${i+1}</div>
-        <div class="gs-body">
-          <div class="gs-title">${s.section}</div>
-          <div class="gs-desc">${s.what_to_enter}</div>
-          ${s.where_to_find ? `<div class="gs-source">📌 Source: ${s.where_to_find}</div>` : ''}
-          ${s.common_mistake ? `<div class="gs-mistake"><strong>⚠ Common mistake:</strong> ${s.common_mistake}</div>` : ''}
-          ${s.ca_tip ? `<div class="gs-tip"><strong>💡 CA tip:</strong> ${s.ca_tip}</div>` : ''}
-        </div>
-      </div>`).join('')}
-      <div class="mistakes">
-        <div class="mistakes-title">❌ Mistakes that always cause IT notices</div>
-        ${[
-          'Filing ITR-1 when you have capital gains, RSU income, or multiple salary sources — always use ITR-2 in these cases',
-          'Not reporting ALL income shown in AIS — even ₹500 FD interest the bank reported will mismatch',
-          'Entering wrong TDS challan details — BSR code, date, and amount must exactly match Form 26AS',
-          d.rsu_esop_detected ? 'Skipping Schedule FA for foreign shares — mandatory even if shares were held briefly' : null,
-          d.property_sale_detected ? 'Not filing Schedule 54 CGAS deposit before ITR if new property not yet purchased' : null,
-          'Not e-verifying within 30 days — your ITR is legally invalid without verification',
-        ].filter(Boolean).map(m => `<div class="mistake">${m}</div>`).join('')}
-      </div>
-    </div>
-  </div>`;
-}
+];
 
-function renderForeignShares(d) {
-  if (!d.foreign_shares_guide || !d.foreign_shares_guide.applicable) return '';
-  const g = d.foreign_shares_guide;
-  const faFields = g.schedule_fa?.fields || [];
-  const fsiFields = g.schedule_fsi?.fields || [];
-  return `
-  <div class="rs">
-    <div class="rs-head" onclick="toggleRS(this)">
-      <div class="rs-left"><div class="rs-icon">🌐</div><div><div class="rs-title">Foreign Shares & RSU Guide</div><div class="rs-sub">Schedule FA, Schedule FSI & DTAA — complete filling instructions</div></div></div>
-      <div class="rs-right"><span class="badge badge-purple">Mandatory for you</span><div class="rs-chevron">▾</div></div>
-    </div>
-    <div class="rs-body open">
-      <div class="alert a-red"><div class="alert-icon">🚨</div><div><strong>Schedule FA & FSI are mandatory if you held foreign shares at any point during FY 2024-25</strong>Even if you sold all shares before March 31, 2025, you must file Schedule FA. Failure to file attracts penalty of ₹10 lakh under Black Money Act — this is not optional.</div></div>
-
-      ${g.rsu_two_events ? `
-      <div class="alert a-purple"><div class="alert-icon">📖</div><div><strong>RSU — Two separate tax events you must report</strong>${g.rsu_two_events}</div></div>` : ''}
-
-      ${faFields.length ? `
-      <div class="foreign-box">
-        <div class="foreign-title">📋 Schedule FA — Foreign Assets Declaration</div>
-        <div style="font-size:13px;color:var(--ink-2);margin-bottom:14px">${g.schedule_fa?.what_it_is || 'Mandatory disclosure of all foreign assets including shares, bank accounts, insurance policies.'}</div>
-        ${faFields.map(f => `
-        <div class="fa-field">
-          <div class="fa-field-name">${f.field_name}</div>
-          <div class="fa-field-val">${f.what_to_enter}</div>
-          <div class="fa-source">📌 Source: ${f.source_document}</div>
-        </div>`).join('')}
-        ${g.schedule_fa?.common_mistakes?.length ? `
-        <div style="margin-top:12px">
-          ${g.schedule_fa.common_mistakes.map(m => `<div class="mistake" style="font-size:12px;padding:4px 0">${m}</div>`).join('')}
-        </div>` : ''}
-      </div>` : ''}
-
-      ${fsiFields.length ? `
-      <div class="foreign-box" style="margin-top:14px">
-        <div class="foreign-title">📋 Schedule FSI — Foreign Source Income</div>
-        <div style="font-size:13px;color:var(--ink-2);margin-bottom:14px">${g.schedule_fsi?.what_it_is || 'Report income earned from foreign sources, including RSU gains and dividends from foreign companies.'}</div>
-        ${fsiFields.map(f => `
-        <div class="fa-field">
-          <div class="fa-field-name">${f.field_name}</div>
-          <div class="fa-field-val">${f.what_to_enter}</div>
-          <div class="fa-source">📌 Source: ${f.source_document}</div>
-        </div>`).join('')}
-      </div>` : ''}
-
-      ${g.dtaa_relief ? `
-      <div class="alert a-green" style="margin-top:14px"><div class="alert-icon">💡</div><div><strong>DTAA Relief — Avoid double taxation</strong>${g.dtaa_relief}</div></div>` : ''}
-    </div>
-  </div>`;
-}
-
-function renderDeductions(d) {
-  const dd = d.section_wise_deductions || {};
-  const rows = [
-    { label: 'Standard Deduction', claimed: d.standard_deduction || 75000, max: 75000, gap: 0, note: 'Auto-applied · Both regimes' },
-    { label: 'Section 80C', claimed: dd['80C'] || 0, max: 150000, gap: dd['80C_gap'] || Math.max(0, 150000 - (dd['80C']||0)), note: 'PPF, ELSS, LIC, Home Loan Principal · Old regime only' },
-    { label: 'Section 80D', claimed: dd['80D'] || 0, max: 75000, gap: Math.max(0, 25000-(dd['80D']||0)), note: 'Health insurance · Old regime only' },
-    { label: 'Sec 24(b) Home Loan', claimed: dd['24b_interest'] || 0, max: 200000, gap: 0, note: 'Interest on home loan · Max ₹2L self-occupied' },
-    { label: '80CCD(1B) NPS', claimed: dd['80CCD_1B'] || 0, max: 50000, gap: Math.max(0, 50000-(dd['80CCD_1B']||0)), note: 'Additional NPS over 80C · Old regime only' },
-    { label: '80TTA Savings Interest', claimed: dd['80TTA'] || 0, max: 10000, gap: 0, note: 'Savings account interest · Old regime only' },
-  ];
-  return `
-  <div class="rs">
-    <div class="rs-head" onclick="toggleRS(this)">
-      <div class="rs-left"><div class="rs-icon">💡</div><div><div class="rs-title">Deductions & Savings Finder</div><div class="rs-sub">What you claimed vs what you can still claim</div></div></div>
-      <div class="rs-right"><span class="badge badge-amber">₹${((d.unclaimed_deductions||0)/100000).toFixed(1)}L unclaimed</span><div class="rs-chevron">▾</div></div>
-    </div>
-    <div class="rs-body open">
-      <table class="ded-table">
-        <tr><th>Section</th><th>Claimed</th><th>Max Limit</th><th>Gap</th></tr>
-        ${rows.map(r => `<tr>
-          <td><div style="font-weight:600">${r.label}</div><div style="font-size:11px;color:var(--ink-3)">${r.note}</div></td>
-          <td class="ded-claimed">${fmt(r.claimed)}</td>
-          <td style="color:var(--ink-3);font-size:12px">${fmt(r.max)}</td>
-          <td>${r.gap > 0 ? `<span class="ded-gap">+${fmt(r.gap)} more</span>` : '<span style="color:var(--green-dark);font-size:12px">✓ Full</span>'}</td>
-        </tr>`).join('')}
-      </table>
-      ${d.unclaimed_deductions > 0 ? `<div class="alert a-amber"><div class="alert-icon">💡</div><div><strong>You could save more</strong>You have ${fmt(d.unclaimed_deductions)} in unclaimed deductions. Investing in PPF, NPS, or health insurance before March 31 would reduce your tax by up to ${fmt(Math.round(d.unclaimed_deductions * 0.3))} (at 30% slab).</div></div>` : ''}
-    </div>
-  </div>`;
-}
-
-function renderCapitalGains(d) {
-  const cg = d.capital_gains || {};
-  return `
-  <div class="rs">
-    <div class="rs-head" onclick="toggleRS(this)">
-      <div class="rs-left"><div class="rs-icon">📈</div><div><div class="rs-title">Capital Gains Summary</div><div class="rs-sub">RSU, Mutual Funds, Stocks — how each is taxed</div></div></div>
-      <div class="rs-right"><span class="badge badge-purple">Tax: ${fmt((cg.tax_on_stcg||0)+(cg.tax_on_ltcg||0))}</span><div class="rs-chevron">▾</div></div>
-    </div>
-    <div class="rs-body open">
-      <div class="num-grid">
-        <div class="num-card"><div class="nc-lbl">STCG — Held under 12 months</div><div class="nc-val">${fmt(cg.stcg_111A||0)}</div><div class="nc-sub" style="color:var(--red)">Taxed at 20% · Section 111A</div></div>
-        <div class="num-card"><div class="nc-lbl">Tax on STCG</div><div class="nc-val" style="color:var(--red)">${fmt(cg.tax_on_stcg||0)}</div></div>
-        <div class="num-card"><div class="nc-lbl">LTCG — Held over 12 months</div><div class="nc-val">${fmt(cg.ltcg_112A||0)}</div><div class="nc-sub" style="color:var(--amber)">12.5% above ₹1.25L · Section 112A</div></div>
-        <div class="num-card"><div class="nc-lbl">Tax on LTCG</div><div class="nc-val" style="color:var(--amber)">${fmt(cg.tax_on_ltcg||0)}</div></div>
-      </div>
-      <div class="alert a-blue"><div class="alert-icon">💡</div><div><strong>FY 2024-25 capital gains tax rates (post-July 23, 2024 budget)</strong>STCG on listed equity: 20% · LTCG on listed equity: 12.5% on gains above ₹1.25 lakh · Debt fund gains: added to income at slab rate · Indexation benefit removed for equity.</div></div>
-    </div>
-  </div>`;
-}
-
-function renderRefundGuide(d, isRefund) {
-  const steps = isRefund ? [
-    { title: 'Pre-validate your bank account', desc: 'Login to incometax.gov.in → Profile → My Bank Accounts. Your account must show "Validated" status. If not, click Validate and enter your account number + IFSC. Refund is credited ONLY to a validated account.', source: 'incometax.gov.in → Profile → My Bank Accounts', tip: 'Use a salary account or primary savings account. Joint accounts work if PAN holder is the primary account holder.' },
-    { title: 'File before July 31, 2025', desc: 'Refunds are processed only after ITR is filed AND e-verified. The IT dept typically processes within 20-45 days of e-verification for defect-free returns.', source: 'Deadline: July 31, 2025 (AY 2025-26)', tip: 'File early (before July 15) for faster processing. Returns filed before June get the earliest refunds.' },
-    { title: 'Track your refund', desc: 'After filing: incometax.gov.in → Services → Refund / Demand Status. Or go to NSDL: tin.tin.nsdl.com → Status of Tax Refunds. Enter PAN and AY 2025-26. If delayed beyond 60 days, raise a grievance on the portal.', source: 'Services → Refund/Demand Status', tip: 'You will receive an SMS on your registered mobile when refund is credited.' }
-  ] : [
-    { title: 'Pay Self-Assessment Tax before filing', desc: `Go to incometax.gov.in → e-Pay Tax → New Payment → Income Tax → Type 300 (Self-Assessment Tax). Enter amount: ${fmt(Math.abs(d.refund_estimate||0))}. Select AY 2025-26. Pay via net banking or UPI. Download challan 280 immediately.`, source: 'incometax.gov.in → e-Pay Tax → Challan 280', tip: 'Pay at least 2-3 days before filing so the challan appears in your 26AS. BSR code and challan number needed for ITR.' },
-    { title: 'Enter challan in your ITR', desc: 'After payment: in ITR → Schedule IT / Tax Paid → Self-Assessment Tax. Enter: BSR Code, Challan Serial Number, Date of Deposit, Amount. These must match your challan exactly — copy-paste from downloaded challan.', source: 'ITR → Schedule IT', tip: 'Even a single digit wrong in BSR code can cause demand notice. Match character by character.' },
-  ];
-
-  return `
-  <div class="rs">
-    <div class="rs-head" onclick="toggleRS(this)">
-      <div class="rs-left"><div class="rs-icon">${isRefund ? '💰' : '⚡'}</div><div><div class="rs-title">${isRefund ? 'How to Claim Your Refund' : 'How to Pay Tax Due'}</div><div class="rs-sub">${isRefund ? fmt(Math.abs(d.refund_estimate||0))+' is coming back to you' : fmt(Math.abs(d.refund_estimate||0))+' must be paid before filing'}</div></div></div>
-      <div class="rs-right"><span class="badge ${isRefund ? 'badge-green' : 'badge-amber'}">${isRefund ? 'Refund' : 'Payment needed'}</span><div class="rs-chevron">▾</div></div>
-    </div>
-    <div class="rs-body">
-      ${steps.map((s,i) => `
-      <div class="guide-step">
-        <div class="gs-num">${i+1}</div>
-        <div class="gs-body">
-          <div class="gs-title">${s.title}</div>
-          <div class="gs-desc">${s.desc}</div>
-          <div class="gs-source">📌 ${s.source}</div>
-          <div class="gs-tip"><strong>💡 CA tip:</strong> ${s.tip}</div>
-        </div>
-      </div>`).join('')}
-    </div>
-  </div>`;
-}
-
-function renderAllChecks(d) {
-  const checks = d.checks || [];
-  if (!checks.length) return '';
-  const icons = { ok: '✅', warn: '⚠️', issue: '❌' };
-  const cls = { ok: 'check-ok', warn: 'check-warn', issue: 'check-issue' };
-  return `
-  <div class="rs">
-    <div class="rs-head" onclick="toggleRS(this)">
-      <div class="rs-left"><div class="rs-icon">📋</div><div><div class="rs-title">All AI Findings</div><div class="rs-sub">Complete item-by-item analysis of your AIS</div></div></div>
-      <div class="rs-right"><span class="badge badge-blue">${checks.length} findings</span><div class="rs-chevron">▾</div></div>
-    </div>
-    <div class="rs-body open">
-      ${checks.map(c => `<div class="check-item ${cls[c.status]||''}">${icons[c.status]||'ℹ️'} ${c.text}</div>`).join('')}
-    </div>
-  </div>`;
-}
-
-// ─── TOGGLE SECTION ───────────────────────────────────────
-function toggleRS(head) {
-  const body = head.nextElementSibling;
-  const chev = head.querySelector('.rs-chevron');
-  if (body.classList.contains('open')) {
-    body.classList.remove('open'); body.style.display = 'none';
-    if (chev) chev.style.transform = 'rotate(-90deg)';
+function toggleChat(){
+  const w = document.getElementById('chat-window');
+  const icon = document.getElementById('chat-icon');
+  if(w.style.display==='none'){
+    w.style.display='block';
+    icon.textContent='✕';
   } else {
-    body.classList.add('open'); body.style.display = 'block';
-    if (chev) chev.style.transform = '';
+    w.style.display='none';
+    icon.textContent='💬';
   }
 }
 
-// ─── PDF PAYMENT ──────────────────────────────────────────
-async function initiatePdfPayment() {
-  if (!state.accessToken) { alert('Please complete analysis first.'); return; }
-  const btn = document.querySelector('#pdfUpgrade button');
-  btn.textContent = '⏳ Opening payment...'; btn.disabled = true;
-  try {
-    const orderRes = await fetch(`${BACKEND}/api/create-pdf-order`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ access_token: state.accessToken }),
-    });
-    if (!orderRes.ok) throw new Error('Could not create PDF order.');
-    const order = await orderRes.json();
-
-    const rzp = new Razorpay({
-      key: order.key_id,
-      amount: order.amount,
-      currency: order.currency,
-      name: 'SalaryBit Tax AI',
-      description: 'CA-Level PDF Tax Report',
-      order_id: order.order_id,
-      theme: { color: '#059669' },
-      handler: async (resp) => await downloadPdf(resp),
-      modal: { ondismiss: () => { btn.textContent = 'Download PDF — ₹199 →'; btn.disabled = false; } }
-    });
-    rzp.open();
-  } catch (err) {
-    alert(err.message);
-    btn.textContent = 'Download PDF — ₹199 →'; btn.disabled = false;
+function getAnswer(q){
+  const ql = q.toLowerCase();
+  for(const item of QA){
+    if(item.q.some(k => ql.includes(k))) return item.a;
   }
+  return "I don't have a specific answer for that in this guide. For complex tax situations, visit <a href='https://salarybit.in' target='_blank' style='color:#1a6bff;font-weight:700;'>SalaryBit.in</a> or consult a CA. You can also try rephrasing your question — e.g. 'RSU tax', 'Schedule FA', 'validation error'.";
 }
 
-async function downloadPdf(razorpayResp) {
-  const btn = document.querySelector('#pdfUpgrade button');
-  btn.textContent = '⏳ Generating PDF...'; btn.disabled = true;
-  try {
-    const res = await fetch(`${BACKEND}/api/generate-pdf`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        razorpay_order_id: razorpayResp.razorpay_order_id,
-        razorpay_payment_id: razorpayResp.razorpay_payment_id,
-        razorpay_signature: razorpayResp.razorpay_signature,
-        analysisData: state.analysisResult,
-        pan: state.analysisResult?.pan || '',
-      }),
-    });
-    if (!res.ok) throw new Error('PDF generation failed.');
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `SalaryBit-Tax-Report-${state.analysisResult?.name || 'Report'}.html`;
-    document.body.appendChild(a); a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    btn.textContent = '✅ Downloaded!';
-    setTimeout(() => { btn.textContent = 'Download PDF — ₹199 →'; btn.disabled = false; }, 3000);
-  } catch (err) {
-    alert(err.message);
-    btn.textContent = 'Download PDF — ₹199 →'; btn.disabled = false;
-  }
+function addMsg(text, type){
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = type === 'user' ? 'user-msg' : 'bot-msg';
+  div.innerHTML = text;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function askQ(q){
+  addMsg(q, 'user');
+  setTimeout(() => addMsg(getAnswer(q), 'bot'), 400);
+}
+
+function sendMsg(){
+  const input = document.getElementById('chat-input');
+  const q = input.value.trim();
+  if(!q) return;
+  input.value = '';
+  askQ(q);
 }
 </script>
+
+<!-- FOOTER -->
+<div class="footer" style="margin-bottom:80px;">
+  <p>This guide is for informational purposes only and does not constitute tax advice. Consult a qualified CA for complex situations involving large foreign holdings, multiple RSU grants, or DTAA treaty positions.</p>
+  <p style="margin-top:8px;">Last updated: June 2026 &nbsp;|&nbsp; Applicable for AY 2026-27 (FY 2025-26) &nbsp;|&nbsp; <a href="https://salarybit.in">SalaryBit.in</a></p>
+</div>
+
+<script>
+  // Reading progress bar
+  window.addEventListener('scroll', () => {
+    const bar = document.querySelector('.progress-bar');
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    bar.style.width = (scrollTop / scrollHeight * 100) + '%';
+  });
+</script>
+
 </body>
 </html>

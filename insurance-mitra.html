@@ -30,7 +30,6 @@
       <button class="tab-btn" id="tab-life-btn" onclick="switchTab('life')">My life/death claim was rejected</button>
       <button class="tab-btn" id="tab-checklist-btn" onclick="switchTab('checklist')">I'm buying a new policy</button>
       <button class="tab-btn" id="tab-schemes-btn" onclick="switchTab('schemes')">Government schemes</button>
-      <button class="tab-btn" id="tab-mycases-btn" onclick="switchTab('mycases')">My cases</button>
     </div>
 
     <!-- ===================== HEALTH CLAIM ANALYZER TAB ===================== -->
@@ -109,17 +108,6 @@
           <button class="btn-primary" id="an-copy-btn" onclick="copyLetter()">Copy letter text</button>
           <button class="btn-ghost" onclick="backToVerdict()">← Back to verdict</button>
         </div>
-
-        <div class="box" id="an-tracking-box" style="display:none; margin-top: 20px;">
-          <div class="box-title">Track this case to resolution</div>
-          <p class="box-text" id="an-tracking-pitch">
-            Once you've sent this letter, we can track your deadlines for you — when to follow up with the GRO, when to escalate to IRDAI, and when to file with the Ombudsman. This is free.
-          </p>
-          <div id="an-tracking-paid-view" style="display:none;">
-            <p class="box-text">✓ Tracking is active for this case. Find it anytime in the <strong>My Cases</strong> tab — that's where your follow-up deadlines will show up.</p>
-          </div>
-          <button class="btn-primary" id="an-pay-btn" onclick="markGroSent()">I've sent the letter — start tracking</button>
-        </div>
       </div>
 
     </div>
@@ -193,17 +181,6 @@
         <div class="btn-row">
           <button class="btn-primary" id="lf-copy-btn" onclick="copyLifeLetter()">Copy letter text</button>
           <button class="btn-ghost" onclick="backToLifeVerdict()">← Back to verdict</button>
-        </div>
-
-        <div class="box" id="lf-tracking-box" style="margin-top: 20px;">
-          <div class="box-title">Track this case to resolution</div>
-          <p class="box-text" id="lf-tracking-pitch">
-            Once you've sent this letter, we can track your deadlines for you — free of charge.
-          </p>
-          <div id="lf-tracking-started-view" style="display:none;">
-            <p class="box-text">✓ Tracking is active for this case. Find it anytime in the <strong>My Cases</strong> tab.</p>
-          </div>
-          <button class="btn-primary" id="lf-track-btn" onclick="markLifeGroSent()">I've sent the letter — start tracking</button>
         </div>
       </div>
 
@@ -508,21 +485,6 @@
           Government scheme rules can change with new notifications, and some states (Karnataka, Tamil Nadu, Rajasthan, Andhra Pradesh, Telangana, and others) run their own expanded eligibility lists on top of the central SECC data. Always confirm current details on the official PM-JAY portal or by calling the Ayushman Bharat helpline before relying on this for a real decision.
         </p>
       </div>
-
-    </div>
-
-    <!-- ===================== MY CASES / TRACK STATUS TAB ===================== -->
-    <div class="tab-content" id="tab-mycases">
-
-      <p class="lede">Every case you've opened in this browser, with its current stage and follow-up deadline. This list only shows cases from this browser/device — there's no login, so it won't follow you to a different phone or browser.</p>
-
-      <button class="btn-ghost" id="mc-refresh-btn" onclick="loadMyCases()">Refresh list</button>
-
-      <div id="mc-loading" class="lede" style="margin-top:14px;">Loading your cases…</div>
-      <div id="mc-empty" class="box" style="display:none; margin-top:14px;">
-        <p class="box-text">No open cases yet. Once you score a claim in the "My claim was rejected" tabs, it will appear here automatically.</p>
-      </div>
-      <div id="mc-list" style="margin-top:14px;"></div>
 
     </div>
 

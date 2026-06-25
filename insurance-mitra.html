@@ -1,554 +1,804 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Insurance Mitra — Claim Rejection Help</title>
-  <!--
-    This page is hosted as a static file on salarybit.in (trial period,
-    no separate insurancemitra.in domain yet). The actual backend (Flask +
-    Postgres) runs on Railway. The CSS and JS below are loaded directly
-    from Railway's static file server -- there is no local copy to keep
-    in sync, so any future CSS/JS update on Railway shows up here too.
-  -->
-  <link rel="stylesheet" href="https://web-production-b0a7.up.railway.app/static/css/main.css">
-  <link rel="stylesheet" href="https://web-production-b0a7.up.railway.app/static/css/main-additions.css">
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-</head>
-<body>
-<div class="page">
-  <div class="paper">
-    <div class="header">
-      <div>
-        <div class="eyebrow">INSURANCE MITRA</div>
-        <h1 id="page-title">Claim rejection case file</h1>
-      </div>
-    </div>
+// ===== API base URL =====
+// This page is hosted as a static file on salarybit.in (trial period),
+// but the actual Flask backend runs on Railway. Every API call must go to
+// the absolute Railway URL -- a relative '/api/...' would try to hit
+// salarybit.in/api/... which doesn't exist.
+//
+// credentials: 'include' is required so the browser sends/receives the
+// anon_id session cookie across this cross-origin boundary. Without it,
+// every request looks like a brand-new anonymous visitor and case lookups
+// fail right after creation.
+const API_BASE = 'https://web-production-b0a7.up.railway.app';
 
-    <div class="tab-row">
-      <button class="tab-btn active" id="tab-analyzer-btn" onclick="switchTab('analyzer')">My health claim was rejected</button>
-      <button class="tab-btn" id="tab-life-btn" onclick="switchTab('life')">My life/death claim was rejected</button>
-      <button class="tab-btn" id="tab-checklist-btn" onclick="switchTab('checklist')">I'm buying a new policy</button>
-      <button class="tab-btn" id="tab-schemes-btn" onclick="switchTab('schemes')">Government schemes</button>
-      <button class="tab-btn" id="tab-mycases-btn" onclick="switchTab('mycases')">My cases</button>
-    </div>
+function apiFetch(path, options = {}) {
+  return fetch(API_BASE + path, { ...options, credentials: 'include' });
+}
 
-    <!-- ===================== HEALTH CLAIM ANALYZER TAB ===================== -->
-    <div class="tab-content active" id="tab-analyzer">
+// ===== Top-level tab switching =====
+function switchTab(tab) {
+  ['analyzer', 'life', 'checklist', 'schemes', 'mycases'].forEach((t) => {
+    document.getElementById('tab-' + t).classList.toggle('active', t === tab);
+  });
+  ['analyzer', 'life', 'checklist', 'schemes', 'mycases'].forEach((t) => {
+    const btn = document.getElementById('tab-' + t + '-btn');
+    if (btn) btn.classList.toggle('active', t === tab);
+  });
 
-      <div id="an-step-form">
-        <p class="lede">Tell us what happened. We'll check your rejection against IRDAI rules before you write a single word to the insurer.</p>
-        <div class="field">
-          <label>Insurance company</label>
-          <input type="text" id="an-insurer" placeholder="e.g. Star Health">
-        </div>
-        <div class="field">
-          <label>Policy name</label>
-          <input type="text" id="an-policyName" placeholder="e.g. Star Comprehensive">
-        </div>
-        <div class="row">
-          <div class="field">
-            <label>Claim amount (₹)</label>
-            <input type="number" id="an-claimAmount" placeholder="125000">
-          </div>
-          <div class="field">
-            <label>Hospital</label>
-            <input type="text" id="an-hospital" placeholder="e.g. Apollo Hospital">
-          </div>
-        </div>
-        <div class="field">
-          <label>Diagnosis / reason for hospitalization</label>
-          <input type="text" id="an-diagnosis" placeholder="e.g. Acute appendicitis">
-        </div>
-        <div class="field">
-          <label>What did the insurer say in the rejection? (paste their wording if you have it)</label>
-          <textarea id="an-rejectionReason" rows="4" placeholder="e.g. Claim repudiated on grounds of non-disclosure of pre-existing condition"></textarea>
-        </div>
-        <button class="btn-primary" id="an-open-case-btn" onclick="openCase()" disabled>Open case file →</button>
-      </div>
+  const titles = {
+    analyzer: 'Claim rejection case file',
+    life: 'Life / death claim case file',
+    checklist: "Buying a new policy",
+    schemes: 'Government health schemes',
+    mycases: 'My cases',
+  };
+  document.getElementById('page-title').textContent = titles[tab] || '';
 
-      <div id="an-step-questions" style="display:none;">
-        <div class="match-tag" id="an-match-tag"></div>
-        <div class="secondary-note" id="an-secondary-note" style="display:none;"></div>
-        <p class="lede">A few quick questions to score your case accurately.</p>
-        <div id="an-questions-container"></div>
-        <button class="btn-primary" id="an-get-verdict-btn" onclick="getVerdict()" disabled>Get verdict →</button>
-      </div>
+  if (tab === 'mycases') {
+    loadMyCases();
+  }
+}
 
-      <div id="an-step-verdict" style="display:none;">
-        <div class="secondary-note" id="an-verdict-secondary-note" style="display:none;"></div>
-        <div class="seal-wrap">
-          <div class="seal" id="an-seal">
-            <div class="seal-score" id="an-seal-score"></div>
-            <div class="seal-label" id="an-seal-label"></div>
-          </div>
-        </div>
-        <div class="box">
-          <div class="box-title">Why this score</div>
-          <p class="box-text" id="an-verdict-explain"></p>
-        </div>
-        <div class="box">
-          <div class="box-title">What to do next</div>
-          <ol>
-            <li>Write to the insurer's Grievance Redressal Officer (GRO) — every insurer must publish this contact.</li>
-            <li>No response in 15 days → file on IRDAI's Bima Bharosa portal.</li>
-            <li>No resolution in 30 days → Insurance Ombudsman. Free, binding up to ₹50 lakh, no lawyer needed.</li>
-          </ol>
-        </div>
-        <div class="btn-row">
-          <button class="btn-primary" onclick="generateLetter()">Draft my grievance letter →</button>
-          <button class="btn-ghost" onclick="resetAnalyzer()">Start new case</button>
-        </div>
-      </div>
+// (Sub-tab switching removed -- "buying a new policy" is now one
+// continuous flow: checklist -> summary -> recommendation, no sub-tabs.)
 
-      <div id="an-step-letter" style="display:none;">
-        <div class="box-title">Your grievance letter</div>
-        <p class="lede" id="an-letter-loading">Drafting your letter…</p>
-        <div class="letter-box" id="an-letter-box" style="display:none;"></div>
-        <div class="btn-row" id="an-letter-actions" style="display:none;">
-          <button class="btn-primary" id="an-copy-btn" onclick="copyLetter()">Copy letter text</button>
-          <button class="btn-ghost" onclick="backToVerdict()">← Back to verdict</button>
-        </div>
+function val(id) {
+  const el = document.getElementById(id);
+  return el ? el.value : '';
+}
 
-        <div class="box" id="an-tracking-box" style="display:none; margin-top: 20px;">
-          <div class="box-title">Track this case to resolution</div>
-          <p class="box-text" id="an-tracking-pitch">
-            Once you've sent this letter, we can track your deadlines for you — when to follow up with the GRO, when to escalate to IRDAI, and when to file with the Ombudsman. This is free.
-          </p>
-          <div id="an-tracking-paid-view" style="display:none;">
-            <p class="box-text">✓ Tracking is active for this case. Find it anytime in the <strong>My Cases</strong> tab — that's where your follow-up deadlines will show up.</p>
-          </div>
-          <button class="btn-primary" id="an-pay-btn" onclick="markGroSent()">I've sent the letter — start tracking</button>
-        </div>
-      </div>
+// ======================================================================
+// ===== HEALTH CLAIM ANALYZER (free analysis + score, ₹99 letter) =====
+// ======================================================================
 
-    </div>
+let an = {
+  form: {},
+  matched: null,
+  secondary: [],
+  answers: {},
+  caseRef: null,
+  score: null,
+};
 
-    <!-- ===================== LIFE/DEATH CLAIM ANALYZER TAB ===================== -->
-    <div class="tab-content" id="tab-life">
+function showStep(prefix, stepId, allSteps) {
+  allSteps.forEach((id) => {
+    document.getElementById(id).style.display = id === stepId ? 'block' : 'none';
+  });
+}
 
-      <div id="lf-step-form">
-        <p class="lede">We're sorry for your loss. Tell us what the insurer said, and we'll check it against IRDAI's rules for death claims before you respond.</p>
-        <div class="field">
-          <label>Insurance company</label>
-          <input type="text" id="lf-insurer" placeholder="e.g. LIC">
-        </div>
-        <div class="field">
-          <label>Policy name / number</label>
-          <input type="text" id="lf-policyName" placeholder="e.g. Jeevan Anand">
-        </div>
-        <div class="field">
-          <label>Name of the deceased</label>
-          <input type="text" id="lf-deceasedName" placeholder="Full name">
-        </div>
-        <div class="field">
-          <label>Date of death</label>
-          <input type="text" id="lf-dateOfDeath" placeholder="YYYY-MM-DD">
-        </div>
-        <div class="field">
-          <label>What did the insurer say in the rejection? (paste their wording if you have it)</label>
-          <textarea id="lf-rejectionReason" rows="4" placeholder="e.g. Claim repudiated as nominee details were not registered"></textarea>
-        </div>
-        <button class="btn-primary" id="lf-open-case-btn" onclick="openLifeCase()" disabled>Open case file →</button>
-      </div>
+const AN_STEPS = ['an-step-form', 'an-step-questions', 'an-step-verdict', 'an-step-letter'];
 
-      <div id="lf-step-questions" style="display:none;">
-        <div class="match-tag" id="lf-match-tag"></div>
-        <div class="secondary-note" id="lf-secondary-note" style="display:none;"></div>
-        <p class="lede">A few quick questions to score your case accurately.</p>
-        <div id="lf-questions-container"></div>
-        <button class="btn-primary" id="lf-get-verdict-btn" onclick="getLifeVerdict()" disabled>Get verdict →</button>
-      </div>
+document.addEventListener('DOMContentLoaded', () => {
+  const reasonEl = document.getElementById('an-rejectionReason');
+  if (reasonEl) {
+    reasonEl.addEventListener('input', () => {
+      document.getElementById('an-open-case-btn').disabled = !reasonEl.value.trim();
+    });
+  }
 
-      <div id="lf-step-verdict" style="display:none;">
-        <div class="secondary-note" id="lf-verdict-secondary-note" style="display:none;"></div>
-        <div class="seal-wrap">
-          <div class="seal" id="lf-seal">
-            <div class="seal-score" id="lf-seal-score"></div>
-            <div class="seal-label" id="lf-seal-label"></div>
-          </div>
-        </div>
-        <div class="box">
-          <div class="box-title">Why this score</div>
-          <p class="box-text" id="lf-verdict-explain"></p>
-        </div>
-        <div class="box">
-          <div class="box-title">What to do next</div>
-          <ol>
-            <li>Write to the insurer's Grievance Redressal Officer (GRO) — every insurer must publish this contact.</li>
-            <li>No response in 15 days → file on IRDAI's Bima Bharosa portal.</li>
-            <li>No resolution in 30 days → Insurance Ombudsman. Free, binding up to ₹50 lakh, no lawyer needed.</li>
-          </ol>
-        </div>
-        <div class="btn-row">
-          <button class="btn-primary" onclick="generateLifeLetter()">Draft my grievance letter →</button>
-          <button class="btn-ghost" onclick="resetLifeAnalyzer()">Start new case</button>
-        </div>
-      </div>
+  const lfReasonEl = document.getElementById('lf-rejectionReason');
+  if (lfReasonEl) {
+    lfReasonEl.addEventListener('input', () => {
+      document.getElementById('lf-open-case-btn').disabled = !lfReasonEl.value.trim();
+    });
+  }
+});
 
-      <div id="lf-step-letter" style="display:none;">
-        <div class="box-title">Your grievance letter</div>
-        <p class="lede">This letter is free — it's built from a template, not generated by AI.</p>
-        <div class="letter-box" id="lf-letter-box"></div>
-        <div class="btn-row">
-          <button class="btn-primary" id="lf-copy-btn" onclick="copyLifeLetter()">Copy letter text</button>
-          <button class="btn-ghost" onclick="backToLifeVerdict()">← Back to verdict</button>
-        </div>
+async function openCase() {
+  an.form = {
+    insurer: val('an-insurer'),
+    policyName: val('an-policyName'),
+    claimAmount: val('an-claimAmount'),
+    hospital: val('an-hospital'),
+    diagnosis: val('an-diagnosis'),
+    rejectionReason: val('an-rejectionReason'),
+  };
 
-        <div class="box" id="lf-tracking-box" style="margin-top: 20px;">
-          <div class="box-title">Track this case to resolution</div>
-          <p class="box-text" id="lf-tracking-pitch">
-            Once you've sent this letter, we can track your deadlines for you — free of charge.
-          </p>
-          <div id="lf-tracking-started-view" style="display:none;">
-            <p class="box-text">✓ Tracking is active for this case. Find it anytime in the <strong>My Cases</strong> tab.</p>
-          </div>
-          <button class="btn-primary" id="lf-track-btn" onclick="markLifeGroSent()">I've sent the letter — start tracking</button>
-        </div>
-      </div>
+  const res = await apiFetch('/api/analyze', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ rejectionReason: an.form.rejectionReason }),
+  });
+  if (!res.ok) { alert('Something went wrong analyzing your case. Please try again.'); return; }
+  const data = await res.json();
+  an.matched = data.matched;
+  an.secondary = data.secondary;
+  an.answers = {};
 
-    </div>
+  if (an.matched.asks.length === 0) {
+    await submitScore();
+  } else {
+    renderQuestions();
+    showStep('an', 'an-step-questions', AN_STEPS);
+  }
+}
 
-    <!-- ===================== "BUYING A NEW POLICY" TAB (sub-tabs) ===================== -->
-    <div class="tab-content" id="tab-checklist">
+function renderQuestions() {
+  document.getElementById('an-match-tag').textContent = 'Matched category: ' + an.matched.label;
 
-      <div class="sub-tab-row sub-tab-row-stacked">
-        <button class="sub-tab-btn active" id="subtab-disclosure-btn" onclick="switchSubTab('disclosure')">Disclosure checklist</button>
-        <button class="sub-tab-btn" id="subtab-recommend-btn" onclick="switchSubTab('recommend')">Which policy should I buy?</button>
-      </div>
+  const secNote = document.getElementById('an-secondary-note');
+  if (an.secondary.length > 0) {
+    secNote.style.display = 'block';
+    secNote.textContent = 'Also worth raising separately: ' +
+      an.secondary.map((r) => r.label).join(', ') + '. We\'ll focus the score on the primary issue, but mention this in your letter too.';
+  } else {
+    secNote.style.display = 'none';
+  }
 
-      <!-- ---- Sub-tab: Disclosure checklist ---- -->
-      <div class="sub-tab-content active" id="subtab-disclosure">
+  const container = document.getElementById('an-questions-container');
+  container.innerHTML = '';
+  an.matched.asks.forEach((ask) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'field';
+    const label = document.createElement('label');
+    label.textContent = ask.q;
+    wrap.appendChild(label);
 
-        <div id="ck-step-form">
-          <p class="lede">Going through this <strong>before</strong> you buy a policy means the insurer can never later say "you didn't tell us." Check anything that applies to you, even things that seem minor or were found incidentally on an old report. <strong>If none of these apply to you, that's fine too</strong> — just click the button below and we'll generate a summary confirming you have nothing to disclose, which is itself useful to keep on record.</p>
-          <div class="field">
-            <label>Your name (for the summary)</label>
-            <input type="text" id="ck-name" placeholder="Full name as on the proposal form">
-          </div>
-          <div class="field">
-            <label>Insurer you're buying from</label>
-            <input type="text" id="ck-insurer" placeholder="e.g. HDFC Ergo">
-          </div>
+    if (ask.type === 'yesno') {
+      const row = document.createElement('div');
+      row.className = 'yesno-row';
+      ['yes', 'no'].forEach((v) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'yesno-btn';
+        btn.textContent = v.charAt(0).toUpperCase() + v.slice(1);
+        btn.onclick = () => {
+          an.answers[ask.key] = v;
+          row.querySelectorAll('.yesno-btn').forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          updateVerdictButtonState();
+        };
+        row.appendChild(btn);
+      });
+      wrap.appendChild(row);
+    } else {
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.oninput = () => {
+        an.answers[ask.key] = input.value;
+        updateVerdictButtonState();
+      };
+      wrap.appendChild(input);
+    }
+    container.appendChild(wrap);
+  });
+  updateVerdictButtonState();
+}
 
-          <!--
-            Hardcoded from rules.py CHECKLIST_GROUPS, since there is no Jinja
-            here to loop over it dynamically. If CHECKLIST_GROUPS in rules.py
-            ever changes, this block must be updated manually to match --
-            it will silently drift otherwise, since this file isn't rendered
-            by Flask.
-          -->
-          <div class="checklist-group">
-            <div class="checklist-group-title">Standard chronic conditions (always ask about these)</div>
-            <div class="checklist-item">
-              <label class="checklist-label">
-                <input type="checkbox" data-item-id="diabetes" onchange="toggleChecklistItem('diabetes', this.checked)">
-                Diabetes / high blood sugar (HbA1c, fasting/PP sugar)
-              </label>
-              <input type="text" class="note-input" id="note-diabetes" style="display:none;" placeholder="Optional: when found / details">
-            </div>
-            <div class="checklist-item">
-              <label class="checklist-label">
-                <input type="checkbox" data-item-id="bp" onchange="toggleChecklistItem('bp', this.checked)">
-                High blood pressure (BP readings, any medication)
-              </label>
-              <input type="text" class="note-input" id="note-bp" style="display:none;" placeholder="Optional: when found / details">
-            </div>
-            <div class="checklist-item">
-              <label class="checklist-label">
-                <input type="checkbox" data-item-id="thyroid" onchange="toggleChecklistItem('thyroid', this.checked)">
-                Thyroid disorder (TSH levels, medication)
-              </label>
-              <input type="text" class="note-input" id="note-thyroid" style="display:none;" placeholder="Optional: when found / details">
-            </div>
-            <div class="checklist-item">
-              <label class="checklist-label">
-                <input type="checkbox" data-item-id="cholesterol" onchange="toggleChecklistItem('cholesterol', this.checked)">
-                High cholesterol / lipid issues
-              </label>
-              <input type="text" class="note-input" id="note-cholesterol" style="display:none;" placeholder="Optional: when found / details">
-            </div>
-            <div class="checklist-item">
-              <label class="checklist-label">
-                <input type="checkbox" data-item-id="asthma" onchange="toggleChecklistItem('asthma', this.checked)">
-                Asthma or breathing-related conditions
-              </label>
-              <input type="text" class="note-input" id="note-asthma" style="display:none;" placeholder="Optional: when found / details">
-            </div>
-            <div class="checklist-item">
-              <label class="checklist-label">
-                <input type="checkbox" data-item-id="heart" onchange="toggleChecklistItem('heart', this.checked)">
-                Any heart-related diagnosis, ECG abnormality, or chest pain history
-              </label>
-              <input type="text" class="note-input" id="note-heart" style="display:none;" placeholder="Optional: when found / details">
-            </div>
-          </div>
+function updateVerdictButtonState() {
+  const allAnswered = an.matched.asks.every((a) => an.answers[a.key] !== undefined && an.answers[a.key] !== '');
+  document.getElementById('an-get-verdict-btn').disabled = !allAnswered;
+}
 
-          <div class="checklist-group">
-            <div class="checklist-group-title">Often-missed findings insurers use later (the ones that get weaponized)</div>
-            <div class="checklist-item">
-              <label class="checklist-label">
-                <input type="checkbox" data-item-id="fattyLiver" onchange="toggleChecklistItem('fattyLiver', this.checked)">
-                Fatty liver (NAFLD) — even if found incidentally on an ultrasound for something else
-              </label>
-              <input type="text" class="note-input" id="note-fattyLiver" style="display:none;" placeholder="Optional: when found / details">
-            </div>
-            <div class="checklist-item">
-              <label class="checklist-label">
-                <input type="checkbox" data-item-id="b12" onchange="toggleChecklistItem('b12', this.checked)">
-                Vitamin B12 / Vitamin D deficiency
-              </label>
-              <input type="text" class="note-input" id="note-b12" style="display:none;" placeholder="Optional: when found / details">
-            </div>
-            <div class="checklist-item">
-              <label class="checklist-label">
-                <input type="checkbox" data-item-id="kidneyStone" onchange="toggleChecklistItem('kidneyStone', this.checked)">
-                Kidney stones or gallbladder stones (even old, asymptomatic ones)
-              </label>
-              <input type="text" class="note-input" id="note-kidneyStone" style="display:none;" placeholder="Optional: when found / details">
-            </div>
-            <div class="checklist-item">
-              <label class="checklist-label">
-                <input type="checkbox" data-item-id="anemia" onchange="toggleChecklistItem('anemia', this.checked)">
-                Anemia or low hemoglobin found in any past blood test
-              </label>
-              <input type="text" class="note-input" id="note-anemia" style="display:none;" placeholder="Optional: when found / details">
-            </div>
-            <div class="checklist-item">
-              <label class="checklist-label">
-                <input type="checkbox" data-item-id="liverEnzymes" onchange="toggleChecklistItem('liverEnzymes', this.checked)">
-                Mildly elevated liver enzymes (SGPT/SGOT) on any past report
-              </label>
-              <input type="text" class="note-input" id="note-liverEnzymes" style="display:none;" placeholder="Optional: when found / details">
-            </div>
-          </div>
+async function getVerdict() {
+  await submitScore();
+}
 
-          <div class="checklist-group">
-            <div class="checklist-group-title">Post-COVID / recent symptoms (frequently undisclosed because people don't think of them as conditions)</div>
-            <div class="checklist-item">
-              <label class="checklist-label">
-                <input type="checkbox" data-item-id="legCramps" onchange="toggleChecklistItem('legCramps', this.checked)">
-                Leg cramps, muscle pain, or unexplained body ache (ongoing)
-              </label>
-              <input type="text" class="note-input" id="note-legCramps" style="display:none;" placeholder="Optional: when found / details">
-            </div>
-            <div class="checklist-item">
-              <label class="checklist-label">
-                <input type="checkbox" data-item-id="fatigue" onchange="toggleChecklistItem('fatigue', this.checked)">
-                Persistent fatigue or breathlessness after COVID recovery
-              </label>
-              <input type="text" class="note-input" id="note-fatigue" style="display:none;" placeholder="Optional: when found / details">
-            </div>
-            <div class="checklist-item">
-              <label class="checklist-label">
-                <input type="checkbox" data-item-id="palpitations" onchange="toggleChecklistItem('palpitations', this.checked)">
-                Heart palpitations or irregular heartbeat noticed after COVID
-              </label>
-              <input type="text" class="note-input" id="note-palpitations" style="display:none;" placeholder="Optional: when found / details">
-            </div>
-            <div class="checklist-item">
-              <label class="checklist-label">
-                <input type="checkbox" data-item-id="covidHistory" onchange="toggleChecklistItem('covidHistory', this.checked)">
-                Any COVID-19 hospitalization, oxygen support, or steroid treatment
-              </label>
-              <input type="text" class="note-input" id="note-covidHistory" style="display:none;" placeholder="Optional: when found / details">
-            </div>
-          </div>
+async function submitScore() {
+  const res = await apiFetch('/api/score', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      ruleId: an.matched.id,
+      answers: an.answers,
+      form: an.form,
+      secondaryIds: an.secondary.map((r) => r.id),
+    }),
+  });
+  if (!res.ok) { alert('Something went wrong scoring your case. Please try again.'); return; }
+  const data = await res.json();
+  an.caseRef = data.caseRef;
+  an.score = data.score;
 
-          <div class="checklist-group">
-            <div class="checklist-group-title">History &amp; records to gather (insurer cannot claim ignorance of these)</div>
-            <div class="checklist-item">
-              <label class="checklist-label">
-                <input type="checkbox" data-item-id="pastHospitalization" onchange="toggleChecklistItem('pastHospitalization', this.checked)">
-                Any hospitalization in the last 4 years, for any reason
-              </label>
-              <input type="text" class="note-input" id="note-pastHospitalization" style="display:none;" placeholder="Optional: when found / details">
-            </div>
-            <div class="checklist-item">
-              <label class="checklist-label">
-                <input type="checkbox" data-item-id="pastSurgery" onchange="toggleChecklistItem('pastSurgery', this.checked)">
-                Any past surgery, however minor
-              </label>
-              <input type="text" class="note-input" id="note-pastSurgery" style="display:none;" placeholder="Optional: when found / details">
-            </div>
-            <div class="checklist-item">
-              <label class="checklist-label">
-                <input type="checkbox" data-item-id="familyHistory" onchange="toggleChecklistItem('familyHistory', this.checked)">
-                Family history of diabetes, heart disease, or cancer (some proposal forms ask this)
-              </label>
-              <input type="text" class="note-input" id="note-familyHistory" style="display:none;" placeholder="Optional: when found / details">
-            </div>
-            <div class="checklist-item">
-              <label class="checklist-label">
-                <input type="checkbox" data-item-id="currentMeds" onchange="toggleChecklistItem('currentMeds', this.checked)">
-                Any medication you take regularly, even over-the-counter
-              </label>
-              <input type="text" class="note-input" id="note-currentMeds" style="display:none;" placeholder="Optional: when found / details">
-            </div>
-          </div>
+  const secNote = document.getElementById('an-verdict-secondary-note');
+  if (an.secondary.length > 0) {
+    secNote.style.display = 'block';
+    secNote.textContent = 'Also worth raising separately: ' + an.secondary.map((r) => r.label).join(', ') + '.';
+  } else {
+    secNote.style.display = 'none';
+  }
 
-          <button class="btn-primary" onclick="generateChecklistSummary()">Generate my disclosure summary →</button>
-        </div>
+  const seal = document.getElementById('an-seal');
+  seal.style.borderColor = data.band.color;
+  seal.style.color = data.band.color;
+  document.getElementById('an-seal-score').textContent = data.score;
+  document.getElementById('an-seal-label').textContent = data.band.label;
+  document.getElementById('an-verdict-explain').textContent = data.ruleExplain;
 
-        <div id="ck-step-summary" style="display:none;">
-          <div class="box-title">Your written disclosure summary</div>
-          <p class="lede">Give this to your insurer or agent in writing (email is fine — it creates a timestamp) when you submit your proposal form. Keep a copy for yourself.</p>
-          <div class="letter-box" id="ck-summary-box"></div>
-          <div class="btn-row">
-            <button class="btn-primary" id="ck-copy-btn" onclick="copySummary()">Copy summary text</button>
-            <button class="btn-ghost" onclick="backToChecklist()">← Back to checklist</button>
-          </div>
-        </div>
+  showStep('an', 'an-step-verdict', AN_STEPS);
+}
 
-      </div>
+// Letter generation is the paid step (₹99). If /api/generate-letter responds
+// with 402 + payment_required, we open Razorpay checkout, verify, then retry.
+// If the Claude call itself fails after payment, the backend does NOT burn
+// the payment record, so retrying is always safe and never double-charges.
 
-      <!-- ---- Sub-tab: Which policy should I buy ---- -->
-      <div class="sub-tab-content" id="subtab-recommend" style="display:none;">
+async function generateLetter() {
+  showStep('an', 'an-step-letter', AN_STEPS);
+  document.getElementById('an-letter-loading').textContent = 'Drafting your letter…';
+  document.getElementById('an-letter-loading').style.display = 'block';
+  document.getElementById('an-letter-box').style.display = 'none';
+  document.getElementById('an-letter-actions').style.display = 'none';
 
-        <div id="pr-step-form">
-          <p class="lede">Answer a few questions and we'll suggest the type of health and life cover that fits your stage of life — not a specific insurer's product, just an unbiased read on what to look for. This is a one-time ₹99, since it uses AI to personalize the answer for you.</p>
-          <div class="field">
-            <label>Your age</label>
-            <input type="number" id="pr-age" placeholder="e.g. 32">
-          </div>
-          <div class="field">
-            <label>Number of dependents (spouse, children, parents relying on you)</label>
-            <input type="number" id="pr-dependents" placeholder="e.g. 2">
-          </div>
-          <div class="field">
-            <label>Do you have any existing health conditions?</label>
-            <select class="select-input" id="pr-hasConditions" onchange="togglePrConditionDetail()">
-              <option value="no">No</option>
-              <option value="yes">Yes</option>
-            </select>
-          </div>
-          <div class="field" id="pr-condition-detail-field" style="display:none;">
-            <label>Briefly, what condition(s)?</label>
-            <input type="text" id="pr-conditionDetail" placeholder="e.g. Type 2 diabetes, controlled">
-          </div>
-          <div class="field">
-            <label>Comfortable monthly premium budget (₹)</label>
-            <input type="number" id="pr-budget" placeholder="e.g. 1500">
-          </div>
-          <div class="field">
-            <label>City</label>
-            <input type="text" id="pr-city" placeholder="e.g. Bengaluru">
-          </div>
-          <button class="btn-primary" id="pr-submit-btn" onclick="requestPolicyRecommendation()" disabled>Get my recommendation — ₹99 →</button>
-        </div>
+  await requestLetter();
+}
 
-        <div id="pr-step-result" style="display:none;">
-          <div class="doc-header">
-            <div class="eyebrow">YOUR RECOMMENDATION</div>
-            <div class="doc-stamp">AI-ASSISTED</div>
-          </div>
-          <p class="lede" id="pr-loading">Working on your recommendation…</p>
-          <div class="letter-box" id="pr-result-box" style="display:none;"></div>
-          <div class="btn-row" id="pr-result-actions" style="display:none;">
-            <button class="btn-primary" id="pr-copy-btn" onclick="copyRecommendation()">Copy recommendation</button>
-            <button class="btn-ghost" onclick="backToPrForm()">← Back</button>
-          </div>
-        </div>
+async function requestLetter() {
+  const res = await apiFetch('/api/generate-letter', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ caseRef: an.caseRef }),
+  });
+  const data = await res.json();
 
-      </div>
+  if (res.status === 402 && data.error === 'payment_required') {
+    document.getElementById('an-letter-loading').textContent =
+      'This letter is a one-time ₹99 — complete payment to continue.';
+    await startLetterPayment();
+    return;
+  }
 
-    </div>
+  document.getElementById('an-letter-loading').style.display = 'none';
 
-    <!-- ===================== GOVERNMENT SCHEMES TAB ===================== -->
-    <div class="tab-content" id="tab-schemes">
+  const box = document.getElementById('an-letter-box');
+  box.textContent = data.letter || data.error || 'Something went wrong.';
+  box.style.display = 'block';
+  document.getElementById('an-letter-actions').style.display = 'flex';
+  an.lastLetter = data.letter || '';
+  document.getElementById('an-tracking-box').style.display = 'block';
+}
 
-      <p class="lede">Government-backed health coverage that exists alongside any private policy you may have. There are two separate routes into Ayushman Bharat — most of this needs no agent, no premium, and no paperwork beyond an Aadhaar card.</p>
+async function startLetterPayment() {
+  const res = await apiFetch('/api/payments/create-order', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ caseRef: an.caseRef, caseType: 'health' }),
+  });
+  const data = await res.json();
 
-      <div class="scheme-card">
-        <div class="scheme-card-header">
-          <div class="scheme-badge">
-            <div class="scheme-badge-inner">GOVT<br>SCHEME</div>
-          </div>
-          <h3 class="scheme-card-title">Ayushman Bharat — PM-JAY (low-income / SECC families)</h3>
-        </div>
-        <div class="scheme-highlight-row">
-          <span class="scheme-highlight">₹5 lakh/family/year</span>
-          <span class="scheme-highlight">No premium, ever</span>
-          <span class="scheme-highlight">No waiting period</span>
-          <span class="scheme-highlight">Pre-existing diseases covered day one</span>
-        </div>
-        <p class="box-text">
-          This is the original, larger Ayushman Bharat scheme — it covers over 12 crore families nationwide and gives ₹5 lakh per family per year for hospital treatment, completely free, at any empanelled public or private hospital. Unlike most insurance, it covers pre-existing conditions from day one with no waiting period at all.
-        </p>
-        <p class="box-text"><strong>Who qualifies:</strong> eligibility is based on the 2011 Socio-Economic Caste Census (SECC), not your current income. You're likely covered if your household fits any of these:</p>
-        <ul>
-          <li><strong>Rural households:</strong> no adult member aged 16–59, headed by a woman with no adult male member in that age range, has a disabled member with no able-bodied adult, lives in a single-room kutcha house, or is a landless household dependent on manual labour</li>
-          <li><strong>Urban workers:</strong> street vendors, domestic helpers, rickshaw or cart pullers, construction workers, masons, painters, plumbers, welders, security guards, sweepers, or similar laborers in the unorganised sector</li>
-          <li>SC/ST households, bonded labourers, manual scavengers, primitive tribal groups, and similarly vulnerable groups are automatically included</li>
-          <li>ASHA workers, Anganwadi Workers, and Anganwadi Helpers are also covered as of a 2026 expansion</li>
-        </ul>
-        <p class="box-text">
-          <strong>Who's generally excluded:</strong> households where any member pays income tax, or has a regular (non-contractual) government job, typically don't qualify for this particular route — though the 70+ senior citizen scheme below has no such restriction.
-        </p>
-        <p class="box-text"><strong>How to check and apply:</strong></p>
-        <ul>
-          <li>Use the "Am I Eligible" tool on the official portal (pmjay.gov.in) or the Ayushman App with your mobile number, name, and state</li>
-          <li>Or visit your nearest empanelled hospital or Common Service Centre (CSC) and ask for the Ayushman Mitra help desk — bring your Aadhaar card and ration card</li>
-          <li>Call the toll-free helpline 14555 if you're unsure where to start</li>
-          <li>If you're SECC-listed, you don't "apply" in the usual sense — you're already entitled, you just need to verify identity to get your card issued</li>
-        </ul>
-      </div>
+  if (data.alreadyPaid) {
+    await requestLetter();
+    return;
+  }
+  if (!res.ok) {
+    document.getElementById('an-letter-loading').style.display = 'none';
+    const box = document.getElementById('an-letter-box');
+    box.textContent = data.error || 'Could not start payment. Please try again.';
+    box.style.display = 'block';
+    return;
+  }
 
-      <div class="scheme-card">
-        <div class="scheme-card-header">
-          <div class="scheme-badge">
-            <div class="scheme-badge-inner">GOVT<br>SCHEME</div>
-          </div>
-          <h3 class="scheme-card-title">Ayushman Bharat — Senior Citizen Scheme (Vay Vandana, 70+)</h3>
-        </div>
-        <div class="scheme-highlight-row">
-          <span class="scheme-highlight">₹5 lakh/year cover</span>
-          <span class="scheme-highlight">No income limit</span>
-          <span class="scheme-highlight">No waiting period</span>
-          <span class="scheme-highlight">Aadhaar only</span>
-        </div>
-        <p class="box-text">
-          Every Indian citizen aged 70 and above is eligible for ₹5 lakh of free hospital coverage per year, regardless of income or existing private insurance — this is separate from the SECC-based scheme above and doesn't require meeting any of those low-income criteria. It was expanded nationwide in 2024, and as of mid-2026 covers roughly 6 crore senior citizens. If your family already has a PM-JAY card from the SECC route, a 70+ member gets an <em>additional</em> ₹5 lakh on top of that, just for themselves. Coverage starts immediately — there is no waiting period for any disease or treatment.
-        </p>
-        <p class="box-text"><strong>How to apply:</strong></p>
-        <ul>
-          <li>Keep your Aadhaar card ready — it's the only document needed for enrollment.</li>
-          <li>Visit the PM-JAY portal, the Ayushman App, or your nearest Common Service Centre (CSC) to register.</li>
-          <li>If your spouse is also 70+, you don't need a separate application — add them as a family member on the same enrollment using the "Add Member" option.</li>
-          <li>Once approved, you'll receive a distinct Ayushman Vay Vandana card for cashless treatment at empanelled hospitals.</li>
-        </ul>
-        <p class="box-text">
-          <strong>One important catch:</strong> if you (or the senior citizen in question) already use a government scheme like CGHS, ECHS, or CAPF health coverage, you must choose between that scheme and PM-JAY — you can't claim both at once, and switching to PM-JAY from one of these is a one-time, non-reversible choice. If you have private health insurance or ESI coverage instead, there's no conflict — you can hold PM-JAY alongside either of those.
-        </p>
-      </div>
+  const options = {
+    key: data.keyId,
+    amount: data.amount,
+    currency: data.currency,
+    name: 'Insurance Mitra',
+    description: 'Grievance letter — ' + an.caseRef,
+    order_id: data.orderId,
+    handler: async function (response) {
+      const verifyRes = await apiFetch('/api/payments/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+        }),
+      });
+      const verifyData = await verifyRes.json();
+      if (verifyRes.ok && verifyData.verified) {
+        document.getElementById('an-letter-loading').textContent = 'Payment received. Drafting your letter…';
+        await requestLetter();
+      } else {
+        document.getElementById('an-letter-loading').style.display = 'none';
+        const box = document.getElementById('an-letter-box');
+        box.textContent = 'Payment could not be verified. If money was deducted, please contact support with your case reference: ' + an.caseRef;
+        box.style.display = 'block';
+      }
+    },
+    modal: {
+      ondismiss: function () {
+        document.getElementById('an-letter-loading').style.display = 'none';
+        const box = document.getElementById('an-letter-box');
+        box.textContent = 'Payment was not completed. Click "Draft my grievance letter" again whenever you\'re ready.';
+        box.style.display = 'block';
+      },
+    },
+    theme: { color: '#0F1B2E' },
+  };
 
-      <div class="box">
-        <div class="box-title">A note on accuracy</div>
-        <p class="box-text">
-          Government scheme rules can change with new notifications, and some states (Karnataka, Tamil Nadu, Rajasthan, Andhra Pradesh, Telangana, and others) run their own expanded eligibility lists on top of the central SECC data. Always confirm current details on the official PM-JAY portal or by calling the Ayushman Bharat helpline before relying on this for a real decision.
-        </p>
-      </div>
+  const rzp = new Razorpay(options);
+  rzp.open();
+}
 
-    </div>
+function copyLetter() {
+  navigator.clipboard.writeText(an.lastLetter || '');
+  const btn = document.getElementById('an-copy-btn');
+  const orig = btn.textContent;
+  btn.textContent = 'Copied ✓';
+  setTimeout(() => { btn.textContent = orig; }, 2000);
+}
 
-    <!-- ===================== MY CASES / TRACK STATUS TAB ===================== -->
-    <div class="tab-content" id="tab-mycases">
+function backToVerdict() {
+  showStep('an', 'an-step-verdict', AN_STEPS);
+}
 
-      <p class="lede">Every case you've opened in this browser, with its current stage and follow-up deadline. This list only shows cases from this browser/device — there's no login, so it won't follow you to a different phone or browser.</p>
+async function markGroSent() {
+  const res = await apiFetch('/api/track/gro-sent', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ caseRef: an.caseRef, caseType: 'health' }),
+  });
+  const data = await res.json();
+  if (res.ok) {
+    document.getElementById('an-pay-btn').style.display = 'none';
+    document.getElementById('an-tracking-pitch').style.display = 'none';
+    document.getElementById('an-tracking-paid-view').style.display = 'block';
+    alert('Tracking started. We will track your 15-day GRO follow-up deadline for this case.');
+  } else {
+    alert(data.error || 'Something went wrong starting tracking.');
+  }
+}
 
-      <button class="btn-ghost" id="mc-refresh-btn" onclick="loadMyCases()">Refresh list</button>
+function resetAnalyzer() {
+  an = { form: {}, matched: null, secondary: [], answers: {}, caseRef: null, score: null };
+  ['an-insurer', 'an-policyName', 'an-claimAmount', 'an-hospital', 'an-diagnosis', 'an-rejectionReason'].forEach((id) => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('an-open-case-btn').disabled = true;
+  showStep('an', 'an-step-form', AN_STEPS);
+}
 
-      <div id="mc-loading" class="lede" style="margin-top:14px;">Loading your cases…</div>
-      <div id="mc-empty" class="box" style="display:none; margin-top:14px;">
-        <p class="box-text">No open cases yet. Once you score a claim in the "My claim was rejected" tabs, it will appear here automatically.</p>
-      </div>
-      <div id="mc-list" style="margin-top:14px;"></div>
+// ======================================================================
+// ===== LIFE / DEATH CLAIM ANALYZER (entirely free, template letter) ===
+// ======================================================================
 
-    </div>
+let lf = {
+  form: {},
+  matched: null,
+  secondary: [],
+  answers: {},
+  caseRef: null,
+  score: null,
+};
 
-  </div>
-</div>
+const LF_STEPS = ['lf-step-form', 'lf-step-questions', 'lf-step-verdict', 'lf-step-letter'];
 
-<script src="https://web-production-b0a7.up.railway.app/static/js/dashboard.js"></script>
-</body>
-</html>
+async function openLifeCase() {
+  lf.form = {
+    insurer: val('lf-insurer'),
+    policyName: val('lf-policyName'),
+    deceasedName: val('lf-deceasedName'),
+    dateOfDeath: val('lf-dateOfDeath'),
+    rejectionReason: val('lf-rejectionReason'),
+  };
+
+  const res = await apiFetch('/api/life/analyze', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ rejectionReason: lf.form.rejectionReason }),
+  });
+  if (!res.ok) { alert('Something went wrong analyzing your case. Please try again.'); return; }
+  const data = await res.json();
+  lf.matched = data.matched;
+  lf.secondary = data.secondary;
+  lf.answers = {};
+
+  if (lf.matched.asks.length === 0) {
+    await submitLifeScore();
+  } else {
+    renderLifeQuestions();
+    showStep('lf', 'lf-step-questions', LF_STEPS);
+  }
+}
+
+function renderLifeQuestions() {
+  document.getElementById('lf-match-tag').textContent = 'Matched category: ' + lf.matched.label;
+
+  const secNote = document.getElementById('lf-secondary-note');
+  if (lf.secondary.length > 0) {
+    secNote.style.display = 'block';
+    secNote.textContent = 'Also worth raising separately: ' +
+      lf.secondary.map((r) => r.label).join(', ') + '.';
+  } else {
+    secNote.style.display = 'none';
+  }
+
+  const container = document.getElementById('lf-questions-container');
+  container.innerHTML = '';
+  lf.matched.asks.forEach((ask) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'field';
+    const label = document.createElement('label');
+    label.textContent = ask.q;
+    wrap.appendChild(label);
+
+    if (ask.type === 'yesno') {
+      const row = document.createElement('div');
+      row.className = 'yesno-row';
+      ['yes', 'no'].forEach((v) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'yesno-btn';
+        btn.textContent = v.charAt(0).toUpperCase() + v.slice(1);
+        btn.onclick = () => {
+          lf.answers[ask.key] = v;
+          row.querySelectorAll('.yesno-btn').forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          updateLifeVerdictButtonState();
+        };
+        row.appendChild(btn);
+      });
+      wrap.appendChild(row);
+    } else {
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.oninput = () => {
+        lf.answers[ask.key] = input.value;
+        updateLifeVerdictButtonState();
+      };
+      wrap.appendChild(input);
+    }
+    container.appendChild(wrap);
+  });
+  updateLifeVerdictButtonState();
+}
+
+function updateLifeVerdictButtonState() {
+  const allAnswered = lf.matched.asks.every((a) => lf.answers[a.key] !== undefined && lf.answers[a.key] !== '');
+  document.getElementById('lf-get-verdict-btn').disabled = !allAnswered;
+}
+
+async function getLifeVerdict() {
+  await submitLifeScore();
+}
+
+async function submitLifeScore() {
+  const res = await apiFetch('/api/life/score', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      ruleId: lf.matched.id,
+      answers: lf.answers,
+      form: lf.form,
+      secondaryIds: lf.secondary.map((r) => r.id),
+    }),
+  });
+  if (!res.ok) { alert('Something went wrong scoring your case. Please try again.'); return; }
+  const data = await res.json();
+  lf.caseRef = data.caseRef;
+  lf.score = data.score;
+
+  const secNote = document.getElementById('lf-verdict-secondary-note');
+  if (lf.secondary.length > 0) {
+    secNote.style.display = 'block';
+    secNote.textContent = 'Also worth raising separately: ' + lf.secondary.map((r) => r.label).join(', ') + '.';
+  } else {
+    secNote.style.display = 'none';
+  }
+
+  const seal = document.getElementById('lf-seal');
+  seal.style.borderColor = data.band.color;
+  seal.style.color = data.band.color;
+  document.getElementById('lf-seal-score').textContent = data.score;
+  document.getElementById('lf-seal-label').textContent = data.band.label;
+  document.getElementById('lf-verdict-explain').textContent = data.ruleExplain;
+
+  showStep('lf', 'lf-step-verdict', LF_STEPS);
+}
+
+async function generateLifeLetter() {
+  const res = await apiFetch('/api/life/generate-letter', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ caseRef: lf.caseRef }),
+  });
+  const data = await res.json();
+  const box = document.getElementById('lf-letter-box');
+  box.textContent = data.letter || data.error || 'Something went wrong.';
+  lf.lastLetter = data.letter || '';
+  showStep('lf', 'lf-step-letter', LF_STEPS);
+}
+
+function copyLifeLetter() {
+  navigator.clipboard.writeText(lf.lastLetter || '');
+  const btn = document.getElementById('lf-copy-btn');
+  const orig = btn.textContent;
+  btn.textContent = 'Copied ✓';
+  setTimeout(() => { btn.textContent = orig; }, 2000);
+}
+
+function backToLifeVerdict() {
+  showStep('lf', 'lf-step-verdict', LF_STEPS);
+}
+
+async function markLifeGroSent() {
+  const res = await apiFetch('/api/track/gro-sent', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ caseRef: lf.caseRef, caseType: 'life' }),
+  });
+  const data = await res.json();
+  if (res.ok) {
+    document.getElementById('lf-track-btn').style.display = 'none';
+    document.getElementById('lf-tracking-pitch').style.display = 'none';
+    document.getElementById('lf-tracking-started-view').style.display = 'block';
+    alert('Tracking started. We will track your 15-day GRO follow-up deadline for this case.');
+  } else {
+    alert(data.error || 'Something went wrong starting tracking.');
+  }
+}
+
+function resetLifeAnalyzer() {
+  lf = { form: {}, matched: null, secondary: [], answers: {}, caseRef: null, score: null };
+  ['lf-insurer', 'lf-policyName', 'lf-deceasedName', 'lf-dateOfDeath', 'lf-rejectionReason'].forEach((id) => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('lf-open-case-btn').disabled = true;
+  showStep('lf', 'lf-step-form', LF_STEPS);
+}
+
+// ======================================================================
+// ===== DISCLOSURE CHECKLIST (free, unchanged) =====
+// ======================================================================
+
+let ck = { checked: {}, notes: {} };
+
+function toggleChecklistItem(itemId, isChecked) {
+  ck.checked[itemId] = isChecked;
+  const noteInput = document.getElementById('note-' + itemId);
+  noteInput.style.display = isChecked ? 'block' : 'none';
+  if (!isChecked) {
+    noteInput.value = '';
+    delete ck.notes[itemId];
+  } else {
+    noteInput.oninput = () => { ck.notes[itemId] = noteInput.value; };
+  }
+}
+
+async function generateChecklistSummary() {
+  const profile = { name: val('ck-name'), insurer: val('ck-insurer') };
+  const res = await apiFetch('/api/checklist/summary', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ checked: ck.checked, notes: ck.notes, profile }),
+  });
+  if (!res.ok) { alert('Something went wrong generating your summary. Please try again.'); return; }
+  const data = await res.json();
+  document.getElementById('ck-summary-box').textContent = data.summary;
+  document.getElementById('ck-step-form').style.display = 'none';
+  document.getElementById('ck-step-summary').style.display = 'block';
+  ck.lastSummary = data.summary;
+}
+
+function copySummary() {
+  navigator.clipboard.writeText(ck.lastSummary || '');
+  const btn = document.getElementById('ck-copy-btn');
+  const orig = btn.textContent;
+  btn.textContent = 'Copied ✓';
+  setTimeout(() => { btn.textContent = orig; }, 2000);
+}
+
+function backToChecklist() {
+  document.getElementById('ck-step-summary').style.display = 'none';
+  document.getElementById('pr-step-result').style.display = 'none';
+  document.getElementById('ck-step-form').style.display = 'block';
+}
+
+// ======================================================================
+// ===== POLICY RECOMMENDATION (paid, ₹99, AI-generated) =====
+// ======================================================================
+
+let pr = { recommendationRef: null, lastRecommendation: '' };
+
+async function requestPolicyRecommendation() {
+  // hasExistingConditions is derived from whatever was checked in the
+  // disclosure checklist above -- per the combined flow, we don't ask
+  // a separate yes/no, we just look at whether ck.checked has anything
+  // marked true.
+  const hasAnyChecked = Object.values(ck.checked).some((v) => v);
+
+  const inputs = {
+    age: val('ck-age'),
+    dependents: val('ck-dependents'),
+    hasExistingConditions: hasAnyChecked ? 'yes' : 'no',
+    monthlyBudget: val('ck-budget'),
+    city: val('ck-city'),
+  };
+
+  if (!inputs.age || Number(inputs.age) < 18 || Number(inputs.age) > 100) {
+    alert('Please enter a valid age (18-100) above before requesting a recommendation.');
+    return;
+  }
+
+  document.getElementById('ck-step-summary').style.display = 'none';
+  document.getElementById('pr-step-result').style.display = 'block';
+  document.getElementById('pr-loading').textContent = 'Working on your recommendation…';
+  document.getElementById('pr-loading').style.display = 'block';
+  document.getElementById('pr-result-box').style.display = 'none';
+  document.getElementById('pr-result-actions').style.display = 'none';
+
+  const reqRes = await apiFetch('/api/policy/recommend-request', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(inputs),
+  });
+  if (!reqRes.ok) {
+    const errData = await reqRes.json();
+    showPrError(errData.error || 'Something went wrong. Please try again.');
+    return;
+  }
+  const reqData = await reqRes.json();
+  pr.recommendationRef = reqData.recommendationRef;
+
+  await requestRecommendation();
+}
+
+async function requestRecommendation() {
+  const res = await apiFetch('/api/policy/recommend', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ recommendationRef: pr.recommendationRef }),
+  });
+  const data = await res.json();
+
+  if (res.status === 402 && data.error === 'payment_required') {
+    document.getElementById('pr-loading').textContent =
+      'This recommendation is a one-time ₹99 — complete payment to continue.';
+    await startRecommendationPayment();
+    return;
+  }
+
+  if (!res.ok) {
+    showPrError(data.error || 'Something went wrong. Please try again.');
+    return;
+  }
+
+  document.getElementById('pr-loading').style.display = 'none';
+  const box = document.getElementById('pr-result-box');
+  box.textContent = data.recommendation || 'Something went wrong.';
+  box.style.display = 'block';
+  document.getElementById('pr-result-actions').style.display = 'flex';
+  pr.lastRecommendation = data.recommendation || '';
+}
+
+async function startRecommendationPayment() {
+  const res = await apiFetch('/api/payments/create-order', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ recommendationRef: pr.recommendationRef }),
+  });
+  const data = await res.json();
+
+  if (data.alreadyPaid) {
+    await requestRecommendation();
+    return;
+  }
+  if (!res.ok) {
+    showPrError(data.error || 'Could not start payment. Please try again.');
+    return;
+  }
+
+  const options = {
+    key: data.keyId,
+    amount: data.amount,
+    currency: data.currency,
+    name: 'Insurance Mitra',
+    description: 'Policy recommendation — ' + pr.recommendationRef,
+    order_id: data.orderId,
+    handler: async function (response) {
+      const verifyRes = await apiFetch('/api/payments/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+        }),
+      });
+      const verifyData = await verifyRes.json();
+      if (verifyRes.ok && verifyData.verified) {
+        document.getElementById('pr-loading').textContent = 'Payment received. Working on your recommendation…';
+        await requestRecommendation();
+      } else {
+        showPrError('Payment could not be verified. If money was deducted, please contact support with your reference: ' + pr.recommendationRef);
+      }
+    },
+    modal: {
+      ondismiss: function () {
+        showPrError('Payment was not completed. Click "Get my recommendation" again whenever you\'re ready.');
+      },
+    },
+    theme: { color: '#0F1B2E' },
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.open();
+}
+
+function showPrError(message) {
+  document.getElementById('pr-loading').style.display = 'none';
+  const box = document.getElementById('pr-result-box');
+  box.textContent = message;
+  box.style.display = 'block';
+}
+
+function copyRecommendation() {
+  navigator.clipboard.writeText(pr.lastRecommendation || '');
+  const btn = document.getElementById('pr-copy-btn');
+  const orig = btn.textContent;
+  btn.textContent = 'Copied ✓';
+  setTimeout(() => { btn.textContent = orig; }, 2000);
+}
+
+function backToPrForm() {
+  document.getElementById('pr-step-result').style.display = 'none';
+  document.getElementById('ck-step-summary').style.display = 'block';
+}
+
+// ======================================================================
+// ===== MY CASES / TRACK STATUS (free, reads /api/track/open-cases) ====
+// ======================================================================
+
+const STAGE_LABELS = {
+  drafted: 'Letter drafted, not yet sent',
+  gro_sent: 'Sent to Grievance Redressal Officer',
+  irdai_filed: 'Filed with IRDAI (Bima Bharosa)',
+  ombudsman_filed: 'Filed with Insurance Ombudsman',
+  resolved_won: 'Resolved — won',
+  resolved_lost: 'Resolved — lost',
+  abandoned: 'Abandoned',
+};
+
+async function loadMyCases() {
+  document.getElementById('mc-loading').style.display = 'block';
+  document.getElementById('mc-empty').style.display = 'none';
+  document.getElementById('mc-list').innerHTML = '';
+
+  const res = await apiFetch('/api/track/open-cases', { method: 'GET' });
+  document.getElementById('mc-loading').style.display = 'none';
+
+  if (!res.ok) {
+    document.getElementById('mc-list').innerHTML =
+      '<div class="box"><p class="box-text">Could not load your cases right now. Try refreshing.</p></div>';
+    return;
+  }
+
+  const data = await res.json();
+  const cases = data.cases || [];
+
+  if (cases.length === 0) {
+    document.getElementById('mc-empty').style.display = 'block';
+    return;
+  }
+
+  const list = document.getElementById('mc-list');
+  cases.forEach((c) => {
+    const card = document.createElement('div');
+    card.className = 'box';
+    card.style.marginBottom = '12px';
+
+    const stageLabel = STAGE_LABELS[c.stage] || c.stage || 'Open';
+    const typeLabel = c.case_type === 'life' ? 'Life/death claim' : 'Health claim';
+
+    let deadlineHtml = '';
+    if (c.gro_followup_due) {
+      const overdueTag = c.is_overdue
+        ? ' <span style="color:#B3402A; font-weight:700;">(overdue — follow up now)</span>'
+        : '';
+      deadlineHtml = `<p class="box-text">Next deadline: GRO follow-up by <strong>${c.gro_followup_due}</strong>${overdueTag}</p>`;
+    } else if (c.irdai_followup_due) {
+      const overdueTag = c.is_overdue
+        ? ' <span style="color:#B3402A; font-weight:700;">(overdue — follow up now)</span>'
+        : '';
+      deadlineHtml = `<p class="box-text">Next deadline: IRDAI follow-up by <strong>${c.irdai_followup_due}</strong>${overdueTag}</p>`;
+    }
+
+    card.innerHTML = `
+      <div class="box-title">${typeLabel} — ${c.case_ref}</div>
+      <p class="box-text"><strong>Status:</strong> ${stageLabel}</p>
+      ${deadlineHtml}
+      <p class="box-text" style="color:#5F5E5A; font-size:13px;">${c.insurer || ''} ${c.policy_name ? '— ' + c.policy_name : ''}</p>
+    `;
+    list.appendChild(card);
+  });
+}

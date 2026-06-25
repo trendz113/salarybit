@@ -190,15 +190,15 @@
     <div class="tab-content" id="tab-checklist">
 
       <div id="ck-step-form">
-        <p class="lede">Tell us a bit about yourself, then go through the checklist below. We'll use both to (1) give you a written disclosure summary to hand your insurer, and (2) generate a personalized recommendation on what type of policy and cover to look for. <strong>If none of the checklist items apply to you, that's fine too</strong> — leave them unchecked and we'll generate a clean disclosure summary.</p>
+        <p class="lede">Tell us a bit about yourself, then go through the checklist below. We'll use this to (1) generate a personalized recommendation on what type of policy and cover to look for, and (2) give you a written disclosure summary to hand an insurer once you've picked one. <strong>If you have no health conditions to disclose, just check the box at the top of the checklist</strong> — you don't need to leave everything blank and hope that counts.</p>
 
         <div class="field">
           <label>Your name (for the summary)</label>
           <input type="text" id="ck-name" placeholder="Full name as on the proposal form">
         </div>
         <div class="field">
-          <label>Insurer you're buying from</label>
-          <input type="text" id="ck-insurer" placeholder="e.g. HDFC Ergo">
+          <label>Insurer you're buying from <span class="muted">(optional — only needed for the disclosure summary; leave blank if you haven't chosen one yet)</span></label>
+          <input type="text" id="ck-insurer" placeholder="e.g. HDFC Ergo, or leave blank">
         </div>
         <div class="row">
           <div class="field">
@@ -228,6 +228,15 @@
           it will silently drift otherwise, since this file isn't rendered
           by Flask.
         -->
+        <div class="checklist-group" id="ck-none-group" style="border-color:#8A6A2A; background:#FAEEDA;">
+          <div class="checklist-item" style="margin-bottom:0;">
+            <label class="checklist-label">
+              <input type="checkbox" id="ck-none-checkbox" onchange="toggleNoConditions(this.checked)">
+              <strong>I have no health conditions to disclose</strong> — check this instead of leaving everything below blank
+            </label>
+          </div>
+        </div>
+
         <div class="checklist-group">
           <div class="checklist-group-title">Standard chronic conditions (always ask about these)</div>
           <div class="checklist-item">

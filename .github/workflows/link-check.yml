@@ -1,0 +1,129 @@
+name: Internal Link Check
+
+# Runs daily at 03:00 UTC (~8:30 AM IST), and can be triggered manually from
+# the Actions tab, and on every push to main so you catch breaks immediately
+# when you push a change.
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths:
+      - "**/*.html"
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run link checker
+        id: linkcheck
+        run: |
+          python scripts/check_links.py --report link_check_report.json
+        continue-on-error: true
+
+      - name: Upload report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: link-check-report
+          path: link_check_report.json
+          retention-days: 30
+
+      - name: Build issue body from report
+        if: steps.linkcheck.outcome == 'failure'
+        id: issuebody
+        run: |
+          python - <<'PYEOF'
+          import json
+
+          with open("link_check_report.json") as f:
+              report = json.load(f)
+
+          broken = report.get("internal_links_broken", [])
+          lines = [
+              f"🔗 The scheduled link check found **{len(broken)} broken internal link(s)** on {report.get('site')}.",
+              "",
+              f"- Files scanned: {report.get('files_scanned')}",
+              f"- Internal links checked: {report.get('internal_links_checked')}",
+              f"- Internal links OK: {report.get('internal_links_ok')}",
+              "",
+              "### Broken links",
+              "",
+              "| Broken URL | Found in | Error |",
+              "|---|---|---|",
+          ]
+          for b in broken:
+              sources = "<br>".join(b.get("found_in", []))
+              error = b.get("error") or f"HTTP {b.get('status')}"
+              lines.append(f"| {b['url']} | {sources} | {error} |")
+
+          lines.append("")
+          lines.append("Full machine-readable report is attached to the workflow run as an artifact (`link-check-report`).")
+          lines.append("")
+          lines.append("This issue was opened automatically by the **Internal Link Check** workflow. It will stay open until the links are fixed; re-running the workflow after a fix will not auto-close it — close it manually once verified.")
+
+          body = "\n".join(lines)
+          with open("issue_body.md", "w") as f:
+              f.write(body)
+          PYEOF
+
+      - name: Check for existing open link-check issue
+        if: steps.linkcheck.outcome == 'failure'
+        id: existing
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              labels: "broken-links",
+            });
+            return issues.data.length > 0 ? issues.data[0].number : "";
+          result-encoding: string
+
+      - name: Create issue (first detection)
+        if: steps.linkcheck.outcome == 'failure' && steps.existing.outputs.result == ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('issue_body.md', 'utf8');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "🔗 Broken internal links detected on salarybit.in",
+              body: body,
+              labels: ["broken-links", "automated"],
+            });
+
+      - name: Update existing issue (still broken)
+        if: steps.linkcheck.outcome == 'failure' && steps.existing.outputs.result != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('issue_body.md', 'utf8');
+            const issueNumber = parseInt("${{ steps.existing.outputs.result }}", 10);
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: "**Still broken as of this run:**\n\n" + body,
+            });
+
+      - name: Fail the job if links were broken
+        if: steps.linkcheck.outcome == 'failure'
+        run: exit 1

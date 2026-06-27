@@ -386,6 +386,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   .frow{grid-template-columns:1fr}
   .nav-links{display:none}
   .hero-tools{display:none}
+  .visitor-strip{display:none}
 }
 
 /* ── MOBILE NAV ── */
@@ -509,6 +510,11 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       <div class="nav-divider"></div>
       <a class="nav-a" href="/blog/" style="color:var(--accent);font-weight:700">📝 Blog</a>
       <a class="nav-a" href="/travel-rewards.html" style="color:var(--teal);font-weight:700">✈️ Travel</a>
+      <div class="nav-divider"></div>
+      <a class="nav-a" href="/tax-ai.html" style="color:#5b6af0;font-weight:700">🧾 Tax AI</a>
+      <a class="nav-a" href="/notice-shield.html" style="color:#e05c5c;font-weight:700">🛡️ Notice Shield</a>
+      <a class="nav-a" href="/insurance-mitra.html" style="color:#0ea5a0;font-weight:700">🏥 Insurance Mitra</a>
+      <a class="nav-a" href="/pdf-signature-validator.html" style="color:#d97706;font-weight:700">📄 PDF Verify</a>
     </div>
     <div class="nav-badge">FY 2026-27</div>
     <button class="mob-menu-btn" onclick="openMobNav()" aria-label="Open menu">
@@ -530,6 +536,16 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   <a class="mob-nav-a" href="#calc-section" onclick="closeMobNav();setTimeout(()=>{document.getElementById('insurance-section')?.click()},150)"><span class="mob-icon">🛡️</span>Insurance Planner</a>
   <a class="mob-nav-a" href="#calc-section" onclick="closeMobNav();setTimeout(()=>{document.getElementById('labour-section')?.click()},150)"><span class="mob-icon">⚖️</span>Labour Code Impact</a>
   <a class="mob-nav-a" href="#calc-section" onclick="closeMobNav();setTimeout(()=>{document.getElementById('rights-section')?.click()},150)"><span class="mob-icon">🏛️</span>Employee Rights</a>
+
+  <div class="mob-nav-section">🤖 AI Tools</div>
+  <a class="mob-nav-a" href="/tax-ai.html" onclick="closeMobNav()" style="color:#5b6af0"><span class="mob-icon">🧾</span>Tax AI — Form 16 &amp; AIS Analysis</a>
+  <a class="mob-nav-a" href="/notice-shield.html" onclick="closeMobNav()" style="color:#e05c5c"><span class="mob-icon">🛡️</span>Tax Notice Shield</a>
+  <a class="mob-nav-a" href="/insurance-mitra.html" onclick="closeMobNav()" style="color:#0ea5a0"><span class="mob-icon">🏥</span>Insurance Mitra</a>
+  <a class="mob-nav-a" href="/pdf-signature-validator.html" onclick="closeMobNav()" style="color:#d97706"><span class="mob-icon">📄</span>PDF Signature Validator</a>
+
+  <div class="mob-nav-section">🌟 Community</div>
+  <a class="mob-nav-a" href="/hoskote-classifieds.html" onclick="closeMobNav()" style="color:#16a34a"><span class="mob-icon">📍</span>Hoskote Classifieds</a>
+  <a class="mob-nav-a" href="/middle-class-escape.html" onclick="closeMobNav()" style="color:#7c3aed"><span class="mob-icon">🎮</span>Middle Class Escape Game</a>
 
 
   <div class="mob-nav-section">Financial Tools</div>
@@ -577,8 +593,8 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   <a class="mob-tab" href="/tools/capital-gains-calculator.html">
     <span class="mob-tab-icon">📈</span>Tax
   </a>
-  <a class="mob-tab" href="/travel-rewards.html">
-    <span class="mob-tab-icon">✈️</span>Travel
+  <a class="mob-tab" href="#ai-tools-section" onclick="setActiveTab(this)">
+    <span class="mob-tab-icon">🤖</span>AI Tools
   </a>
   <button class="mob-tab" onclick="openMobNav()">
     <span class="mob-tab-icon">☰</span>More
@@ -612,6 +628,12 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           <a class="hero-chip" href="#tools-section">🧾 GST Calculator</a>
           <a class="hero-chip" href="#tools-section">🏛️ Professional Tax</a>
           <a class="hero-chip" href="/travel-rewards.html">✈️ Travel Rewards</a>
+          <a class="hero-chip" href="/tax-ai.html" style="background:rgba(91,106,240,.18);border-color:rgba(91,106,240,.4)">🧾 Tax AI</a>
+          <a class="hero-chip" href="/notice-shield.html" style="background:rgba(224,92,92,.15);border-color:rgba(224,92,92,.35)">🛡️ Notice Shield</a>
+          <a class="hero-chip" href="/insurance-mitra.html" style="background:rgba(14,165,160,.15);border-color:rgba(14,165,160,.35)">🏥 Insurance Mitra</a>
+          <a class="hero-chip" href="/pdf-signature-validator.html" style="background:rgba(217,119,6,.15);border-color:rgba(217,119,6,.3)">📄 PDF Validator</a>
+          <a class="hero-chip" href="/hoskote-classifieds.html" style="background:rgba(22,163,74,.15);border-color:rgba(22,163,74,.3)">📍 Hoskote Classifieds</a>
+          <a class="hero-chip" href="/middle-class-escape.html" style="background:rgba(124,58,237,.15);border-color:rgba(124,58,237,.3)">🎮 Middle Class Escape</a>
 
         </div>
         <!-- Mobile CTA (shown only on mobile) -->
@@ -636,12 +658,19 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       </div>
       <div class="hero-stats">
         <div class="hero-stat"><div class="hero-stat-val">17+</div><div class="hero-stat-label">Tools</div></div>
-        <div class="hero-stat"><div class="hero-stat-val">0</div><div class="hero-stat-label">Data collected</div></div>
+        <div class="hero-stat"><div class="hero-stat-val" id="hvc-num">—</div><div class="hero-stat-label">Today's visitors</div></div>
         <div class="hero-stat"><div class="hero-stat-val">Free</div><div class="hero-stat-label">Always</div></div>
       </div>
     </div>
   </div>
 </section>
+
+<!-- VISITOR COUNTER STRIP -->
+<div style="background:var(--accent-bg);border-bottom:1px solid var(--accent-border);padding:.55rem 1.5rem;display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap" class="visitor-strip">
+  <span style="font-size:12px;color:var(--accent);font-weight:600">👥 <span id="visitor-strip-num" style="font-weight:800">—</span> people used SalaryBit today</span>
+  <span style="font-size:11px;color:var(--mist)">·</span>
+  <span style="font-size:11px;color:var(--mist)">🔒 Zero data collected · All calculations run in your browser</span>
+</div>
 
 
 
@@ -1092,6 +1121,163 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     </div><!-- /results-area -->
   </div><!-- /layout -->
 </main>
+
+<!-- ═══════════════════════════════════════
+     AI TOOLS + COMMUNITY SHOWCASE
+════════════════════════════════════════ -->
+<section id="ai-tools-section" style="background:linear-gradient(135deg,#1a1a2e 0%,#16213e 60%,#0f3460 100%);border-top:2px solid rgba(91,106,240,.3);padding:3rem 1.5rem;position:relative;overflow:hidden">
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(91,106,240,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(91,106,240,.06) 1px,transparent 1px);background-size:40px 40px;pointer-events:none"></div>
+  <div style="max-width:1160px;margin:0 auto;position:relative;z-index:1">
+    <div style="text-align:center;margin-bottom:2.5rem">
+      <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(91,106,240,.2);border:1px solid rgba(91,106,240,.4);border-radius:20px;padding:5px 16px;font-size:11px;font-weight:700;color:#a5b4fc;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.875rem">🤖 Powered by AI</div>
+      <h2 style="font-family:var(--display);font-size:clamp(22px,3.5vw,34px);color:#fff;margin-bottom:.5rem">AI Tools &amp; Community Products</h2>
+      <p style="font-size:13px;color:rgba(255,255,255,.5);max-width:540px;margin:0 auto;line-height:1.6">CA-level tax analysis, notice decoder, insurance advisor, document validator — plus Hoskote classifieds and a game about the Indian middle-class grind.</p>
+    </div>
+
+    <!-- Row 1: AI Tools -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;margin-bottom:1.25rem">
+
+      <a href="/tax-ai.html" style="text-decoration:none;display:flex;flex-direction:column;background:rgba(255,255,255,.04);border:1px solid rgba(91,106,240,.3);border-radius:18px;overflow:hidden;transition:transform .2s,background .2s,border-color .2s" onmouseover="this.style.background='rgba(91,106,240,.12)';this.style.borderColor='rgba(91,106,240,.6)';this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(255,255,255,.04)';this.style.borderColor='rgba(91,106,240,.3)';this.style.transform='translateY(0)'">
+        <div style="background:linear-gradient(135deg,#5b6af0,#0ea5a0);padding:1.5rem 1.5rem 1.25rem;position:relative;overflow:hidden">
+          <div style="position:absolute;top:-12px;right:-12px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.08)"></div>
+          <div style="font-size:32px;margin-bottom:.5rem;position:relative">🧾</div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.6);margin-bottom:.3rem;position:relative">AI Tax Analyser</div>
+          <h3 style="font-family:var(--display);font-size:20px;color:#fff;line-height:1.2;margin:0;position:relative">SalaryBit Tax AI</h3>
+        </div>
+        <div style="padding:1.25rem;flex:1;display:flex;flex-direction:column;gap:.875rem">
+          <p style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;flex:1;margin:0">Upload your Form 16 &amp; AIS. Get a CA-level breakdown — HRA exemptions, ESOP tax, advance tax schedule, ITR filing tips.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:.375rem">
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#a5b4fc">Form 16 Analysis</span>
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#5eead4">AIS Summary</span>
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#86efac">ESOP / RSU Tax</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.08)">
+            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.4)">Instant · No CA needed</span>
+            <span style="font-size:13px;font-weight:700;color:#a5b4fc">Try Tax AI →</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="/notice-shield.html" style="text-decoration:none;display:flex;flex-direction:column;background:rgba(255,255,255,.04);border:1px solid rgba(224,92,92,.3);border-radius:18px;overflow:hidden;transition:transform .2s,background .2s,border-color .2s" onmouseover="this.style.background='rgba(224,92,92,.12)';this.style.borderColor='rgba(224,92,92,.6)';this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(255,255,255,.04)';this.style.borderColor='rgba(224,92,92,.3)';this.style.transform='translateY(0)'">
+        <div style="background:linear-gradient(135deg,#b91c1c,#7c3aed);padding:1.5rem 1.5rem 1.25rem;position:relative;overflow:hidden">
+          <div style="position:absolute;top:-12px;right:-12px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.08)"></div>
+          <div style="font-size:32px;margin-bottom:.5rem;position:relative">🛡️</div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.6);margin-bottom:.3rem;position:relative">AI Notice Decoder</div>
+          <h3 style="font-family:var(--display);font-size:20px;color:#fff;line-height:1.2;margin:0;position:relative">Tax Notice Shield</h3>
+        </div>
+        <div style="padding:1.25rem;flex:1;display:flex;flex-direction:column;gap:.875rem">
+          <p style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;flex:1;margin:0">Got an Income Tax notice? Get a plain-language explanation, the action required, and a draft response — instantly.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:.375rem">
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#fca5a5">Sec 143(1)</span>
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#c4b5fd">Sec 148/148A</span>
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#fcd34d">Defective Return</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.08)">
+            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.4)">Know your rights · Act fast</span>
+            <span style="font-size:13px;font-weight:700;color:#fca5a5">Decode Notice →</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="/insurance-mitra.html" style="text-decoration:none;display:flex;flex-direction:column;background:rgba(255,255,255,.04);border:1px solid rgba(14,165,160,.3);border-radius:18px;overflow:hidden;transition:transform .2s,background .2s,border-color .2s" onmouseover="this.style.background='rgba(14,165,160,.12)';this.style.borderColor='rgba(14,165,160,.6)';this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(255,255,255,.04)';this.style.borderColor='rgba(14,165,160,.3)';this.style.transform='translateY(0)'">
+        <div style="background:linear-gradient(135deg,#0ea5a0,#059669);padding:1.5rem 1.5rem 1.25rem;position:relative;overflow:hidden">
+          <div style="position:absolute;top:-12px;right:-12px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.08)"></div>
+          <div style="font-size:32px;margin-bottom:.5rem;position:relative">🏥</div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.6);margin-bottom:.3rem;position:relative">AI Insurance Advisor</div>
+          <h3 style="font-family:var(--display);font-size:20px;color:#fff;line-height:1.2;margin:0;position:relative">Insurance Mitra</h3>
+        </div>
+        <div style="padding:1.25rem;flex:1;display:flex;flex-direction:column;gap:.875rem">
+          <p style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;flex:1;margin:0">Personalised term &amp; health insurance recommendations based on your age, income and family — no jargon, no pressure.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:.375rem">
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#5eead4">Term Insurance</span>
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#86efac">Health Insurance</span>
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#fcd34d">80C / 80D Savings</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.08)">
+            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.4)">Personalised · Unbiased</span>
+            <span style="font-size:13px;font-weight:700;color:#5eead4">Talk to Mitra →</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- Row 2: Document tool + Community -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem">
+
+      <a href="/pdf-signature-validator.html" style="text-decoration:none;display:flex;flex-direction:column;background:rgba(255,255,255,.04);border:1px solid rgba(217,119,6,.3);border-radius:18px;overflow:hidden;transition:transform .2s,background .2s,border-color .2s" onmouseover="this.style.background='rgba(217,119,6,.12)';this.style.borderColor='rgba(217,119,6,.6)';this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(255,255,255,.04)';this.style.borderColor='rgba(217,119,6,.3)';this.style.transform='translateY(0)'">
+        <div style="background:linear-gradient(135deg,#d97706,#b45309);padding:1.5rem 1.5rem 1.25rem;position:relative;overflow:hidden">
+          <div style="position:absolute;top:-12px;right:-12px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.08)"></div>
+          <div style="font-size:32px;margin-bottom:.5rem;position:relative">📄</div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.6);margin-bottom:.3rem;position:relative">Document Tool · Free</div>
+          <h3 style="font-family:var(--display);font-size:20px;color:#fff;line-height:1.2;margin:0;position:relative">PDF Signature Validator</h3>
+        </div>
+        <div style="padding:1.25rem;flex:1;display:flex;flex-direction:column;gap:.875rem">
+          <p style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;flex:1;margin:0">Verify digital signatures on salary slips, Form 16, offer letters and any signed PDF — private, instant, all in your browser.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:.375rem">
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#fcd34d">Digital Signatures</span>
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#86efac">Form 16 Verify</span>
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#c4b5fd">100% Private</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.08)">
+            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.4)">No upload to server</span>
+            <span style="font-size:13px;font-weight:700;color:#fcd34d">Validate PDF →</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="/hoskote-classifieds.html" style="text-decoration:none;display:flex;flex-direction:column;background:rgba(255,255,255,.04);border:1px solid rgba(22,163,74,.3);border-radius:18px;overflow:hidden;transition:transform .2s,background .2s,border-color .2s" onmouseover="this.style.background='rgba(22,163,74,.12)';this.style.borderColor='rgba(22,163,74,.6)';this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(255,255,255,.04)';this.style.borderColor='rgba(22,163,74,.3)';this.style.transform='translateY(0)'">
+        <div style="background:linear-gradient(135deg,#16a34a,#0ea5a0);padding:1.5rem 1.5rem 1.25rem;position:relative;overflow:hidden">
+          <div style="position:absolute;top:-12px;right:-12px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.08)"></div>
+          <div style="font-size:32px;margin-bottom:.5rem;position:relative">📍</div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.6);margin-bottom:.3rem;position:relative">Community · Bangalore East</div>
+          <h3 style="font-family:var(--display);font-size:20px;color:#fff;line-height:1.2;margin:0;position:relative">Hoskote Classifieds</h3>
+        </div>
+        <div style="padding:1.25rem;flex:1;display:flex;flex-direction:column;gap:.875rem">
+          <p style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;flex:1;margin:0">Hyperlocal buy/sell, jobs, rentals and services for Hoskote and Bangalore East — WhatsApp AI powered, Kannada/English support.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:.375rem">
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#86efac">Buy / Sell</span>
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#5eead4">Jobs &amp; Rentals</span>
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#a5b4fc">WhatsApp AI Bot</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.08)">
+            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.4)">Free · Verified listings</span>
+            <span style="font-size:13px;font-weight:700;color:#86efac">Browse Listings →</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="/middle-class-escape.html" style="text-decoration:none;display:flex;flex-direction:column;background:rgba(255,255,255,.04);border:1px solid rgba(124,58,237,.3);border-radius:18px;overflow:hidden;transition:transform .2s,background .2s,border-color .2s" onmouseover="this.style.background='rgba(124,58,237,.12)';this.style.borderColor='rgba(124,58,237,.6)';this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(255,255,255,.04)';this.style.borderColor='rgba(124,58,237,.3)';this.style.transform='translateY(0)'">
+        <div style="background:linear-gradient(135deg,#7c3aed,#5b6af0);padding:1.5rem 1.5rem 1.25rem;position:relative;overflow:hidden">
+          <div style="position:absolute;top:-12px;right:-12px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.08)"></div>
+          <div style="font-size:32px;margin-bottom:.5rem;position:relative">🎮</div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.6);margin-bottom:.3rem;position:relative">Indian Finance Game</div>
+          <h3 style="font-family:var(--display);font-size:20px;color:#fff;line-height:1.2;margin:0;position:relative">Middle Class Escape</h3>
+        </div>
+        <div style="padding:1.25rem;flex:1;display:flex;flex-direction:column;gap:.875rem">
+          <p style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;flex:1;margin:0">Dodge EMIs, escape tax notices, collect SIP coins — an endless runner about the Indian middle-class financial grind.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:.375rem">
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#c4b5fd">Endless Runner</span>
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#86efac">Free to Play</span>
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#fcd34d">Share &amp; Challenge</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.08)">
+            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.4)">No login needed</span>
+            <span style="font-size:13px;font-weight:700;color:#c4b5fd">Play Now →</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:1.25rem;margin-top:2rem;padding-top:1.75rem;border-top:1px solid rgba(255,255,255,.07)">
+      <span style="font-size:11px;color:rgba(255,255,255,.3)">🔒 Your documents stay private</span>
+      <span style="font-size:11px;color:rgba(255,255,255,.3)">⚡ Instant AI-powered analysis</span>
+      <span style="font-size:11px;color:rgba(255,255,255,.3)">🇮🇳 Built for Indian tax laws</span>
+      <span style="font-size:11px;color:rgba(255,255,255,.35)">👥 <strong id="visitor-counter-trust" style="color:#a5b4fc">—</strong> people used SalaryBit today</span>
+    </div>
+  </div>
+</section>
 
 <!-- SHARE TAX — redirect card to dedicated page -->
 <section id="sharetax-standalone" style="background:var(--snow);border-top:1px solid var(--border);padding:2rem 1.5rem">
@@ -1621,17 +1807,16 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         </div>
       </a>
 
-      <a href="https://salarybit.in/blog/best-credit-card-india-2026-guide.html">
-  <div class="article-card"> <!-- use your existing card class -->
-    🔥 NEW — CREDIT CARDS
-    💳 Credit Card Guide
-    Best Credit Card in India 2026: Zero to Free International Travel
-    From no card to earning free flights — HDFC Millennia RuPay setup, 
-    Axis Atlas devaluation explained, and why HSBC TravelOne is the new 
-    king of miles transfer for India's middle class.
-    12 min read · Read Guide →
-  </div>
-</a>
+      <a class="article-card" href="/blog/best-credit-card-india-2026-guide.html">
+        <div class="article-tag">💳 Credit Cards</div>
+        <div style="display:inline-flex;align-items:center;gap:4px;background:var(--rose-bg);border:1px solid rgba(224,92,92,.2);color:var(--rose);font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;margin-bottom:.4rem">🔥 HOT</div>
+        <h2>Best Credit Card in India 2026: Zero to Free International Travel</h2>
+        <p>From no card to earning free flights — HDFC Millennia RuPay setup, Axis Atlas devaluation explained, and why HSBC TravelOne is the new king of miles transfer for India's middle class.</p>
+        <div class="article-meta">
+          <span>2026 · 12 min read</span>
+          <span class="read-link">Read →</span>
+        </div>
+      </a>
 
     </div>
   </div>
@@ -2243,6 +2428,7 @@ function calcNotice(){
     <span style="font-size:11px;color:rgba(255,255,255,.4)">✓ New Tax Regime defaults</span>
     <span style="font-size:11px;color:rgba(255,255,255,.4)">✓ Labour Code 2019 included</span>
     <span style="font-size:11px;color:rgba(255,255,255,.4)">✓ Zero data stored</span>
+    <span style="font-size:11px;color:rgba(255,255,255,.35)">✓ 👥 <span id="footer-visitor-count">—</span> visitors today</span>
   </div>
   <div class="footer-links">
     <a onclick="openModal('modal-privacy')">Privacy Policy</a>
@@ -2251,6 +2437,10 @@ function calcNotice(){
     <a onclick="openModal('modal-contact')">Contact</a>
     <a href="/blog/">Blog</a>
     <a href="/travel-rewards.html">✈️ Travel Rewards</a>
+    <a href="/tax-ai.html">🧾 Tax AI</a>
+    <a href="/notice-shield.html">🛡️ Notice Shield</a>
+    <a href="/hoskote-classifieds.html">📍 Hoskote Classifieds</a>
+    <a href="/middle-class-escape.html">🎮 Middle Class Escape</a>
   </div>
   <div class="footer-legal">
     © 2026 SalaryBit. All rights reserved.<br>
@@ -2266,6 +2456,24 @@ const charts={};
 const el=id=>document.getElementById(id);
 const gv=id=>{const v=parseFloat(el(id)?.value);return isNaN(v)?0:v;}
 const sv=(id,val)=>{if(el(id))el(id).value=val;}
+
+// ── VISITOR COUNTER (daily, free hit-counter API, no backend needed) ──
+(function(){
+  const today=new Date().toISOString().slice(0,10).replace(/-/g,'');
+  const key='salarybit-daily-'+today;
+  const targets=['hvc-num','visitor-strip-num','visitor-counter-trust','footer-visitor-count'];
+  function paint(n){
+    const display=n>=1000?(n/1000).toFixed(1)+'k':String(n);
+    targets.forEach(id=>{const node=document.getElementById(id);if(node)node.textContent=display;});
+  }
+  fetch('https://api.countapi.xyz/hit/salarybit.in/'+key)
+    .then(r=>r.json())
+    .then(d=>{if(d&&typeof d.value==='number')paint(d.value);})
+    .catch(()=>{
+      // Fallback: keep placeholders hidden gracefully if the counter API is unreachable
+      targets.forEach(id=>{const node=document.getElementById(id);if(node)node.textContent='—';});
+    });
+})();
 
 // ── SECTION SHOW ──
 function showSection(id,btn){

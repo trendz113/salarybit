@@ -1,0 +1,352 @@
+{
+  "site": "https://salarybit.in",
+  "files_scanned": 69,
+  "internal_links_checked": 116,
+  "internal_links_ok": 78,
+  "internal_links_broken": [
+    {
+      "path": "/$2",
+      "url": "https://salarybit.in/$2",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "khata-ai.html"
+      ]
+    },
+    {
+      "path": "/${m.awayTeam.crest}",
+      "url": "https://salarybit.in/${m.awayTeam.crest}",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "fifa-2026.html"
+      ]
+    },
+    {
+      "path": "/${m.homeTeam.crest}",
+      "url": "https://salarybit.in/${m.homeTeam.crest}",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "fifa-2026.html"
+      ]
+    },
+    {
+      "path": "/${row.team.crest}",
+      "url": "https://salarybit.in/${row.team.crest}",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "fifa-2026.html"
+      ]
+    },
+    {
+      "path": "/${s.team.crest}",
+      "url": "https://salarybit.in/${s.team.crest}",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "fifa-2026.html"
+      ]
+    },
+    {
+      "path": "/ai-business-finder-india/",
+      "url": "https://salarybit.in/ai-business-finder-india/",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "ai-business-finder-india.html"
+      ]
+    },
+    {
+      "path": "/assets/app.js",
+      "url": "https://salarybit.in/assets/app.js",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "ai-business-finder-india.html"
+      ]
+    },
+    {
+      "path": "/assets/styles.css",
+      "url": "https://salarybit.in/assets/styles.css",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "ai-business-finder-india.html"
+      ]
+    },
+    {
+      "path": "/blog/borewell-recharge-rainwater-harvesting-hoskote-bangalore",
+      "url": "https://salarybit.in/blog/borewell-recharge-rainwater-harvesting-hoskote-bangalore",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/borewell.html"
+      ]
+    },
+    {
+      "path": "/blog/ctc-vs-gross-vs-net-salary",
+      "url": "https://salarybit.in/blog/ctc-vs-gross-vs-net-salary",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/article3-ctc-vs-gross-vs-net-salary.html"
+      ]
+    },
+    {
+      "path": "/blog/ekhata-eaasthi-karnataka-guide",
+      "url": "https://salarybit.in/blog/ekhata-eaasthi-karnataka-guide",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/ekhata-eaasthi-cmc-guide.html"
+      ]
+    },
+    {
+      "path": "/blog/epf-pf-guide-salaried-employees",
+      "url": "https://salarybit.in/blog/epf-pf-guide-salaried-employees",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/article5-epf-pf-guide.html"
+      ]
+    },
+    {
+      "path": "/blog/how-to-calculate-inhand-salary",
+      "url": "https://salarybit.in/blog/how-to-calculate-inhand-salary",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/article1-how-to-calculate-inhand-salary.html"
+      ]
+    },
+    {
+      "path": "/blog/how-to-negotiate-salary-india",
+      "url": "https://salarybit.in/blog/how-to-negotiate-salary-india",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/article7-how-to-negotiate-salary.html"
+      ]
+    },
+    {
+      "path": "/blog/how-to-read-salary-slip",
+      "url": "https://salarybit.in/blog/how-to-read-salary-slip",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/article4-how-to-read-salary-slip.html"
+      ]
+    },
+    {
+      "path": "/blog/hra-exemption-guide",
+      "url": "https://salarybit.in/blog/hra-exemption-guide",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/article6-hra-exemption-guide.html"
+      ]
+    },
+    {
+      "path": "/blog/new-labour-code-2026-salary-impact",
+      "url": "https://salarybit.in/blog/new-labour-code-2026-salary-impact",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/article8-new-labour-code-2026-salary-impact.html"
+      ]
+    },
+    {
+      "path": "/blog/pan-complete.html",
+      "url": "https://salarybit.in/blog/pan-complete.html",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/index.html"
+      ]
+    },
+    {
+      "path": "/dashboard.html",
+      "url": "https://salarybit.in/dashboard.html",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "job-agent.html"
+      ]
+    },
+    {
+      "path": "/ekhata-eswathu-guide",
+      "url": "https://salarybit.in/ekhata-eswathu-guide",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/ekhata-eswathu-guide.html"
+      ]
+    },
+    {
+      "path": "/eswathu.html",
+      "url": "https://salarybit.in/eswathu.html",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "khata-ai.html"
+      ]
+    },
+    {
+      "path": "/flats-hoskote-bangalore-guide",
+      "url": "https://salarybit.in/flats-hoskote-bangalore-guide",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/flats-hoskote-bangalore-guide.html"
+      ]
+    },
+    {
+      "path": "/guides",
+      "url": "https://salarybit.in/guides",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/ekhata-eswathu-guide.html"
+      ]
+    },
+    {
+      "path": "/how-to-automate-job-applications-ai-agent.html",
+      "url": "https://salarybit.in/how-to-automate-job-applications-ai-agent.html",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/how-to-automate-job-applications-ai-agent.html"
+      ]
+    },
+    {
+      "path": "/images/average-salary-in-india-by-profession-2026.webp",
+      "url": "https://salarybit.in/images/average-salary-in-india-by-profession-2026.webp",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/average-salary-in-india-by-profession-2026.html"
+      ]
+    },
+    {
+      "path": "/images/how-to-calculate-take-home-salary-india.webp",
+      "url": "https://salarybit.in/images/how-to-calculate-take-home-salary-india.webp",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/how-to-calculate-take-home-salary-india.html"
+      ]
+    },
+    {
+      "path": "/images/income-tax-slab-2026-27-india.webp",
+      "url": "https://salarybit.in/images/income-tax-slab-2026-27-india.webp",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/income-tax-slab-2026-27-india.html"
+      ]
+    },
+    {
+      "path": "/images/nurse-salary-india-government-vs-private.webp",
+      "url": "https://salarybit.in/images/nurse-salary-india-government-vs-private.webp",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/nurse-salary-india-government-vs-private.html"
+      ]
+    },
+    {
+      "path": "/images/pf-deduction-calculation-guide-india.webp",
+      "url": "https://salarybit.in/images/pf-deduction-calculation-guide-india.webp",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/pf-deduction-calculation-guide-india.html"
+      ]
+    },
+    {
+      "path": "/privacy/",
+      "url": "https://salarybit.in/privacy/",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "job-agent.html"
+      ]
+    },
+    {
+      "path": "/salary-calculator",
+      "url": "https://salarybit.in/salary-calculator",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/ekhata-eaasthi-cmc-guide.html"
+      ]
+    },
+    {
+      "path": "/seo/karnataka.html",
+      "url": "https://salarybit.in/seo/karnataka.html",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "ai-business-finder-india.html"
+      ]
+    },
+    {
+      "path": "/seo/rural.html",
+      "url": "https://salarybit.in/seo/rural.html",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "ai-business-finder-india.html"
+      ]
+    },
+    {
+      "path": "/seo/students.html",
+      "url": "https://salarybit.in/seo/students.html",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "ai-business-finder-india.html"
+      ]
+    },
+    {
+      "path": "/seo/under-5000.html",
+      "url": "https://salarybit.in/seo/under-5000.html",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "ai-business-finder-india.html"
+      ]
+    },
+    {
+      "path": "/seo/weekend.html",
+      "url": "https://salarybit.in/seo/weekend.html",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "ai-business-finder-india.html"
+      ]
+    },
+    {
+      "path": "/seo/women.html",
+      "url": "https://salarybit.in/seo/women.html",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "ai-business-finder-india.html"
+      ]
+    },
+    {
+      "path": "/tax-calculator",
+      "url": "https://salarybit.in/tax-calculator",
+      "status": null,
+      "error": "HTTP 404",
+      "found_in": [
+        "blog/ekhata-eaasthi-cmc-guide.html"
+      ]
+    }
+  ],
+  "external_links_checked": 0,
+  "external_links_broken": []
+}

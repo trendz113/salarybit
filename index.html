@@ -1886,6 +1886,22 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 </style>
 
 <script>
+// ── MOBILE NAV DRAWER ──
+function openMobNav(){
+  document.getElementById('mob-overlay').classList.add('open');
+  document.getElementById('mob-drawer').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeMobNav(){
+  document.getElementById('mob-overlay').classList.remove('open');
+  document.getElementById('mob-drawer').classList.remove('open');
+  document.body.style.overflow='';
+}
+function setActiveTab(el){
+  document.querySelectorAll('.mob-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+}
+
 // ── GST CALCULATOR ──
 function calcGST(){
   const amt=parseFloat(document.getElementById('gst-amount').value)||0;

@@ -883,8 +883,10 @@ def subscription_scan():
             "count": len(enriched)
         })
     except Exception as e:
-        print(f"subscription_scan error: {e}")
-        return jsonify({"error": str(e)}), 500
+        import traceback
+        print(f"subscription_scan error: {type(e).__name__}: {e}")
+        traceback.print_exc()
+        return jsonify({"error": f"{type(e).__name__}: {e}" if str(e) else f"{type(e).__name__} (no message)"}), 500
     finally:
         try:
             os.unlink(pdf_path)

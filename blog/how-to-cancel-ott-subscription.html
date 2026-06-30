@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Cancel Your OTT Subscription (Netflix, Hotstar, Aha & More) — Step by Step | SalaryBit</title>
+<meta name="description" content="Simple step-by-step guide to find and cancel OTT subscriptions like Netflix, Hotstar, Aha, and others you forgot about. No tech knowledge needed.">
+<meta name="theme-color" content="#5b6af0">
+<style>
+  :root {
+    --bg: #f6f7fb;
+    --card: #ffffff;
+    --indigo: #5b6af0;
+    --indigo-dark: #4452d6;
+    --indigo-soft: #eef0fe;
+    --ink: #1a1d29;
+    --muted: #6b7280;
+    --line: #e7e9f3;
+    --warn: #e8543f;
+    --green-soft: #16a34a;
+    --green-bg: #e7f9ee;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 700px; margin: 0 auto; padding: 0 18px 70px; }
+
+  /* Top bar matching site nav */
+  .topbar {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 800; font-size: 15px; color: var(--indigo);
+    padding: 22px 0 18px;
+  }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, var(--indigo), #4452d6);
+    border-radius: 20px;
+    padding: 38px 28px;
+    margin-bottom: 30px;
+    color: #fff;
+  }
+  .hero .tag {
+    display: inline-block;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.03em;
+    background: rgba(255,255,255,0.18);
+    padding: 5px 12px; border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-size: clamp(26px, 6.5vw, 36px);
+    line-height: 1.22;
+    margin: 0 0 14px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .hero p {
+    font-size: 15.5px;
+    opacity: 0.92;
+    margin: 0;
+    max-width: 520px;
+  }
+  .hero-meta {
+    margin-top: 20px;
+    font-size: 12.5px;
+    opacity: 0.8;
+    display: flex; gap: 14px; flex-wrap: wrap;
+  }
+
+  /* Intro card */
+  .intro-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 24px 22px;
+    margin-bottom: 28px;
+    font-size: 15.5px;
+    color: var(--ink);
+  }
+  .intro-card strong { color: var(--indigo-dark); }
+
+  /* Section headers */
+  h2 {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 36px 0 14px;
+    color: var(--ink);
+    display: flex; align-items: center; gap: 10px;
+  }
+  h2 .num {
+    flex-shrink: 0;
+    width: 32px; height: 32px;
+    background: var(--indigo-soft); color: var(--indigo);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800;
+  }
+  p { font-size: 15.5px; color: #383c4a; margin: 0 0 16px; }
+
+  /* App-specific cancel cards */
+  .app-grid { display: flex; flex-direction: column; gap: 12px; margin: 20px 0 28px; }
+  .app-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .app-icon {
+    flex-shrink: 0;
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    background: var(--indigo-soft);
+  }
+  .app-card .app-name { font-size: 15.5px; font-weight: 700; margin-bottom: 4px; }
+  .app-card .app-steps { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+
+  /* Highlight / tip box */
+  .tip-box {
+    background: var(--green-bg);
+    border: 1px solid #bfead0;
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin: 20px 0 28px;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .tip-box .icon { font-size: 20px; flex-shrink: 0; }
+  .tip-box .text { font-size: 14.5px; color: #14532d; }
+  .tip-box .text strong { color: #0f3d20; }
+
+  .warn-box {
+    background: #fdeeec;
+    border: 1px solid #f3c5bd;
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin: 20px 0 28px;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .warn-box .icon { font-size: 20px; flex-shrink: 0; }
+  .warn-box .text { font-size: 14.5px; color: #7c2d1f; }
+  .warn-box .text strong { color: #5c2015; }
+
+  /* Numbered step list (simple) */
+  .step-list { margin: 18px 0 28px; padding: 0; list-style: none; }
+  .step-list li {
+    display: flex; gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 15px;
+    color: #383c4a;
+  }
+  .step-list li:last-child { border-bottom: none; }
+  .step-list .step-dot {
+    flex-shrink: 0;
+    width: 26px; height: 26px;
+    background: var(--indigo);
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800;
+  }
+
+  /* Closing CTA card */
+  .cta-card {
+    background: var(--card);
+    border: 2px solid var(--indigo);
+    border-radius: 18px;
+    padding: 28px 24px;
+    margin-top: 40px;
+    text-align: center;
+  }
+  .cta-card h3 {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0 0 8px;
+    color: var(--ink);
+  }
+  .cta-card p {
+    font-size: 14.5px;
+    color: var(--muted);
+    margin: 0 0 18px;
+  }
+  .cta-btn {
+    display: inline-block;
+    background: var(--indigo);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15.5px;
+    padding: 14px 28px;
+    border-radius: 12px;
+    transition: background 0.2s;
+  }
+  .cta-btn:hover { background: var(--indigo-dark); }
+
+  footer { margin-top: 50px; font-size: 12px; color: var(--muted); text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">💰 SalaryBit</div>
+
+  <div class="hero">
+    <span class="tag">📺 OTT & Subscriptions</span>
+    <h1>How to Cancel Your OTT Subscription — A Simple Guide for Everyone</h1>
+    <p>Netflix, Hotstar, Aha, SonyLIV, Zee5 — if you're paying for an app you don't watch anymore, here's exactly how to stop it. No tech knowledge needed, explained in plain language.</p>
+    <div class="hero-meta">
+      <span>📖 5 min read</span>
+      <span>🇮🇳 Made for India</span>
+    </div>
+  </div>
+
+  <div class="intro-card">
+    Most people keep paying for an OTT app long after they've stopped watching it. Not because they want to — but because <strong>nobody ever showed them where the "cancel" button actually is.</strong> This guide fixes that. By the end, you'll know exactly how to cancel any OTT subscription, no matter which app or which bank you use.
+  </div>
+
+  <h2><span class="num">1</span> Why This Happens to Almost Everyone</h2>
+  <p>You sign up for a free trial or a cheap monthly plan. You watch for a week, maybe a month. Then life gets busy, and you forget about it completely. The app keeps charging you anyway — quietly, every month, with no reminder. This isn't your mistake. Apps are designed this way on purpose, because cancelling is made deliberately harder to find than signing up.</p>
+
+  <div class="warn-box">
+    <div class="icon">⚠️</div>
+    <div class="text"><strong>Good to know:</strong> Even if you delete the app from your phone, the subscription does NOT cancel automatically. Deleting the app and cancelling the payment are two completely different things.</div>
+  </div>
+
+  <h2><span class="num">2</span> The One Place That Shows ALL Your Subscriptions</h2>
+  <p>Before going into each app one by one, there's a much faster way — especially if you pay through UPI (PhonePe, Google Pay, or Paytm). This single website shows everything in one place.</p>
+
+  <ol class="step-list">
+    <li><span class="step-dot">1</span>Open your phone's browser and go to <strong>upihelp.npci.org.in</strong></li>
+    <li><span class="step-dot">2</span>Enter your mobile number and the OTP that comes to it</li>
+    <li><span class="step-dot">3</span>Tap on <strong>"My Mandates"</strong> — this shows every subscription auto-charging your account</li>
+    <li><span class="step-dot">4</span>For any subscription you don't want, simply tap <strong>"Cancel"</strong></li>
+  </ol>
+
+  <div class="tip-box">
+    <div class="icon">💡</div>
+    <div class="text"><strong>If Cancel doesn't work the first time:</strong> it will show you a QR code. This QR only works in the specific app the subscription was created in (PhonePe, GPay, or Paytm) — try a different one of these three apps if the first one doesn't work.</div>
+  </div>
+
+  <h2><span class="num">3</span> How to Cancel — App by App</h2>
+  <p>If you'd rather go directly into the app itself, here's exactly where the cancel button is hiding for the most common OTT services in India.</p>
+
+  <div class="app-grid">
+    <div class="app-card">
+      <div class="app-icon">🎬</div>
+      <div>
+        <div class="app-name">Netflix</div>
+        <div class="app-steps">Open Netflix app → tap your profile icon → Account → Cancel Membership</div>
+      </div>
+    </div>
+    <div class="app-card">
+      <div class="app-icon">⭐</div>
+      <div>
+        <div class="app-name">Disney+ Hotstar</div>
+        <div class="app-steps">Open Hotstar app → tap profile → Subscription → Manage Subscription → Cancel</div>
+      </div>
+    </div>
+    <div class="app-card">
+      <div class="app-icon">📺</div>
+      <div>
+        <div class="app-name">Aha (Telugu / Tamil OTT)</div>
+        <div class="app-steps">Often billed under the name "Arha Media and Broadcasting" — easiest to cancel via the NPCI mandate page (Section 2 above) since it routes you directly to the right app</div>
+      </div>
+    </div>
+    <div class="app-card">
+      <div class="app-icon">🎭</div>
+      <div>
+        <div class="app-name">SonyLIV / Zee5 / JioCinema</div>
+        <div class="app-steps">Open the app → Settings or Profile → Subscription → Manage Plan → Cancel</div>
+      </div>
+    </div>
+    <div class="app-card">
+      <div class="app-icon">▶️</div>
+      <div>
+        <div class="app-name">YouTube Premium</div>
+        <div class="app-steps">Go to <strong>play.google.com/store/account/subscriptions</strong> on the Google account synced to your phone → find YouTube Premium → Cancel Subscription</div>
+      </div>
+    </div>
+    <div class="app-card">
+      <div class="app-icon">🎵</div>
+      <div>
+        <div class="app-name">Spotify</div>
+        <div class="app-steps">Open Spotify app → tap profile → Settings → Subscription → Cancel Premium</div>
+      </div>
+    </div>
+  </div>
+
+  <h2><span class="num">4</span> What If You Don't Even Know What's Charging You?</h2>
+  <p>Sometimes your bank statement or UPI mandate shows a confusing name — like "Google" or a company name you've never heard of. This happens because the app is billed through Google Play, not directly by the app itself.</p>
+
+  <ol class="step-list">
+    <li><span class="step-dot">1</span>Go to <strong>play.google.com/store/account/orderhistory</strong></li>
+    <li><span class="step-dot">2</span>Make sure you're logged into the <strong>same Google account that's on your phone</strong> — this is important, a different Gmail won't show the right history</li>
+    <li><span class="step-dot">3</span>Match the amount and date you saw on your bank statement or NPCI page to find out what it really is</li>
+  </ol>
+
+  <h2><span class="num">5</span> A Quick Checklist Before You Finish</h2>
+  <p>Once you've cancelled what you don't need, do this quick check:</p>
+
+  <ol class="step-list">
+    <li><span class="step-dot">✓</span>Go back to NPCI's "My Mandates" page and confirm the subscription shows as Cancelled, not just Paused</li>
+    <li><span class="step-dot">✓</span>If you cancelled inside the app itself, also check your UPI app's AutoPay section to make sure the mandate side is cancelled too</li>
+    <li><span class="step-dot">✓</span>Keep the ones you genuinely use and enjoy — this isn't about cancelling everything, just the ones quietly draining money you forgot about</li>
+  </ol>
+
+  <div class="cta-card">
+    <h3>Want us to find all of them for you?</h3>
+    <p>Upload your bank statement and we'll scan every transaction — UPI, card, everything — and show you exactly what's quietly renewing every month.</p>
+    <a href="https://salarybit.in/subscription-leak-finder.html" class="cta-btn">Check My Subscriptions →</a>
+  </div>
+
+  <footer>SalaryBit · Built in Hoskote, India · Simple money guidance for everyday Indians</footer>
+</div>
+</body>
+</html>

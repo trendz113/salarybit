@@ -187,10 +187,23 @@ def validate_pdf_file(pdf_bytes):
 # ── SUBSCRIPTION SCAN HELPERS ─────────────────────────────
 
 
-def extract_transactions_from_pdf(pdf_path):
+class PDFPasswordProtectedError(Exception):
+    """Raised when a PDF is encrypted and either no password or the wrong password was supplied."""
+    pass
+
+
+def extract_transactions_from_pdf(pdf_path, password=None):
     """Generic transaction table extraction - works across bank formats."""
     all_rows = []
-    with pdfplumber.open(pdf_path) as pdf:
+    try:
+        pdf_obj = pdfplumber.open(pdf_path, password=password) if password else pdfplumber.open(pdf_path)
+    except Exception as e:
+        err_str = str(e).lower()
+        if "password" in err_str or "encrypt" in err_str or "incorrect" in err_str:
+            raise PDFPasswordProtectedError() from e
+        raise
+
+    with pdf_obj as pdf:
         for page in pdf.pages:
             tables = page.extract_tables()
             for table in tables:
@@ -830,12 +843,26 @@ def subscription_scan():
     if not f.filename.lower().endswith('.pdf'):
         return jsonify({"error": "Only PDF files are supported."}), 400
 
+    pdf_password = request.form.get('password') or None
+
     with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
         pdf_path = tmp.name
         f.save(pdf_path)
 
     try:
-        raw_rows = extract_transactions_from_pdf(pdf_path)
+        try:
+            raw_rows = extract_transactions_from_pdf(pdf_path, password=pdf_password)
+        except PDFPasswordProtectedError:
+            return jsonify({
+                "error": "password_protected",
+                "message": (
+                    "That password didn't work, please double-check it."
+                    if pdf_password else
+                    "This PDF is password-protected."
+                ),
+                "subscriptions": []
+            }), 200
+
         if not raw_rows:
             return jsonify({
                 "error": "Could not detect a transaction table. Make sure this is a downloaded statement, not a scanned image.",

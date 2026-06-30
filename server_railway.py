@@ -894,6 +894,55 @@ def claude_proxy():
         return jsonify({"error": str(e)}), 500
 
 
+# ── MF ANALYZER BOT — CREATE ORDER ────────────────────────
+MF_REPORT_AMOUNT = 19900  # ₹199 one-time full report
+
+@app.route("/api/create-mf-order", methods=["POST", "OPTIONS"])
+def create_mf_order():
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": MF_REPORT_AMOUNT,  # never trust client amount
+            "currency": "INR",
+            "receipt": f"mf_report_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
+    except Exception as e:
+        print(f"create-mf-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+# ── MF ANALYZER BOT — VERIFY PAYMENT ──────────────────────
+@app.route("/api/verify-mf-payment", methods=["POST", "OPTIONS"])
+def verify_mf_payment():
+    """Matches existing verify_and_decode() HMAC pattern exactly."""
+    if request.method == "OPTIONS":
+        return "", 200
+    data = request.get_json(silent=True) or {}
+    order_id = data.get("razorpay_order_id")
+    payment_id = data.get("razorpay_payment_id")
+    signature = data.get("razorpay_signature")
+    if not all([order_id, payment_id, signature]):
+        return jsonify({"success": False, "error": "Missing required fields."}), 400
+
+    body = f"{order_id}|{payment_id}"
+    expected = hmac.new(
+        os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+        body.encode(),
+        hashlib.sha256
+    ).hexdigest()
+    if expected != signature:
+        return jsonify({"success": False, "error": "Payment verification failed."}), 400
+
+    return jsonify({"success": True})
+
+
 @app.route('/subscription-leak-finder', methods=['GET'])
 def subscription_leak_finder_page():
     html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'subscription-leak-finder.html')

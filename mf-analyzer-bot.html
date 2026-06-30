@@ -361,6 +361,7 @@ tbody td{padding:10px;vertical-align:middle}
 .gbox{background:rgba(61,186,111,0.06);border:1px solid rgba(61,186,111,0.15);border-radius:4px;padding:8px 12px;font-size:11px;color:var(--green);text-align:center;margin-top:6px}
 footer{border-top:1px solid var(--border);padding:16px 32px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);line-height:2}
 </style>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
@@ -373,7 +374,7 @@ footer{border-top:1px solid var(--border);padding:16px 32px;text-align:center;fo
   <div class="hd-right">
     <span class="badge badge-live"><span class="live-dot"></span>AI Active</span>
     <span class="badge badge-paid" id="hd-tier" style="display:none;">FREE PLAN</span>
-    <button id="hd-upgrade" onclick="openModal('report')">Upgrade ₹399 →</button>
+    <button id="hd-upgrade" onclick="openModal('report')">Upgrade ₹199 →</button>
   </div>
 </header>
 
@@ -398,8 +399,7 @@ footer{border-top:1px solid var(--border);padding:16px 32px;text-align:center;fo
   <div class="nav-tabs-inner">
     <button class="ntab on" id="nt-analyzer" onclick="switchNav('analyzer')">📊 MF Analyzer</button>
     <button class="ntab" id="nt-plan" onclick="switchNav('plan')">🆓 Free Tools <span class="ntab-note" style="color:var(--green);">Free</span></button>
-    <button class="ntab" id="nt-report" onclick="switchNav('report')">📋 Full Report <span class="ntab-note" style="color:var(--gold);">₹399</span></button>
-    <button class="ntab" id="nt-premium" onclick="switchNav('premium')">👑 Premium <span class="ntab-note" style="color:var(--purple);">₹299/mo</span></button>
+    <button class="ntab" id="nt-report" onclick="switchNav('report')">📋 Full Report <span class="ntab-note" style="color:var(--gold);">₹199</span></button>
   </div>
 </div>
 
@@ -548,9 +548,9 @@ footer{border-top:1px solid var(--border);padding:16px 32px;text-align:center;fo
         <h4>Want a complete <span class="hl-g">Wealth Plan</span> based on your portfolio?</h4>
         <p>Your portfolio has been analyzed. Now get a personalised 100% allocation plan, overlap detection, tax saving audit, second income roadmap, and a 90-day action plan.</p>
         <div class="findings">
-          <div class="finding go">💡 Full ₹399 report shows exactly which funds to keep, switch, or add — and how to save ₹6,000+ per year</div>
+          <div class="finding go">💡 Full ₹199 report shows exactly which funds to keep, switch, or add — and how to save ₹6,000+ per year</div>
         </div>
-        <button class="btn-unlock" onclick="switchNav('report');openModal('report')">📋 Get Full Report — ₹399</button>
+        <button class="btn-unlock" onclick="switchNav('report');openModal('report')">📋 Get Full Report — ₹199</button>
         <button class="btn-dismiss" onclick="this.closest('.trigger').style.display='none'">Maybe later</button>
       </div>
     </div>
@@ -601,9 +601,9 @@ footer{border-top:1px solid var(--border);padding:16px 32px;text-align:center;fo
         <div class="findings">
           <div class="finding">📌 67% of investors with 3+ funds have over 40% overlap — paying double fees for identical stocks</div>
           <div class="finding">📌 Regular vs Direct plan = ₹2,000–₹8,000/year lost on a ₹5L portfolio</div>
-          <div class="finding go">💡 Average ₹399 report uncovers ₹6,200/year in savings. ROI in 3 weeks.</div>
+          <div class="finding go">💡 Average ₹199 report uncovers ₹6,200/year in savings. ROI in 3 weeks.</div>
         </div>
-        <button class="btn-unlock" onclick="switchNav('report');openModal('report')">🔍 Analyse My Portfolio — ₹399</button>
+        <button class="btn-unlock" onclick="switchNav('report');openModal('report')">🔍 Analyse My Portfolio — ₹199</button>
         <button class="btn-dismiss" onclick="document.getElementById('tr1').style.display='none'">Not now</button>
       </div>
     </div>
@@ -630,7 +630,7 @@ footer{border-top:1px solid var(--border);padding:16px 32px;text-align:center;fo
         <h4>You've used <span class="hl-g">2 of 3</span> free questions</h4>
         <p>Upgrade for unlimited AI advisor, full portfolio report, overlap analysis, tax saving audit, and a 90-day action plan.</p>
         <div class="findings"><div class="finding go">💡 Premium users save ₹8,000+ in their first month optimising their portfolio</div></div>
-        <button class="btn-unlock" onclick="switchNav('report');openModal('report')">🚀 Upgrade — ₹399 Full Report</button>
+        <button class="btn-unlock" onclick="switchNav('report');openModal('report')">🚀 Upgrade — ₹199 Full Report</button>
         <button class="btn-dismiss" onclick="document.getElementById('tr2').style.display='none'">Use my last free question</button>
       </div>
     </div>
@@ -640,14 +640,12 @@ footer{border-top:1px solid var(--border);padding:16px 32px;text-align:center;fo
   <div class="panel" id="panel-report">
     <div class="price-row">
       <div class="ppill ppill-f"><div class="ppill-lbl">Always Free</div><div class="ppill-price">₹0</div><div class="ppill-sub">SIP calc · AI Q&A · Fund picks</div></div>
-      <div class="ppill ppill-p"><div class="pop-tag">MOST POPULAR</div><div class="ppill-lbl">Full Report</div><div class="ppill-price">₹399</div><div class="ppill-sub">Portfolio analysis · PDF report</div></div>
-      <div class="ppill ppill-m"><div class="ppill-lbl">Monthly Advisor</div><div class="ppill-price">₹299<span style="font-size:12px;font-weight:400;">/mo</span></div><div class="ppill-sub">Unlimited AI · Monthly review</div></div>
-      <div class="ppill ppill-n"><div class="ppill-lbl">NRI Special</div><div class="ppill-price">₹999</div><div class="ppill-sub">NRE/NRO · FEMA · FATCA</div></div>
+      <div class="ppill ppill-p"><div class="pop-tag">FULL REPORT</div><div class="ppill-lbl">Full Report</div><div class="ppill-price">₹199</div><div class="ppill-sub">Portfolio analysis · PDF report</div></div>
     </div>
 
     <div id="rpt-form">
       <div class="card">
-        <span class="paid-tag">₹399 REPORT UNLOCKED ✓</span>
+        <span class="paid-tag">₹199 REPORT UNLOCKED ✓</span>
         <h3>Enter Your Details</h3>
         <p class="card-sub">The more honest you are, the better your plan. Everything stays private.</p>
         <div class="grid3">
@@ -717,24 +715,6 @@ footer{border-top:1px solid var(--border);padding:16px 32px;text-align:center;fo
     </div>
   </div>
 
-  <!-- ═══ PREMIUM PANEL ═══ -->
-  <div class="panel" id="panel-premium">
-    <div class="premium-wrap">
-      <h2>👑 MF Analyzer Bot Premium</h2>
-      <p>Your personal AI financial advisor — available every day. Monthly portfolio review, unlimited questions, second income coaching.</p>
-      <div class="prem-grid">
-        <div class="prem-item"><div class="prem-icon">💬</div><h4>Unlimited AI Advisor</h4><p>Ask as many questions as you want — gold, stocks, AI job risk, tax, anything.</p></div>
-        <div class="prem-item"><div class="prem-icon">📅</div><h4>Monthly Review</h4><p>AI reviews your portfolio every month and flags what needs attention.</p></div>
-        <div class="prem-item"><div class="prem-icon">💡</div><h4>Second Income Roadmap</h4><p>6-month personalised plan to build income outside your primary job.</p></div>
-        <div class="prem-item"><div class="prem-icon">📱</div><h4>WhatsApp Alerts</h4><p>Market alerts, fund news, and tax deadline reminders on WhatsApp.</p></div>
-        <div class="prem-item"><div class="prem-icon">🌏</div><h4>NRI Guidance</h4><p>NRE/NRO, FEMA, FATCA — fully covered for overseas Indians.</p></div>
-        <div class="prem-item"><div class="prem-icon">🔒</div><h4>Cancel Anytime</h4><p>No lock-in. Full refund if not satisfied in 7 days.</p></div>
-      </div>
-      <button class="btn-prem" onclick="openModal('premium')">Start Premium — ₹299/month →</button>
-      <p style="font-size:12px;color:var(--muted);margin-top:10px;">First month ₹1 trial · Then ₹299/mo · Cancel anytime</p>
-    </div>
-  </div>
-
 </div><!-- end wrap -->
 
 <footer>
@@ -753,47 +733,18 @@ footer{border-top:1px solid var(--border);padding:16px 32px;text-align:center;fo
     </div>
     <div class="modal-body">
       <div class="plan-opts">
-        <div class="popt on" id="pl-report" onclick="selPlan(this,'report')">
-          <div class="pbest">MOST POPULAR</div>
-          <div class="popt-hd"><span class="popt-name">₹399 One-Time Report</span><span class="popt-price">₹399</span></div>
+        <div class="popt on" id="pl-report">
+          <div class="pbest">FULL REPORT</div>
+          <div class="popt-hd"><span class="popt-name">₹199 One-Time Report</span><span class="popt-price">₹199</span></div>
           <div class="popt-desc">Full portfolio analysis, overlap detection, tax saving audit, 100% allocation, second income ideas, PDF download.</div>
           <div class="popt-tags"><span class="ptag">Overlap Analysis</span><span class="ptag">Tax Saving</span><span class="ptag">PDF Report</span><span class="ptag">WhatsApp</span></div>
-        </div>
-        <div class="popt" id="pl-premium" onclick="selPlan(this,'premium')">
-          <div class="popt-hd"><span class="popt-name">₹299/month Premium</span><span class="popt-price" style="color:var(--purple);">₹1 <span style="font-size:11px;font-weight:400;">first month</span></span></div>
-          <div class="popt-desc">Everything in report + unlimited AI, monthly reviews, WhatsApp alerts, NRI guidance. Cancel anytime.</div>
-          <div class="popt-tags"><span class="ptag">Unlimited AI</span><span class="ptag">Monthly Review</span><span class="ptag">Cancel Anytime</span></div>
-        </div>
-        <div class="popt" id="pl-nri" onclick="selPlan(this,'nri')">
-          <div class="popt-hd"><span class="popt-name">₹999 NRI Report</span><span class="popt-price" style="color:var(--blue);">₹999</span></div>
-          <div class="popt-desc">NRI-specific: NRE/NRO strategy, FEMA compliance, FATCA rules, repatriation planning, currency-adjusted allocation.</div>
-          <div class="popt-tags"><span class="ptag">NRE/NRO</span><span class="ptag">FEMA</span><span class="ptag">FATCA</span></div>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px;">
         <div><label class="lbl">Full Name</label><input class="inp" id="m-name" placeholder="Rahul Sharma"></div>
         <div><label class="lbl">Mobile</label><input class="inp" id="m-mobile" placeholder="98765 43210" type="tel"></div>
         <div><label class="lbl">Email</label><input class="inp" id="m-email" placeholder="rahul@gmail.com" type="email"></div>
-        <div>
-          <label class="lbl" style="margin-bottom:7px;">Payment Method</label>
-          <div class="pay-tabs">
-            <button class="ptab on" onclick="swPayTab('upi',this)">📱 UPI</button>
-            <button class="ptab" onclick="swPayTab('card',this)">💳 Card</button>
-            <button class="ptab" onclick="swPayTab('nb',this)">🏦 Net Banking</button>
-          </div>
-          <div id="upi-sec">
-            <div class="upi-apps"><div class="upi-app" onclick="selUPI(this)">📱 GPay</div><div class="upi-app" onclick="selUPI(this)">💜 PhonePe</div><div class="upi-app" onclick="selUPI(this)">🟠 Paytm</div><div class="upi-app" onclick="selUPI(this)">🔵 BHIM</div></div>
-            <input class="inp" id="upi-id" placeholder="yourname@upi">
-          </div>
-          <div id="card-sec" style="display:none;">
-            <input class="inp" id="c-num" placeholder="4242 4242 4242 4242" maxlength="19" style="margin-bottom:8px;">
-            <div class="grid2"><input class="inp" id="c-exp" placeholder="MM / YY" maxlength="7"><input class="inp" id="c-cvv" placeholder="CVV" maxlength="3"></div>
-          </div>
-          <div id="nb-sec" style="display:none;">
-            <select class="inp"><option>SBI</option><option>HDFC Bank</option><option>ICICI Bank</option><option>Axis Bank</option><option>Kotak</option><option>PNB</option><option>Other</option></select>
-          </div>
-        </div>
-        <button class="btn-pay" id="pay-btn" onclick="doPay()">PAY ₹399 — GET INSTANT ACCESS</button>
+        <button class="btn-pay" id="pay-btn" onclick="doPay()">PAY ₹199 — GET INSTANT ACCESS</button>
         <div class="pay-note">🔒 Razorpay Secured · UPI · Cards · Net Banking</div>
         <div class="gbox">✅ 100% Money-Back Guarantee — Not satisfied? Full refund, no questions asked.</div>
       </div>
@@ -822,7 +773,7 @@ function showToast(msg,type=''){const t=$('toast');t.textContent=msg;t.className
 
 // ── NAV ──
 function switchNav(tab){
-  ['analyzer','plan','report','premium'].forEach(t=>{
+  ['analyzer','plan','report'].forEach(t=>{
     $('panel-'+t).classList.toggle('on',t===tab);
     $('nt-'+t).classList.toggle('on',t===tab);
   });
@@ -1021,7 +972,7 @@ async function sendQ(){
 function showLockedQ(){
   $('tr2').style.display='block';
   $('tr2').querySelector('h4').innerHTML='You\'ve used all <span class="hl">3 free questions</span> today';
-  $('tr2').querySelector('p').textContent='Upgrade to ₹399 for unlimited AI advisor, full portfolio analysis, and personalised 90-day action plan.';
+  $('tr2').querySelector('p').textContent='Upgrade to ₹199 for the full portfolio analysis report and personalised 90-day action plan.';
   const d=$('tr2').querySelector('.btn-dismiss');if(d)d.style.display='none';
 }
 function addCMsg(role,text){const box=$('free-chat'),d=document.createElement('div');d.className='cmsg '+role;d.textContent=text;box.appendChild(d);box.scrollTop=box.scrollHeight;}
@@ -1030,15 +981,14 @@ function removeTyping(){const t=$('typing-el');if(t)t.remove();}
 
 // ── MODAL ──
 function openModal(plan){
-  selPlanId=plan||'report';
+  selPlanId='report';
   $('pay-modal').classList.add('open');document.body.style.overflow='hidden';
   document.querySelectorAll('.popt').forEach(p=>p.classList.remove('on'));
   const el=$('pl-'+selPlanId);if(el)el.classList.add('on');
   updatePayBtn();
 }
 function closeModal(){$('pay-modal').classList.remove('open');document.body.style.overflow='';}
-function selPlan(el,plan){document.querySelectorAll('.popt').forEach(p=>p.classList.remove('on'));el.classList.add('on');selPlanId=plan;updatePayBtn();}
-function updatePayBtn(){const p={report:'₹399',premium:'₹1 (then ₹299/mo)',nri:'₹999'}[selPlanId]||'₹399';$('pay-btn').textContent='PAY '+p+' — GET INSTANT ACCESS';}
+function updatePayBtn(){$('pay-btn').textContent='PAY ₹199 — GET INSTANT ACCESS';}
 function swPayTab(tab,btn){
   document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
   $('upi-sec').style.display=tab==='upi'?'block':'none';
@@ -1046,18 +996,70 @@ function swPayTab(tab,btn){
   $('nb-sec').style.display=tab==='nb'?'block':'none';
 }
 function selUPI(el){document.querySelectorAll('.upi-app').forEach(a=>a.classList.remove('on'));el.classList.add('on');}
-function doPay(){
+async function doPay(){
   const name=$('m-name').value.trim(),mobile=$('m-mobile').value.trim(),email=$('m-email').value.trim();
   if(!name||!mobile||!email){alert('Please fill in your name, mobile number, and email.');return;}
-  userData={name,mobile,email,plan:selPlanId,paid:true};
   const btn=$('pay-btn');btn.textContent='Processing...';btn.disabled=true;
-  setTimeout(()=>{
-    closeModal();
-    $('hd-tier').style.display='flex';$('hd-upgrade').style.display='none';
-    $('hd-tier').textContent={report:'REPORT ✓',premium:'PREMIUM ✓',nri:'NRI REPORT ✓'}[selPlanId]||'PAID ✓';
-    switchNav('report');
+
+  try{
+    const orderRes=await fetch('https://web-production-456eb.up.railway.app/api/create-mf-order',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({plan:'report'})
+    });
+    const order=await orderRes.json();
+    if(!orderRes.ok||order.error)throw new Error(order.error||'Could not create order');
+
+    const options={
+      key:order.razorpay_key,
+      amount:order.amount,
+      currency:order.currency,
+      order_id:order.order_id,
+      name:'MF Analyzer Bot',
+      description:'Full Portfolio Report',
+      prefill:{name,email,contact:mobile},
+      theme:{color:'#D4A853'},
+      handler:async function(response){
+        try{
+          const verifyRes=await fetch('https://web-production-456eb.up.railway.app/api/verify-mf-payment',{
+            method:'POST',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({
+              razorpay_order_id:response.razorpay_order_id,
+              razorpay_payment_id:response.razorpay_payment_id,
+              razorpay_signature:response.razorpay_signature
+            })
+          });
+          const verify=await verifyRes.json();
+          if(!verify.success){
+            alert('Payment verification failed. If money was deducted, it will be refunded — contact support with payment ID: '+response.razorpay_payment_id);
+            btn.textContent='PAY — GET INSTANT ACCESS';btn.disabled=false;
+            return;
+          }
+          userData={name,mobile,email,plan:selPlanId,paid:true,paymentId:response.razorpay_payment_id};
+          closeModal();
+          $('hd-tier').style.display='flex';$('hd-upgrade').style.display='none';
+          $('hd-tier').textContent='REPORT ✓';
+          switchNav('report');
+        }catch(e){
+          alert('Payment verification failed. If money was deducted, it will be refunded — contact support.');
+        }
+        btn.textContent='PAY — GET INSTANT ACCESS';btn.disabled=false;
+      },
+      modal:{
+        ondismiss:function(){
+          btn.textContent='PAY — GET INSTANT ACCESS';btn.disabled=false;
+        }
+      }
+    };
+    const rzp=new Razorpay(options);
+    rzp.on('payment.failed',function(response){
+      alert('Payment failed: '+(response.error&&response.error.description?response.error.description:'Please try again.'));
+      btn.textContent='PAY — GET INSTANT ACCESS';btn.disabled=false;
+    });
+    rzp.open();
+  }catch(e){
+    alert('Could not start payment. Please try again. ('+e.message+')');
     btn.textContent='PAY — GET INSTANT ACCESS';btn.disabled=false;
-  },1800);
+  }
 }
 document.addEventListener('DOMContentLoaded',()=>{
   const cn=$('c-num');if(cn)cn.addEventListener('input',e=>{let v=e.target.value.replace(/\D/g,'').slice(0,16);e.target.value=v.replace(/(.{4})/g,'$1 ').trim();});

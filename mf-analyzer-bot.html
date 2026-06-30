@@ -900,7 +900,7 @@ Investments: ${JSON.stringify(manualEntries)}
 Return ONLY a JSON object (no markdown, no explanation):
 {"holdings":[{"name":"Fund Name","type":"Mutual Fund","invested":50000,"current":68000}],"insights":{"summary":"2-3 sentence overall assessment in simple language for a common Indian investor","points":["actionable insight 1","insight 2","insight 3","insight 4"]}}`;
     }
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const res=await fetch('https://web-production-456eb.up.railway.app/api/claude-proxy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({max_tokens:1000,messages:[{role:'user',content:prompt}]})});
     const data=await res.json();
     const text=data.content.map(i=>i.text||'').join('');
     const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
@@ -1010,7 +1010,7 @@ async function sendQ(){
   addTyping();
   const sys='You are a warm expert Indian personal financial advisor. Give specific, actionable advice in plain English. Mention real products: Parag Parikh Flexi Cap, Mirae Asset, SGB, Zerodha, Groww, NPS, Nexus Select REIT, IRB InvIT. Keep under 160 words. End with one specific action they can take TODAY.';
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:sys+'\n\nUser question: '+q+'\n\nPrevious context:\n'+freeHistory.slice(-4).map(m=>m.role+': '+m.content).join('\n')}]})});
+    const res=await fetch('https://web-production-456eb.up.railway.app/api/claude-proxy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({max_tokens:1000,messages:[{role:'user',content:sys+'\n\nUser question: '+q+'\n\nPrevious context:\n'+freeHistory.slice(-4).map(m=>m.role+': '+m.content).join('\n')}]})});
     const data=await res.json();
     const reply=data.content.map(c=>c.text||'').join('').trim();
     removeTyping();addCMsg('ai',reply);freeHistory.push({role:'assistant',content:reply});
@@ -1105,7 +1105,7 @@ Return ONLY valid JSON (no markdown, no extra text):
 {"healthScore":<0-100>,"healthColor":"<#3DBA6F good/#D4A853 moderate/#E05252 poor>","savingsRate":"<X%>","monthlyInvestable":"<₹X,XXX>","emergencyTarget":"<₹X,XX,XXX>","yearsToRetirement":<number>,"overlapAlert":"<finding or No overlap detected>","directSaving":"<₹X,XXX/yr>","taxSaving":"<₹X,XXX possible via ELSS/PPF>","riskFlags":[{"label":"<short label>","level":"<high/mid/low>"}],"allocation":[{"name":"<asset>","pct":<number>,"color":"<hex>","example":"<specific product>"}],"fundAnalysis":[{"name":"<fund>","value":"<amount>","verdict":"<Keep/Switch/Add/Reduce>","reason":"<one line>"}],"secondIncome":[{"icon":"<emoji>","title":"<idea>","desc":"<2 sentences India-specific>","earning":"<₹X,XXX–₹X,XX,XXX/mo>"}],"projection":[{"asset":"<class>","value10yr":"<₹XL>","cagr":"<X%>"}],"actionPlan":["<Month 1 specific>","<Month 1-2 specific>","<Month 2-3 specific>","<Month 3+ specific>"],"narrative":"<5 paragraphs warm Indian advisor: 1) Honest assessment with real numbers 2) 100% portfolio allocation with real products 3) AI/job risk concrete steps 4) Second income this month 5) Where they will be in 5 and 10 years with real numbers>"}
 RULES: allocation must sum to 100%. Always include emergency fund, gold, bonds, equity, real estate.`;
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const res=await fetch('https://web-production-456eb.up.railway.app/api/claude-proxy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({max_tokens:1000,messages:[{role:'user',content:prompt}]})});
     const data=await res.json();
     return JSON.parse(data.content.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim());
   }catch(e){return reportFallback(p);}

@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subscription Leak Finder - SalaryBit</title>
+<style>
+  :root {
+    --bg: #0b0e14;
+    --bg-card: #151a24;
+    --bg-card-light: #1c2230;
+    --green: #00e676;
+    --green-dark: #00c264;
+    --ink: #ffffff;
+    --muted: #8b93a7;
+    --line: #232938;
+    --warn: #ff6b5e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, 'Inter', 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 40px 20px 100px; }
+
+  .eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--green);
+    background: rgba(0,230,118,0.1);
+    padding: 6px 12px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-size: clamp(30px, 6vw, 46px);
+    line-height: 1.12;
+    margin: 0 0 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  h1 .accent { color: var(--green); }
+  .sub {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 540px;
+    margin-bottom: 36px;
+  }
+
+  .upload-box {
+    border: 1.5px dashed var(--line);
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 48px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .upload-box:hover, .upload-box.drag {
+    border-color: var(--green);
+    background: var(--bg-card-light);
+  }
+  .upload-box input { display: none; }
+  .upload-icon {
+    width: 56px; height: 56px; margin: 0 auto 16px;
+    background: rgba(0,230,118,0.12);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+  .upload-label { font-size: 16px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+  .upload-hint { font-size: 13px; color: var(--muted); }
+
+  .filename-pill {
+    display: none;
+    margin-top: 16px;
+    padding: 14px 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    font-size: 14px;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .filename-pill.show { display: flex; }
+  .filename-pill button {
+    background: none; border: none; color: var(--warn); cursor: pointer; font-size: 13px; font-weight: 600;
+  }
+
+  .cta-btn {
+    margin-top: 20px;
+    width: 100%;
+    padding: 17px;
+    background: var(--green);
+    color: #06140d;
+    border: none;
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .cta-btn:hover { background: var(--green-dark); }
+  .cta-btn:active { transform: scale(0.98); }
+  .cta-btn:disabled { background: #2a3142; color: var(--muted); cursor: not-allowed; }
+
+  .privacy-note {
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+  }
+  .privacy-note::before { content: "🔒 "; }
+
+  /* Loading state */
+  .loading { display: none; text-align: center; padding: 80px 0; }
+  .loading.show { display: block; }
+  .loading .spin {
+    width: 40px; height: 40px; margin: 0 auto 24px;
+    border: 3px solid var(--line);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 15px; color: var(--muted); font-weight: 500; }
+
+  /* Results */
+  .results { display: none; }
+  .results.show { display: block; }
+
+  .total-card {
+    background: linear-gradient(135deg, var(--bg-card-light), var(--bg-card));
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 36px 28px;
+    margin: 32px 0;
+    text-align: center;
+  }
+  .total-card .label {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .total-card .amount {
+    font-size: clamp(40px, 9vw, 58px);
+    color: var(--green);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .total-card .count { font-size: 14px; color: var(--muted); }
+
+  .item-list { margin: 24px 0; display: flex; flex-direction: column; gap: 10px; }
+  .item-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+  .item-row.locked .item-name,
+  .item-row.locked .item-meta { filter: blur(6px); user-select: none; }
+  .item-name { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+  .item-meta { font-size: 13px; color: var(--muted); }
+  .item-amount { font-size: 16px; font-weight: 700; color: var(--warn); white-space: nowrap; }
+
+  .lock-overlay {
+    display: none;
+    text-align: center;
+    padding: 36px 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    margin-top: 16px;
+  }
+  .lock-overlay.show { display: block; }
+  .lock-overlay h3 { font-size: 20px; margin: 0 0 8px; font-weight: 700; }
+  .lock-overlay p { font-size: 14px; color: var(--muted); margin: 0 0 22px; }
+  .unlock-btn {
+    background: var(--green); color: #06140d; border: none; padding: 16px 36px;
+    border-radius: 14px; font-family: inherit; font-weight: 700; font-size: 16px; cursor: pointer;
+  }
+  .unlock-btn:hover { background: var(--green-dark); }
+  .unlock-price { font-size: 13px; color: var(--muted); margin-top: 12px; }
+
+  .cancel-guide {
+    display: none;
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--green);
+    font-weight: 500;
+  }
+  .item-row.unlocked .cancel-guide { display: block; }
+
+  footer { margin-top: 60px; font-size: 12px; color: var(--muted); text-align: center; }
+
+  /* Path tabs */
+  .path-tabs {
+    display: flex; gap: 10px; margin-bottom: 28px;
+  }
+  .path-tab {
+    flex: 1;
+    padding: 14px 16px;
+    background: var(--bg-card);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .path-tab.active {
+    border-color: var(--green);
+    color: var(--ink);
+    background: var(--bg-card-light);
+  }
+  .free-badge {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.04em;
+    background: var(--green); color: #06140d;
+    padding: 2px 7px; border-radius: 8px;
+  }
+
+  .path-panel { display: none; }
+  .path-panel.active { display: block; }
+
+  /* Steps card (UPI path) */
+  .steps-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 8px 20px;
+  }
+  .step-row {
+    display: flex; gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .step-row:last-child { border-bottom: none; }
+  .step-num {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    background: rgba(0,230,118,0.12);
+    color: var(--green);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+  }
+  .step-title { font-size: 15px; font-weight: 700; margin-bottom: 5px; }
+  .step-desc { font-size: 14px; color: var(--muted); line-height: 1.55; }
+  .inline-link { color: var(--green); text-decoration: none; font-weight: 600; }
+  .inline-link:hover { text-decoration: underline; }
+
+  .upi-note {
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+  }
+  .upi-note::before { content: "💡 "; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">SalaryBit</div>
+  <h1>Find the subscriptions <span class="accent">quietly draining</span> your account.</h1>
+  <p class="sub">Two ways to check — pick whichever fits your money habits.</p>
+
+  <div class="path-tabs">
+    <button class="path-tab active" id="tabUpi">UPI AutoPay <span class="free-badge">Free</span></button>
+    <button class="path-tab" id="tabStatement">Bank statement</button>
+  </div>
+
+  <!-- PATH 1: UPI self-check guide -->
+  <div id="upiPath" class="path-panel active">
+    <div class="steps-card">
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Open the NPCI mandate portal</div>
+          <div class="step-desc">Visit <a href="https://upihelp.npci.org.in" target="_blank" class="inline-link">upihelp.npci.org.in</a> on your phone and log in with your registered mobile number + OTP.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Open "My Mandates"</div>
+          <div class="step-desc">This shows every active UPI AutoPay mandate — merchant name, amount, and which app (PhonePe/GPay/Paytm) it's linked to.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Confused by a merchant name?</div>
+          <div class="step-desc">Names like "Google" or "Arha Media and Broadcasting" don't tell you what you're paying for. Go to <a href="https://play.google.com/store/account/orderhistory" target="_blank" class="inline-link">play.google.com/store/account/orderhistory</a> — log into the <strong>same Google account synced on your phone</strong> — and match the amount + date. That tells you the real app.</div>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Cancel right there</div>
+          <div class="step-desc">Back on the NPCI mandate card, tap <strong>Cancel</strong>. It'll open a QR — scan it with the UPI app shown against that mandate. Done, no merchant login needed.</div>
+        </div>
+      </div>
+    </div>
+    <div class="upi-note">This works for any subscription billed via UPI AutoPay. Takes about 5 minutes, completely free, no upload needed.</div>
+  </div>
+
+  <!-- PATH 2: Bank statement upload (paid) -->
+  <div id="statementPath" class="path-panel">
+  <p class="sub" style="margin-top:0;">Don't want to check manually? Upload your statement and we'll do the matching for you — covers UPI, card autopay, and ACH/NACH mandates in one scan.</p>
+
+  <div id="uploadBox" class="upload-box">
+    <div class="upload-icon">📄</div>
+    <div class="upload-label">Drop your bank statement here, or tap to browse</div>
+    <div class="upload-hint">PDF only · read once, never stored</div>
+    <input type="file" id="fileInput" accept="application/pdf">
+  </div>
+
+  <div id="filenamePill" class="filename-pill">
+    <span id="filenameText"></span>
+    <button id="removeFile">Remove</button>
+  </div>
+
+  <button id="analyzeBtn" class="cta-btn" disabled>Scan my statement</button>
+  <div class="privacy-note">Your statement is read once to detect patterns, then deleted. We never store account numbers or balances.</div>
+
+  <div id="loading" class="loading">
+    <div class="spin"></div>
+    <div class="loading-text" id="loadingText">Reading your statement…</div>
+  </div>
+
+  <div id="results" class="results">
+    <div class="total-card">
+      <div class="label">Recurring spend found</div>
+      <div class="amount" id="totalAmount">₹0</div>
+      <div class="count" id="itemCount">0 subscriptions detected · per year</div>
+    </div>
+
+    <div class="item-list" id="itemList"></div>
+
+    <div class="lock-overlay show" id="lockOverlay">
+      <h3>See exactly what each one is</h3>
+      <p>Unlock merchant names and how to cancel each, in one tap.</p>
+      <button class="unlock-btn" id="unlockBtn">Unlock full report — ₹49</button>
+      <div class="unlock-price">One-time. Less than what one forgotten subscription costs you this month.</div>
+    </div>
+  </div>
+  </div>
+
+  <footer>SalaryBit · Built in Hoskote · Your data stays on your device until analysis, then it's gone.</footer>
+</div>
+
+<script>
+const tabUpi = document.getElementById('tabUpi');
+const tabStatement = document.getElementById('tabStatement');
+const upiPath = document.getElementById('upiPath');
+const statementPath = document.getElementById('statementPath');
+
+tabUpi.addEventListener('click', () => {
+  tabUpi.classList.add('active');
+  tabStatement.classList.remove('active');
+  upiPath.classList.add('active');
+  statementPath.classList.remove('active');
+});
+tabStatement.addEventListener('click', () => {
+  tabStatement.classList.add('active');
+  tabUpi.classList.remove('active');
+  statementPath.classList.add('active');
+  upiPath.classList.remove('active');
+});
+
+const uploadBox = document.getElementById('uploadBox');
+const fileInput = document.getElementById('fileInput');
+const filenamePill = document.getElementById('filenamePill');
+const filenameText = document.getElementById('filenameText');
+const removeFile = document.getElementById('removeFile');
+const analyzeBtn = document.getElementById('analyzeBtn');
+const loading = document.getElementById('loading');
+const loadingText = document.getElementById('loadingText');
+const results = document.getElementById('results');
+const totalAmount = document.getElementById('totalAmount');
+const itemCount = document.getElementById('itemCount');
+const itemList = document.getElementById('itemList');
+const lockOverlay = document.getElementById('lockOverlay');
+const unlockBtn = document.getElementById('unlockBtn');
+
+let selectedFile = null;
+
+uploadBox.addEventListener('click', () => fileInput.click());
+uploadBox.addEventListener('dragover', e => { e.preventDefault(); uploadBox.classList.add('drag'); });
+uploadBox.addEventListener('dragleave', () => uploadBox.classList.remove('drag'));
+uploadBox.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadBox.classList.remove('drag');
+  if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', e => {
+  if (e.target.files.length) handleFile(e.target.files[0]);
+});
+
+function handleFile(file) {
+  if (file.type !== 'application/pdf') {
+    alert('Please upload a PDF file.');
+    return;
+  }
+  selectedFile = file;
+  filenameText.textContent = file.name;
+  filenamePill.classList.add('show');
+  analyzeBtn.disabled = false;
+}
+
+removeFile.addEventListener('click', () => {
+  selectedFile = null;
+  filenamePill.classList.remove('show');
+  analyzeBtn.disabled = true;
+  fileInput.value = '';
+});
+
+const loadingMessages = [
+  'Reading your statement…',
+  'Separating subscriptions from everyday spends…',
+  'Checking for repeating charges…',
+  'Almost there…'
+];
+
+analyzeBtn.addEventListener('click', async () => {
+  if (!selectedFile) return;
+
+  document.querySelector('.upload-box').style.display = 'none';
+  filenamePill.style.display = 'none';
+  analyzeBtn.style.display = 'none';
+  document.querySelector('.privacy-note').style.display = 'none';
+  loading.classList.add('show');
+
+  let msgIdx = 0;
+  const msgInterval = setInterval(() => {
+    msgIdx = (msgIdx + 1) % loadingMessages.length;
+    loadingText.textContent = loadingMessages[msgIdx];
+  }, 1800);
+
+  try {
+    const formData = new FormData();
+    formData.append('statement', selectedFile);
+
+    const res = await fetch('/api/subscription-scan', {
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+
+    clearInterval(msgInterval);
+    loading.classList.remove('show');
+    renderResults(data);
+  } catch (err) {
+    clearInterval(msgInterval);
+    loading.classList.remove('show');
+    loadingText.textContent = 'Something went wrong. Please try again.';
+    loading.classList.add('show');
+  }
+});
+
+function renderResults(data) {
+  const items = data.subscriptions || [];
+  const total = items.reduce((sum, i) => sum + i.annual_cost, 0);
+
+  totalAmount.textContent = '₹' + total.toLocaleString('en-IN', {maximumFractionDigits: 0});
+  itemCount.textContent = items.length + ' subscription' + (items.length !== 1 ? 's' : '') + ' detected · per year';
+
+  itemList.innerHTML = '';
+  items.forEach((item, idx) => {
+    const row = document.createElement('div');
+    row.className = 'item-row locked';
+    row.innerHTML = `
+      <div>
+        <div class="item-name">Subscription #${idx + 1}</div>
+        <div class="item-meta">${item.frequency} · last charged ${item.last_seen}</div>
+        <div class="cancel-guide"></div>
+      </div>
+      <div class="item-amount">₹${item.annual_cost.toLocaleString('en-IN')}/yr</div>
+    `;
+    itemList.appendChild(row);
+  });
+
+  results.classList.add('show');
+  window._scanData = data; // stash for unlock flow
+}
+
+unlockBtn.addEventListener('click', async () => {
+  unlockBtn.disabled = true;
+  unlockBtn.textContent = 'Loading...';
+
+  try {
+    const orderRes = await fetch('/api/create-subscription-scan-order', { method: 'POST' });
+    const order = await orderRes.json();
+
+    const options = {
+      key: order.razorpay_key,
+      amount: order.amount,
+      currency: order.currency,
+      order_id: order.order_id,
+      name: 'SalaryBit',
+      description: 'Subscription Leak Report - Full Unlock',
+      handler: async function(response) {
+        const verifyRes = await fetch('/api/verify-subscription-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature
+          })
+        });
+        const verify = await verifyRes.json();
+        if (verify.success) {
+          unlockResults();
+        } else {
+          alert('Payment verification failed. If money was deducted, it will be refunded within 24 hours.');
+          unlockBtn.disabled = false;
+          unlockBtn.textContent = 'Unlock full report — ₹49';
+        }
+      },
+      modal: {
+        ondismiss: function() {
+          unlockBtn.disabled = false;
+          unlockBtn.textContent = 'Unlock full report — ₹49';
+        }
+      },
+      theme: { color: '#00e676' }
+    };
+    const rzp = new Razorpay(options);
+    rzp.open();
+  } catch (err) {
+    alert('Could not start payment. Please try again.');
+    unlockBtn.disabled = false;
+    unlockBtn.textContent = 'Unlock full report — ₹49';
+  }
+});
+
+function unlockResults() {
+  const data = window._scanData;
+  const rows = document.querySelectorAll('.item-row');
+  rows.forEach((row, idx) => {
+    row.classList.remove('locked');
+    row.classList.add('unlocked');
+    const item = data.subscriptions[idx];
+    row.querySelector('.item-name').textContent = item.identified_as;
+    row.querySelector('.cancel-guide').textContent = '→ ' + item.how_to_cancel;
+  });
+  lockOverlay.classList.remove('show');
+}
+</script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</body>
+</html>

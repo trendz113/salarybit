@@ -488,6 +488,8 @@ footer{border-top:1px solid var(--border);padding:16px 32px;text-align:center;fo
 
     <div class="privacy-note">🔒 <strong>Your Privacy.</strong> Your PDF is parsed entirely in your browser — the file itself never leaves your device. Only the extracted text is sent securely to our server to generate your AI analysis. We never store your CAS PDF or raw statement.</div>
 
+    <div class="privacy-note" style="border-color:rgba(212,168,83,0.4);background:rgba(212,168,83,0.06);">⚠️ <strong>Important — please read before paying.</strong> Your uploaded PDF and entries exist only in this browser tab. Do <strong>not</strong> refresh, close the tab, click back, or navigate away from the time you click "Analyze" until your report fully loads — doing so will permanently lose your uploaded data and you will need to start over. We cannot recover lost sessions or re-generate a report without re-payment if this happens.</div>
+
     <button class="analyze-btn" id="analyzeBtn" onclick="analyzePortfolio()">
       <span>🔍</span> Analyze My Complete Portfolio — ₹199
     </button>
@@ -497,6 +499,7 @@ footer{border-top:1px solid var(--border);padding:16px 32px;text-align:center;fo
       <div class="spin"></div>
       <div class="load-text">Reading your investments...</div>
       <div class="load-sub">AI is extracting your portfolio data</div>
+      <div class="gbox" style="border-color:rgba(212,168,83,0.4);background:rgba(212,168,83,0.06);color:var(--gold);margin-top:14px;">⚠️ Please stay on this page. Closing, refreshing, or navigating away now will lose your uploaded data and cannot be refunded.</div>
     </div>
 
     <!-- RESULTS -->
@@ -676,6 +679,7 @@ footer{border-top:1px solid var(--border);padding:16px 32px;text-align:center;fo
           <button onclick="addF()" style="background:none;border:1px dashed var(--border);color:var(--muted);width:100%;padding:8px;border-radius:6px;cursor:pointer;font-size:12px;">+ Add Investment</button>
         </div>
         <button onclick="buildReport()" style="width:100%;background:linear-gradient(135deg,var(--gold),#E8C96A);color:#0D0F14;border:none;padding:14px;font-size:14px;font-weight:700;border-radius:6px;cursor:pointer;">⚡ Generate My Full Report</button>
+        <p style="font-size:11px;color:var(--gold);text-align:center;margin-top:10px;">⚠️ Please stay on this page until your report finishes generating — leaving early will lose your entries.</p>
       </div>
     </div>
 
@@ -690,6 +694,7 @@ footer{border-top:1px solid var(--border);padding:16px 32px;text-align:center;fo
         <li id="ls4"><span class="lpip"></span>Finding second income opportunities...</li>
         <li id="ls5"><span class="lpip"></span>Writing personalised action plan...</li>
       </ul>
+      <div class="gbox" style="border-color:rgba(212,168,83,0.4);background:rgba(212,168,83,0.06);color:var(--gold);margin-top:14px;">⚠️ Please stay on this page. Closing, refreshing, or navigating away now will lose your uploaded data and cannot be refunded.</div>
     </div>
 
     <div id="rpt-out" style="display:none;">
@@ -746,7 +751,8 @@ footer{border-top:1px solid var(--border);padding:16px 32px;text-align:center;fo
         <div><label class="lbl">Email</label><input class="inp" id="m-email" placeholder="rahul@gmail.com" type="email"></div>
         <button class="btn-pay" id="pay-btn" onclick="doPay()">PAY ₹199 — GET INSTANT ACCESS</button>
         <div class="pay-note">🔒 Razorpay Secured · UPI · Cards · Net Banking</div>
-        <div class="gbox">✅ 100% Money-Back Guarantee — Not satisfied? Full refund, no questions asked.</div>
+        <div class="gbox" style="border-color:rgba(212,168,83,0.4);background:rgba(212,168,83,0.06);color:var(--gold);">⚠️ After payment, stay on this page until your report finishes loading. Closing, refreshing, or navigating away will lose your uploaded data — it cannot be recovered or regenerated without paying again.</div>
+        <div class="gbox">✅ 100% Money-Back Guarantee — Not satisfied with your report? Full refund, no questions asked. (This does not cover data lost by closing, refreshing, or leaving the page before your report finishes generating — see warning above.)</div>
       </div>
     </div>
   </div>
@@ -761,7 +767,15 @@ pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/p
 
 // ── STATE ──
 let manualEntries=[],allHoldings=[],pieChartInst=null,barChartInst=null,uploadedPDFText='';
-let qUsed=0,freeHistory=[],selPlanId='report',pendingAction='report',userData={},rProfile={};
+let qUsed=0,freeHistory=[],selPlanId='report',pendingAction='report',userData={},rProfile={},analysisInProgress=false;
+
+window.addEventListener('beforeunload',function(e){
+  if(analysisInProgress){
+    e.preventDefault();
+    e.returnValue='Your report is still being generated. Leaving now will lose your uploaded data. Are you sure?';
+    return e.returnValue;
+  }
+});
 
 // ── UTILS ──
 const $=id=>document.getElementById(id);
@@ -835,6 +849,7 @@ function renderAddedList(){
 async function analyzePortfolio(){
   if(!uploadedPDFText&&!manualEntries.length){showToast('Please upload a CAS PDF or add investments manually','error');return;}
   if(!userData.paid){openModal('report','analyze');return;}
+  analysisInProgress=true;
   $('analyzerLoader').style.display='block';$('results').style.display='none';$('analyzeBtn').disabled=true;
   try{
     let prompt='';
@@ -868,11 +883,12 @@ Return ONLY a JSON object (no markdown, no explanation):
     if(manualEntries.length){
       allHoldings=manualEntries;
       renderResults({holdings:manualEntries,insights:{summary:'Your portfolio has been analyzed based on your manual entries.',points:['Diversify across asset classes: Mutual Funds, Gold, and FDs provide good balance','Review your FD rates — if below 7%, consider Debt MFs for better post-tax returns','Ensure life insurance coverage of at least 10x annual income','Consider Sovereign Gold Bonds (SGB) for gold exposure — they also pay 2.5% interest']}});
-    }else{showToast('Could not analyze PDF. Please add investments manually.','error');$('analyzerLoader').style.display='none';$('analyzeBtn').disabled=false;}
+    }else{analysisInProgress=false;showToast('Could not analyze PDF. Please add investments manually.','error');$('analyzerLoader').style.display='none';$('analyzeBtn').disabled=false;}
   }
 }
 
 function renderResults(data){
+  analysisInProgress=false;
   $('analyzerLoader').style.display='none';$('results').style.display='block';$('analyzeBtn').disabled=false;
   const holdings=data.holdings||[];
   if(!holdings.length){showToast('No investments found. Please add manually.','error');return;}
@@ -1088,6 +1104,7 @@ async function buildReport(){
   const job=$('r-job').value,goal=$('r-goal').value,risk=$('r-risk').value;
   const funds=[...document.querySelectorAll('.fn')].map((n,i)=>({name:n.value.trim(),amount:document.querySelectorAll('.fa')[i].value.trim()})).filter(f=>f.name);
   rProfile={age,inc,exp,job,goal,risk,funds,sav:inc-exp,name:userData.name||'Investor'};
+  analysisInProgress=true;
   $('rpt-form').style.display='none';$('rpt-loading').style.display='block';
   const steps=['ls1','ls2','ls3','ls4','ls5'];
   for(let i=0;i<steps.length;i++){
@@ -1096,6 +1113,7 @@ async function buildReport(){
     $(steps[i]).classList.add('on');
   }
   const result=await callReportAPI(rProfile);
+  analysisInProgress=false;
   $(steps[steps.length-1]).classList.add('dn');
   await delay(300);
   $('rpt-loading').style.display='none';$('rpt-out').style.display='block';

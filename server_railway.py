@@ -22,6 +22,8 @@ from flask_cors import CORS
 import pdfplumber
 import re
 from collections import defaultdict
+from pdfminer.pdfdocument import PDFPasswordIncorrect, PDFEncryptionError
+from pdfplumber.utils.exceptions import PdfminerException
 
 from asn1crypto import pem, x509 as asn1_x509
 from pyhanko.pdf_utils.reader import PdfFileReader
@@ -197,6 +199,16 @@ def extract_transactions_from_pdf(pdf_path, password=None):
     all_rows = []
     try:
         pdf_obj = pdfplumber.open(pdf_path, password=password) if password else pdfplumber.open(pdf_path)
+    except (PDFPasswordIncorrect, PDFEncryptionError):
+        raise PDFPasswordProtectedError()
+    except PdfminerException as e:
+        cause = e.__cause__ or (e.args[0] if e.args else None)
+        if isinstance(cause, (PDFPasswordIncorrect, PDFEncryptionError)):
+            raise PDFPasswordProtectedError()
+        err_str = str(e).lower() or str(cause).lower()
+        if "password" in err_str or "encrypt" in err_str or "incorrect" in err_str:
+            raise PDFPasswordProtectedError() from e
+        raise
     except Exception as e:
         err_str = str(e).lower()
         if "password" in err_str or "encrypt" in err_str or "incorrect" in err_str:

@@ -6,6 +6,7 @@ import json
 import tempfile
 import asyncio
 import urllib.request
+import urllib.error
 from datetime import datetime
 
 import razorpay
@@ -835,6 +836,63 @@ def validate_signature():
 # ── SUBSCRIPTION LEAK FINDER ──────────────────────────────
 
 SUBSCRIPTION_SCAN_PRICE_PAISE = 4900  # Rs 49
+
+# ── GENERIC CLAUDE PROXY (for client-side AI tools like MF Analyzer Bot) ──
+import time as _time
+_claude_proxy_hits = defaultdict(list)
+CLAUDE_PROXY_LIMIT = 20       # max requests
+CLAUDE_PROXY_WINDOW = 3600    # per hour, per IP
+
+@app.route('/api/claude-proxy', methods=['POST', 'OPTIONS'])
+def claude_proxy():
+    if request.method == "OPTIONS":
+        return "", 200
+
+    claude_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not claude_key:
+        return jsonify({"error": "Server not configured. Missing ANTHROPIC_API_KEY."}), 500
+
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr or 'unknown').split(',')[0].strip()
+    now = _time.time()
+    hits = _claude_proxy_hits[ip]
+    hits[:] = [t for t in hits if now - t < CLAUDE_PROXY_WINDOW]
+    if len(hits) >= CLAUDE_PROXY_LIMIT:
+        return jsonify({"error": "Rate limit reached. Please try again later."}), 429
+    hits.append(now)
+
+    body = request.get_json(silent=True) or {}
+    messages = body.get("messages")
+    if not messages:
+        return jsonify({"error": "Missing messages in request body"}), 400
+
+    payload = json.dumps({
+        "model": body.get("model") or "claude-sonnet-4-6",
+        "max_tokens": min(int(body.get("max_tokens") or 1000), 2048),
+        "messages": messages
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": claude_key,
+            "anthropic-version": "2023-06-01"
+        },
+        method="POST"
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            result = json.loads(resp.read().decode("utf-8"))
+        return jsonify(result)
+    except urllib.error.HTTPError as e:
+        err_body = e.read().decode("utf-8", errors="ignore")
+        print(f"claude_proxy upstream error {e.code}: {err_body}")
+        return jsonify({"error": "Upstream error"}), e.code
+    except Exception as e:
+        print(f"claude_proxy error: {e}")
+        return jsonify({"error": str(e)}), 500
+
 
 @app.route('/subscription-leak-finder', methods=['GET'])
 def subscription_leak_finder_page():

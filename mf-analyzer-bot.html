@@ -486,10 +486,10 @@ footer{border-top:1px solid var(--border);padding:16px 32px;text-align:center;fo
       <div class="added-list" id="addedList"></div>
     </div>
 
-    <div class="privacy-note">🔒 <strong>Your Privacy is Protected.</strong> This tool runs entirely in your browser. Your CAS PDF and investment data are never uploaded to any server. Everything is processed locally on your device only.</div>
+    <div class="privacy-note">🔒 <strong>Your Privacy.</strong> Your PDF is parsed entirely in your browser — the file itself never leaves your device. Only the extracted text is sent securely to our server to generate your AI analysis. We never store your CAS PDF or raw statement.</div>
 
     <button class="analyze-btn" id="analyzeBtn" onclick="analyzePortfolio()">
-      <span>🔍</span> Analyze My Complete Portfolio
+      <span>🔍</span> Analyze My Complete Portfolio — ₹199
     </button>
 
     <!-- LOADING -->
@@ -761,7 +761,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/p
 
 // ── STATE ──
 let manualEntries=[],allHoldings=[],pieChartInst=null,barChartInst=null,uploadedPDFText='';
-let qUsed=0,freeHistory=[],selPlanId='report',userData={},rProfile={};
+let qUsed=0,freeHistory=[],selPlanId='report',pendingAction='report',userData={},rProfile={};
 
 // ── UTILS ──
 const $=id=>document.getElementById(id);
@@ -834,6 +834,7 @@ function renderAddedList(){
 // ── ANALYZE PORTFOLIO ──
 async function analyzePortfolio(){
   if(!uploadedPDFText&&!manualEntries.length){showToast('Please upload a CAS PDF or add investments manually','error');return;}
+  if(!userData.paid){openModal('report','analyze');return;}
   $('analyzerLoader').style.display='block';$('results').style.display='none';$('analyzeBtn').disabled=true;
   try{
     let prompt='';
@@ -980,8 +981,9 @@ function addTyping(){const box=$('free-chat'),d=document.createElement('div');d.
 function removeTyping(){const t=$('typing-el');if(t)t.remove();}
 
 // ── MODAL ──
-function openModal(plan){
+function openModal(plan,action){
   selPlanId='report';
+  pendingAction=action||'report';
   $('pay-modal').classList.add('open');document.body.style.overflow='hidden';
   document.querySelectorAll('.popt').forEach(p=>p.classList.remove('on'));
   const el=$('pl-'+selPlanId);if(el)el.classList.add('on');
@@ -1038,7 +1040,12 @@ async function doPay(){
           closeModal();
           $('hd-tier').style.display='flex';$('hd-upgrade').style.display='none';
           $('hd-tier').textContent='REPORT ✓';
-          switchNav('report');
+          if(pendingAction==='analyze'){
+            switchNav('analyzer');
+            analyzePortfolio();
+          }else{
+            switchNav('report');
+          }
         }catch(e){
           alert('Payment verification failed. If money was deducted, it will be refunded — contact support.');
         }

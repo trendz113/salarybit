@@ -327,13 +327,13 @@ def detect_recurring_charges(txns, amount_tolerance=0.05):
     return results
 
 
-def identify_merchants_groq(recurring_list):
+def identify_merchants_claude(recurring_list):
     """
-    Uses your existing GROQ_API_KEY (already used in rewrite_resume()) instead
-    of needing a separate Anthropic key - keeps this consistent with your stack.
+    Uses ANTHROPIC_API_KEY to identify merchant narrations via Claude,
+    same urllib.request pattern as the rest of this file (no SDK dependency).
     """
-    groq_key = os.environ.get("GROQ_API_KEY")
-    if not groq_key or not recurring_list:
+    claude_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not claude_key or not recurring_list:
         return [
             {**r, "identified_as": "Unknown - check manually",
              "category": "Unknown",
@@ -360,25 +360,29 @@ Output format:
 [{{"narration": "...", "identified_as": "...", "category": "OTT/Streaming|Telecom|Cloud/Software|Insurance|Investment SIP|Unknown|Other", "how_to_cancel": "short instruction"}}]"""
 
     payload = json.dumps({
-        "model": "llama-3.3-70b-versatile",
-        "temperature": 0.2,
+        "model": "claude-sonnet-4-6",
         "max_tokens": 2048,
+        "temperature": 0.2,
         "messages": [{"role": "user", "content": prompt}]
     }).encode("utf-8")
     req = urllib.request.Request(
-        "https://api.groq.com/openai/v1/chat/completions",
+        "https://api.anthropic.com/v1/messages",
         data=payload,
-        headers={"Content-Type": "application/json", "Authorization": f"Bearer {groq_key}"},
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": claude_key,
+            "anthropic-version": "2023-06-01"
+        },
         method="POST"
     )
     try:
         with urllib.request.urlopen(req, timeout=60) as resp:
             result = json.loads(resp.read().decode("utf-8"))
-        raw = result["choices"][0]["message"]["content"]
+        raw = result["content"][0]["text"]
         clean = raw.replace("```json", "").replace("```", "").strip()
         identifications = json.loads(clean)
     except Exception as e:
-        print(f"identify_merchants_groq error: {e}")
+        print(f"identify_merchants_claude error: {e}")
         identifications = []
 
     id_map = {i["narration"]: i for i in identifications}
@@ -844,7 +848,7 @@ def subscription_scan():
         if not recurring:
             return jsonify({"subscriptions": [], "message": "No recurring subscriptions detected in this statement."})
 
-        enriched = identify_merchants_groq(recurring)
+        enriched = identify_merchants_claude(recurring)
 
         return jsonify({
             "subscriptions": enriched,

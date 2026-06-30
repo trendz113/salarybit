@@ -1,8 +1,8 @@
 {
   "site": "https://salarybit.in",
-  "files_scanned": 71,
-  "internal_links_checked": 118,
-  "internal_links_ok": 80,
+  "files_scanned": 67,
+  "internal_links_checked": 104,
+  "internal_links_ok": 79,
   "internal_links_broken": [
     {
       "path": "/$2",
@@ -11,69 +11,6 @@
       "error": "HTTP 404",
       "found_in": [
         "khata-ai.html"
-      ]
-    },
-    {
-      "path": "/${m.awayTeam.crest}",
-      "url": "https://salarybit.in/${m.awayTeam.crest}",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "fifa-2026.html"
-      ]
-    },
-    {
-      "path": "/${m.homeTeam.crest}",
-      "url": "https://salarybit.in/${m.homeTeam.crest}",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "fifa-2026.html"
-      ]
-    },
-    {
-      "path": "/${row.team.crest}",
-      "url": "https://salarybit.in/${row.team.crest}",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "fifa-2026.html"
-      ]
-    },
-    {
-      "path": "/${s.team.crest}",
-      "url": "https://salarybit.in/${s.team.crest}",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "fifa-2026.html"
-      ]
-    },
-    {
-      "path": "/ai-business-finder-india/",
-      "url": "https://salarybit.in/ai-business-finder-india/",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "ai-business-finder-india.html"
-      ]
-    },
-    {
-      "path": "/assets/app.js",
-      "url": "https://salarybit.in/assets/app.js",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "ai-business-finder-india.html"
-      ]
-    },
-    {
-      "path": "/assets/styles.css",
-      "url": "https://salarybit.in/assets/styles.css",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "ai-business-finder-india.html"
       ]
     },
     {
@@ -281,60 +218,6 @@
       "error": "HTTP 404",
       "found_in": [
         "blog/ekhata-eaasthi-cmc-guide.html"
-      ]
-    },
-    {
-      "path": "/seo/karnataka.html",
-      "url": "https://salarybit.in/seo/karnataka.html",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "ai-business-finder-india.html"
-      ]
-    },
-    {
-      "path": "/seo/rural.html",
-      "url": "https://salarybit.in/seo/rural.html",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "ai-business-finder-india.html"
-      ]
-    },
-    {
-      "path": "/seo/students.html",
-      "url": "https://salarybit.in/seo/students.html",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "ai-business-finder-india.html"
-      ]
-    },
-    {
-      "path": "/seo/under-5000.html",
-      "url": "https://salarybit.in/seo/under-5000.html",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "ai-business-finder-india.html"
-      ]
-    },
-    {
-      "path": "/seo/weekend.html",
-      "url": "https://salarybit.in/seo/weekend.html",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "ai-business-finder-india.html"
-      ]
-    },
-    {
-      "path": "/seo/women.html",
-      "url": "https://salarybit.in/seo/women.html",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "ai-business-finder-india.html"
       ]
     },
     {

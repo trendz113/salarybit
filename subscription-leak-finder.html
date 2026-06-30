@@ -400,6 +400,7 @@ const itemList = document.getElementById('itemList');
 const lockOverlay = document.getElementById('lockOverlay');
 const unlockBtn = document.getElementById('unlockBtn');
 
+const API_BASE = 'https://web-production-456eb.up.railway.app';
 let selectedFile = null;
 
 uploadBox.addEventListener('click', () => fileInput.click());
@@ -458,7 +459,7 @@ analyzeBtn.addEventListener('click', async () => {
     const formData = new FormData();
     formData.append('statement', selectedFile);
 
-    const res = await fetch('/api/subscription-scan', {
+    const res = await fetch(API_BASE + '/api/subscription-scan', {
       method: 'POST',
       body: formData
     });
@@ -506,7 +507,7 @@ unlockBtn.addEventListener('click', async () => {
   unlockBtn.textContent = 'Loading...';
 
   try {
-    const orderRes = await fetch('/api/create-subscription-scan-order', { method: 'POST' });
+    const orderRes = await fetch(API_BASE + '/api/create-subscription-scan-order', { method: 'POST' });
     const order = await orderRes.json();
 
     const options = {
@@ -517,7 +518,7 @@ unlockBtn.addEventListener('click', async () => {
       name: 'SalaryBit',
       description: 'Subscription Leak Report - Full Unlock',
       handler: async function(response) {
-        const verifyRes = await fetch('/api/verify-subscription-payment', {
+        const verifyRes = await fetch(API_BASE + '/api/verify-subscription-payment', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

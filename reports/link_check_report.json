@@ -1,8 +1,8 @@
 {
   "site": "https://salarybit.in",
-  "files_scanned": 70,
-  "internal_links_checked": 116,
-  "internal_links_ok": 78,
+  "files_scanned": 71,
+  "internal_links_checked": 117,
+  "internal_links_ok": 79,
   "internal_links_broken": [
     {
       "path": "/$2",

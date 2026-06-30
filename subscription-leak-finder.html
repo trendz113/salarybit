@@ -338,6 +338,28 @@
   </div>
 
   <button id="analyzeBtn" class="cta-btn" disabled>Scan my statement</button>
+
+  <div id="passwordBox" style="display:none; margin-top:14px;">
+    <div style="background: var(--bg-card-light); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 14px;">
+      <div style="font-weight:600; margin-bottom:8px;">This statement is password-protected.</div>
+      <div style="color: var(--muted); font-size:14px; line-height:1.6;">
+        Easiest fix — make an unlocked copy:
+        <ol style="margin: 8px 0 0; padding-left: 20px;">
+          <li>Open the PDF on your phone/laptop and unlock it with your usual ID (Customer ID, PAN, or DOB — whatever your bank asks for).</li>
+          <li>Once it's open and readable, use <strong>Print → Save as PDF</strong> (instead of closing it).</li>
+          <li>Upload that newly saved PDF here instead — it won't have a password on it.</li>
+        </ol>
+      </div>
+    </div>
+    <div style="color: var(--muted); font-size:13px; margin-bottom:6px;">
+      Or, if you'd rather just enter it here:
+    </div>
+    <input type="password" id="pdfPassword" placeholder="PDF password (e.g. Customer ID, PAN, or DOB)"
+      style="width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--line);
+             background: var(--bg-card-light); color: var(--ink); font-size:15px; box-sizing:border-box;">
+    <div id="pwError" style="display:none; color: var(--warn); font-size:13px; margin-top:6px;"></div>
+  </div>
+
   <div class="privacy-note">Your statement is read once to detect patterns, then deleted. We never store account numbers or balances.</div>
 
   <div id="loading" class="loading">
@@ -354,7 +376,7 @@
 
     <div class="item-list" id="itemList"></div>
 
-    <div class="lock-overlay show" id="lockOverlay">
+    <div class="lock-overlay" id="lockOverlay">
       <h3>See exactly what each one is</h3>
       <p>Unlock merchant names and how to cancel each, in one tap.</p>
       <button class="unlock-btn" id="unlockBtn">Unlock full report — ₹49</button>
@@ -440,12 +462,14 @@ const loadingMessages = [
   'Almost there…'
 ];
 
-analyzeBtn.addEventListener('click', async () => {
-  if (!selectedFile) return;
+const passwordBox = document.getElementById('passwordBox');
+const pdfPassword = document.getElementById('pdfPassword');
 
+async function runScan() {
   document.querySelector('.upload-box').style.display = 'none';
   filenamePill.style.display = 'none';
   analyzeBtn.style.display = 'none';
+  passwordBox.style.display = 'none';
   document.querySelector('.privacy-note').style.display = 'none';
   loading.classList.add('show');
 
@@ -458,6 +482,7 @@ analyzeBtn.addEventListener('click', async () => {
   try {
     const formData = new FormData();
     formData.append('statement', selectedFile);
+    if (pdfPassword.value) formData.append('password', pdfPassword.value);
 
     const res = await fetch(API_BASE + '/api/subscription-scan', {
       method: 'POST',
@@ -467,6 +492,27 @@ analyzeBtn.addEventListener('click', async () => {
 
     clearInterval(msgInterval);
     loading.classList.remove('show');
+
+    if (data.error === 'password_protected') {
+      // Re-show the upload step with the password box visible so they can enter it and retry
+      document.querySelector('.upload-box').style.display = 'none';
+      filenamePill.style.display = 'flex';
+      analyzeBtn.style.display = 'block';
+      analyzeBtn.textContent = 'Try again';
+      document.querySelector('.privacy-note').style.display = 'block';
+      passwordBox.style.display = 'block';
+      const pwError = document.getElementById('pwError');
+      if (pdfPassword.value) {
+        pwError.textContent = data.message;
+        pwError.style.display = 'block';
+      } else {
+        pwError.style.display = 'none';
+      }
+      pdfPassword.focus();
+      return;
+    }
+
+    analyzeBtn.textContent = 'Scan my statement';
     renderResults(data);
   } catch (err) {
     clearInterval(msgInterval);
@@ -474,6 +520,11 @@ analyzeBtn.addEventListener('click', async () => {
     loadingText.textContent = 'Something went wrong. Please try again.';
     loading.classList.add('show');
   }
+}
+
+analyzeBtn.addEventListener('click', () => {
+  if (!selectedFile) return;
+  runScan();
 });
 
 function renderResults(data) {
@@ -484,6 +535,21 @@ function renderResults(data) {
   itemCount.textContent = items.length + ' subscription' + (items.length !== 1 ? 's' : '') + ' detected · per year';
 
   itemList.innerHTML = '';
+
+  if (items.length === 0) {
+    lockOverlay.classList.remove('show');
+    itemList.innerHTML = `
+      <div style="text-align:center; padding: 24px 0; color: var(--muted);">
+        No recurring subscriptions detected in this statement.<br>
+        Try a statement covering at least 2-3 months for best results.
+      </div>
+    `;
+    results.classList.add('show');
+    window._scanData = data;
+    return;
+  }
+
+  lockOverlay.classList.add('show');
   items.forEach((item, idx) => {
     const row = document.createElement('div');
     row.className = 'item-row locked';

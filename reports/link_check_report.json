@@ -1,8 +1,8 @@
 {
   "site": "https://salarybit.in",
   "files_scanned": 68,
-  "internal_links_checked": 103,
-  "internal_links_ok": 80,
+  "internal_links_checked": 104,
+  "internal_links_ok": 87,
   "internal_links_broken": [
     {
       "path": "/blog/borewell-recharge-rainwater-harvesting-hoskote-bangalore",
@@ -11,15 +11,6 @@
       "error": "HTTP 404",
       "found_in": [
         "blog/borewell.html"
-      ]
-    },
-    {
-      "path": "/blog/ctc-vs-gross-vs-net-salary",
-      "url": "https://salarybit.in/blog/ctc-vs-gross-vs-net-salary",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "blog/article3-ctc-vs-gross-vs-net-salary.html"
       ]
     },
     {
@@ -32,15 +23,6 @@
       ]
     },
     {
-      "path": "/blog/epf-pf-guide-salaried-employees",
-      "url": "https://salarybit.in/blog/epf-pf-guide-salaried-employees",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "blog/article5-epf-pf-guide.html"
-      ]
-    },
-    {
       "path": "/blog/how-to-calculate-inhand-salary",
       "url": "https://salarybit.in/blog/how-to-calculate-inhand-salary",
       "status": null,
@@ -50,48 +32,12 @@
       ]
     },
     {
-      "path": "/blog/how-to-negotiate-salary-india",
-      "url": "https://salarybit.in/blog/how-to-negotiate-salary-india",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "blog/article7-how-to-negotiate-salary.html"
-      ]
-    },
-    {
-      "path": "/blog/how-to-read-salary-slip",
-      "url": "https://salarybit.in/blog/how-to-read-salary-slip",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "blog/article4-how-to-read-salary-slip.html"
-      ]
-    },
-    {
-      "path": "/blog/hra-exemption-guide",
-      "url": "https://salarybit.in/blog/hra-exemption-guide",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "blog/article6-hra-exemption-guide.html"
-      ]
-    },
-    {
       "path": "/blog/new-labour-code-2026-salary-impact",
       "url": "https://salarybit.in/blog/new-labour-code-2026-salary-impact",
       "status": null,
       "error": "HTTP 404",
       "found_in": [
         "blog/article8-new-labour-code-2026-salary-impact.html"
-      ]
-    },
-    {
-      "path": "/blog/pan-complete.html",
-      "url": "https://salarybit.in/blog/pan-complete.html",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "blog/index.html"
       ]
     },
     {

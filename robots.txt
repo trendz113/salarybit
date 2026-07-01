@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
+Disallow: /scripts/
+Disallow: /reports/
+Disallow: /api/
+Disallow: /*.json$
 
 Sitemap: https://salarybit.in/sitemap.xml

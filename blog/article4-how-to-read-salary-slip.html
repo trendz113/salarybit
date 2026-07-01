@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>How to Read Your Salary Slip in India: A Complete Guide | SalaryBit</title>
+  <meta name="description" content="Understand every component on your Indian salary slip — Basic, HRA, PF, TDS, Professional Tax and more. A simple, complete guide for salaried employees."/>
+  <link rel="canonical" href="https://salarybit.in/blog/article4-how-to-read-salary-slip.html"/>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --primary: #1a3c5e; --accent: #e8702a; --bg: #fafaf8; --surface: #ffffff; --text: #1e2329; --muted: #6b7280; --border: #e5e7eb; --highlight: #fff7ed; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Source Sans 3', sans-serif; background: var(--bg); color: var(--text); line-height: 1.75; font-size: 17px; }
+    a { color: var(--accent); }
+    header { background: var(--primary); padding: 16px 24px; }
+    header a { color: #fff; font-family: 'Lora', serif; font-size: 1.4rem; font-weight: 700; text-decoration: none; }
+    .hero { background: linear-gradient(135deg, #1b2838 0%, #2c4a6e 100%); color: #fff; padding: 60px 24px 50px; text-align: center; }
+    .hero .tag { display: inline-block; background: var(--accent); color: #fff; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 18px; }
+    .hero h1 { font-family: 'Lora', serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; max-width: 760px; margin: 0 auto 16px; line-height: 1.25; }
+    .hero .meta { font-size: 0.9rem; opacity: 0.75; }
+    .container { max-width: 780px; margin: 0 auto; padding: 0 20px; }
+    article { background: var(--surface); border-radius: 12px; box-shadow: 0 2px 20px rgba(0,0,0,0.07); margin: -30px auto 60px; padding: 48px 56px; position: relative; }
+    @media(max-width:640px){ article { padding: 28px 20px; } }
+    h2 { font-family: 'Lora', serif; font-size: 1.5rem; color: var(--primary); margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
+    h3 { font-family: 'Lora', serif; font-size: 1.15rem; color: var(--primary); margin: 28px 0 10px; }
+    p { margin-bottom: 16px; }
+    ul, ol { margin: 12px 0 20px 24px; }
+    li { margin-bottom: 8px; }
+    .callout { background: var(--highlight); border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 28px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 0.95rem; }
+    th { background: var(--primary); color: #fff; padding: 12px 16px; text-align: left; font-weight: 600; }
+    td { padding: 11px 16px; border-bottom: 1px solid var(--border); }
+    tr:nth-child(even) td { background: #f8fafc; }
+
+    /* Mock Payslip */
+    .payslip { border: 2px solid var(--border); border-radius: 12px; overflow: hidden; margin: 32px 0; font-size: 0.92rem; }
+    .payslip-header { background: var(--primary); color: #fff; padding: 20px 24px; }
+    .payslip-header .company { font-size: 1.1rem; font-weight: 700; }
+    .payslip-header .month { opacity: 0.75; font-size: 0.9rem; margin-top: 4px; }
+    .payslip-employee { background: #f0f4f8; padding: 16px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.88rem; border-bottom: 1px solid var(--border); }
+    .payslip-employee span { color: var(--muted); }
+    .payslip-body { display: grid; grid-template-columns: 1fr 1fr; }
+    .payslip-col { padding: 20px 24px; }
+    .payslip-col:first-child { border-right: 1px solid var(--border); }
+    .payslip-col h4 { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+    .payslip-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #e5e7eb; font-size: 0.9rem; }
+    .payslip-row:last-child { border: none; }
+    .payslip-total { display: grid; grid-template-columns: 1fr 1fr; background: #f0f4f8; border-top: 2px solid var(--border); }
+    .payslip-total-col { padding: 14px 24px; font-weight: 700; display: flex; justify-content: space-between; }
+    .payslip-total-col:first-child { border-right: 1px solid var(--border); }
+    .payslip-net { background: var(--primary); color: #fff; padding: 16px 24px; display: flex; justify-content: space-between; font-weight: 700; font-size: 1.05rem; }
+    @media(max-width:580px){ .payslip-body, .payslip-total { grid-template-columns: 1fr; } .payslip-col:first-child { border-right: none; border-bottom: 1px solid var(--border); } .payslip-total-col:first-child { border-right: none; border-bottom: 1px solid var(--border); } .payslip-employee { grid-template-columns: 1fr; } }
+
+    .cta-box { background: linear-gradient(135deg, var(--primary), #2a5f8f); color: #fff; border-radius: 12px; padding: 32px; text-align: center; margin: 44px 0 0; }
+    .cta-box h3 { color: #fff; margin: 0 0 10px; font-size: 1.3rem; }
+    .cta-box p { margin: 0 0 20px; opacity: 0.88; }
+    .cta-btn { display: inline-block; background: var(--accent); color: #fff; padding: 12px 28px; border-radius: 8px; font-weight: 600; font-size: 1rem; text-decoration: none; }
+    footer { text-align: center; padding: 32px 20px; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+<header><a href="https://salarybit.in">SalaryBit</a></header>
+
+<div class="hero">
+  <div class="tag">Pay Slip Guide</div>
+  <h1>How to Read Your Salary Slip in India: A Complete Guide</h1>
+  <p class="meta">Updated April 2026 &nbsp;·&nbsp; 8 min read</p>
+</div>
+
+<div class="container">
+<article>
+
+  <p>Most Indians receive their payslip every month but rarely look beyond the net pay figure. Your payslip is actually a detailed financial document — and understanding it helps you verify your employer's deductions, plan your taxes, and make smarter financial decisions.</p>
+  <p>Here's a complete walkthrough of a typical Indian salary slip and what every component means.</p>
+
+  <h2>1. A Sample Indian Salary Slip</h2>
+
+  <div class="payslip">
+    <div class="payslip-header">
+      <div class="company">Acme Technologies Pvt. Ltd.</div>
+      <div class="month">Pay Slip for March 2026 &nbsp;|&nbsp; Employee ID: EMP-0847</div>
+    </div>
+    <div class="payslip-employee">
+      <div><span>Name:</span> Rahul Sharma</div>
+      <div><span>Department:</span> Product</div>
+      <div><span>Designation:</span> Senior Engineer</div>
+      <div><span>PAN:</span> XXXPS1234X</div>
+      <div><span>Bank A/C:</span> XXXX XXXX 7892</div>
+      <div><span>UAN:</span> 100XXXXXXXX</div>
+    </div>
+    <div class="payslip-body">
+      <div class="payslip-col">
+        <h4>Earnings</h4>
+        <div class="payslip-row"><span>Basic Salary</span><span>₹40,000</span></div>
+        <div class="payslip-row"><span>House Rent Allowance</span><span>₹16,000</span></div>
+        <div class="payslip-row"><span>Special Allowance</span><span>₹28,500</span></div>
+        <div class="payslip-row"><span>Leave Travel Allowance</span><span>₹2,000</span></div>
+        <div class="payslip-row"><span>Performance Bonus</span><span>₹0</span></div>
+      </div>
+      <div class="payslip-col">
+        <h4>Deductions</h4>
+        <div class="payslip-row"><span>Provident Fund (EPF)</span><span>₹4,800</span></div>
+        <div class="payslip-row"><span>Professional Tax</span><span>₹200</span></div>
+        <div class="payslip-row"><span>TDS (Income Tax)</span><span>₹2,400</span></div>
+        <div class="payslip-row"><span>ESI</span><span>₹0</span></div>
+        <div class="payslip-row"><span>&nbsp;</span><span>&nbsp;</span></div>
+      </div>
+    </div>
+    <div class="payslip-total">
+      <div class="payslip-total-col"><span>Gross Earnings</span><span>₹86,500</span></div>
+      <div class="payslip-total-col"><span>Total Deductions</span><span>₹7,400</span></div>
+    </div>
+    <div class="payslip-net"><span>Net Pay (In-Hand)</span><span>₹79,100</span></div>
+  </div>
+
+  <h2>2. The Earnings Side — What You're Paid</h2>
+
+  <h3>Basic Salary</h3>
+  <p>This is the foundation of your salary. Everything else is calculated as a percentage of Basic. It is 100% taxable and typically 40–50% of your CTC. A higher Basic means higher PF contributions (good for retirement) but also more taxable income.</p>
+
+  <h3>House Rent Allowance (HRA)</h3>
+  <p>HRA is paid to cover your housing costs. Under the Old Tax Regime, you can claim partial or full HRA as exempt from tax if you pay rent. The exempt amount is the minimum of: actual HRA received, 50% of Basic (metro) or 40% (non-metro), and actual rent paid minus 10% of Basic. Under the New Regime, HRA is fully taxable.</p>
+
+  <h3>Special Allowance</h3>
+  <p>This is a catch-all component that makes up the balance of your CTC after all named components are accounted for. It is fully taxable in both regimes and has no specific purpose or exemption attached to it.</p>
+
+  <h3>Leave Travel Allowance (LTA)</h3>
+  <p>LTA covers your travel costs within India. Under the Old Regime, you can claim LTA exemption twice in a 4-year block — but only for actual travel expenses, not accommodation or food. You need to submit travel bills.</p>
+
+  <h3>Performance / Variable Bonus</h3>
+  <p>This is fully taxable in the month it is paid. Employers deduct TDS on the bonus amount. Your annual bonus may not appear every month — it depends on your appraisal cycle.</p>
+
+  <h2>3. The Deductions Side — What's Taken Out</h2>
+
+  <h3>Provident Fund (EPF)</h3>
+  <p>You contribute 12% of your Basic Salary to the Employee Provident Fund every month. This is your own money — it goes into your EPF account and earns interest (currently 8.25% p.a.). You can withdraw it when you resign (after certain conditions) or on retirement. This is NOT a loss — it's your savings.</p>
+
+  <div class="callout">
+    <strong>Remember:</strong> Your employer also contributes 12% of Basic to PF — but that's part of CTC, not a deduction from your salary. Of the employer's 12%, about 8.33% goes to your EPS (pension scheme) and 3.67% to EPF.
+  </div>
+
+  <h3>Professional Tax</h3>
+  <p>Professional Tax is a state-level tax deducted by your employer and remitted to the state government. The maximum is ₹2,500 per year (₹200/month in most states). It is applicable only in certain states — Maharashtra, Karnataka, West Bengal, Gujarat, Andhra Pradesh, Tamil Nadu among others. This small amount is deductible from your taxable income in the Old Regime.</p>
+
+  <h3>TDS — Tax Deducted at Source</h3>
+  <p>At the beginning of each financial year, your employer estimates your total annual tax liability based on your declared investments and income, and deducts TDS proportionally each month. If your actual tax liability at year-end is less than TDS deducted, you get a refund when you file your ITR.</p>
+
+  <h3>ESI — Employees' State Insurance</h3>
+  <p>ESI is applicable only if your gross salary is ₹21,000 per month or less. Employees contribute 0.75% of gross salary, and the employer contributes 3.25%. It provides medical, maternity, and disability benefits. Most employees in the technology and services sector earn above this threshold and are exempt.</p>
+
+  <h2>4. Important Numbers to Check Every Month</h2>
+  <ul>
+    <li><strong>UAN (Universal Account Number)</strong> — Verify your PF deposits are being made using this number on the EPFO portal.</li>
+    <li><strong>PAN</strong> — Ensure your PAN is correctly linked so TDS is attributed properly.</li>
+    <li><strong>Days Worked / Loss of Pay (LOP)</strong> — If you took unpaid leave, this will reduce your gross salary proportionally.</li>
+    <li><strong>YTD (Year to Date) figures</strong> — Total earnings and deductions from April to the current month for that financial year.</li>
+  </ul>
+
+  <h2>5. Red Flags to Watch For</h2>
+  <ol>
+    <li><strong>PF not being deposited</strong> — Check your EPFO passbook online. If employer PF isn't reflected, escalate to HR.</li>
+    <li><strong>TDS mismatch</strong> — If your TDS is far higher than expected, you may have missed submitting investment declarations.</li>
+    <li><strong>Unexplained deductions</strong> — Any deduction not labelled clearly should be questioned.</li>
+    <li><strong>Incorrect salary for the month</strong> — If your leave or attendance data is wrong, your salary will be impacted.</li>
+  </ol>
+
+  <h2>6. How to Use Your Payslip</h2>
+  <ul>
+    <li><strong>Loan applications</strong> — Most banks require 3–6 months of payslips to verify income.</li>
+    <li><strong>Tax filing (ITR)</strong> — Your payslip helps verify Form 16 figures and calculate any additional tax.</li>
+    <li><strong>Salary negotiations</strong> — Use your gross/net salary figures to benchmark and negotiate hikes.</li>
+    <li><strong>Visa applications</strong> — Many consulates require payslips as proof of income and employment.</li>
+  </ul>
+
+  <h2>7. Frequently Asked Questions</h2>
+
+  <h3>Where can I find my payslip?</h3>
+  <p>Most companies distribute payslips via their HRMS portal (Darwinbox, Workday, GreytHR, Keka, etc.) or send them by email in PDF format. If you haven't received yours, contact your HR or payroll team.</p>
+
+  <h3>What is Form 16 and how is it related to my payslip?</h3>
+  <p>Form 16 is an annual TDS certificate issued by your employer, summarising your total salary and TDS deducted for the entire financial year. It is derived from your monthly payslips and is the primary document you need to file your ITR.</p>
+
+  <h3>Can I increase my in-hand salary without changing my CTC?</h3>
+  <p>Yes! By restructuring your salary to include more tax-exempt components like HRA, food coupons, or reimbursements, you can reduce your taxable income and increase your in-hand pay — all within the same CTC. Speak to your HR team about salary restructuring options.</p>
+
+  <div class="cta-box">
+    <h3>Verify Your Pay Slip Instantly</h3>
+    <p>Enter your salary components in SalaryBit and confirm every deduction is correct — Basic, HRA, PF, Professional Tax, and TDS all in one place.</p>
+    <a href="https://salarybit.in" class="cta-btn">Check My Salary →</a>
+  </div>
+
+</article>
+</div>
+<footer><p>© 2026 SalaryBit. For informational purposes only. Consult a qualified CA for personalised tax advice.</p></footer>
+</body>
+</html>

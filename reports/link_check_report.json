@@ -1,18 +1,9 @@
 {
   "site": "https://salarybit.in",
-  "files_scanned": 67,
-  "internal_links_checked": 104,
-  "internal_links_ok": 79,
+  "files_scanned": 68,
+  "internal_links_checked": 103,
+  "internal_links_ok": 80,
   "internal_links_broken": [
-    {
-      "path": "/$2",
-      "url": "https://salarybit.in/$2",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "khata-ai.html"
-      ]
-    },
     {
       "path": "/blog/borewell-recharge-rainwater-harvesting-hoskote-bangalore",
       "url": "https://salarybit.in/blog/borewell-recharge-rainwater-harvesting-hoskote-bangalore",
@@ -119,15 +110,6 @@
       "error": "HTTP 404",
       "found_in": [
         "blog/ekhata-eswathu-guide.html"
-      ]
-    },
-    {
-      "path": "/eswathu.html",
-      "url": "https://salarybit.in/eswathu.html",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "khata-ai.html"
       ]
     },
     {

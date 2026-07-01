@@ -1,8 +1,8 @@
 {
   "site": "https://salarybit.in",
-  "files_scanned": 68,
-  "internal_links_checked": 104,
-  "internal_links_ok": 87,
+  "files_scanned": 67,
+  "internal_links_checked": 101,
+  "internal_links_ok": 86,
   "internal_links_broken": [
     {
       "path": "/blog/borewell-recharge-rainwater-harvesting-hoskote-bangalore",
@@ -38,15 +38,6 @@
       "error": "HTTP 404",
       "found_in": [
         "blog/article8-new-labour-code-2026-salary-impact.html"
-      ]
-    },
-    {
-      "path": "/dashboard.html",
-      "url": "https://salarybit.in/dashboard.html",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "job-agent.html"
       ]
     },
     {
@@ -128,15 +119,6 @@
       "error": "HTTP 404",
       "found_in": [
         "blog/pf-deduction-calculation-guide-india.html"
-      ]
-    },
-    {
-      "path": "/privacy/",
-      "url": "https://salarybit.in/privacy/",
-      "status": null,
-      "error": "HTTP 404",
-      "found_in": [
-        "job-agent.html"
       ]
     },
     {

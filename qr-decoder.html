@@ -215,6 +215,23 @@ header {
 .trust-item::before { content: '✓'; color: var(--green); font-weight: 700; }
 
 .faq { margin-bottom: 60px; }
+
+.why-section { margin-bottom: 48px; }
+.why-head { text-align: center; margin-bottom: 24px; }
+.why-head h2 { font-size: clamp(24px, 4vw, 32px); font-weight: 800; letter-spacing: -0.5px; margin-bottom: 10px; }
+.why-head h2 em { color: var(--green); font-style: normal; }
+.why-head p { font-size: 14px; color: var(--text2); max-width: 520px; margin: 0 auto; line-height: 1.6; }
+.why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.why-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px; }
+.why-card.wide { grid-column: 1 / -1; }
+.why-icon { font-size: 22px; margin-bottom: 10px; }
+.why-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.why-desc { font-size: 13px; color: var(--text2); line-height: 1.65; }
+.why-desc code { font-family: var(--mono); font-size: 12px; color: var(--blue); background: var(--surface2); padding: 1px 5px; border-radius: 4px; }
+.why-list { margin-top: 10px; padding-left: 18px; }
+.why-list li { font-size: 13px; color: var(--text2); line-height: 1.7; }
+@media (max-width: 600px) { .why-grid { grid-template-columns: 1fr; } }
+
 .faq h3 { font-size: 13px; font-weight: 700; color: var(--text2); margin-bottom: 16px; letter-spacing: 0.05em; text-transform: uppercase; }
 .faq-item { border-bottom: 1px solid var(--border); padding: 14px 0; }
 .faq-q { font-size: 14px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
@@ -255,6 +272,54 @@ footer a { color: var(--text3); text-decoration: none; }
     <p>Upload any government PDF — we extract and decode the embedded QR string in seconds.</p>
     <div class="price-pill">
       <strong>₹49</strong> per decode · instant result
+    </div>
+  </section>
+
+  <section class="why-section">
+    <div class="why-head">
+      <h2>Why you'd <em>actually</em> need this</h2>
+      <p>Not a generic QR scanner — built specifically for the digital signature QR embedded in Indian government property documents.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card wide">
+        <div class="why-icon">🔐</div>
+        <div class="why-title">The problem: portals want the raw string, not your PDF</div>
+        <div class="why-desc">
+          e-Khata, BBMP, and BBSCC documents carry a QR code that encodes a PKCS#7 digital signature —
+          something like <code>2933699+++MIIB/AYJKoZIhvc...</code>. When you're verifying a property before
+          purchase, processing a bank loan, submitting to Kaveri Online, or fighting a legal dispute over
+          document authenticity, the system on the other end usually asks you to <b>paste that exact string</b>
+          — not upload the PDF, not send a screenshot. If you can't produce it, the verification step stalls.
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">📵</div>
+        <div class="why-title">Why normal QR scanner apps fail here</div>
+        <div class="why-desc">
+          This isn't a URL-style QR made for phone cameras. It's a dense, high-density data QR embedded as a
+          small raster image inside the PDF page — often under-resolved once the page is flattened. Google Lens
+          and most scanner apps either say "no QR found" or return garbled, truncated text on it.
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">✅</div>
+        <div class="why-title">What you actually get</div>
+        <div class="why-desc">
+          The exact, complete decoded string — document number, separator, and full signature block — shown
+          clearly and ready to copy in one tap. If your PDF has multiple QR codes across pages, you get all of
+          them, each labelled by page.
+        </div>
+      </div>
+      <div class="why-card wide">
+        <div class="why-icon">👤</div>
+        <div class="why-title">Who this is for</div>
+        <ul class="why-list">
+          <li><b>Property buyers</b> verifying an e-Khata is genuine before paying an advance</li>
+          <li><b>Bank / NBFC loan processing staff</b> who need the QR string for property-backed loan files</li>
+          <li><b>Advocates and legal professionals</b> checking document authenticity in a dispute</li>
+          <li><b>Anyone submitting to a portal or authority</b> that specifically asks for the raw QR string, not the file</li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -346,15 +411,7 @@ footer a { color: var(--text3); text-decoration: none; }
 // CONFIG — Update these two values only
 // ═══════════════════════════════════════════════════════════
 const CONFIG = {
-  // Step 1: Deploy backend to Vercel, paste the URL here
   backendUrl: 'https://web-production-456eb.up.railway.app',
-
-  // Step 2: Paste your Razorpay KEY ID here
-  // TEST:  starts with rzp_test_  ← use this now
-  // LIVE:  starts with rzp_live_  ← switch when ready
-  razorpayKey: 'rzp_live_SkoJJRRIJozPe2',
-
-  // Step 3: Set to false when going live
   isTestMode: false,
 };
 // ═══════════════════════════════════════════════════════════
@@ -405,18 +462,6 @@ function loadFile(f) {
 async function startPayment() {
   if (!uploadedFile) return;
 
-  // Guard: check backend URL is configured
-  if (CONFIG.backendUrl.includes('YOUR-BACKEND')) {
-    showError('Backend not configured yet. Deploy your Vercel backend first and update backendUrl in CONFIG.');
-    return;
-  }
-
-  // Guard: check Razorpay key is configured
-  if (CONFIG.razorpayKey.includes('XXXXXXXX')) {
-    showError('Razorpay key not set. Add your rzp_test_ key to CONFIG.razorpayKey.');
-    return;
-  }
-
   showStatus('Creating payment order...');
   document.getElementById('payBtn').disabled = true;
 
@@ -435,12 +480,13 @@ async function startPayment() {
 
     const order = await orderRes.json();
     if (!order.order_id) throw new Error('No order_id returned from backend.');
+    if (!order.razorpay_key) throw new Error('Backend did not return a Razorpay key. Check RAZORPAY_KEY_ID is set on the server.');
 
     showStatus('Opening payment window...');
 
     // Step 2: Open Razorpay checkout
     const options = {
-      key: CONFIG.razorpayKey,
+      key: order.razorpay_key,
       amount: order.amount,
       currency: 'INR',
       name: 'SalaryBit',

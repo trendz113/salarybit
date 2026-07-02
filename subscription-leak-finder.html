@@ -132,6 +132,15 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
   .loading-text { font-size: 15px; color: var(--muted); font-weight: 500; }
+  .loading-subtext { font-size: 12.5px; color: var(--muted); opacity: 0.75; margin-top: 6px; }
+  .progress-track {
+    width: 220px; height: 4px; margin: 18px auto 0;
+    background: var(--line); border-radius: 4px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; width: 0%; background: var(--green);
+    border-radius: 4px; transition: width 0.4s ease-out;
+  }
 
   /* Results */
   .results { display: none; }
@@ -367,6 +376,8 @@
   <div id="loading" class="loading">
     <div class="spin"></div>
     <div class="loading-text" id="loadingText">Reading your statement…</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="loading-subtext" id="loadingSubtext"></div>
   </div>
 
   <div id="results" class="results">
@@ -424,6 +435,8 @@ const removeFile = document.getElementById('removeFile');
 const analyzeBtn = document.getElementById('analyzeBtn');
 const loading = document.getElementById('loading');
 const loadingText = document.getElementById('loadingText');
+const progressFill = document.getElementById('progressFill');
+const loadingSubtext = document.getElementById('loadingSubtext');
 const results = document.getElementById('results');
 const totalAmount = document.getElementById('totalAmount');
 const itemCount = document.getElementById('itemCount');
@@ -461,6 +474,14 @@ function handleFiles(fileList) {
     alert('Please upload PDF files or photos/screenshots (JPG, PNG, WEBP) only.');
     return;
   }
+  // New file selection — any password typed for a previous file no longer
+  // applies. Clear it so a stale password isn't silently sent with this
+  // upload, and reset the password-retry state.
+  passwordAttempted = false;
+  passwordBox.style.display = 'none';
+  pwEntryRow.style.display = '';
+  pdfPassword.value = '';
+  pwError.style.display = 'none';
   selectedFiles = files;
   filenameText.textContent = files.length === 1
     ? files[0].name
@@ -489,11 +510,11 @@ function resetUploadUI() {
 
 removeFile.addEventListener('click', resetUploadUI);
 
-const loadingMessages = [
-  'Reading your statement…',
-  'Checking for repeating charges…',
-  'Almost there…'
-];
+function buildLoadingMessages(fileCount) {
+  return fileCount > 1
+    ? [`Reading ${fileCount} files…`, 'Checking for repeating charges…', 'Matching charges across statements…', 'Almost there…']
+    : ['Reading your statement…', 'Checking for repeating charges…', 'Almost there…'];
+}
 
 async function runScan() {
   document.querySelector('.upload-box').style.display = 'none';
@@ -502,12 +523,33 @@ async function runScan() {
   passwordBox.style.display = 'none';
   document.querySelector('.privacy-note').style.display = 'none';
   loading.classList.add('show');
+  progressFill.style.width = '0%';
+  loadingSubtext.textContent = selectedFiles.length > 1
+    ? 'Multiple files can take a bit longer — reading them now.'
+    : 'This usually takes a few seconds.';
 
+  const loadingMessages = buildLoadingMessages(selectedFiles.length);
   let msgIdx = 0;
+  loadingText.textContent = loadingMessages[0];
   const msgInterval = setInterval(() => {
     msgIdx = (msgIdx + 1) % loadingMessages.length;
     loadingText.textContent = loadingMessages[msgIdx];
   }, 1800);
+
+  // The bar creeps toward ~92% and never looks stuck, even on a slow
+  // multi-page statement, then snaps to 100% the instant the real
+  // response arrives — rather than a fixed-duration fake animation.
+  const scanStart = Date.now();
+  const progressInterval = setInterval(() => {
+    const elapsed = (Date.now() - scanStart) / 1000;
+    const pct = 92 * (1 - Math.exp(-elapsed / 6));
+    progressFill.style.width = pct.toFixed(1) + '%';
+  }, 200);
+
+  function stopProgress() {
+    clearInterval(msgInterval);
+    clearInterval(progressInterval);
+  }
 
   try {
     const formData = new FormData();
@@ -521,7 +563,8 @@ async function runScan() {
     });
     const data = await res.json();
 
-    clearInterval(msgInterval);
+    progressFill.style.width = '100%';
+    stopProgress();
     loading.classList.remove('show');
 
     if (data.error === 'password_protected') {
@@ -560,8 +603,9 @@ async function runScan() {
     analyzeBtn.textContent = 'Scan my statement';
     renderTeaser(data);
   } catch (err) {
-    clearInterval(msgInterval);
+    stopProgress();
     loading.classList.remove('show');
+    progressFill.style.width = '0%';
     loadingText.textContent = 'Something went wrong. Please try again.';
     loading.classList.add('show');
   }

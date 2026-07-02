@@ -7,6 +7,9 @@ import tempfile
 import asyncio
 import urllib.request
 import urllib.error
+import base64
+import uuid
+import time as _time
 from datetime import datetime
 
 import razorpay
@@ -236,6 +239,86 @@ def extract_transactions_from_pdf(pdf_path, password=None):
     return all_rows
 
 
+IMAGE_MEDIA_TYPES = {
+    '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
+    '.png': 'image/png', '.webp': 'image/webp',
+}
+
+
+class ImageExtractionError(Exception):
+    """Raised when Claude vision could not read transactions from an image."""
+    pass
+
+
+def extract_transactions_from_image(image_path, media_type):
+    """
+    Uses Claude vision to read a bank-statement / UPI-app screenshot photo
+    and pull out debit transactions in the same [date, narration, amount, ""]
+    row shape that extract_transactions_from_pdf() produces, so it can flow
+    through the same classify_statement_rows() pipeline.
+    """
+    claude_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not claude_key:
+        raise ImageExtractionError("Server not configured for photo scanning.")
+
+    with open(image_path, "rb") as fh:
+        img_b64 = base64.b64encode(fh.read()).decode("utf-8")
+
+    prompt = (
+        "This image is a screenshot or photo of an Indian bank statement, UPI app "
+        "'manage mandates' screen, or transaction list. Extract every DEBIT / "
+        "withdrawal / outgoing transaction visible (ignore credits/deposits/incoming). "
+        "For each one give: date (as shown), narration/merchant text exactly as shown, "
+        "and amount (a plain number, no currency symbol or commas). "
+        "Output ONLY a valid JSON array, no markdown, no preamble, like: "
+        '[{"date": "01/06/2026", "narration": "ACH D-NETFLIX", "amount": 649}]. '
+        "If you cannot find any transactions, output []."
+    )
+
+    payload = json.dumps({
+        "model": "claude-sonnet-4-6",
+        "max_tokens": 2048,
+        "temperature": 0,
+        "messages": [{
+            "role": "user",
+            "content": [
+                {"type": "image", "source": {"type": "base64", "media_type": media_type, "data": img_b64}},
+                {"type": "text", "text": prompt}
+            ]
+        }]
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": claude_key,
+            "anthropic-version": "2023-06-01"
+        },
+        method="POST"
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            result = json.loads(resp.read().decode("utf-8"))
+        raw = result["content"][0]["text"]
+        clean = raw.replace("```json", "").replace("```", "").strip()
+        parsed = json.loads(clean)
+    except Exception as e:
+        print(f"extract_transactions_from_image error: {e}")
+        raise ImageExtractionError("Could not read transactions from this photo. Try a clearer, well-lit screenshot.")
+
+    rows = []
+    for item in parsed:
+        date_val = str(item.get("date", "")).strip()
+        narration = str(item.get("narration", "")).strip()
+        amount = item.get("amount", "")
+        if not date_val or not narration:
+            continue
+        rows.append([date_val, narration, str(amount), ""])
+    return rows
+
+
 def parse_statement_date(s):
     s = s.strip()
     for fmt in ("%d/%m/%Y", "%d-%m-%Y", "%d/%m/%y", "%d %b %Y", "%d-%b-%Y"):
@@ -353,6 +436,19 @@ def detect_recurring_charges(txns, amount_tolerance=0.05):
     return results
 
 
+def guess_payment_method(narration):
+    """Heuristic fallback so every item always has a payment_method, even if Claude's
+    classification is missing/unparseable."""
+    s = narration.upper()
+    if 'NACH' in s or re.search(r'\bACH\b', s):
+        return 'nach'
+    if 'UPI' in s or 'MANDATE' in s:
+        return 'upi'
+    if re.search(r'\bXX+\d{2,4}\b', s) or 'CARD' in s:
+        return 'card'
+    return 'other'
+
+
 def identify_merchants_claude(recurring_list):
     """
     Uses ANTHROPIC_API_KEY to identify merchant narrations via Claude,
@@ -363,7 +459,8 @@ def identify_merchants_claude(recurring_list):
         return [
             {**r, "identified_as": "Unknown - check manually",
              "category": "Unknown",
-             "how_to_cancel": "Check NPCI UPI Autopay portal or your bank app"}
+             "how_to_cancel": "Check NPCI UPI Autopay portal or your bank app",
+             "payment_method": guess_payment_method(r["narration_sample"])}
             for r in recurring_list
         ]
 
@@ -377,13 +474,15 @@ Rules:
 - Indian context: UPI/card/ACH narrations from Indian bank statements
 - "ARHA MEDIA" = Aha (Telugu/Tamil OTT app), generic "playstore" VPAs = Google Play Store app billing, "ACH D-NETFLIX" = Netflix, etc.
 - If unclear, say "Unclear - check [merchant] directly" rather than guessing
+- payment_method must be exactly one of: "upi" (UPI AutoPay / VPA mandate), "card" (debit/credit card autopay or standing instruction), "nach" (NACH/ACH bank mandate, typically SIPs/insurance/EMIs), "other" (can't tell)
+- how_to_cancel should be a short, specific one-line instruction naming where to go (e.g. "NPCI mandate portal" for upi, "Netbanking > Manage Standing Instructions" for card)
 - Output ONLY valid JSON array, no markdown, no preamble
 
 Transactions:
 {json.dumps(txn_summaries)}
 
 Output format:
-[{{"narration": "...", "identified_as": "...", "category": "OTT/Streaming|Telecom|Cloud/Software|Insurance|Investment SIP|Unknown|Other", "how_to_cancel": "short instruction"}}]"""
+[{{"narration": "...", "identified_as": "...", "category": "OTT/Streaming|Telecom|Cloud/Software|Insurance|Investment SIP|Unknown|Other", "payment_method": "upi|card|nach|other", "how_to_cancel": "short instruction"}}]"""
 
     payload = json.dumps({
         "model": "claude-sonnet-4-6",
@@ -415,11 +514,15 @@ Output format:
     enriched = []
     for r in recurring_list:
         match = id_map.get(r["narration_sample"], {})
+        payment_method = match.get("payment_method")
+        if payment_method not in ("upi", "card", "nach", "other"):
+            payment_method = guess_payment_method(r["narration_sample"])
         enriched.append({
             **r,
             "identified_as": match.get("identified_as", "Unknown - check manually"),
             "category": match.get("category", "Unknown"),
             "how_to_cancel": match.get("how_to_cancel", "Check NPCI UPI Autopay or your bank app"),
+            "payment_method": payment_method,
         })
     return enriched
 
@@ -837,8 +940,38 @@ def validate_signature():
 
 SUBSCRIPTION_SCAN_PRICE_PAISE = 4900  # Rs 49
 
+# In-memory cache: scan_id -> {"recurring": [...], "ts": epoch_seconds}
+# Holds the (already-detected, not-yet-AI-identified) recurring charge list
+# between the free scan and the paid unlock, so unlock is a single fast
+# Claude call instead of re-parsing the statement.
+_SUBSCRIPTION_SCAN_CACHE = {}
+_SCAN_CACHE_TTL = 1800  # 30 minutes
+
+
+def _scan_cache_put(recurring_list):
+    _scan_cache_gc()
+    scan_id = uuid.uuid4().hex
+    _SUBSCRIPTION_SCAN_CACHE[scan_id] = {"recurring": recurring_list, "ts": _time.time()}
+    return scan_id
+
+
+def _scan_cache_pop(scan_id):
+    entry = _SUBSCRIPTION_SCAN_CACHE.pop(scan_id, None)
+    if not entry:
+        return None
+    if _time.time() - entry["ts"] > _SCAN_CACHE_TTL:
+        return None
+    return entry["recurring"]
+
+
+def _scan_cache_gc():
+    now = _time.time()
+    expired = [k for k, v in _SUBSCRIPTION_SCAN_CACHE.items() if now - v["ts"] > _SCAN_CACHE_TTL]
+    for k in expired:
+        _SUBSCRIPTION_SCAN_CACHE.pop(k, None)
+
+
 # ── GENERIC CLAUDE PROXY (for client-side AI tools like MF Analyzer Bot) ──
-import time as _time
 _claude_proxy_hits = defaultdict(list)
 CLAUDE_PROXY_LIMIT = 20       # max requests
 CLAUDE_PROXY_WINDOW = 3600    # per hour, per IP
@@ -953,53 +1086,80 @@ def subscription_leak_finder_page():
 
 @app.route('/api/subscription-scan', methods=['POST', 'OPTIONS'])
 def subscription_scan():
+    """
+    FAST, free phase: extract + regex-detect recurring charges only — no Claude
+    call here, which is what used to make people wait. Merchant names are never
+    identified and never returned at this stage; only a headline total/count
+    (the 'is this worth ₹49' teaser) plus a scan_id are sent back. The actual
+    identified report is generated by /api/verify-subscription-payment, right
+    after payment, using the cached recurring list (see _SUBSCRIPTION_SCAN_CACHE).
+    Accepts one or more files under the 'statement' field — PDFs and/or
+    photos/screenshots (jpg/png/webp).
+    """
     if request.method == "OPTIONS":
         return "", 200
-    if 'statement' not in request.files:
+
+    files = request.files.getlist('statement')
+    if not files:
         return jsonify({"error": "No file uploaded"}), 400
 
-    f = request.files['statement']
-    if not f.filename.lower().endswith('.pdf'):
-        return jsonify({"error": "Only PDF files are supported."}), 400
+    pdf_password = (request.form.get('password') or '').strip() or None
 
-    pdf_password = request.form.get('password') or None
-
-    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
-        pdf_path = tmp.name
-        f.save(pdf_path)
-
+    tmp_paths = []
     try:
-        try:
-            raw_rows = extract_transactions_from_pdf(pdf_path, password=pdf_password)
-        except PDFPasswordProtectedError:
-            return jsonify({
-                "error": "password_protected",
-                "message": (
-                    "That password didn't work, please double-check it."
-                    if pdf_password else
-                    "This PDF is password-protected."
-                ),
-                "subscriptions": []
-            }), 200
+        all_raw_rows = []
+        for f in files:
+            ext = os.path.splitext(f.filename or "")[1].lower()
+            if ext == '.pdf':
+                with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
+                    pdf_path = tmp.name
+                    f.save(pdf_path)
+                tmp_paths.append(pdf_path)
+                try:
+                    all_raw_rows.extend(extract_transactions_from_pdf(pdf_path, password=pdf_password))
+                except PDFPasswordProtectedError:
+                    return jsonify({
+                        "error": "password_protected",
+                        "password_was_tried": bool(pdf_password),
+                        "message": (
+                            "That password didn't work, please double-check it."
+                            if pdf_password else
+                            "This PDF is password-protected."
+                        ),
+                        "subscriptions": []
+                    }), 200
+            elif ext in IMAGE_MEDIA_TYPES:
+                with tempfile.NamedTemporaryFile(suffix=ext, delete=False) as tmp:
+                    img_path = tmp.name
+                    f.save(img_path)
+                tmp_paths.append(img_path)
+                try:
+                    all_raw_rows.extend(extract_transactions_from_image(img_path, IMAGE_MEDIA_TYPES[ext]))
+                except ImageExtractionError as e:
+                    return jsonify({"error": str(e), "subscriptions": []}), 200
+            else:
+                return jsonify({"error": f"Unsupported file type: {f.filename}. Upload a PDF or a photo/screenshot (JPG, PNG).", "subscriptions": []}), 400
 
-        if not raw_rows:
+        if not all_raw_rows:
             return jsonify({
-                "error": "Could not detect a transaction table. Make sure this is a downloaded statement, not a scanned image.",
+                "error": "Could not detect any transactions. Make sure this is a downloaded statement (not a scanned image with no visible table) or a clear, well-lit screenshot.",
                 "subscriptions": []
             })
 
-        txns = classify_statement_rows(raw_rows)
+        txns = classify_statement_rows(all_raw_rows)
         recurring = detect_recurring_charges(txns)
 
         if not recurring:
-            return jsonify({"subscriptions": [], "message": "No recurring subscriptions detected in this statement."})
+            return jsonify({"subscriptions": [], "count": 0, "total_annual_cost": 0, "message": "No recurring subscriptions detected in this statement."})
 
-        enriched = identify_merchants_claude(recurring)
+        scan_id = _scan_cache_put(recurring)
+        total_annual_cost = round(sum(r["annual_cost"] for r in recurring), 2)
 
+        # Intentionally no merchant names / per-item detail here — that's the paid report.
         return jsonify({
-            "subscriptions": enriched,
-            "total_annual_cost": round(sum(r["annual_cost"] for r in enriched), 2),
-            "count": len(enriched)
+            "scan_id": scan_id,
+            "count": len(recurring),
+            "total_annual_cost": total_annual_cost
         })
     except Exception as e:
         import traceback
@@ -1007,10 +1167,11 @@ def subscription_scan():
         traceback.print_exc()
         return jsonify({"error": f"{type(e).__name__}: {e}" if str(e) else f"{type(e).__name__} (no message)"}), 500
     finally:
-        try:
-            os.unlink(pdf_path)
-        except OSError:
-            pass
+        for p in tmp_paths:
+            try:
+                os.unlink(p)
+            except OSError:
+                pass
 
 
 @app.route('/api/create-subscription-scan-order', methods=['POST', 'OPTIONS'])
@@ -1037,13 +1198,20 @@ def create_subscription_scan_order():
 
 @app.route('/api/verify-subscription-payment', methods=['POST', 'OPTIONS'])
 def verify_subscription_payment():
-    """Matches your existing verify_and_decode() HMAC pattern exactly."""
+    """
+    Matches your existing verify_and_decode() HMAC pattern exactly.
+    Once payment is verified, if a scan_id is supplied we immediately run the
+    (single, fast) Claude identification call on the already-detected recurring
+    list and hand back the full report in the same response — no second wait
+    for the user after paying.
+    """
     if request.method == "OPTIONS":
         return "", 200
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
     order_id = data.get("razorpay_order_id")
     payment_id = data.get("razorpay_payment_id")
     signature = data.get("razorpay_signature")
+    scan_id = data.get("scan_id")
     if not all([order_id, payment_id, signature]):
         return jsonify({"success": False, "error": "Missing required fields."}), 400
 
@@ -1056,7 +1224,24 @@ def verify_subscription_payment():
     if expected != signature:
         return jsonify({"success": False, "error": "Payment verification failed."}), 400
 
-    return jsonify({"success": True})
+    if not scan_id:
+        return jsonify({"success": True})
+
+    recurring = _scan_cache_pop(scan_id)
+    if recurring is None:
+        return jsonify({
+            "success": True,
+            "error": "Your scan session expired. Payment succeeded, but please rescan your statement (you will not be charged again — contact support with this payment ID if needed) to view the report.",
+            "payment_id": payment_id
+        })
+
+    enriched = identify_merchants_claude(recurring)
+    return jsonify({
+        "success": True,
+        "subscriptions": enriched,
+        "total_annual_cost": round(sum(r["annual_cost"] for r in enriched), 2),
+        "count": len(enriched)
+    })
 
 
 # ── HEALTH CHECK ──────────────────────────────────────────

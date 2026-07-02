@@ -734,6 +734,14 @@ function resetTool() {
 </html>"""
 
 
+@app.route('/qr-decoder', methods=['GET'])
+def qr_decoder_page():
+    html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'qr-decoder.html')
+    with open(html_path, 'r', encoding='utf-8') as f:
+        content_html = f.read()
+    return Response(content_html, mimetype='text/html')
+
+
 # ── CREATE ORDER ──────────────────────────────────────────
 @app.route("/api/create-order", methods=["POST", "OPTIONS"])
 def create_order():
@@ -745,7 +753,12 @@ def create_order():
             "currency": "INR",
             "receipt": f"qr_{os.urandom(4).hex()}",
         })
-        return jsonify({"order_id": order["id"], "amount": order["amount"], "currency": order["currency"]})
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
     except Exception as e:
         print(f"create-order error: {e}")
         return jsonify({"error": str(e)}), 500

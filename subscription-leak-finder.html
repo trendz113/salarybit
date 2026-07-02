@@ -328,8 +328,8 @@
   <div id="uploadBox" class="upload-box">
     <div class="upload-icon">📄</div>
     <div class="upload-label">Drop your bank statement here, or tap to browse</div>
-    <div class="upload-hint">PDF only · read once, never stored</div>
-    <input type="file" id="fileInput" accept="application/pdf">
+    <div class="upload-hint">PDF, or a photo/screenshot (JPG, PNG) · multiple files ok · read once, never stored</div>
+    <input type="file" id="fileInput" accept="application/pdf,image/jpeg,image/png,image/webp" multiple>
   </div>
 
   <div id="filenamePill" class="filename-pill">
@@ -351,12 +351,14 @@
         </ol>
       </div>
     </div>
-    <div style="color: var(--muted); font-size:13px; margin-bottom:6px;">
-      Or, if you'd rather just enter it here:
+    <div id="pwEntryRow">
+      <div style="color: var(--muted); font-size:13px; margin-bottom:6px;">
+        Or, if you'd rather just enter it here:
+      </div>
+      <input type="password" id="pdfPassword" placeholder="PDF password (e.g. Customer ID, PAN, or DOB)"
+        style="width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--line);
+               background: var(--bg-card-light); color: var(--ink); font-size:15px; box-sizing:border-box;">
     </div>
-    <input type="password" id="pdfPassword" placeholder="PDF password (e.g. Customer ID, PAN, or DOB)"
-      style="width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--line);
-             background: var(--bg-card-light); color: var(--ink); font-size:15px; box-sizing:border-box;">
     <div id="pwError" style="display:none; color: var(--warn); font-size:13px; margin-top:6px;"></div>
   </div>
 
@@ -382,6 +384,13 @@
       <button class="unlock-btn" id="unlockBtn">Unlock full report — ₹49</button>
       <div class="unlock-price">One-time. Less than what one forgotten subscription costs you this month.</div>
     </div>
+
+    <div id="unlockLoading" style="display:none; text-align:center; padding: 28px 0;">
+      <div class="spin" style="width:32px;height:32px;margin:0 auto 14px;border:3px solid var(--line);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+      <div style="font-size:14px; color: var(--muted);">Payment confirmed — identifying your merchants…</div>
+    </div>
+
+    <div id="cancelGuides" style="display:none; margin-top: 28px;"></div>
   </div>
   </div>
 
@@ -421,9 +430,17 @@ const itemCount = document.getElementById('itemCount');
 const itemList = document.getElementById('itemList');
 const lockOverlay = document.getElementById('lockOverlay');
 const unlockBtn = document.getElementById('unlockBtn');
+const unlockLoading = document.getElementById('unlockLoading');
+const cancelGuides = document.getElementById('cancelGuides');
+const passwordBox = document.getElementById('passwordBox');
+const pwEntryRow = document.getElementById('pwEntryRow');
+const pdfPassword = document.getElementById('pdfPassword');
+const pwError = document.getElementById('pwError');
 
 const API_BASE = 'https://web-production-456eb.up.railway.app';
-let selectedFile = null;
+const ACCEPTED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+let selectedFiles = [];
+let passwordAttempted = false; // true once the user has actually tried a password and it failed
 
 uploadBox.addEventListener('click', () => fileInput.click());
 uploadBox.addEventListener('dragover', e => { e.preventDefault(); uploadBox.classList.add('drag'); });
@@ -431,39 +448,52 @@ uploadBox.addEventListener('dragleave', () => uploadBox.classList.remove('drag')
 uploadBox.addEventListener('drop', e => {
   e.preventDefault();
   uploadBox.classList.remove('drag');
-  if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+  if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
 });
 fileInput.addEventListener('change', e => {
-  if (e.target.files.length) handleFile(e.target.files[0]);
+  if (e.target.files.length) handleFiles(e.target.files);
 });
 
-function handleFile(file) {
-  if (file.type !== 'application/pdf') {
-    alert('Please upload a PDF file.');
+function handleFiles(fileList) {
+  const files = Array.from(fileList);
+  const bad = files.find(f => !ACCEPTED_TYPES.includes(f.type));
+  if (bad) {
+    alert('Please upload PDF files or photos/screenshots (JPG, PNG, WEBP) only.');
     return;
   }
-  selectedFile = file;
-  filenameText.textContent = file.name;
+  selectedFiles = files;
+  filenameText.textContent = files.length === 1
+    ? files[0].name
+    : files.length + ' files selected (' + files.map(f => f.name).join(', ') + ')';
   filenamePill.classList.add('show');
   analyzeBtn.disabled = false;
 }
 
-removeFile.addEventListener('click', () => {
-  selectedFile = null;
-  filenamePill.classList.remove('show');
-  analyzeBtn.disabled = true;
+// Full reset back to the initial upload state — used by the Remove button.
+function resetUploadUI() {
+  selectedFiles = [];
+  passwordAttempted = false;
   fileInput.value = '';
-});
+  filenamePill.classList.remove('show');
+  filenamePill.style.display = '';
+  analyzeBtn.disabled = true;
+  analyzeBtn.style.display = 'block';
+  analyzeBtn.textContent = 'Scan my statement';
+  document.querySelector('.upload-box').style.display = '';
+  document.querySelector('.privacy-note').style.display = 'block';
+  passwordBox.style.display = 'none';
+  pwEntryRow.style.display = '';
+  pdfPassword.value = '';
+  pwError.style.display = 'none';
+}
+
+removeFile.addEventListener('click', resetUploadUI);
 
 const loadingMessages = [
   'Reading your statement…',
-  'Separating subscriptions from everyday spends…',
   'Checking for repeating charges…',
   'Almost there…'
 ];
-
-const passwordBox = document.getElementById('passwordBox');
-const pdfPassword = document.getElementById('pdfPassword');
 
 async function runScan() {
   document.querySelector('.upload-box').style.display = 'none';
@@ -481,8 +511,9 @@ async function runScan() {
 
   try {
     const formData = new FormData();
-    formData.append('statement', selectedFile);
-    if (pdfPassword.value) formData.append('password', pdfPassword.value);
+    selectedFiles.forEach(f => formData.append('statement', f));
+    const pw = pdfPassword.value.trim();
+    if (pw) formData.append('password', pw);
 
     const res = await fetch(API_BASE + '/api/subscription-scan', {
       method: 'POST',
@@ -494,26 +525,40 @@ async function runScan() {
     loading.classList.remove('show');
 
     if (data.error === 'password_protected') {
-      // Re-show the upload step with the password box visible so they can enter it and retry
+      // A password was already tried and it still didn't work — retrying the
+      // same input rarely helps, so drop the password field entirely and
+      // point people at the one reliable fix: upload an unlocked copy.
+      if (data.password_was_tried) {
+        passwordAttempted = true;
+      }
       document.querySelector('.upload-box').style.display = 'none';
       filenamePill.style.display = 'flex';
-      analyzeBtn.style.display = 'block';
-      analyzeBtn.textContent = 'Try again';
+      analyzeBtn.style.display = 'none'; // they must remove & re-upload, not retry blindly
       document.querySelector('.privacy-note').style.display = 'block';
       passwordBox.style.display = 'block';
-      const pwError = document.getElementById('pwError');
-      if (pdfPassword.value) {
-        pwError.textContent = data.message;
+
+      if (passwordAttempted) {
+        pwEntryRow.style.display = 'none';
+        pwError.textContent = "That password didn't open the file. Please use the steps above to upload an unlocked copy instead — tap Remove, then re-upload.";
         pwError.style.display = 'block';
       } else {
+        pwEntryRow.style.display = '';
         pwError.style.display = 'none';
+        analyzeBtn.style.display = 'block';
+        analyzeBtn.textContent = 'Try again';
+        pdfPassword.focus();
       }
-      pdfPassword.focus();
+      return;
+    }
+
+    if (data.error) {
+      alert(data.error);
+      resetUploadUI();
       return;
     }
 
     analyzeBtn.textContent = 'Scan my statement';
-    renderResults(data);
+    renderTeaser(data);
   } catch (err) {
     clearInterval(msgInterval);
     loading.classList.remove('show');
@@ -523,20 +568,23 @@ async function runScan() {
 }
 
 analyzeBtn.addEventListener('click', () => {
-  if (!selectedFile) return;
+  if (!selectedFiles.length) return;
   runScan();
 });
 
-function renderResults(data) {
-  const items = data.subscriptions || [];
-  const total = items.reduce((sum, i) => sum + i.annual_cost, 0);
+// Free-phase result: a fast headline number only (no merchant names, no item
+// rows) — the detailed report is generated after payment, see unlockResults().
+function renderTeaser(data) {
+  window._scanId = data.scan_id;
+  const count = data.count || 0;
+  const total = data.total_annual_cost || 0;
 
   totalAmount.textContent = '₹' + total.toLocaleString('en-IN', {maximumFractionDigits: 0});
-  itemCount.textContent = items.length + ' subscription' + (items.length !== 1 ? 's' : '') + ' detected · per year';
+  itemCount.textContent = count + ' subscription' + (count !== 1 ? 's' : '') + ' detected · per year';
 
   itemList.innerHTML = '';
 
-  if (items.length === 0) {
+  if (count === 0) {
     lockOverlay.classList.remove('show');
     itemList.innerHTML = `
       <div style="text-align:center; padding: 24px 0; color: var(--muted);">
@@ -545,27 +593,11 @@ function renderResults(data) {
       </div>
     `;
     results.classList.add('show');
-    window._scanData = data;
     return;
   }
 
   lockOverlay.classList.add('show');
-  items.forEach((item, idx) => {
-    const row = document.createElement('div');
-    row.className = 'item-row locked';
-    row.innerHTML = `
-      <div>
-        <div class="item-name">Subscription #${idx + 1}</div>
-        <div class="item-meta">${item.frequency} · last charged ${item.last_seen}</div>
-        <div class="cancel-guide"></div>
-      </div>
-      <div class="item-amount">₹${item.annual_cost.toLocaleString('en-IN')}/yr</div>
-    `;
-    itemList.appendChild(row);
-  });
-
   results.classList.add('show');
-  window._scanData = data; // stash for unlock flow
 }
 
 unlockBtn.addEventListener('click', async () => {
@@ -584,20 +616,36 @@ unlockBtn.addEventListener('click', async () => {
       name: 'SalaryBit',
       description: 'Subscription Leak Report - Full Unlock',
       handler: async function(response) {
-        const verifyRes = await fetch(API_BASE + '/api/verify-subscription-payment', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_signature: response.razorpay_signature
-          })
-        });
-        const verify = await verifyRes.json();
-        if (verify.success) {
-          unlockResults();
-        } else {
-          alert('Payment verification failed. If money was deducted, it will be refunded within 24 hours.');
+        lockOverlay.classList.remove('show');
+        unlockLoading.style.display = 'block';
+        try {
+          const verifyRes = await fetch(API_BASE + '/api/verify-subscription-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              scan_id: window._scanId
+            })
+          });
+          const verify = await verifyRes.json();
+          unlockLoading.style.display = 'none';
+          if (verify.success && verify.subscriptions) {
+            unlockResults(verify);
+          } else if (verify.success) {
+            alert(verify.error || 'Payment succeeded but the report could not be generated. Please contact support.');
+            lockOverlay.classList.add('show');
+          } else {
+            alert('Payment verification failed. If money was deducted, it will be refunded within 24 hours.');
+            lockOverlay.classList.add('show');
+            unlockBtn.disabled = false;
+            unlockBtn.textContent = 'Unlock full report — ₹49';
+          }
+        } catch (e) {
+          unlockLoading.style.display = 'none';
+          lockOverlay.classList.add('show');
+          alert('Could not load your report. If money was deducted, it will be refunded within 24 hours.');
           unlockBtn.disabled = false;
           unlockBtn.textContent = 'Unlock full report — ₹49';
         }
@@ -619,17 +667,94 @@ unlockBtn.addEventListener('click', async () => {
   }
 });
 
-function unlockResults() {
-  const data = window._scanData;
-  const rows = document.querySelectorAll('.item-row');
-  rows.forEach((row, idx) => {
-    row.classList.remove('locked');
-    row.classList.add('unlocked');
-    const item = data.subscriptions[idx];
-    row.querySelector('.item-name').textContent = item.identified_as;
-    row.querySelector('.cancel-guide').textContent = '→ ' + item.how_to_cancel;
+// Renders the full, paid report — merchant names, per-item cancel steps, and
+// a detailed step-by-step guide grouped by payment method (UPI/card/NACH).
+function unlockResults(verify) {
+  const items = verify.subscriptions || [];
+  itemList.innerHTML = '';
+
+  items.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'item-row unlocked';
+    row.innerHTML = `
+      <div>
+        <div class="item-name">${item.identified_as}</div>
+        <div class="item-meta">${item.frequency} · last charged ${item.last_seen}</div>
+        <div class="cancel-guide">→ ${item.how_to_cancel}</div>
+      </div>
+      <div class="item-amount">₹${item.annual_cost.toLocaleString('en-IN')}/yr</div>
+    `;
+    itemList.appendChild(row);
   });
-  lockOverlay.classList.remove('show');
+
+  renderCancelGuides(items);
+}
+
+const CANCEL_GUIDE_CONTENT = {
+  upi: {
+    title: 'Cancelling UPI AutoPay mandates',
+    icon: '📱',
+    steps: [
+      { t: 'Open the NPCI mandate portal', d: 'Visit <a href="https://upihelp.npci.org.in" target="_blank" class="inline-link">upihelp.npci.org.in</a> on your phone, log in with your registered mobile number + OTP.' },
+      { t: 'Open "My Mandates"', d: 'Find the merchant listed there — it shows the amount and which UPI app (PhonePe/GPay/Paytm) it\'s linked to.' },
+      { t: 'Tap Cancel', d: 'This opens a QR code — scan it with the UPI app shown against that mandate and approve with your UPI PIN. No merchant login needed.' }
+    ]
+  },
+  card: {
+    title: 'Cancelling card autopay / standing instructions',
+    icon: '💳',
+    steps: [
+      { t: 'Log into netbanking or your bank\'s app', d: 'Look for "Standing Instructions", "Manage Auto Debit", or "e-Mandates" — the exact name depends on your bank (e.g. HDFC: Standing Instructions, ICICI: Manage Auto Debit, SBI: e-Mandate).' },
+      { t: 'Find the merchant and revoke it', d: 'Select the recurring charge by merchant name/amount and tap Cancel or Revoke.' },
+      { t: 'If it\'s not listed there, call your bank', d: 'Give them the merchant name and last charge date, and ask them to revoke the recurring mandate registered on your card.' },
+      { t: 'Last resort: request a card reissue', d: 'A new card number kills every mandate on the old one — but you\'ll need to re-add your card anywhere else you use it for payments.' }
+    ]
+  },
+  nach: {
+    title: 'Cancelling NACH/ACH mandates (SIPs, insurance, EMIs)',
+    icon: '🏦',
+    steps: [
+      { t: 'Contact the AMC / insurer / lender directly', d: 'This is usually the fastest route for SIPs, insurance premiums, or loan EMIs — they can process a mandate cancellation on their end.' },
+      { t: 'Or submit a NACH cancellation form at your bank branch', d: 'Search "[your bank name] NACH cancellation form" — most banks have a downloadable PDF form for this.' },
+      { t: 'Allow 5–7 working days', d: 'It can take a few working days to reflect, so cancel a little before your next due date.' }
+    ]
+  },
+  other: {
+    title: 'Not sure how this one is billed',
+    icon: '🔎',
+    steps: [
+      { t: 'Check your UPI app\'s mandates list first', d: 'Most recurring charges in India go through UPI AutoPay — check there first, it\'s usually the quickest fix.' },
+      { t: 'Then check netbanking > Standing Instructions', d: 'If it\'s not a UPI mandate, it\'s most likely a card or bank standing instruction.' },
+      { t: 'Still stuck? Call your bank', d: 'Give them the exact narration text from your statement and the amount — they can trace which mandate it belongs to.' }
+    ]
+  }
+};
+
+function renderCancelGuides(items) {
+  const methods = [...new Set(items.map(i => i.payment_method).filter(m => CANCEL_GUIDE_CONTENT[m]))];
+  if (!methods.length) { cancelGuides.style.display = 'none'; return; }
+
+  cancelGuides.innerHTML = '<h3 style="font-size:20px; font-weight:700; margin-bottom:14px;">How to cancel each type</h3>';
+  methods.forEach(method => {
+    const guide = CANCEL_GUIDE_CONTENT[method];
+    const card = document.createElement('div');
+    card.className = 'steps-card';
+    card.style.marginBottom = '16px';
+    card.innerHTML = `
+      <div style="padding:16px 0 8px; font-weight:700; font-size:15px;">${guide.icon} ${guide.title}</div>
+      ${guide.steps.map((s, i) => `
+        <div class="step-row">
+          <div class="step-num">${i + 1}</div>
+          <div class="step-body">
+            <div class="step-title">${s.t}</div>
+            <div class="step-desc">${s.d}</div>
+          </div>
+        </div>
+      `).join('')}
+    `;
+    cancelGuides.appendChild(card);
+  });
+  cancelGuides.style.display = 'block';
 }
 </script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>

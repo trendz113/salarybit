@@ -11,6 +11,7 @@ import base64
 import uuid
 import time as _time
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor
 
 import razorpay
 import requests as http_requests
@@ -198,6 +199,14 @@ class PDFPasswordProtectedError(Exception):
     pass
 
 
+# A handful of banks export multi-year statements as one PDF. Table extraction
+# is the actual slow part of the free scan (no Claude call happens here), so
+# cap how many pages we walk per PDF — recurring charges show up easily within
+# this many pages/months, and this keeps one huge upload from stalling the
+# whole request for everyone.
+MAX_PDF_PAGES = 60
+
+
 def extract_transactions_from_pdf(pdf_path, password=None):
     """Generic transaction table extraction - works across bank formats."""
     all_rows = []
@@ -220,7 +229,12 @@ def extract_transactions_from_pdf(pdf_path, password=None):
         raise
 
     with pdf_obj as pdf:
-        for page in pdf.pages:
+        for page_num, page in enumerate(pdf.pages):
+            if page_num >= MAX_PDF_PAGES:
+                print(f"[subscription-scan] {pdf_path}: capped at {MAX_PDF_PAGES} pages "
+                      f"(PDF has more) — scanning the rest would be slow and recurring "
+                      f"charges are already well represented in this range.")
+                break
             tables = page.extract_tables()
             for table in tables:
                 if not table or len(table) < 2:
@@ -1089,6 +1103,41 @@ def verify_mf_payment():
     return jsonify({"success": True})
 
 
+def _process_statement_file(file_storage, pdf_password):
+    """
+    Save one uploaded file to disk and extract its rows. Designed to run inside
+    a worker thread so multiple files — especially photos, which each need a
+    network round-trip to Claude vision — are processed concurrently instead
+    of one after another, which is what used to make multi-file scans slow.
+    Returns a dict describing the outcome; never raises.
+    """
+    filename = file_storage.filename or ""
+    ext = os.path.splitext(filename)[1].lower()
+    tmp_path = None
+    try:
+        if ext == '.pdf':
+            with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
+                tmp_path = tmp.name
+                file_storage.save(tmp_path)
+            rows = extract_transactions_from_pdf(tmp_path, password=pdf_password)
+            return {"ok": True, "rows": rows, "tmp_path": tmp_path}
+        elif ext in IMAGE_MEDIA_TYPES:
+            with tempfile.NamedTemporaryFile(suffix=ext, delete=False) as tmp:
+                tmp_path = tmp.name
+                file_storage.save(tmp_path)
+            rows = extract_transactions_from_image(tmp_path, IMAGE_MEDIA_TYPES[ext])
+            return {"ok": True, "rows": rows, "tmp_path": tmp_path}
+        else:
+            return {
+                "ok": False, "tmp_path": tmp_path, "unsupported": True,
+                "error": f"Unsupported file type: {filename}. Upload a PDF or a photo/screenshot (JPG, PNG)."
+            }
+    except PDFPasswordProtectedError:
+        return {"ok": False, "tmp_path": tmp_path, "password_protected": True}
+    except ImageExtractionError as e:
+        return {"ok": False, "tmp_path": tmp_path, "error": str(e)}
+
+
 @app.route('/subscription-leak-finder', methods=['GET'])
 def subscription_leak_finder_page():
     html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'subscription-leak-finder.html')
@@ -1120,17 +1169,21 @@ def subscription_scan():
 
     tmp_paths = []
     try:
+        # Kick off all files at once — order of results below is preserved
+        # (submission order), so error precedence (e.g. which file's password
+        # error gets reported) is unchanged from the old sequential version.
+        with ThreadPoolExecutor(max_workers=min(len(files), 4)) as executor:
+            futures = [executor.submit(_process_statement_file, f, pdf_password) for f in files]
+            results = [fut.result() for fut in futures]
+
+        for res in results:
+            if res.get("tmp_path"):
+                tmp_paths.append(res["tmp_path"])
+
         all_raw_rows = []
-        for f in files:
-            ext = os.path.splitext(f.filename or "")[1].lower()
-            if ext == '.pdf':
-                with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
-                    pdf_path = tmp.name
-                    f.save(pdf_path)
-                tmp_paths.append(pdf_path)
-                try:
-                    all_raw_rows.extend(extract_transactions_from_pdf(pdf_path, password=pdf_password))
-                except PDFPasswordProtectedError:
+        for res in results:
+            if not res["ok"]:
+                if res.get("password_protected"):
                     return jsonify({
                         "error": "password_protected",
                         "password_was_tried": bool(pdf_password),
@@ -1141,17 +1194,9 @@ def subscription_scan():
                         ),
                         "subscriptions": []
                     }), 200
-            elif ext in IMAGE_MEDIA_TYPES:
-                with tempfile.NamedTemporaryFile(suffix=ext, delete=False) as tmp:
-                    img_path = tmp.name
-                    f.save(img_path)
-                tmp_paths.append(img_path)
-                try:
-                    all_raw_rows.extend(extract_transactions_from_image(img_path, IMAGE_MEDIA_TYPES[ext]))
-                except ImageExtractionError as e:
-                    return jsonify({"error": str(e), "subscriptions": []}), 200
-            else:
-                return jsonify({"error": f"Unsupported file type: {f.filename}. Upload a PDF or a photo/screenshot (JPG, PNG).", "subscriptions": []}), 400
+                status = 400 if res.get("unsupported") else 200
+                return jsonify({"error": res["error"], "subscriptions": []}), status
+            all_raw_rows.extend(res["rows"])
 
         if not all_raw_rows:
             return jsonify({

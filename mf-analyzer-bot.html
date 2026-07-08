@@ -553,7 +553,7 @@ footer{border-top:1px solid var(--border);padding:16px 32px;text-align:center;fo
         <div class="findings">
           <div class="finding go">💡 Full ₹199 report shows exactly which funds to keep, switch, or add — and how to save ₹6,000+ per year</div>
         </div>
-        <button class="btn-unlock" onclick="switchNav('report');openModal('report')">📋 Get Full Report — ₹199</button>
+        <button class="btn-unlock" onclick="goToFullReport()">📋 Get Full Report — ₹199</button>
         <button class="btn-dismiss" onclick="this.closest('.trigger').style.display='none'">Maybe later</button>
       </div>
     </div>
@@ -606,7 +606,7 @@ footer{border-top:1px solid var(--border);padding:16px 32px;text-align:center;fo
           <div class="finding">📌 Regular vs Direct plan = ₹2,000–₹8,000/year lost on a ₹5L portfolio</div>
           <div class="finding go">💡 Average ₹199 report uncovers ₹6,200/year in savings. ROI in 3 weeks.</div>
         </div>
-        <button class="btn-unlock" onclick="switchNav('report');openModal('report')">🔍 Analyse My Portfolio — ₹199</button>
+        <button class="btn-unlock" onclick="goToFullReport()">🔍 Analyse My Portfolio — ₹199</button>
         <button class="btn-dismiss" onclick="document.getElementById('tr1').style.display='none'">Not now</button>
       </div>
     </div>
@@ -633,7 +633,7 @@ footer{border-top:1px solid var(--border);padding:16px 32px;text-align:center;fo
         <h4>You've used <span class="hl-g">2 of 3</span> free questions</h4>
         <p>Upgrade for unlimited AI advisor, full portfolio report, overlap analysis, tax saving audit, and a 90-day action plan.</p>
         <div class="findings"><div class="finding go">💡 Premium users save ₹8,000+ in their first month optimising their portfolio</div></div>
-        <button class="btn-unlock" onclick="switchNav('report');openModal('report')">🚀 Upgrade — ₹199 Full Report</button>
+        <button class="btn-unlock" onclick="goToFullReport()">🚀 Upgrade — ₹199 Full Report</button>
         <button class="btn-dismiss" onclick="document.getElementById('tr2').style.display='none'">Use my last free question</button>
       </div>
     </div>
@@ -791,8 +791,22 @@ function switchNav(tab){
     $('panel-'+t).classList.toggle('on',t===tab);
     $('nt-'+t).classList.toggle('on',t===tab);
   });
-  if(tab==='report'&&!userData.paid)openModal('report');
+  if(tab==='report'){
+    if(!userData.paid)openModal('report');
+    prefillFundsFromAnalysis();
+  }
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Go to the Full Report tab. If already paid, skip straight there with no popup.
+// If not paid yet, open the payment modal as before.
+function goToFullReport(){
+  if(userData.paid){
+    switchNav('report');
+  }else{
+    switchNav('report');
+    openModal('report');
+  }
 }
 
 // ── DRAG DROP ──
@@ -1056,6 +1070,7 @@ async function doPay(){
           closeModal();
           $('hd-tier').style.display='flex';$('hd-upgrade').style.display='none';
           $('hd-tier').textContent='REPORT ✓';
+          document.querySelectorAll('.btn-unlock').forEach(b=>{b.textContent='✓ View Your Full Report';});
           if(pendingAction==='analyze'){
             switchNav('analyzer');
             analyzePortfolio();
@@ -1097,6 +1112,21 @@ function addF(){
   list.appendChild(d);
 }
 function removeF(btn){const rows=document.querySelectorAll('#fund-list > div');if(rows.length>1)btn.closest('div').remove();}
+
+// Pre-fill the Full Report fund list from the already-analyzed CAS/manual holdings,
+// so the person doesn't have to retype fund names and values they already entered.
+function prefillFundsFromAnalysis(){
+  if(!allHoldings.length)return; // nothing analyzed yet, leave the form as-is
+  const list=$('fund-list');
+  list.innerHTML=''; // clear the default empty row
+  allHoldings.forEach(h=>{
+    const d=document.createElement('div');
+    d.style.cssText='display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:8px;';
+    d.innerHTML=`<input class="inp fn" value="${h.name}"><input class="inp fa" value="${h.current||h.invested||0}"><button onclick="removeF(this)" style="background:none;border:1px solid rgba(224,82,82,0.3);color:var(--red);padding:8px 11px;border-radius:4px;cursor:pointer;">✕</button>`;
+    list.appendChild(d);
+  });
+  showToast('✅ Pre-filled from your uploaded portfolio','success');
+}
 
 async function buildReport(){
   const age=parseInt($('r-age').value),inc=parseInt($('r-inc').value),exp=parseInt($('r-exp').value);

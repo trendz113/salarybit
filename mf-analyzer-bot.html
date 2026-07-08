@@ -546,6 +546,16 @@ footer{border-top:1px solid var(--border);padding:16px 32px;text-align:center;fo
         </div>
       </div>
 
+      <div class="holdings-card" id="wealthPlanCard" style="display:none;">
+        <div style="font-size:16px;font-weight:700;margin-bottom:4px;">💼 Your Wealth Plan — Restructure &amp; Grow</div>
+        <div class="card-sub" style="margin-bottom:14px;">Based on the holdings above — what to keep, switch, or add, and how to grow this portfolio from here.</div>
+        <table class="ftable">
+          <thead><tr><th>Investment</th><th>Verdict</th><th>Why</th></tr></thead>
+          <tbody id="wealthPlanFunds"></tbody>
+        </table>
+        <div class="narrative" id="wealthPlanNarrative" style="margin-top:16px;"></div>
+      </div>
+
       <!-- UPGRADE CTA after analysis -->
       <div class="trigger">
         <h4>Want a complete <span class="hl-g">Wealth Plan</span> based on your portfolio?</h4>
@@ -809,6 +819,15 @@ function goToFullReport(){
   }
 }
 
+// Once the user has paid, the "buy the report" upsell boxes make no sense anymore —
+// hide them everywhere they appear (analyzer results, free tools tabs).
+function hideUpsellsIfPaid(){
+  if(!userData.paid)return;
+  const rt=document.querySelector('#results .trigger');if(rt)rt.style.display='none';
+  const t1=$('tr1');if(t1)t1.style.display='none';
+  const t2=$('tr2');if(t2)t2.style.display='none';
+}
+
 // ── DRAG DROP ──
 const uZone=$('uploadZone');
 uZone.addEventListener('dragover',e=>{e.preventDefault();uZone.classList.add('dragover');});
@@ -873,15 +892,15 @@ CAS TEXT:
 ${uploadedPDFText.substring(0,8000)}
 ${manualEntries.length?`Also include these manually added investments: ${JSON.stringify(manualEntries)}`:''}
 Extract all investments and return ONLY a JSON object (no markdown, no explanation):
-{"holdings":[{"name":"Fund Name","type":"Mutual Fund","invested":50000,"current":68000}],"insights":{"summary":"2-3 sentence overall assessment","points":["insight 1","insight 2","insight 3","insight 4"]}}
+{"holdings":[{"name":"Fund Name","type":"Mutual Fund","invested":50000,"current":68000}],"insights":{"summary":"2-3 sentence overall assessment","points":["insight 1","insight 2","insight 3","insight 4"]},"wealthPlan":{"funds":[{"name":"Fund Name","verdict":"Keep/Switch/Add/Reduce","reason":"one specific line on why, e.g. overlap, high expense ratio, underperformance, good pick"}],"strategy":"3-4 sentence plain-English plan for restructuring this exact portfolio and growing it from here — name specific fund types or products to add/reduce, and roughly how the allocation should shift"}}
 Types to use: Mutual Fund, Stock, Gold, Silver, Sovereign Gold Bond, FD, RD, PPF, EPF, NPS, Property, REIT, InvIT, Insurance, Bond, Other.`;
     }else{
       prompt=`You are an expert Indian investment analyst. Analyze this portfolio.
 Investments: ${JSON.stringify(manualEntries)}
 Return ONLY a JSON object (no markdown, no explanation):
-{"holdings":[{"name":"Fund Name","type":"Mutual Fund","invested":50000,"current":68000}],"insights":{"summary":"2-3 sentence overall assessment in simple language for a common Indian investor","points":["actionable insight 1","insight 2","insight 3","insight 4"]}}`;
+{"holdings":[{"name":"Fund Name","type":"Mutual Fund","invested":50000,"current":68000}],"insights":{"summary":"2-3 sentence overall assessment in simple language for a common Indian investor","points":["actionable insight 1","insight 2","insight 3","insight 4"]},"wealthPlan":{"funds":[{"name":"Fund Name","verdict":"Keep/Switch/Add/Reduce","reason":"one specific line on why, e.g. overlap, high expense ratio, underperformance, good pick"}],"strategy":"3-4 sentence plain-English plan for restructuring this exact portfolio and growing it from here — name specific fund types or products to add/reduce, and roughly how the allocation should shift"}}`;
     }
-    const res=await fetch('https://web-production-456eb.up.railway.app/api/claude-proxy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const res=await fetch('https://web-production-456eb.up.railway.app/api/claude-proxy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({max_tokens:1600,messages:[{role:'user',content:prompt}]})});
     const data=await res.json();
     const text=data.content.map(i=>i.text||'').join('');
     const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
@@ -896,7 +915,7 @@ Return ONLY a JSON object (no markdown, no explanation):
   }catch(err){
     if(manualEntries.length){
       allHoldings=manualEntries;
-      renderResults({holdings:manualEntries,insights:{summary:'Your portfolio has been analyzed based on your manual entries.',points:['Diversify across asset classes: Mutual Funds, Gold, and FDs provide good balance','Review your FD rates — if below 7%, consider Debt MFs for better post-tax returns','Ensure life insurance coverage of at least 10x annual income','Consider Sovereign Gold Bonds (SGB) for gold exposure — they also pay 2.5% interest']}});
+      renderResults({holdings:manualEntries,insights:{summary:'Your portfolio has been analyzed based on your manual entries.',points:['Diversify across asset classes: Mutual Funds, Gold, and FDs provide good balance','Review your FD rates — if below 7%, consider Debt MFs for better post-tax returns','Ensure life insurance coverage of at least 10x annual income','Consider Sovereign Gold Bonds (SGB) for gold exposure — they also pay 2.5% interest']},wealthPlan:{funds:manualEntries.map(m=>({name:m.name,verdict:'Keep',reason:'Continue holding. Switch to Direct Plan if currently in Regular Plan to save 0.5–1% annually.'})),strategy:'Add a Sovereign Gold Bond allocation for inflation protection, keep 3-6 months of expenses in a Liquid Fund as an emergency buffer, and consider one Flexi Cap fund like Parag Parikh for long-term equity growth if you don\\'t already hold one. Review and rebalance this mix once a year.'}});
     }else{analysisInProgress=false;showToast('Could not analyze PDF. Please add investments manually.','error');$('analyzerLoader').style.display='none';$('analyzeBtn').disabled=false;}
   }
 }
@@ -928,10 +947,21 @@ function renderResults(data){
     $('insightText').textContent=data.insights.summary||'';
     $('insightPoints').innerHTML=(data.insights.points||[]).map(p=>`<li>${p}</li>`).join('');
   }
+  if(data.wealthPlan&&(data.wealthPlan.funds||[]).length){
+    $('wealthPlanCard').style.display='block';
+    $('wealthPlanFunds').innerHTML=data.wealthPlan.funds.map(f=>{
+      const vc=f.verdict==='Keep'?'var(--green)':(f.verdict==='Switch'||f.verdict==='Reduce')?'var(--red)':'var(--gold)';
+      return`<tr><td><strong>${f.name}</strong></td><td style="color:${vc};font-weight:700;">${f.verdict}</td><td>${f.reason}</td></tr>`;
+    }).join('');
+    $('wealthPlanNarrative').textContent=data.wealthPlan.strategy||'';
+  }else{
+    $('wealthPlanCard').style.display='none';
+  }
   const ft=$('filterTabs');
   ft.innerHTML=`<div class="filter-tab active" onclick="filterHoldings('All',this)">All (${holdings.length})</div>`;
   assetTypes.forEach(t=>{const c=holdings.filter(h=>h.type===t).length;ft.innerHTML+=`<div class="filter-tab" onclick="filterHoldings('${t}',this)">${t} (${c})</div>`;});
   renderTable(holdings);
+  hideUpsellsIfPaid();
   $('results').scrollIntoView({behavior:'smooth',block:'start'});
   showToast('✅ Portfolio analyzed successfully!','success');
 }
@@ -1071,6 +1101,7 @@ async function doPay(){
           $('hd-tier').style.display='flex';$('hd-upgrade').style.display='none';
           $('hd-tier').textContent='REPORT ✓';
           document.querySelectorAll('.btn-unlock').forEach(b=>{b.textContent='✓ View Your Full Report';});
+          hideUpsellsIfPaid();
           if(pendingAction==='analyze'){
             switchNav('analyzer');
             analyzePortfolio();

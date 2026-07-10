@@ -844,19 +844,59 @@ function handleFile(file){
   $('fileOkText').textContent=file.name+' ('+(file.size/1024).toFixed(0)+' KB)';
   $('fileOk').style.display='flex';
   showToast('✅ PDF uploaded: '+file.name,'success');
+  uploadedPDFText=''; // reset any previous file's text
   const reader=new FileReader();
   reader.onload=async function(e){
     const arr=new Uint8Array(e.target.result);
-    try{
-      const pdf=await pdfjsLib.getDocument(arr).promise;
+    let attempts=0;
+    const tryLoad=async(password)=>{
+      const loadingTask=pdfjsLib.getDocument(password?{data:arr,password}:{data:arr});
+      return loadingTask.promise;
+    };
+    const extractText=async(pdf)=>{
       let text='';
       for(let i=1;i<=Math.min(pdf.numPages,30);i++){
         const page=await pdf.getPage(i);
         const content=await page.getTextContent();
         text+=content.items.map(s=>s.str).join(' ')+'\n';
       }
-      uploadedPDFText=text;
-    }catch(err){uploadedPDFText='PDF uploaded but could not extract text. Please add investments manually.';}
+      return text;
+    };
+    const attemptExtraction=async(password)=>{
+      try{
+        const pdf=await tryLoad(password);
+        const text=await extractText(pdf);
+        if(!text.trim()){
+          uploadedPDFText='';
+          $('fileOkText').textContent=file.name+' — no readable text found (this may be a scanned copy). Please add investments manually.';
+          showToast('Could not read text from this PDF. Add investments manually.','error');
+          return;
+        }
+        uploadedPDFText=text;
+        $('fileOkText').textContent=file.name+' ('+(file.size/1024).toFixed(0)+' KB) — parsed ✓';
+      }catch(err){
+        const isPasswordIssue=err && (err.name==='PasswordException'||/password/i.test(err.message||''));
+        if(isPasswordIssue&&attempts<3){
+          attempts++;
+          const pw=prompt(
+            attempts===1
+              ? 'This CAS PDF is password-protected.\nEnter the password (usually your PAN in CAPS, e.g. ABCDE1234F, or check the email that sent you the CAS):'
+              : 'That password didn\'t work. Try again:'
+          );
+          if(pw===null||pw===''){
+            uploadedPDFText='';
+            $('fileOkText').textContent=file.name+' — locked, no password entered. Please add investments manually or re-upload.';
+            showToast('PDF is password-protected. Add investments manually or re-upload with the password.','error');
+            return;
+          }
+          return attemptExtraction(pw);
+        }
+        uploadedPDFText='';
+        $('fileOkText').textContent=file.name+' — could not open (wrong password or corrupt file). Please add investments manually.';
+        showToast('Could not open this PDF. Please add investments manually.','error');
+      }
+    };
+    await attemptExtraction();
   };
   reader.readAsArrayBuffer(file);
 }

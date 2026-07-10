@@ -1145,6 +1145,9 @@ async function doPay(){
           if(pendingAction==='analyze'){
             switchNav('analyzer');
             analyzePortfolio();
+          }else if(pendingAction==='report'){
+            switchNav('report');
+            buildReport();
           }else{
             switchNav('report');
           }
@@ -1202,6 +1205,7 @@ function prefillFundsFromAnalysis(){
 async function buildReport(){
   const age=parseInt($('r-age').value),inc=parseInt($('r-inc').value),exp=parseInt($('r-exp').value);
   if(!age||!inc||!exp){alert('Please fill in your age, income, and expenses.');return;}
+  if(!userData.paid){openModal('report','report');return;}
   const job=$('r-job').value,goal=$('r-goal').value,risk=$('r-risk').value;
   const funds=[...document.querySelectorAll('.fn')].map((n,i)=>({name:n.value.trim(),amount:document.querySelectorAll('.fa')[i].value.trim()})).filter(f=>f.name);
   rProfile={age,inc,exp,job,goal,risk,funds,sav:inc-exp,name:userData.name||'Investor'};

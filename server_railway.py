@@ -1302,6 +1302,86 @@ def verify_subscription_payment():
     })
 
 
+# ── PATIENCE PASSBOOK ──────────────────────────────────────
+PASSBOOK_PRICE_PAISE = 4900  # Rs 49
+
+
+@app.route('/patience-passbook', methods=['GET'])
+def patience_passbook_page():
+    """Serves the tool itself. Drop patience-passbook.html next to this
+    server_railway.py file (same folder), same as fifa-2026.html and
+    subscription-leak-finder.html are served."""
+    html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'patience-passbook.html')
+    with open(html_path, 'r', encoding='utf-8') as f:
+        content_html = f.read()
+    return Response(content_html, mimetype='text/html')
+
+
+@app.route("/api/create-passbook-order", methods=["POST", "OPTIONS"])
+def create_passbook_order():
+    """Matches your existing create_resume_order() pattern exactly."""
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": PASSBOOK_PRICE_PAISE,
+            "currency": "INR",
+            "receipt": f"passbook_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
+    except Exception as e:
+        print(f"create-passbook-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/verify-passbook-payment", methods=["POST", "OPTIONS"])
+def verify_passbook_payment():
+    """
+    Matches your existing verify_and_decode() HMAC pattern exactly.
+
+    Unlike the QR/resume/subscription tools, there's no server-side PDF or
+    Claude/Groq generation step here — every number in the passbook is
+    already computed client-side with the same formulas as the free
+    calculator. So once the signature checks out, we just confirm success;
+    the frontend unlocks the printable report itself (window.print()).
+
+    `email` is optional and only useful for your own lead list — right now
+    it's just printed to the Railway logs. Swap the print() line for
+    whatever you use to store leads (a Google Sheet via the Sheets API, a
+    row in Postgres, an entry in Airtable — whatever's already wired up for
+    your other tools).
+    """
+    if request.method == "OPTIONS":
+        return "", 200
+    data = request.get_json(silent=True) or {}
+    order_id   = data.get("razorpay_order_id")
+    payment_id = data.get("razorpay_payment_id")
+    signature  = data.get("razorpay_signature")
+    email      = (data.get("email") or "").strip()
+
+    if not all([order_id, payment_id, signature]):
+        return jsonify({"success": False, "error": "Missing required fields."}), 400
+
+    body = f"{order_id}|{payment_id}"
+    expected = hmac.new(
+        os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+        body.encode(),
+        hashlib.sha256
+    ).hexdigest()
+    if expected != signature:
+        return jsonify({"success": False, "error": "Payment verification failed."}), 400
+
+    # TODO: replace this with wherever you actually store leads.
+    print(f"[passbook] paid lead: {email or '(no email given)'} | payment_id={payment_id}")
+
+    return jsonify({"success": True, "payment_id": payment_id})
+
+
 # ── HEALTH CHECK ──────────────────────────────────────────
 @app.route("/", methods=["GET"])
 def health():

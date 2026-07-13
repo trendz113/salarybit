@@ -169,8 +169,31 @@
   .table-wrap{ overflow-x:auto; }
   #productTotal tr td{ border-top:2px solid var(--ink); border-bottom:1px solid var(--rule); background:rgba(255,255,255,0.55); }
   #productTotal tr:first-child td{ border-bottom:none; }
-  #loanCompareTable tr td:first-child{ font-family:'Courier New', monospace; font-size:12.5px; }
-  #loanCompareTable tr td:last-child{ font-weight:bold; }
+  #loanCompareTable tr td:first-child{ font-family:'Courier New', monospace; font-size:12.5px; white-space:normal; line-height:1.4; }
+  #loanCompareTable tr td:last-child{ font-weight:bold; white-space:nowrap; }
+  #loanCompareTable tr.group-row td{
+    font-family:Georgia,serif;
+    font-weight:bold;
+    text-transform:uppercase;
+    font-size:11px;
+    letter-spacing:0.5px;
+    color:var(--ink-soft);
+    background:rgba(24,42,68,0.05);
+    border-bottom:1px solid var(--ink);
+    padding-top:12px;
+  }
+  #loanCompareTable tr.total-row td{
+    border-top:2px solid var(--ink);
+    background:rgba(255,255,255,0.55);
+  }
+  @media(max-width:640px){
+    #loanCompareTable, #loanCompareTable tbody, #loanCompareTable tr{ display:block; width:100%; }
+    #loanCompareTable tr td{ display:block; width:100%; box-sizing:border-box; text-align:left; }
+    #loanCompareTable tr:not(.group-row):not(.total-row) td:first-child{ border-bottom:none; padding-bottom:2px; color:var(--ink-soft); }
+    #loanCompareTable tr:not(.group-row):not(.total-row) td:last-child{ padding-top:0; font-size:15px; }
+    #loanCompareTable tr.total-row td:first-child{ border-bottom:none; padding-bottom:2px; }
+    #loanCompareTable tr.total-row td:last-child{ padding-top:0; font-size:15px; border-top:none; }
+  }
   .report-section{
     background:rgba(255,255,255,0.5);
     border:1px solid var(--rule);
@@ -397,7 +420,7 @@
           <input type="range" id="loanRateSlider" min="7" max="11" value="8.5" step="0.05"/>
         </div>
         <div class="control-box">
-          <label>Remaining tenure (years) <span class="val" id="loanYrsVal">15</span></label>
+          <label>Years left to repay the loan <span class="val" id="loanYrsVal">15</span></label>
           <input type="range" id="loanYrsSlider" min="1" max="25" value="15" step="1"/>
         </div>
         <div class="control-box">
@@ -410,7 +433,7 @@
           <tbody id="loanCompareTable"></tbody>
         </table>
       </div>
-      <div class="note">Prepaying reduces the loan's outstanding principal directly, so the saving is exactly the loan's interest rate, guaranteed. Investing the same amount at the equity rate used above is not guaranteed — it can also fall, as the crash chart shows. Both numbers are calculated straight from your inputs; which one suits you depends on how you weigh a guaranteed saving against a market-linked one.</div>
+      <div class="note">Both options use the same amount of money and the same number of years, so it's a fair comparison. Paying extra to the bank is a sure saving — you know exactly how much interest you save. Putting money in the stock market is not sure — it can go up, but it can also go down, like the chart above shows. Only the "interest you save" number is guaranteed. Everything else in this table depends on the market doing well. Move the sliders above and every number here updates.</div>
     </section>
 
     <section class="report-section">
@@ -612,6 +635,7 @@ function loanPrepaySim(principal, annualRatePct, years, extra){
   const n = years*12;
   const emi = principal * r * Math.pow(1+r,n) / (Math.pow(1+r,n)-1);
   const totalInterestBaseline = emi*n - principal;
+  const totalPaidBaseline = principal + totalInterestBaseline; // principal + interest, no prepayment
 
   let bal = principal, totalInterestExtra = 0, months = 0;
   while(bal > 0.5 && months < n){
@@ -622,9 +646,10 @@ function loanPrepaySim(principal, annualRatePct, years, extra){
     bal -= principalPay;
     totalInterestExtra += interest;
   }
+  const totalPaidExtra = principal + totalInterestExtra; // principal + interest, with prepayment
   const interestSaved = totalInterestBaseline - totalInterestExtra;
   const monthsSaved = n - months;
-  return {emi, totalInterestBaseline, totalInterestExtra, interestSaved, monthsSaved, payoffMonths:months};
+  return {emi, totalInterestBaseline, totalPaidBaseline, totalInterestExtra, totalPaidExtra, interestSaved, monthsSaved, payoffMonths:months, n};
 }
 
 function renderLoanCompare(){
@@ -640,19 +665,50 @@ function renderLoanCompare(){
 
   const sim = loanPrepaySim(principal, ratePct, years, extra);
   const yearsSaved = (sim.monthsSaved/12).toFixed(1);
-  const sipAlt = sipFV(extra, 0.13, years);
+
+  // Option B — keep paying the normal EMI for the FULL original tenure, and separately
+  // invest the extra amount in an equity SIP for that same full tenure. Uses the exact
+  // same sipFV() compounding function as the calculator above, on the exact slider values.
+  const sipExtraOnly = sipFV(extra, 0.13, years);
+
+  // Option A — prepay, so the loan closes early (in sim.payoffMonths instead of sim.n).
+  // For the remaining months you'd otherwise still be paying the bank, the freed-up
+  // EMI + extra amount is invested instead, for the leftover time, at the same rate.
+  const remainingMonths = sim.monthsSaved;
+  const remainingYears = remainingMonths / 12;
+  const freedMonthly = sim.emi + extra;
+  const freedInvestFV = remainingMonths > 0 ? sipFV(freedMonthly, 0.13, remainingYears) : 0;
+
+  const optionAWealth = sim.interestSaved + freedInvestFV;
+  const optionBWealth = sipExtraOnly;
+  const better = optionAWealth >= optionBWealth ? 'Paying extra' : 'Investing instead';
+  const diff = Math.abs(optionAWealth - optionBWealth);
 
   const rows = [
-    ['Current EMI', fmt(sim.emi) + '/mo'],
-    ['Interest paid without prepaying extra', fmt(sim.totalInterestBaseline)],
-    [`Interest paid if you add ${fmt(extra)}/mo extra`, fmt(sim.totalInterestExtra)],
-    ['Interest saved by prepaying', fmt(sim.interestSaved)],
-    ['Loan closes earlier by', yearsSaved + ' years'],
-    [`Same ${fmt(extra)}/mo invested in equity SIP instead, for ${years} yrs`, fmt(sipAlt)],
+    ['Your monthly loan payment (EMI)', fmt(sim.emi) + '/mo', false],
+
+    ['Option A — Pay ' + fmt(extra) + ' extra every month', '', true],
+    ['Interest you will pay to the bank', fmt(sim.totalInterestExtra), false],
+    ['Total money you will pay the bank (loan + interest)', fmt(sim.totalPaidExtra), false],
+    ['Interest you save by paying extra', fmt(sim.interestSaved), false],
+    ['Your loan gets over this much earlier', yearsSaved + ' years', false],
+    [`Once loan is over, if you invest ${fmt(freedMonthly)} every month for the next ${remainingYears.toFixed(1)} years, it becomes`, fmt(freedInvestFV), false],
+    ['What you gain in total with this option', fmt(optionAWealth), true],
+
+    ['Option B — Don\'t pay extra, invest it instead', '', true],
+    ['Interest you will pay to the bank (no extra payment)', fmt(sim.totalInterestBaseline), false],
+    ['Total money you will pay the bank (loan + interest)', fmt(sim.totalPaidBaseline), false],
+    [`If you invest ${fmt(extra)} every month for ${years} years instead, it becomes`, fmt(sipExtraOnly), false],
+    ['What you gain in total with this option', fmt(optionBWealth), true],
+
+    ['Which option gives more money after ' + years + ' years', `${better}, by ${fmt(diff)}`, true],
   ];
-  document.getElementById('loanCompareTable').innerHTML = rows.map(r=>
-    `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`
-  ).join('');
+
+  document.getElementById('loanCompareTable').innerHTML = rows.map(r=>{
+    const cls = r[2] ? (r[1]==='' ? 'group-row' : 'total-row') : '';
+    const cell2 = r[1]==='' ? `<td colspan="2">${r[0]}</td>` : `<td>${r[0]}</td><td>${r[1]}</td>`;
+    return `<tr class="${cls}">${cell2}</tr>`;
+  }).join('');
 }
 
 loanAmtSlider.addEventListener('input', renderLoanCompare);

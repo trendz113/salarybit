@@ -171,27 +171,6 @@
   #productTotal tr:first-child td{ border-bottom:none; }
   #loanCompareTable tr td:first-child{ font-family:'Courier New', monospace; font-size:12.5px; }
   #loanCompareTable tr td:last-child{ font-weight:bold; }
-  .invest-btn{
-    display:inline-block;
-    font-family:'Courier New', monospace;
-    font-size:11.5px;
-    font-weight:bold;
-    padding:4px 9px;
-    border-radius:3px;
-    text-decoration:none;
-    white-space:nowrap;
-  }
-  a.invest-btn{
-    background:var(--ink);
-    color:var(--paper);
-  }
-  a.invest-btn:hover{ opacity:0.85; }
-  .invest-btn.placeholder{
-    background:transparent;
-    border:1px dashed var(--rule);
-    color:var(--ink-soft);
-    font-style:italic;
-  }
   .report-section{
     background:rgba(255,255,255,0.5);
     border:1px solid var(--rule);
@@ -221,14 +200,6 @@
     cursor:pointer;
   }
   .report-row button:hover{ opacity:0.9; }
-  .disclosure{
-    font-family:'Courier New', monospace;
-    font-size:10.5px;
-    color:var(--ink-soft);
-    margin-top:16px;
-    padding:8px 12px;
-    border-left:3px solid var(--rule);
-  }
   .ticket-line{
     font-family:'Courier New', monospace;
     font-size:13px;
@@ -343,7 +314,6 @@
               <li>Tata AIA Life — ~99.4% CSR (FY25-26)</li>
             </ul>
           </div>
-          <div id="termInvestBtn"></div>
         </div>
         <div class="insure-card">
           <div class="name">Health floater (₹10L, family)</div>
@@ -358,7 +328,6 @@
               <li>ICICI Lombard Health AdvantEdge / Elevate</li>
             </ul>
           </div>
-          <div id="healthInvestBtn"></div>
         </div>
         <div class="insure-card">
           <div class="name">Critical illness rider (₹25L)</div>
@@ -366,7 +335,6 @@
           <div class="companies">
             This is usually bought as a rider on the term plan above, not a separate policy — add it from whichever term insurer you pick (LIC, Axis Max Life, HDFC Life, ICICI Prudential, and Tata AIA all offer one).
           </div>
-          <div id="ciInvestBtn"></div>
         </div>
       </div>
       <div class="insure-total">Total monthly protection cost: <span id="insureTotal">-</span></div>
@@ -379,7 +347,7 @@
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Product</th><th>Indicative rate</th><th>5 yrs</th><th>7 yrs</th><th>15 yrs</th><th>20 yrs</th><th>Invest</th></tr>
+            <tr><th>Product</th><th>Indicative rate</th><th>5 yrs</th><th>7 yrs</th><th>15 yrs</th><th>20 yrs</th></tr>
           </thead>
           <tbody id="productTable"></tbody>
           <tfoot id="productTotal"></tfoot>
@@ -456,10 +424,6 @@
       </form>
       <div class="note" id="reportStatus"></div>
     </section>
-
-    <div class="disclosure">
-      Some links on this page are referral/affiliate links — if you buy through them, this site may earn a commission at no extra cost to you. This doesn't change the calculations above, which are based purely on the rates and inputs you set.
-    </div>
   </div>
   <footer>How the numbers below are calculated: standard SIP compounding, per-year, per product.</footer>
 </div>
@@ -501,40 +465,9 @@ const amtSlider = document.getElementById('amtSlider');
 const ageVal = document.getElementById('ageVal');
 const amtVal = document.getElementById('amtVal');
 
-// ---- Monetization: affiliate / referral links ----
-// Fill these in with your real referral/affiliate links. Leave blank ('') to show a placeholder
-// instead of a live button, so it's obvious in the rendered page which ones still need a link.
-const AFFILIATE_LINKS = {
-  'Equity mutual fund SIP': '',
-  'Debt mutual fund': '',
-  'REIT': '',
-  'InvIT': '',
-  'PPF': '',
-  'NPS': '',
-  'Post Office RD/NSC': '',
-  'Bank Fixed Deposit (5-yr, top general rate)': '',
-  'Nifty 50 Index Fund/ETF SIP': '',
-};
-const INSURANCE_LINKS = { term:'', health:'', ci:'' };
 // Point this at your Railway backend (e.g. 'https://salarybit-production.up.railway.app').
 // Leave blank while testing locally against a same-origin Flask server.
 const API_BASE = '';
-
-function investButton(productName){
-  const url = AFFILIATE_LINKS[productName];
-  if(url){
-    return `<a class="invest-btn" href="${url}" target="_blank" rel="noopener sponsored">Invest →</a>`;
-  }
-  return `<span class="invest-btn placeholder">Add link</span>`;
-}
-
-function insuranceButton(key, label){
-  const url = INSURANCE_LINKS[key];
-  if(url){
-    return `<a class="invest-btn" href="${url}" target="_blank" rel="noopener sponsored">${label} →</a>`;
-  }
-  return `<span class="invest-btn placeholder">Add link</span>`;
-}
 
 function render(){
   const age = parseInt(ageSlider.value,10);
@@ -549,9 +482,6 @@ function render(){
   document.getElementById('healthAmt').textContent = fmt(health) + '/mo';
   document.getElementById('ciAmt').textContent = fmt(ci) + '/mo';
   document.getElementById('insureTotal').textContent = fmt(term+health+ci) + '/month';
-  document.getElementById('termInvestBtn').innerHTML = insuranceButton('term','Get term quotes');
-  document.getElementById('healthInvestBtn').innerHTML = insuranceButton('health','Get health quotes');
-  document.getElementById('ciInvestBtn').innerHTML = insuranceButton('ci','Add this rider');
 
   // product table
   const durations = [5,7,15,20];
@@ -562,15 +492,15 @@ function render(){
       totals[y]+=v;
       return v;
     });
-    return `<tr><td>${p.name}</td><td>${(p.rate*100).toFixed(1)}%</td><td>${fmt(vals[0])}</td><td>${fmt(vals[1])}</td><td>${fmt(vals[2])}</td><td>${fmt(vals[3])}</td><td>${investButton(p.name)}</td></tr>`;
+    return `<tr><td>${p.name}</td><td>${(p.rate*100).toFixed(1)}%</td><td>${fmt(vals[0])}</td><td>${fmt(vals[1])}</td><td>${fmt(vals[2])}</td><td>${fmt(vals[3])}</td></tr>`;
   }).join('');
   document.getElementById('productTable').innerHTML = rows;
 
   const investedRow = durations.map(y=> fmt(amt*products.length*12*y)).join('</td><td>');
   const totalRow = durations.map(y=> fmt(totals[y])).join('</td><td>');
   document.getElementById('productTotal').innerHTML =
-    `<tr><td><b>Total invested (principal, all products)</b></td><td>—</td><td>${investedRow}</td><td>—</td></tr>
-     <tr><td><b>Total value (all products)</b></td><td>—</td><td>${totalRow}</td><td>—</td></tr>`;
+    `<tr><td><b>Total invested (principal, all products)</b></td><td>—</td><td>${investedRow}</td></tr>
+     <tr><td><b>Total value (all products)</b></td><td>—</td><td>${totalRow}</td></tr>`;
 
   document.getElementById('ticketLine').innerHTML =
     `Monthly amount per product: <b>${fmt(amt)}</b> &nbsp;×&nbsp; ${products.length} products &nbsp;=&nbsp; <b>${fmt(amt*products.length)}</b> total per month`;

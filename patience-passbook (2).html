@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Patience Passbook</title>
+<style>
+  :root{
+    --paper:#f2e8d3;
+    --paper-dark:#e6d8b8;
+    --ink:#182a44;
+    --ink-soft:#3c5170;
+    --rule:#c9b78e;
+    --stamp:#a3352f;
+    --gain:#2f6b4f;
+    --loss:#a3352f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.25), transparent 60%),
+      var(--paper);
+    color:var(--ink);
+    font-family:Georgia, 'Times New Roman', serif;
+    padding:18px;
+  }
+  .sheet{
+    max-width:920px;
+    margin:0 auto;
+    background:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 27px, var(--rule) 28px),
+      var(--paper);
+    border:1px solid var(--rule);
+    box-shadow:0 6px 24px rgba(24,42,68,0.18), inset 0 0 60px rgba(168,120,31,0.06);
+    border-radius:4px;
+    position:relative;
+    overflow:hidden;
+  }
+  .sheet::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      radial-gradient(rgba(24,42,68,0.03) 1px, transparent 1px);
+    background-size:3px 3px;
+    pointer-events:none;
+  }
+  header{
+    background:var(--ink);
+    color:var(--paper);
+    padding:22px 26px 18px;
+    position:relative;
+  }
+  header h1{
+    margin:0;
+    font-size:26px;
+    letter-spacing:1px;
+  }
+  header .sub{
+    font-family:'Courier New', monospace;
+    font-size:12px;
+    letter-spacing:2px;
+    opacity:0.75;
+    margin-top:6px;
+    text-transform:uppercase;
+  }
+  .body{ padding:22px 26px 30px; }
+  .disclaimer{
+    font-family:'Courier New', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    border-left:3px solid var(--rule);
+    padding:8px 12px;
+    margin-bottom:22px;
+    background:rgba(255,255,255,0.3);
+  }
+  .controls{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    margin-bottom:22px;
+  }
+  @media(max-width:640px){ .controls{ grid-template-columns:1fr; } }
+  .control-box{
+    border:1px dashed var(--rule);
+    padding:12px 14px;
+    background:rgba(255,255,255,0.35);
+    border-radius:3px;
+  }
+  .control-box label{
+    display:flex; justify-content:space-between;
+    font-family:'Courier New', monospace;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+  .control-box .val{ color:var(--ink); font-weight:bold; }
+  input[type=range]{
+    width:100%;
+    accent-color:var(--stamp);
+  }
+  section{ margin-bottom:26px; }
+  h2{
+    font-size:15px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:6px;
+    margin-bottom:14px;
+    color:var(--ink);
+  }
+  .insure-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+  }
+  @media(max-width:640px){ .insure-grid{ grid-template-columns:1fr; } }
+  .insure-card{
+    border:1px solid var(--rule);
+    padding:10px 12px;
+    background:rgba(255,255,255,0.4);
+    font-size:13px;
+  }
+  .insure-card .name{ font-weight:bold; margin-bottom:4px; }
+  .insure-card .companies{
+    font-family:'Courier New', monospace;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    margin-top:8px;
+    line-height:1.5;
+  }
+  .insure-card .companies ul{ margin:4px 0 0; padding-left:16px; }
+  .insure-card .companies li{ margin-bottom:3px; }
+  .insure-card .amt{
+    font-family:'Courier New', monospace;
+    font-size:17px;
+    color:var(--stamp);
+  }
+  .insure-total{
+    margin-top:10px;
+    font-family:'Courier New', monospace;
+    font-size:13px;
+    text-align:right;
+    color:var(--ink-soft);
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+  }
+  th,td{
+    padding:7px 8px;
+    text-align:right;
+    border-bottom:1px solid var(--rule);
+    font-family:'Courier New', monospace;
+    white-space:nowrap;
+  }
+  th:first-child, td:first-child{ text-align:left; font-family:Georgia,serif; }
+  thead th{
+    text-transform:uppercase;
+    font-size:10.5px;
+    letter-spacing:0.5px;
+    color:var(--ink-soft);
+    font-family:'Courier New', monospace;
+    border-bottom:2px solid var(--ink);
+  }
+  .table-wrap{ overflow-x:auto; }
+  #productTotal tr td{ border-top:2px solid var(--ink); border-bottom:1px solid var(--rule); background:rgba(255,255,255,0.55); }
+  #productTotal tr:first-child td{ border-bottom:none; }
+  #loanCompareTable tr td:first-child{ font-family:'Courier New', monospace; font-size:12.5px; }
+  #loanCompareTable tr td:last-child{ font-weight:bold; }
+  .invest-btn{
+    display:inline-block;
+    font-family:'Courier New', monospace;
+    font-size:11.5px;
+    font-weight:bold;
+    padding:4px 9px;
+    border-radius:3px;
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  a.invest-btn{
+    background:var(--ink);
+    color:var(--paper);
+  }
+  a.invest-btn:hover{ opacity:0.85; }
+  .invest-btn.placeholder{
+    background:transparent;
+    border:1px dashed var(--rule);
+    color:var(--ink-soft);
+    font-style:italic;
+  }
+  .report-section{
+    background:rgba(255,255,255,0.5);
+    border:1px solid var(--rule);
+    padding:16px 18px;
+  }
+  .report-row{
+    display:flex; gap:10px; flex-wrap:wrap;
+  }
+  .report-row input[type=email]{
+    flex:1; min-width:180px;
+    padding:9px 10px;
+    border:1px solid var(--rule);
+    border-radius:3px;
+    font-family:'Courier New', monospace;
+    font-size:13px;
+    background:#fff;
+  }
+  .report-row button{
+    background:var(--stamp);
+    color:#fff;
+    border:none;
+    padding:9px 16px;
+    border-radius:3px;
+    font-family:'Courier New', monospace;
+    font-size:13px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+  .report-row button:hover{ opacity:0.9; }
+  .disclosure{
+    font-family:'Courier New', monospace;
+    font-size:10.5px;
+    color:var(--ink-soft);
+    margin-top:16px;
+    padding:8px 12px;
+    border-left:3px solid var(--rule);
+  }
+  .ticket-line{
+    font-family:'Courier New', monospace;
+    font-size:13px;
+    color:var(--ink);
+    background:rgba(255,255,255,0.5);
+    border:1px solid var(--rule);
+    padding:8px 12px;
+    margin-bottom:12px;
+  }
+  .ticket-line b{ color:var(--stamp); }
+  .note{
+    font-size:11px;
+    color:var(--ink-soft);
+    font-family:'Courier New', monospace;
+    margin-top:6px;
+  }
+  .chart-wrap{
+    border:1px solid var(--rule);
+    background:rgba(255,255,255,0.4);
+    padding:14px;
+    position:relative;
+  }
+  .legend{
+    display:flex; gap:18px; flex-wrap:wrap;
+    font-family:'Courier New', monospace;
+    font-size:12px;
+    margin-bottom:8px;
+  }
+  .legend span{ display:flex; align-items:center; gap:6px; }
+  .swatch{ width:14px; height:3px; display:inline-block; }
+  .callout{
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+    margin-top:14px;
+    font-family:'Courier New', monospace;
+    font-size:13px;
+  }
+  .callout .box{
+    flex:1; min-width:150px;
+    border:1px solid var(--rule);
+    padding:10px;
+    background:rgba(255,255,255,0.4);
+  }
+  .callout .box .lbl{ font-size:10.5px; text-transform:uppercase; color:var(--ink-soft); letter-spacing:1px; }
+  .callout .box .num{ font-size:18px; margin-top:4px; }
+  .callout .gain .num{ color:var(--gain); }
+  .callout .loss .num{ color:var(--loss); }
+  .stamp{
+    position:absolute;
+    right:18px; bottom:14px;
+    width:96px; height:96px;
+    border:3px solid var(--stamp);
+    border-radius:50%;
+    color:var(--stamp);
+    display:flex; align-items:center; justify-content:center;
+    text-align:center;
+    font-family:'Courier New', monospace;
+    font-size:11px;
+    font-weight:bold;
+    letter-spacing:1px;
+    transform:rotate(-14deg) scale(0);
+    opacity:0;
+    transition:transform 0.6s cubic-bezier(.2,1.6,.4,1), opacity 0.4s;
+    pointer-events:none;
+  }
+  .stamp.show{ transform:rotate(-14deg) scale(1); opacity:0.88; }
+  footer{
+    padding:14px 26px 20px;
+    font-family:'Courier New', monospace;
+    font-size:10.5px;
+    color:var(--ink-soft);
+    text-align:center;
+    border-top:1px dashed var(--rule);
+  }
+</style>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+<div class="sheet">
+  <header>
+    <h1>The Patience Passbook</h1>
+    <div class="sub">A ledger of what waiting actually earns you</div>
+  </header>
+  <div class="body">
+    <div class="disclaimer">
+      Every number below is calculated live from the age and monthly amount you set, using the rate or premium band listed against each row. Move a slider and the whole passbook recalculates.
+    </div>
+
+    <div class="controls">
+      <div class="control-box">
+        <label>Your age <span class="val" id="ageVal">40</span></label>
+        <input type="range" id="ageSlider" min="25" max="60" value="40" step="1"/>
+      </div>
+      <div class="control-box">
+        <label>Monthly amount per product <span class="val" id="amtVal">₹500</span></label>
+        <input type="range" id="amtSlider" min="500" max="5000" value="500" step="100"/>
+      </div>
+    </div>
+
+    <section>
+      <h2>Protection first</h2>
+      <div class="insure-grid">
+        <div class="insure-card">
+          <div class="name">Term insurance (₹1Cr cover, till age 60)</div>
+          <div class="amt" id="termAmt">-</div>
+          <div class="companies">
+            Companies to consider (by claim settlement ratio, IRDAI-published):
+            <ul>
+              <li>LIC Tech Term — largest insurer, ~98%+ CSR</li>
+              <li>Axis Max Life Smart Term Plan Plus — highest CSR, ~99.8%</li>
+              <li>HDFC Life Click 2 Protect Supreme Plus — highest amount settlement ratio, ~96.7%</li>
+              <li>ICICI Prudential iProtect Smart</li>
+              <li>Tata AIA Life — ~99.4% CSR (FY25-26)</li>
+            </ul>
+          </div>
+          <div id="termInvestBtn"></div>
+        </div>
+        <div class="insure-card">
+          <div class="name">Health floater (₹10L, family)</div>
+          <div class="amt" id="healthAmt">-</div>
+          <div class="companies">
+            Companies to consider:
+            <ul>
+              <li>HDFC ERGO Optima Secure+ — 2x cover from day 1, ~97.6% CSR</li>
+              <li>Star Health — largest standalone health insurer, ~99% CSR</li>
+              <li>Niva Bupa ReAssure 2.0 — unlimited restoration</li>
+              <li>Care Health Insurance (Care Supreme) — modular, unlimited restoration</li>
+              <li>ICICI Lombard Health AdvantEdge / Elevate</li>
+            </ul>
+          </div>
+          <div id="healthInvestBtn"></div>
+        </div>
+        <div class="insure-card">
+          <div class="name">Critical illness rider (₹25L)</div>
+          <div class="amt" id="ciAmt">-</div>
+          <div class="companies">
+            This is usually bought as a rider on the term plan above, not a separate policy — add it from whichever term insurer you pick (LIC, Axis Max Life, HDFC Life, ICICI Prudential, and Tata AIA all offer one).
+          </div>
+          <div id="ciInvestBtn"></div>
+        </div>
+      </div>
+      <div class="insure-total">Total monthly protection cost: <span id="insureTotal">-</span></div>
+      <div class="note">Claim settlement ratios above are from IRDAI-published disclosures and change yearly — always check the latest figure before buying. This is a starting shortlist, not a recommendation of one insurer over another; compare premium, riders and network before deciding.</div>
+    </section>
+
+    <section>
+      <h2>Every product, same monthly ticket</h2>
+      <div class="ticket-line" id="ticketLine"></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Product</th><th>Indicative rate</th><th>5 yrs</th><th>7 yrs</th><th>15 yrs</th><th>20 yrs</th><th>Invest</th></tr>
+          </thead>
+          <tbody id="productTable"></tbody>
+          <tfoot id="productTotal"></tfoot>
+        </table>
+      </div>
+      <div class="note">Real estate/plot can't be bought at a fixed monthly ticket, so it's left out — REIT is the monthly-SIP way to get real estate exposure instead. PPF has a 15-year lock-in; NPS is locked till 60. Nifty 50 spreads your money across 50 large companies, so one company's bad year gets absorbed by the other 49 — that spread is why it's shown here instead of a single-company stock SIP, which carries no such cushion.</div>
+    </section>
+
+
+
+    <section>
+      <h2>The 7-year exit vs. the 20-year stay</h2>
+      <div class="chart-wrap">
+        <div class="ticket-line" id="chartTicketLine"></div>
+        <div class="legend">
+          <span><span class="swatch" style="background:var(--gain)"></span> Stayed invested to year 20</span>
+          <span><span class="swatch" style="background:var(--loss)"></span> Panicked, exited at year 7</span>
+        </div>
+        <svg id="chartSvg" viewBox="0 0 640 300" style="width:100%; height:auto; display:block;"></svg>
+        <div class="callout">
+          <div class="box gain">
+            <div class="lbl">Value at year 20 — stayed</div>
+            <div class="num" id="stayedVal">-</div>
+          </div>
+          <div class="box loss">
+            <div class="lbl">Value at year 20 — exited at 7</div>
+            <div class="num" id="exitVal">-</div>
+          </div>
+          <div class="box">
+            <div class="lbl">Cost of panic</div>
+            <div class="num" id="gapVal">-</div>
+          </div>
+        </div>
+        <div class="stamp" id="stamp">SEALED<br/>YEAR 20</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Prepay the home loan, or invest the extra?</h2>
+      <div class="controls">
+        <div class="control-box">
+          <label>Outstanding loan amount <span class="val" id="loanAmtVal">₹30,00,000</span></label>
+          <input type="range" id="loanAmtSlider" min="500000" max="8000000" value="3000000" step="50000"/>
+        </div>
+        <div class="control-box">
+          <label>Loan interest rate <span class="val" id="loanRateVal">8.5%</span></label>
+          <input type="range" id="loanRateSlider" min="7" max="11" value="8.5" step="0.05"/>
+        </div>
+        <div class="control-box">
+          <label>Remaining tenure (years) <span class="val" id="loanYrsVal">15</span></label>
+          <input type="range" id="loanYrsSlider" min="1" max="25" value="15" step="1"/>
+        </div>
+        <div class="control-box">
+          <label>Extra you can pay monthly <span class="val" id="extraAmtVal">₹5,000</span></label>
+          <input type="range" id="extraAmtSlider" min="500" max="30000" value="5000" step="500"/>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <tbody id="loanCompareTable"></tbody>
+        </table>
+      </div>
+      <div class="note">Prepaying reduces the loan's outstanding principal directly, so the saving is exactly the loan's interest rate, guaranteed. Investing the same amount at the equity rate used above is not guaranteed — it can also fall, as the crash chart shows. Both numbers are calculated straight from your inputs; which one suits you depends on how you weigh a guaranteed saving against a market-linked one.</div>
+    </section>
+
+    <section class="report-section">
+      <h2>Get this as a personalised PDF</h2>
+      <p style="font-size:14px; color:var(--ink-soft); margin-bottom:12px;">Every number above, saved as a one-page report with your exact inputs — useful to keep, share, or take to whichever insurer/AMC you pick.</p>
+      <form id="reportForm">
+        <div class="report-row">
+          <input type="email" id="reportEmail" placeholder="you@email.com" required/>
+          <button type="submit" id="reportSubmitBtn">Send me my report — ₹49</button>
+        </div>
+      </form>
+      <div class="note" id="reportStatus"></div>
+    </section>
+
+    <div class="disclosure">
+      Some links on this page are referral/affiliate links — if you buy through them, this site may earn a commission at no extra cost to you. This doesn't change the calculations above, which are based purely on the rates and inputs you set.
+    </div>
+  </div>
+  <footer>How the numbers below are calculated: standard SIP compounding, per-year, per product.</footer>
+</div>
+
+<script>
+const fmt = n => '₹' + Math.round(n).toLocaleString('en-IN');
+
+// ---- Insurance premium bands (illustrative, monthly) ----
+function bandLookup(age, bands){
+  for(const b of bands){ if(age <= b.max) return b.val; }
+  return bands[bands.length-1].val;
+}
+const termBands   = [{max:30,val:600},{max:35,val:800},{max:40,val:1100},{max:45,val:1600},{max:50,val:2400},{max:55,val:3600},{max:60,val:5500}];
+const healthBands = [{max:30,val:900},{max:35,val:1100},{max:40,val:1400},{max:45,val:1900},{max:50,val:2600},{max:55,val:3600},{max:60,val:5000}];
+const ciBands      = [{max:30,val:150},{max:35,val:200},{max:40,val:280},{max:45,val:400},{max:50,val:600},{max:55,val:900},{max:60,val:1400}];
+
+// ---- Investment products (illustrative long-term annual rates) ----
+const products = [
+  {name:'Equity mutual fund SIP', rate:0.13},
+  {name:'Debt mutual fund', rate:0.075},
+  {name:'REIT', rate:0.08},
+  {name:'InvIT', rate:0.09},
+  {name:'PPF', rate:0.071},
+  {name:'NPS', rate:0.10},
+  {name:'Post Office RD/NSC', rate:0.072},
+  {name:'Bank Fixed Deposit (5-yr, top general rate)', rate:0.065},
+  {name:'Nifty 50 Index Fund/ETF SIP', rate:0.125},
+];
+
+function sipFV(monthly, annualRate, years){
+  const i = annualRate/12;
+  const n = years*12;
+  if(i===0) return monthly*n;
+  return monthly * ((Math.pow(1+i,n)-1)/i) * (1+i);
+}
+
+const ageSlider = document.getElementById('ageSlider');
+const amtSlider = document.getElementById('amtSlider');
+const ageVal = document.getElementById('ageVal');
+const amtVal = document.getElementById('amtVal');
+
+// ---- Monetization: affiliate / referral links ----
+// Fill these in with your real referral/affiliate links. Leave blank ('') to show a placeholder
+// instead of a live button, so it's obvious in the rendered page which ones still need a link.
+const AFFILIATE_LINKS = {
+  'Equity mutual fund SIP': '',
+  'Debt mutual fund': '',
+  'REIT': '',
+  'InvIT': '',
+  'PPF': '',
+  'NPS': '',
+  'Post Office RD/NSC': '',
+  'Bank Fixed Deposit (5-yr, top general rate)': '',
+  'Nifty 50 Index Fund/ETF SIP': '',
+};
+const INSURANCE_LINKS = { term:'', health:'', ci:'' };
+// Point this at your Railway backend (e.g. 'https://salarybit-production.up.railway.app').
+// Leave blank while testing locally against a same-origin Flask server.
+const API_BASE = '';
+
+function investButton(productName){
+  const url = AFFILIATE_LINKS[productName];
+  if(url){
+    return `<a class="invest-btn" href="${url}" target="_blank" rel="noopener sponsored">Invest →</a>`;
+  }
+  return `<span class="invest-btn placeholder">Add link</span>`;
+}
+
+function insuranceButton(key, label){
+  const url = INSURANCE_LINKS[key];
+  if(url){
+    return `<a class="invest-btn" href="${url}" target="_blank" rel="noopener sponsored">${label} →</a>`;
+  }
+  return `<span class="invest-btn placeholder">Add link</span>`;
+}
+
+function render(){
+  const age = parseInt(ageSlider.value,10);
+  const amt = parseInt(amtSlider.value,10);
+  ageVal.textContent = age;
+  amtVal.textContent = fmt(amt);
+
+  const term = bandLookup(age, termBands);
+  const health = bandLookup(age, healthBands);
+  const ci = bandLookup(age, ciBands);
+  document.getElementById('termAmt').textContent = fmt(term) + '/mo';
+  document.getElementById('healthAmt').textContent = fmt(health) + '/mo';
+  document.getElementById('ciAmt').textContent = fmt(ci) + '/mo';
+  document.getElementById('insureTotal').textContent = fmt(term+health+ci) + '/month';
+  document.getElementById('termInvestBtn').innerHTML = insuranceButton('term','Get term quotes');
+  document.getElementById('healthInvestBtn').innerHTML = insuranceButton('health','Get health quotes');
+  document.getElementById('ciInvestBtn').innerHTML = insuranceButton('ci','Add this rider');
+
+  // product table
+  const durations = [5,7,15,20];
+  const totals = {5:0,7:0,15:0,20:0};
+  const rows = products.map(p=>{
+    const vals = durations.map(y=>{
+      const v = sipFV(amt, p.rate, y);
+      totals[y]+=v;
+      return v;
+    });
+    return `<tr><td>${p.name}</td><td>${(p.rate*100).toFixed(1)}%</td><td>${fmt(vals[0])}</td><td>${fmt(vals[1])}</td><td>${fmt(vals[2])}</td><td>${fmt(vals[3])}</td><td>${investButton(p.name)}</td></tr>`;
+  }).join('');
+  document.getElementById('productTable').innerHTML = rows;
+
+  const investedRow = durations.map(y=> fmt(amt*products.length*12*y)).join('</td><td>');
+  const totalRow = durations.map(y=> fmt(totals[y])).join('</td><td>');
+  document.getElementById('productTotal').innerHTML =
+    `<tr><td><b>Total invested (principal, all products)</b></td><td>—</td><td>${investedRow}</td><td>—</td></tr>
+     <tr><td><b>Total value (all products)</b></td><td>—</td><td>${totalRow}</td><td>—</td></tr>`;
+
+  document.getElementById('ticketLine').innerHTML =
+    `Monthly amount per product: <b>${fmt(amt)}</b> &nbsp;×&nbsp; ${products.length} products &nbsp;=&nbsp; <b>${fmt(amt*products.length)}</b> total per month`;
+  document.getElementById('chartTicketLine').innerHTML =
+    `Monthly investment simulated below: <b>${fmt(amt)}/month</b> into the equity SIP, for 20 years`;
+
+  drawCrashChart(amt);
+  renderLoanCompare();
+}
+
+// ---- Crash simulation: equity SIP, 32% drop at year 7, then two paths ----
+function buildCrashSeries(monthly){
+  const equityRate = 0.13, savingsRate = 0.035;
+  const iEquity = equityRate/12, iSavings = savingsRate/12;
+  const months = 240; // 20 years
+  const crashMonth = 84; // year 7
+  let corpus = 0;
+  const stayedYearly = [0];
+  const exitYearly = [];
+  let preCrashByMonth = [0];
+
+  for(let m=1; m<=crashMonth; m++){
+    corpus = corpus*(1+iEquity) + monthly;
+    preCrashByMonth[m]=corpus;
+    if(m % 12 === 0) stayedYearly.push(corpus);
+  }
+  // apply the crash
+  corpus = corpus * 0.68;
+  // record the crashed value as the shared year-7 point (overwrite last yearly if 84%12===0)
+  stayedYearly[7] = corpus;
+
+  // Path A: stayed invested — keeps contributing + compounding at equity rate
+  let stayedCorpus = corpus;
+  const stayedSeries = stayedYearly.slice(0,8); // years 0..7 (index=year)
+  for(let m=crashMonth+1; m<=months; m++){
+    stayedCorpus = stayedCorpus*(1+iEquity) + monthly;
+    if(m % 12 === 0) stayedSeries.push(stayedCorpus);
+  }
+
+  // Path B: panicked — withdraws at year 7, stops contributing, parks in savings
+  let exitCorpus = corpus;
+  const exitSeries = stayedYearly.slice(0,8);
+  for(let m=crashMonth+1; m<=months; m++){
+    exitCorpus = exitCorpus*(1+iSavings); // no further contribution
+    if(m % 12 === 0) exitSeries.push(exitCorpus);
+  }
+
+  return {stayedSeries, exitSeries};
+}
+
+function drawCrashChart(monthly){
+  const {stayedSeries, exitSeries} = buildCrashSeries(monthly);
+  const years = stayedSeries.length; // 21 points, year 0..20
+  const maxVal = Math.max(...stayedSeries, ...exitSeries);
+  const W=640,H=300, padL=52, padB=28, padT=14, padR=10;
+  const plotW=W-padL-padR, plotH=H-padT-padB;
+
+  const x = i => padL + (i/(years-1))*plotW;
+  const y = v => padT + plotH - (v/maxVal)*plotH;
+
+  function pathFor(series){
+    return series.map((v,i)=> (i===0?'M':'L') + x(i).toFixed(1) + ',' + y(v).toFixed(1)).join(' ');
+  }
+
+  const gridLines = [];
+  for(let g=0; g<=4; g++){
+    const gy = padT + (plotH/4)*g;
+    const val = maxVal - (maxVal/4)*g;
+    gridLines.push(`<line x1="${padL}" y1="${gy}" x2="${W-padR}" y2="${gy}" stroke="#c9b78e" stroke-width="1" stroke-dasharray="2,3"/>`);
+    gridLines.push(`<text x="${padL-6}" y="${gy+4}" font-size="9" text-anchor="end" fill="#3c5170" font-family="Courier New, monospace">${fmt(val)}</text>`);
+  }
+  const yearTicks = [0,7,15,20].map(yr=>{
+    const gx = x(yr);
+    return `<text x="${gx}" y="${H-8}" font-size="9" text-anchor="middle" fill="#3c5170" font-family="Courier New, monospace">Yr ${yr}</text>`;
+  }).join('');
+  const crashLineX = x(7);
+
+  const svg = `
+    ${gridLines.join('')}
+    <line x1="${crashLineX}" y1="${padT}" x2="${crashLineX}" y2="${H-padB}" stroke="#a3352f" stroke-width="1" stroke-dasharray="3,3"/>
+    <text x="${crashLineX+4}" y="${padT+10}" font-size="9" fill="#a3352f" font-family="Courier New, monospace">-32% crash</text>
+    <path d="${pathFor(stayedSeries)}" fill="none" stroke="#2f6b4f" stroke-width="2.5"/>
+    <path d="${pathFor(exitSeries)}" fill="none" stroke="#a3352f" stroke-width="2.5"/>
+    ${yearTicks}
+    <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="#182a44" stroke-width="1"/>
+    <line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#182a44" stroke-width="1"/>
+  `;
+  document.getElementById('chartSvg').innerHTML = svg;
+
+  const stayedFinal = stayedSeries[stayedSeries.length-1];
+  const exitFinal = exitSeries[exitSeries.length-1];
+  document.getElementById('stayedVal').textContent = fmt(stayedFinal);
+  document.getElementById('exitVal').textContent = fmt(exitFinal);
+  document.getElementById('gapVal').textContent = fmt(stayedFinal-exitFinal);
+
+  const stamp = document.getElementById('stamp');
+  stamp.classList.remove('show');
+  requestAnimationFrame(()=> setTimeout(()=> stamp.classList.add('show'), 150));
+}
+
+// ---- Home loan: prepay vs invest ----
+const loanAmtSlider = document.getElementById('loanAmtSlider');
+const loanRateSlider = document.getElementById('loanRateSlider');
+const loanYrsSlider = document.getElementById('loanYrsSlider');
+const extraAmtSlider = document.getElementById('extraAmtSlider');
+
+function loanPrepaySim(principal, annualRatePct, years, extra){
+  const r = (annualRatePct/100)/12;
+  const n = years*12;
+  const emi = principal * r * Math.pow(1+r,n) / (Math.pow(1+r,n)-1);
+  const totalInterestBaseline = emi*n - principal;
+
+  let bal = principal, totalInterestExtra = 0, months = 0;
+  while(bal > 0.5 && months < n){
+    months++;
+    const interest = bal*r;
+    let principalPay = (emi - interest) + extra;
+    if(principalPay > bal) principalPay = bal;
+    bal -= principalPay;
+    totalInterestExtra += interest;
+  }
+  const interestSaved = totalInterestBaseline - totalInterestExtra;
+  const monthsSaved = n - months;
+  return {emi, totalInterestBaseline, totalInterestExtra, interestSaved, monthsSaved, payoffMonths:months};
+}
+
+function renderLoanCompare(){
+  const principal = parseInt(loanAmtSlider.value,10);
+  const ratePct = parseFloat(loanRateSlider.value);
+  const years = parseInt(loanYrsSlider.value,10);
+  const extra = parseInt(extraAmtSlider.value,10);
+
+  document.getElementById('loanAmtVal').textContent = fmt(principal);
+  document.getElementById('loanRateVal').textContent = ratePct.toFixed(2) + '%';
+  document.getElementById('loanYrsVal').textContent = years;
+  document.getElementById('extraAmtVal').textContent = fmt(extra);
+
+  const sim = loanPrepaySim(principal, ratePct, years, extra);
+  const yearsSaved = (sim.monthsSaved/12).toFixed(1);
+  const sipAlt = sipFV(extra, 0.13, years);
+
+  const rows = [
+    ['Current EMI', fmt(sim.emi) + '/mo'],
+    ['Interest paid without prepaying extra', fmt(sim.totalInterestBaseline)],
+    [`Interest paid if you add ${fmt(extra)}/mo extra`, fmt(sim.totalInterestExtra)],
+    ['Interest saved by prepaying', fmt(sim.interestSaved)],
+    ['Loan closes earlier by', yearsSaved + ' years'],
+    [`Same ${fmt(extra)}/mo invested in equity SIP instead, for ${years} yrs`, fmt(sipAlt)],
+  ];
+  document.getElementById('loanCompareTable').innerHTML = rows.map(r=>
+    `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`
+  ).join('');
+}
+
+loanAmtSlider.addEventListener('input', renderLoanCompare);
+loanRateSlider.addEventListener('input', renderLoanCompare);
+loanYrsSlider.addEventListener('input', renderLoanCompare);
+extraAmtSlider.addEventListener('input', renderLoanCompare);
+
+ageSlider.addEventListener('input', render);
+amtSlider.addEventListener('input', render);
+render();
+
+// ---- Paid report: real Razorpay checkout flow ----
+// Backend routes expected (see passbook_backend_snippet.py):
+//   POST {API_BASE}/api/create-passbook-order   -> {order_id, amount, currency, razorpay_key}
+//   POST {API_BASE}/api/verify-passbook-payment -> {success, payment_id}
+// No server-side PDF/email generation — every number is already computed
+// client-side, so once payment is verified we just unlock the printable
+// report right here in the page (window.print()).
+document.getElementById('reportForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const email = document.getElementById('reportEmail').value;
+  const statusEl = document.getElementById('reportStatus');
+  const btn = document.getElementById('reportSubmitBtn');
+
+  if(typeof Razorpay === 'undefined'){
+    statusEl.textContent = 'Razorpay checkout script did not load — check your internet connection and reload.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Starting checkout...';
+  statusEl.textContent = '';
+
+  try{
+    const orderRes = await fetch(`${API_BASE}/api/create-passbook-order`, { method:'POST' });
+    if(!orderRes.ok){
+      throw new Error('Could not create order');
+    }
+    const order = await orderRes.json();
+    if(order.error){ throw new Error(order.error); }
+
+    const rzpCheckout = new Razorpay({
+      key: order.razorpay_key,
+      amount: order.amount,
+      currency: order.currency,
+      order_id: order.order_id,
+      name: 'SalaryBit — Patience Passbook',
+      description: 'Personalised passbook report',
+      prefill: { email },
+      handler: async function(response){
+        statusEl.textContent = 'Verifying payment...';
+        try{
+          const verifyRes = await fetch(`${API_BASE}/api/verify-passbook-payment`, {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              email
+            })
+          });
+          const verify = await verifyRes.json();
+          if(verify.success){
+            statusEl.textContent = 'Payment verified — opening your report to print/save as PDF.';
+            setTimeout(()=> window.print(), 400);
+          } else {
+            statusEl.textContent = 'Payment could not be verified. If money was deducted, contact support with payment ID: ' + (response.razorpay_payment_id || '');
+          }
+        } catch(err){
+          statusEl.textContent = 'Payment succeeded but verification failed to reach the server — contact support with payment ID: ' + (response.razorpay_payment_id || '');
+        }
+        btn.disabled = false;
+        btn.textContent = 'Send me my report — ₹49';
+      },
+      modal: {
+        ondismiss: function(){
+          btn.disabled = false;
+          btn.textContent = 'Send me my report — ₹49';
+          statusEl.textContent = 'Checkout closed — no payment taken.';
+        }
+      },
+      theme: { color: '#182a44' }
+    });
+    rzpCheckout.open();
+  } catch(err){
+    statusEl.textContent = 'Could not start checkout: ' + err.message;
+    btn.disabled = false;
+    btn.textContent = 'Send me my report — ₹49';
+  }
+});
+</script>
+</body>
+</html>

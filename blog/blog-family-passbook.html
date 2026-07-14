@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Happens to Your Family's Money If You're Suddenly Not There? | SalaryBit</title>
+<meta name="description" content="A free, private Family Passbook tool to record where your bank accounts, insurance, loans and documents are — so your spouse isn't left searching.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B2A3D;
+    --paper:#F3ECD9;
+    --paper-line:#DED2AE;
+    --brass:#A9812F;
+    --brass-dark:#7A5C1F;
+    --stamp:#8B3A2B;
+    --sage:#5C6B62;
+    --white-ish:#FBF8F0;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:#EFE7D2;
+    color:var(--ink);
+    font-family:'Source Serif 4', serif;
+    font-size:17px;
+    line-height:1.7;
+  }
+  .display{font-family:'Fraunces', serif;}
+  .mono{font-family:'Courier Prime', monospace;}
+  a{color:var(--stamp);}
+  img, svg{max-width:100%; display:block;}
+
+  .wrap{max-width:720px; margin:0 auto; padding:0 20px;}
+
+  /* ===== HERO ===== */
+  .hero{
+    background:var(--ink);
+    color:var(--paper);
+    padding:52px 0 40px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero .wrap{position:relative; z-index:2;}
+  .eyebrow{
+    font-family:'Courier Prime', monospace;
+    font-size:12px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:#C9A24B;
+    margin-bottom:14px;
+  }
+  .hero h1{
+    font-family:'Fraunces', serif;
+    font-weight:900;
+    font-size:38px;
+    line-height:1.15;
+    margin:0 0 18px;
+    max-width:11ch;
+  }
+  .hero p{
+    color:#D9CFAE;
+    font-size:17px;
+    max-width:52ch;
+    margin:0 0 0;
+  }
+  .hero-icon{
+    position:absolute;
+    right:-30px;
+    top:10px;
+    width:220px;
+    opacity:0.9;
+    z-index:1;
+  }
+
+  /* ===== BODY ===== */
+  .content{padding:44px 0 60px;}
+  h2{
+    font-family:'Fraunces', serif;
+    font-weight:800;
+    font-size:25px;
+    color:var(--ink);
+    margin:44px 0 6px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  h2 .icon{flex:none; width:38px; height:38px;}
+  p{margin:0 0 16px; color:#2B3B4E;}
+  .lead{
+    font-size:18px;
+    color:var(--ink);
+  }
+
+  /* ===== STAT CALLOUT ===== */
+  .stat-box{
+    background:var(--white-ish);
+    border:1px solid var(--paper-line);
+    border-left:6px solid var(--stamp);
+    border-radius:4px;
+    padding:24px 26px;
+    margin:26px 0;
+    display:flex;
+    align-items:center;
+    gap:20px;
+  }
+  .stat-box .num{
+    font-family:'Fraunces', serif;
+    font-weight:900;
+    font-size:40px;
+    color:var(--stamp);
+    line-height:1;
+    white-space:nowrap;
+  }
+  .stat-box .label{
+    font-size:14.5px;
+    color:var(--sage);
+    line-height:1.5;
+  }
+
+  /* ===== NUMBERED LIST (the 12 sections) ===== */
+  .section-list{
+    list-style:none;
+    margin:18px 0 22px;
+    padding:0;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px 18px;
+  }
+  .section-list li{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    font-size:15px;
+    background:var(--white-ish);
+    border:1px solid var(--paper-line);
+    border-radius:4px;
+    padding:10px 12px;
+  }
+  .section-list .n{
+    font-family:'Courier Prime', monospace;
+    font-weight:700;
+    color:#fff;
+    background:var(--brass-dark);
+    border-radius:50%;
+    width:24px; height:24px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px;
+    flex:none;
+  }
+
+  /* ===== PRIVACY BADGE ===== */
+  .privacy-strip{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background:#E4F0E9;
+    border:1px solid #BFDACB;
+    border-radius:4px;
+    padding:16px 18px;
+    margin:22px 0;
+  }
+  .privacy-strip .icon{width:34px; height:34px; flex:none;}
+  .privacy-strip p{margin:0; font-size:14.5px; color:#2C5540;}
+
+  blockquote{
+    margin:26px 0;
+    padding:4px 0 4px 20px;
+    border-left:3px solid var(--brass);
+    font-style:italic;
+    color:var(--sage);
+    font-size:16px;
+  }
+
+  hr{border:none; border-top:1px dashed var(--paper-line); margin:40px 0;}
+
+  /* ===== CTA ===== */
+  .cta{
+    background:var(--ink);
+    border-radius:6px;
+    padding:34px 28px;
+    text-align:center;
+    margin:36px 0 10px;
+    background-image: repeating-linear-gradient(0deg, transparent 0 37px, rgba(243,236,217,0.05) 37px 38px);
+  }
+  .cta h3{
+    font-family:'Fraunces', serif;
+    font-weight:800;
+    font-style:italic;
+    color:var(--paper);
+    font-size:23px;
+    margin:0 0 8px;
+  }
+  .cta p{color:#B9A46B; font-size:14px; margin:0 0 20px;}
+  .cta a.btn{
+    display:inline-block;
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    background:var(--stamp);
+    color:#fff;
+    text-decoration:none;
+    padding:13px 30px;
+    border-radius:3px;
+    font-size:16px;
+  }
+
+  .disclaimer{
+    font-size:13px;
+    color:var(--sage);
+    font-style:italic;
+    margin-top:18px;
+  }
+
+  /* ===== MOBILE ===== */
+  @media (max-width:600px){
+    body{font-size:16px;}
+    .hero{padding:38px 0 30px;}
+    .hero h1{font-size:29px; max-width:14ch;}
+    .hero-icon{width:120px; top:-10px; right:-20px; opacity:0.5;}
+    h2{font-size:21px; margin-top:34px;}
+    h2 .icon{width:30px; height:30px;}
+    .stat-box{flex-direction:column; align-items:flex-start; gap:8px; padding:20px;}
+    .stat-box .num{font-size:32px;}
+    .section-list{grid-template-columns:1fr;}
+    .cta{padding:26px 18px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">SalaryBit &nbsp;·&nbsp; Family Finance</div>
+    <h1>What Happens to Your Family's Money If You're Suddenly Not There?</h1>
+    <p>Nobody wants to think about this. That's exactly why so few Indian families are prepared for it.</p>
+  </div>
+  <svg class="hero-icon" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="30" y="20" width="120" height="160" rx="6" fill="#F3ECD9" opacity="0.12"/>
+    <rect x="30" y="20" width="120" height="160" rx="6" stroke="#C9A24B" stroke-width="2"/>
+    <line x1="46" y1="55" x2="134" y2="55" stroke="#C9A24B" stroke-width="1.5"/>
+    <line x1="46" y1="75" x2="134" y2="75" stroke="#C9A24B" stroke-width="1.5" opacity="0.6"/>
+    <line x1="46" y1="95" x2="120" y2="95" stroke="#C9A24B" stroke-width="1.5" opacity="0.6"/>
+    <line x1="46" y1="115" x2="134" y2="115" stroke="#C9A24B" stroke-width="1.5" opacity="0.6"/>
+    <circle cx="150" cy="150" r="34" fill="#8B3A2B" opacity="0.85"/>
+    <path d="M136 150 L146 160 L166 138" stroke="#F3ECD9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </svg>
+</header>
+
+<main class="content">
+  <div class="wrap">
+
+    <p class="lead">Here's a number that should sit uncomfortably with you: as of December 2025, unclaimed deposits sitting in Indian banks had crossed a staggering figure — much of it because a family member passed away and nobody in the family knew the account existed, where the passbook was, or how to claim it.</p>
+
+    <div class="stat-box">
+      <div class="num">₹78,000 cr</div>
+      <div class="label">sitting unclaimed in Indian bank accounts as of December 2025 — much of it belonging to families who simply never knew the account existed.</div>
+    </div>
+
+    <p>This money doesn't vanish. It just sits there, out of reach, because the person who knew where it was is gone and never wrote it down. That's not a legal problem. It's a <em>communication</em> problem — and it's completely solvable in one evening with a pen, or twenty minutes with a form.</p>
+
+    <p>We built a free tool for this: the <strong>Family Passbook</strong>. Below is why it exists, and the questions people usually ask before trusting something like this with their family's details.</p>
+
+    <h2>
+      <svg class="icon" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="19" fill="#F3ECD9" stroke="#A9812F" stroke-width="1.5"/><path d="M20 11v9l6 4" stroke="#8B3A2B" stroke-width="2" stroke-linecap="round"/></svg>
+      Why would a healthy 35-year-old need this?
+    </h2>
+    <p>Because "suddenly" is the whole point. Life insurance, health insurance, and even Wills are built around the idea that something unexpected can happen — an accident, a medical emergency, a stroke that isn't survived. Nobody plans for the day; everybody should plan for what happens <em>after</em> the day.</p>
+    <p>Think about what your spouse would actually need to know, cold, with no warning: which banks you bank with, whether a nominee is even registered, whether your home loan has a cover that could pay it off, where your insurance documents physically are, whether you have a Will, and who your company's HR contact is for gratuity and dues.</p>
+    <p>Most people carry all of this only in their own head. That's the single point of failure a document like this removes.</p>
+
+    <h2>
+      <svg class="icon" viewBox="0 0 40 40" fill="none"><rect x="6" y="9" width="28" height="22" rx="3" fill="#F3ECD9" stroke="#A9812F" stroke-width="1.5"/><circle cx="14" cy="18" r="3" stroke="#8B3A2B" stroke-width="1.5"/><line x1="20" y1="16" x2="30" y2="16" stroke="#8B3A2B" stroke-width="1.5"/><line x1="20" y1="21" x2="30" y2="21" stroke="#8B3A2B" stroke-width="1.5"/></svg>
+      Isn't a nominee enough? Why do I need anything more?
+    </h2>
+    <p>A nominee is a <em>trustee for collection</em>, not necessarily the final legal owner of the money — that distinction alone causes enormous confusion and delay in Indian families. Banks, insurers and mutual funds each have their own claim process, their own forms, and their own paperwork quirks by branch.</p>
+    <p>Knowing a nominee is registered is useful. Knowing <em>which</em> accounts exist, <em>which</em> have a nominee, and <em>where</em> the paperwork is kept is what actually gets a family through the process in weeks instead of months.</p>
+    <blockquote>Government-owned banks alone are sitting on roughly ₹50,900 crore in dormant, unclaimed deposits — a large share traceable to depositors who passed away without a nominee or legal heir ever coming forward.</blockquote>
+
+    <h2>
+      <svg class="icon" viewBox="0 0 40 40" fill="none"><rect x="10" y="18" width="20" height="15" rx="2" fill="#F3ECD9" stroke="#A9812F" stroke-width="1.5"/><path d="M14 18v-4a6 6 0 0112 0v4" stroke="#8B3A2B" stroke-width="1.5" fill="none"/><circle cx="20" cy="25" r="2" fill="#8B3A2B"/></svg>
+      Won't writing this all down in one place be risky?
+    </h2>
+    <p>This is the part most "in case of emergency" templates get wrong, and it's why we designed the Family Passbook differently: <strong>it never asks for account numbers, card numbers, or passwords.</strong> A document like this can be printed, photocopied, or photographed by accident — so instead of the sensitive number itself, it only records which institution the account is with, whether a nominee is registered, and where the actual document is physically kept.</p>
+
+    <div class="privacy-strip">
+      <svg class="icon" viewBox="0 0 40 40" fill="none"><rect x="9" y="18" width="22" height="16" rx="3" fill="#fff" stroke="#3E8465" stroke-width="1.5"/><path d="M14 18v-5a6 6 0 0112 0v5" stroke="#3E8465" stroke-width="1.5" fill="none"/><circle cx="20" cy="25" r="2.4" fill="#3E8465"/></svg>
+      <p>The tool runs entirely in your browser — nothing you type is sent to a server, saved in a database, or visible to us. You fill it, print it or save it as a PDF, and that's the only copy that exists.</p>
+    </div>
+
+    <h2>
+      <svg class="icon" viewBox="0 0 40 40" fill="none"><rect x="8" y="7" width="24" height="27" rx="2.5" fill="#F3ECD9" stroke="#A9812F" stroke-width="1.5"/><line x1="13" y1="14" x2="27" y2="14" stroke="#8B3A2B" stroke-width="1.5"/><line x1="13" y1="19" x2="27" y2="19" stroke="#8B3A2B" stroke-width="1.5" opacity="0.6"/><line x1="13" y1="24" x2="22" y2="24" stroke="#8B3A2B" stroke-width="1.5" opacity="0.6"/></svg>
+      What should actually go in it?
+    </h2>
+    <p>A useful version covers, in roughly this order of urgency:</p>
+    <ul class="section-list">
+      <li><span class="n">1</span>Emergency card — spouse, doctor, CA, lawyer</li>
+      <li><span class="n">2</span>First 7 days — what to do, and what to avoid</li>
+      <li><span class="n">3</span>Every bank account and where records are kept</li>
+      <li><span class="n">4</span>Every insurance policy and its agent</li>
+      <li><span class="n">5</span>Loans, and whether a cover policy exists</li>
+      <li><span class="n">6</span>Investments — MF, PF, NPS, PPF, demat, gold</li>
+      <li><span class="n">7</span>Property and vehicle documents</li>
+      <li><span class="n">8</span>IDs and the Will, if one exists</li>
+      <li><span class="n">9</span>Digital accounts — not passwords, just the door</li>
+      <li><span class="n">10</span>Employer HR contact for gratuity, PF</li>
+      <li><span class="n">11</span>Children and dependents' immediate needs</li>
+      <li><span class="n">12</span>Where everything above is physically kept</li>
+    </ul>
+    <p>We've built exactly this into the free tool, with all twelve sections ready to fill.</p>
+
+    <h2>Do I need a Will as well?</h2>
+    <p>Yes — this passbook is a companion to a Will, not a replacement for one. A Will (ideally registered) determines legal ownership and prevents your family from needing a legal heir certificate, which can take months to obtain through the courts in its absence. The Family Passbook simply makes sure that once ownership is settled, your family can actually <em>find and claim</em> everything — which a Will by itself doesn't help with.</p>
+
+    <h2>How often should I update it?</h2>
+    <p>Once a year is a reasonable rhythm — around the time you file your ITR is an easy date to remember, since you're already looking at your financial year in one place. Update it sooner if you open a new account, take a new loan, buy insurance, or your family situation changes.</p>
+
+    <h2>Where do I keep it once it's filled?</h2>
+    <p>Print one copy and keep it with your other important documents — the same drawer or folder as your property papers. Tell your spouse, and one other trusted family member, that it exists and where it is. A passbook nobody knows about defeats the purpose.</p>
+
+    <hr>
+
+    <div class="cta">
+      <h3>Fill Your Family Passbook</h3>
+      <p>Free · Private · About 20 minutes · Nothing saved online</p>
+      <a class="btn" href="/tools/family-passbook">Start now →</a>
+    </div>
+
+    <p class="disclaimer">This tool and article are for general guidance and aren't a substitute for advice from a lawyer, chartered accountant, or your bank's relationship manager for your specific situation.</p>
+
+  </div>
+</main>
+
+</body>
+</html>

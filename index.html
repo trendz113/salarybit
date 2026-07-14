@@ -67,47 +67,81 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QFHT4BZTMF');</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,600;1,9..144,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --ink:#1a1a2e;
-  --ink2:#2d2d4a;
-  --ink3:#4a4a6a;
-  --mist:#7b7b9d;
-  --fog:#a8a8c0;
-  --cloud:#d4d4e8;
-  --pale:#eeeef6;
-  --snow:#f7f7fc;
+  --ink:#12192B;
+  --ink2:#1B2540;
+  --ink3:#49577E;
+  --mist:#7986AA;
+  --fog:#AAB4CE;
+  --cloud:#D9DFEC;
+  --pale:#F0F2F8;
+  --snow:#FAFAFD;
   --white:#ffffff;
-  --accent:#5b6af0;
-  --accent2:#7c8af5;
-  --accent-bg:rgba(91,106,240,.08);
-  --accent-border:rgba(91,106,240,.2);
-  --teal:#0ea5a0;
+  --accent:#FF6A33;
+  --accent2:#FF9466;
+  --accent-bg:rgba(255,106,51,.08);
+  --accent-border:rgba(255,106,51,.22);
+  --teal:#0EA5A0;
   --teal-bg:rgba(14,165,160,.08);
-  --amber:#d97706;
-  --amber-bg:rgba(217,119,6,.08);
-  --rose:#e05c5c;
-  --rose-bg:rgba(224,92,92,.08);
-  --green:#16a34a;
-  --green-bg:rgba(22,163,74,.08);
+  --amber:#D4A017;
+  --amber-bg:rgba(212,160,23,.1);
+  --rose:#C0392B;
+  --rose-bg:rgba(192,57,43,.08);
+  --green:#0F9D63;
+  --green-bg:rgba(15,157,99,.08);
   --purple:#7c3aed;
   --border:#e2e2f0;
-  --shadow:0 1px 4px rgba(26,26,46,.06),0 4px 16px rgba(26,26,46,.08);
-  --shadow-lg:0 8px 32px rgba(26,26,46,.12);
+  --shadow:0 1px 4px rgba(18,25,43,.06),0 4px 16px rgba(18,25,43,.08);
+  --shadow-lg:0 8px 32px rgba(18,25,43,.14);
   --r:12px;
   --r-sm:8px;
   --r-lg:18px;
   --body:'DM Sans',sans-serif;
-  --display:'DM Serif Display',serif;
+  --display:'Fraunces',serif;
+  --stamp-font:'Space Mono',monospace;
 }
 html{scroll-behavior:smooth}
 body{font-family:var(--body);background:var(--snow);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:var(--pale)}
 ::-webkit-scrollbar-thumb{background:var(--cloud);border-radius:3px}
+
+/* ── SIGNATURE: STITCHED LEDGER DIVIDER ── */
+.stitch-divider{
+  height:1px;width:100%;
+  background-image:repeating-linear-gradient(90deg,var(--cloud) 0 8px,transparent 8px 14px);
+  position:relative;
+}
+.stitch-divider::before,.stitch-divider::after{
+  content:'●';position:absolute;top:50%;transform:translateY(-50%);
+  font-size:6px;color:var(--fog);
+}
+.stitch-divider::before{left:0}
+.stitch-divider::after{right:0}
+
+/* ── SIGNATURE: SCROLL REVEAL ── */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+/* ── SIGNATURE: RUBBER STAMP BADGE ── */
+.stamp-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  border:2px dashed rgba(255,148,102,.55);
+  border-radius:50%;
+  width:88px;height:88px;
+  transform:rotate(-9deg);
+  font-family:var(--stamp-font);
+  font-size:9.5px;font-weight:700;letter-spacing:.03em;
+  color:var(--accent2);
+  text-align:center;line-height:1.35;
+  flex-direction:column;justify-content:center;
+  flex-shrink:0;
+}
+
 
 /* ── NAV ── */
 .nav{background:rgba(247,247,252,.95);backdrop-filter:blur(20px);position:sticky;top:0;z-index:200;border-bottom:1px solid var(--border)}
@@ -140,6 +174,20 @@ body{font-family:var(--body);background:var(--snow);color:var(--ink);line-height
 .hero-stat-val{font-family:var(--display);font-size:26px;color:#fff;line-height:1}
 .hero-stat-label{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
 @media(max-width:700px){.hero-stats{display:none}}
+
+/* ── HERO: entrance motion + signature underline ── */
+@keyframes heroRise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.hero-label{animation:heroRise .6s ease .05s both}
+.hero h1{animation:heroRise .7s ease .15s both}
+.hero-sub{animation:heroRise .7s ease .28s both}
+.hero-tools{animation:heroRise .7s ease .4s both}
+.hero-stats{animation:heroRise .7s ease .5s both}
+.hero h1 .hl{
+  position:relative;white-space:nowrap;
+  background-image:linear-gradient(rgba(255,106,51,.35),rgba(255,106,51,.35));
+  background-repeat:no-repeat;background-size:100% 38%;background-position:0 88%;
+}
+
 
 
 /* ── LAYOUT ── */
@@ -431,6 +479,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   .hero-stats{display:flex!important;gap:.75rem!important;margin-top:.875rem!important;padding-top:.75rem!important;border-top:1px solid rgba(255,255,255,.1)!important}
   .hero-stat-val{font-size:18px!important}
   .hero-stat-label{font-size:9px!important}
+  .stamp-badge{width:56px!important;height:56px!important;font-size:7px!important;border-width:1.5px!important}
   /* section nav scroll */
   .sec-nav{flex-wrap:nowrap!important;overflow-x:auto!important;scrollbar-width:none!important;padding-bottom:4px!important}
   .sec-nav::-webkit-scrollbar{display:none}
@@ -753,7 +802,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     <div class="hero-top">
       <div class="hero-left">
         <div class="hero-label">✦ Free · No login · Instant · FY 2026-27</div>
-        <h1>India's complete salary &<br><em>financial intelligence</em> platform</h1>
+        <h1>India's complete <span class="hl">salary &amp;<br>financial intelligence</span> platform</h1>
         <p class="hero-sub">CTC → in-hand, tax regime comparison, insurance, capital gains, EMI, EPF, Labour Code &amp; employee rights — all in one place.</p>
         <div class="hero-tools">
           <a class="hero-chip" href="/tax-ai.html" style="background:rgba(91,106,240,.18);border-color:rgba(91,106,240,.4)">🧾 Tax AI</a>
@@ -805,6 +854,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         </div>
       </div>
       <div class="hero-stats">
+        <div class="stamp-badge">🇮🇳<br>MADE FOR<br>INDIA</div>
         <div class="hero-stat"><div class="hero-stat-val">17+</div><div class="hero-stat-label">Tools</div></div>
         <div class="hero-stat"><div class="hero-stat-val" id="hvc-num">—</div><div class="hero-stat-label">Today's visitors</div></div>
         <div class="hero-stat"><div class="hero-stat-val">Free</div><div class="hero-stat-label">Always</div></div>
@@ -1276,7 +1326,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <section id="ai-tools-section" style="background:linear-gradient(135deg,#1a1a2e 0%,#16213e 60%,#0f3460 100%);border-top:2px solid rgba(91,106,240,.3);padding:3rem 1.5rem;position:relative;overflow:hidden">
   <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(91,106,240,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(91,106,240,.06) 1px,transparent 1px);background-size:40px 40px;pointer-events:none"></div>
   <div style="max-width:1160px;margin:0 auto;position:relative;z-index:1">
-    <div style="text-align:center;margin-bottom:2.5rem">
+    <div class="reveal" style="text-align:center;margin-bottom:2.5rem">
       <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(91,106,240,.2);border:1px solid rgba(91,106,240,.4);border-radius:20px;padding:5px 16px;font-size:11px;font-weight:700;color:#a5b4fc;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.875rem">🤖 Powered by AI</div>
       <h2 style="font-family:var(--display);font-size:clamp(22px,3.5vw,34px);color:#fff;margin-bottom:.5rem">AI Tools &amp; Community Products</h2>
       <p style="font-size:13px;color:rgba(255,255,255,.5);max-width:540px;margin:0 auto;line-height:1.6">CA-level tax analysis, notice decoder, insurance advisor, document validator — everything you need for your salary and taxes.</p>
@@ -1538,8 +1588,9 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 <!-- ═══════════════════════════════════════
      SEO CONTENT SECTION
 ════════════════════════════════════════ -->
-<section id="seo-section" style="background:#fff;border-top:1px solid var(--border);padding:3rem 1.5rem">
-  <div style="max-width:1000px;margin:0 auto;line-height:1.8;color:#444">
+<div class="stitch-divider"></div>
+<section id="seo-section" style="background:#fff;padding:3rem 1.5rem">
+  <div class="reveal" style="max-width:1000px;margin:0 auto;line-height:1.8;color:#444">
     <h2 style="color:var(--accent);font-family:var(--display);font-size:clamp(20px,3vw,28px);margin-bottom:1rem">About SalaryBit: Financial Intelligence for India</h2>
     <p>Managing your finances as an Indian professional requires more than just a basic spreadsheet. With the <strong>New Labour Code 2020</strong> coming into effect, your 'Basic Pay' structure will change, impacting your Provident Fund (PF) and Gratuity. SalaryBit provides a transparent, free tool to visualize these changes.</p>
 
@@ -1560,11 +1611,12 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
 
 
-<section id="tools-section" style="background:var(--snow);border-top:2px solid var(--border);padding:3rem 1.5rem">
+<div class="stitch-divider"></div>
+<section id="tools-section" style="background:var(--snow);padding:3rem 1.5rem">
   <div style="max-width:1160px;margin:0 auto">
 
     <!-- Section Header -->
-    <div style="text-align:center;margin-bottom:2.5rem">
+    <div class="reveal" style="text-align:center;margin-bottom:2.5rem">
       <div style="display:inline-flex;align-items:center;gap:6px;background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:20px;padding:4px 14px;font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.875rem">🛠️ Free Financial Tools</div>
       <h2 style="font-family:var(--display);font-size:clamp(22px,3.5vw,34px);color:var(--ink);margin-bottom:.5rem">More tools for everyday finance</h2>
       <p style="font-size:13px;color:var(--mist);max-width:480px;margin:0 auto">Quick calculators covering loans, investments, PF, gratuity, salary hike impact, notice pay and more — all free, no login needed.</p>
@@ -2632,6 +2684,26 @@ function launchConfetti(){
 document.addEventListener('keydown',(e)=>{
   if(e.key==='Escape') closeWheel();
 });
+
+// ═══════════════════════════════════════
+// SIGNATURE — SCROLL REVEAL OBSERVER
+// ═══════════════════════════════════════
+(function(){
+  const els=document.querySelectorAll('.reveal');
+  if(!els.length || !('IntersectionObserver' in window)){
+    els.forEach(el=>el.classList.add('in'));
+    return;
+  }
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  },{threshold:0.15,rootMargin:'0px 0px -40px 0px'});
+  els.forEach(el=>io.observe(el));
+})();
 </script>
 </body>
 </html>

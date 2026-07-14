@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Family Passbook — SalaryBit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B2A3D;
+    --paper:#F3ECD9;
+    --paper-line:#DED2AE;
+    --brass:#A9812F;
+    --brass-dark:#7A5C1F;
+    --stamp:#8B3A2B;
+    --sage:#5C6B62;
+    --white-ish:#FBF8F0;
+    --shadow: 0 8px 24px rgba(27,42,61,0.12);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:#E4DABF;
+    font-family:'Source Serif 4', serif;
+    color:var(--ink);
+  }
+  .display{font-family:'Fraunces', serif;}
+  .mono{font-family:'Courier Prime', monospace;}
+
+  /* ===== Top banner ===== */
+  .privacy-banner{
+    background:var(--ink);
+    color:var(--paper);
+    text-align:center;
+    font-family:'Courier Prime', monospace;
+    font-size:13px;
+    letter-spacing:0.03em;
+    padding:10px 16px;
+  }
+  .privacy-banner strong{color:#E8C97A;}
+
+  /* ===== App shell ===== */
+  .app{
+    max-width:1100px;
+    margin:28px auto 60px;
+    display:grid;
+    grid-template-columns:220px 1fr;
+    gap:0;
+    background:var(--white-ish);
+    box-shadow:var(--shadow);
+    border-radius:4px;
+    overflow:hidden;
+    min-height:80vh;
+  }
+
+  /* ===== Tab rail (signature element: passbook index tabs) ===== */
+  .tab-rail{
+    background:var(--ink);
+    padding:22px 0 22px 0;
+    position:sticky;
+    top:0;
+    align-self:start;
+  }
+  .rail-title{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-style:italic;
+    color:var(--paper);
+    font-size:20px;
+    padding:0 20px 18px 24px;
+    border-bottom:1px solid rgba(243,236,217,0.15);
+    margin-bottom:6px;
+    line-height:1.25;
+  }
+  .rail-title span{display:block; font-family:'Courier Prime',monospace; font-style:normal; font-size:10px; letter-spacing:0.12em; color:#B9A46B; margin-top:6px;}
+  .tab-btn{
+    display:block;
+    width:100%;
+    text-align:left;
+    background:transparent;
+    border:none;
+    color:#D9CFAE;
+    font-family:'Courier Prime', monospace;
+    font-size:12.5px;
+    letter-spacing:0.03em;
+    padding:11px 14px 11px 24px;
+    cursor:pointer;
+    position:relative;
+    transition:background .15s, color .15s;
+    border-left:4px solid transparent;
+  }
+  .tab-btn .num{color:#8C9AA6; margin-right:8px;}
+  .tab-btn:hover{background:rgba(255,255,255,0.06); color:#fff;}
+  .tab-btn.active{
+    background:var(--paper);
+    color:var(--ink);
+    border-left:4px solid var(--stamp);
+    font-weight:700;
+  }
+  .tab-btn.active .num{color:var(--stamp);}
+
+  /* ===== Main ledger area ===== */
+  .ledger{
+    padding:0;
+    background:
+      repeating-linear-gradient(var(--white-ish) 0 38px, var(--paper-line) 38px 39px);
+    position:relative;
+  }
+  .ledger::before{
+    content:"";
+    position:absolute; left:64px; top:0; bottom:0; width:1px;
+    background:rgba(139,58,43,0.25);
+  }
+  .page{ display:none; padding:34px 30px 34px 84px; }
+  .page.active{ display:block; }
+
+  .page h2{
+    font-family:'Fraunces', serif;
+    font-weight:900;
+    font-size:28px;
+    margin:0 0 4px;
+  }
+  .page .kicker{
+    font-family:'Courier Prime', monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--stamp);
+    margin-bottom:14px;
+  }
+  .page .intro{
+    color:var(--sage);
+    font-size:15px;
+    line-height:1.6;
+    max-width:640px;
+    margin-bottom:22px;
+  }
+
+  .field-row{
+    display:grid;
+    grid-template-columns:200px 1fr;
+    gap:14px;
+    align-items:center;
+    padding:9px 0;
+  }
+  .field-row.wide{grid-template-columns:1fr;}
+  .field-row label{
+    font-family:'Courier Prime', monospace;
+    font-size:12px;
+    color:var(--ink);
+    line-height:1.4;
+  }
+  .field-row input, .field-row textarea, .field-row select{
+    font-family:'Source Serif 4', serif;
+    font-size:15px;
+    border:none;
+    border-bottom:1px solid var(--brass);
+    background:transparent;
+    padding:6px 4px;
+    width:100%;
+    color:var(--ink);
+  }
+  .field-row input:focus, .field-row textarea:focus, .field-row select:focus{
+    outline:none;
+    border-bottom:2px solid var(--stamp);
+  }
+  .field-row textarea{resize:vertical; min-height:44px;}
+
+  .block{
+    border:1px solid var(--paper-line);
+    background:rgba(233,222,190,0.35);
+    border-radius:3px;
+    padding:16px 18px 6px;
+    margin-bottom:22px;
+  }
+  .block-title{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:15px;
+    color:var(--brass-dark);
+    margin-bottom:6px;
+  }
+  .repeat-wrap{margin-bottom:8px;}
+  .add-row-btn{
+    font-family:'Courier Prime', monospace;
+    font-size:12px;
+    background:none;
+    border:1px dashed var(--brass);
+    color:var(--brass-dark);
+    padding:6px 12px;
+    border-radius:3px;
+    cursor:pointer;
+    margin:6px 0 18px;
+  }
+  .add-row-btn:hover{background:rgba(169,129,47,0.1);}
+
+  .note{
+    font-size:13px;
+    color:var(--sage);
+    font-style:italic;
+    margin-top:-6px;
+    margin-bottom:14px;
+  }
+
+  .urgent-tag{
+    display:inline-block;
+    font-family:'Courier Prime', monospace;
+    font-size:10.5px;
+    letter-spacing:0.08em;
+    color:#fff;
+    background:var(--stamp);
+    padding:2px 8px;
+    border-radius:2px;
+    transform:rotate(-2deg);
+    margin-bottom:10px;
+  }
+
+  .checklist{list-style:none; padding:0; margin:0 0 18px;}
+  .checklist li{
+    display:flex; gap:10px; align-items:flex-start;
+    padding:8px 0; border-bottom:1px dotted var(--paper-line);
+    font-size:14.5px; line-height:1.5;
+  }
+  .checklist input[type=checkbox]{margin-top:4px; accent-color:var(--stamp); width:16px; height:16px; flex:none;}
+
+  /* ===== Bottom action bar ===== */
+  .action-bar{
+    position:sticky;
+    bottom:0;
+    background:var(--ink);
+    padding:14px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    grid-column:1/-1;
+  }
+  .action-bar .msg{color:#B9A46B; font-family:'Courier Prime',monospace; font-size:12px;}
+  .btn-print{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    background:var(--stamp);
+    color:#fff;
+    border:none;
+    padding:11px 24px;
+    border-radius:3px;
+    font-size:15px;
+    cursor:pointer;
+  }
+  .btn-print:hover{background:#6f2d20;}
+
+  /* ===== Print styles ===== */
+  @media print{
+    .privacy-banner, .tab-rail, .action-bar{display:none !important;}
+    .app{display:block; box-shadow:none; margin:0; max-width:100%;}
+    .ledger::before{display:none;}
+    .page{display:block !important; padding:14px 6px; page-break-after:always;}
+    .field-row input, .field-row textarea, .field-row select{border-bottom:1px solid #999;}
+    body{background:#fff;}
+  }
+
+  @media (max-width:800px){
+    .app{grid-template-columns:1fr; margin:0;}
+    .tab-rail{
+      position:static;
+      display:flex; overflow-x:auto; padding:14px 8px;
+    }
+    .rail-title{display:none;}
+    .tab-btn{
+      white-space:nowrap; border-left:none; border-bottom:4px solid transparent;
+      padding:8px 14px;
+    }
+    .tab-btn.active{border-left:none; border-bottom:4px solid var(--stamp);}
+    .page{padding:24px 16px;}
+    .ledger::before{display:none;}
+    .field-row{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="privacy-banner">
+  🔒 <strong>Nothing you type here ever leaves this page.</strong> There is no server, no login, no saving — this runs entirely in your browser. Fill it, print it or save it as a PDF, then close the tab.
+</div>
+
+<div class="app">
+
+  <nav class="tab-rail">
+    <div class="rail-title">The Family<br>Passbook<span>SALARYBIT.IN</span></div>
+    <button class="tab-btn active" data-page="p0"><span class="num">00</span>Cover &amp; Emergency Card</button>
+    <button class="tab-btn" data-page="p1"><span class="num">01</span>First 7 Days</button>
+    <button class="tab-btn" data-page="p2"><span class="num">02</span>People to Call</button>
+    <button class="tab-btn" data-page="p3"><span class="num">03</span>Bank &amp; Money</button>
+    <button class="tab-btn" data-page="p4"><span class="num">04</span>Insurance</button>
+    <button class="tab-btn" data-page="p5"><span class="num">05</span>Loans &amp; Liabilities</button>
+    <button class="tab-btn" data-page="p6"><span class="num">06</span>Investments</button>
+    <button class="tab-btn" data-page="p7"><span class="num">07</span>Property &amp; Vehicles</button>
+    <button class="tab-btn" data-page="p8"><span class="num">08</span>IDs &amp; Legal Papers</button>
+    <button class="tab-btn" data-page="p9"><span class="num">09</span>Digital Life</button>
+    <button class="tab-btn" data-page="p10"><span class="num">10</span>Employer &amp; Benefits</button>
+    <button class="tab-btn" data-page="p11"><span class="num">11</span>Children &amp; Dependents</button>
+    <button class="tab-btn" data-page="p12"><span class="num">12</span>Where Things Are Kept</button>
+    <button class="tab-btn" data-page="p13"><span class="num">13</span>My Wishes (optional)</button>
+  </nav>
+
+  <main class="ledger">
+
+    <!-- PAGE 0: COVER -->
+    <section class="page active" id="p0">
+      <div class="kicker">Passbook No. — fill after printing</div>
+      <h2>The Family Passbook</h2>
+      <p class="intro">One document your spouse or family can open on the worst day of their life and know exactly what to do, who to call, and where everything is. Fill it once. Update it once a year. Keep one printed copy somewhere safe, and tell your spouse where.</p>
+
+      <div class="block">
+        <div class="block-title">This passbook belongs to</div>
+        <div class="field-row"><label>Full name</label><input type="text"></div>
+        <div class="field-row"><label>Date of birth</label><input type="date"></div>
+        <div class="field-row"><label>Phone number</label><input type="tel"></div>
+        <div class="field-row"><label>Home address</label><input type="text"></div>
+        <div class="field-row"><label>This copy last updated on</label><input type="date"></div>
+      </div>
+
+      <div class="block">
+        <div class="block-title">If you are reading this in an emergency — start here</div>
+        <div class="field-row"><label>Spouse / next of kin name</label><input type="text"></div>
+        <div class="field-row"><label>Their phone number</label><input type="tel"></div>
+        <div class="field-row"><label>First person to call (family)</label><input type="text"></div>
+        <div class="field-row"><label>Their phone number</label><input type="tel"></div>
+        <div class="field-row"><label>Family doctor / hospital</label><input type="text"></div>
+        <div class="field-row"><label>Our CA / tax consultant</label><input type="text"></div>
+        <div class="field-row"><label>Family lawyer (if any)</label><input type="text"></div>
+      </div>
+      <p class="note">Tip: print two copies of this cover page alone and keep one in your wallet or with your spouse — everything else can be found from page 12 (Where Things Are Kept).</p>
+    </section>
+
+    <!-- PAGE 1: FIRST 7 DAYS -->
+    <section class="page" id="p1">
+      <div class="kicker">Section 01</div>
+      <h2>The First 7 Days</h2>
+      <p class="intro">Nobody thinks clearly under grief. This is the order most families actually need to follow — not a legal checklist, a practical one.</p>
+
+      <span class="urgent-tag">DAY 1–2</span>
+      <ul class="checklist">
+        <li><input type="checkbox"><span>Get the medical certificate of cause of death from the hospital/doctor before the body is moved, if possible.</span></li>
+        <li><input type="checkbox"><span>Register the death with the local municipal office and get at least 8–10 original death certificate copies — you will need more than you think.</span></li>
+        <li><input type="checkbox"><span>Inform close family and the people listed on page 2.</span></li>
+      </ul>
+
+      <span class="urgent-tag">DAY 3–7</span>
+      <ul class="checklist">
+        <li><input type="checkbox"><span>Do not rush to close or operate bank accounts — most joint accounts and nominated accounts can still be used by the surviving holder/nominee; ask the bank directly rather than assuming.</span></li>
+        <li><input type="checkbox"><span>Call the employer's HR to start the process for gratuity, PF, insurance, and pending salary/leave encashment.</span></li>
+        <li><input type="checkbox"><span>Inform every insurance company where a policy exists (life, health, vehicle) — claims have time limits.</span></li>
+        <li><input type="checkbox"><span>Do not make any big financial decisions (selling property, investments) in the first month.</span></li>
+      </ul>
+
+      <span class="urgent-tag">WITHIN 1 MONTH</span>
+      <ul class="checklist">
+        <li><input type="checkbox"><span>Meet the family CA or a financial advisor to map out what needs to be transmitted/claimed and its order.</span></li>
+        <li><input type="checkbox"><span>Check for a registered Will with the family lawyer or in the documents listed on page 12.</span></li>
+        <li><input type="checkbox"><span>Start transmission of mutual funds, demat holdings, and property as guided by the CA/RM — each has a different, specific form.</span></li>
+      </ul>
+      <p class="note">This page intentionally avoids exact legal steps, which vary by state and bank — use it as an order of operations, and lean on the professionals listed on page 2.</p>
+    </section>
+
+    <!-- PAGE 2: PEOPLE TO CALL -->
+    <section class="page" id="p2">
+      <div class="kicker">Section 02</div>
+      <h2>People to Call</h2>
+      <p class="intro">Names your family may not otherwise have — write down how they know this person too, so a stranger's name doesn't feel strange.</p>
+      <div class="block">
+        <div class="block-title">Professional contacts</div>
+        <div id="peopleRows"></div>
+        <button class="add-row-btn" onclick="addRow('peopleRows', ['Name','Role (CA / lawyer / RM / agent)','Phone','Notes'])">+ Add a contact</button>
+      </div>
+    </section>
+
+    <!-- PAGE 3: BANK & MONEY -->
+    <section class="page" id="p3">
+      <div class="kicker">Section 03</div>
+      <h2>Bank &amp; Money</h2>
+      <p class="intro">We deliberately don't ask for account numbers or passwords here — a document like this can be lost or photographed. Instead, note <em>where</em> the details are, and whether a nominee is registered.</p>
+      <div class="block">
+        <div class="block-title">Bank accounts</div>
+        <div id="bankRows"></div>
+        <button class="add-row-btn" onclick="addRow('bankRows', ['Bank + branch','Account type (savings/current/FD)','Nominee registered? (Y/N)','Where statements/passbook are kept'])">+ Add an account</button>
+      </div>
+      <div class="block">
+        <div class="block-title">Locker</div>
+        <div class="field-row"><label>Bank &amp; branch</label><input type="text"></div>
+        <div class="field-row"><label>Locker holder type (single/joint)</label><input type="text"></div>
+        <div class="field-row"><label>Where the key is kept</label><input type="text"></div>
+      </div>
+    </section>
+
+    <!-- PAGE 4: INSURANCE -->
+    <section class="page" id="p4">
+      <div class="kicker">Section 04</div>
+      <h2>Insurance</h2>
+      <p class="intro">Every policy that exists but nobody remembers is money your family may never claim — insurers don't proactively search for beneficiaries.</p>
+      <div class="block">
+        <div class="block-title">Life insurance</div>
+        <div id="lifeInsRows"></div>
+        <button class="add-row-btn" onclick="addRow('lifeInsRows', ['Insurer + policy type','Agent name &amp; phone','Nominee name','Where the policy document is kept'])">+ Add a policy</button>
+      </div>
+      <div class="block">
+        <div class="block-title">Health, vehicle &amp; home insurance</div>
+        <div id="otherInsRows"></div>
+        <button class="add-row-btn" onclick="addRow('otherInsRows', ['Type (health/vehicle/home)','Insurer','Covers whom','Where the document is kept'])">+ Add a policy</button>
+      </div>
+    </section>
+
+    <!-- PAGE 5: LOANS -->
+    <section class="page" id="p5">
+      <div class="kicker">Section 05</div>
+      <h2>Loans &amp; Liabilities</h2>
+      <p class="intro">Especially important if you have a home loan — check whether it carries a loan-cover / credit-life insurance policy, since that alone can pay it off.</p>
+      <div class="block">
+        <div class="block-title">Loans</div>
+        <div id="loanRows"></div>
+        <button class="add-row-btn" onclick="addRow('loanRows', ['Lender + loan type','Approx outstanding','Is there loan insurance cover? (Y/N)','Branch / RM contact'])">+ Add a loan</button>
+      </div>
+      <div class="field-row"><label>Credit cards held (banks only, no numbers)</label><textarea></textarea></div>
+    </section>
+
+    <!-- PAGE 6: INVESTMENTS -->
+    <section class="page" id="p6">
+      <div class="kicker">Section 06</div>
+      <h2>Investments &amp; Retirement</h2>
+      <div class="block">
+        <div class="block-title">Holdings</div>
+        <div id="investRows"></div>
+        <button class="add-row-btn" onclick="addRow('investRows', ['Type (MF / demat / PF / NPS / PPF / gold / FD)','Where held (broker/AMC/employer)','Nominee registered? (Y/N)','Where records are kept'])">+ Add a holding</button>
+      </div>
+      <p class="note">Tip: run your spouse's PAN on SEBI's MITRA and the RBI UDGAM portal once a year — a large amount of investment and deposit money in India goes unclaimed simply because families don't know an account exists.</p>
+    </section>
+
+    <!-- PAGE 7: PROPERTY -->
+    <section class="page" id="p7">
+      <div class="kicker">Section 07</div>
+      <h2>Property &amp; Vehicles</h2>
+      <div class="block">
+        <div class="block-title">Property</div>
+        <div id="propRows"></div>
+        <button class="add-row-btn" onclick="addRow('propRows', ['Property (address/type)','Ownership (single/joint/inherited)','Loan against it? (Y/N)','Where papers are kept'])">+ Add a property</button>
+      </div>
+      <div class="block">
+        <div class="block-title">Vehicles</div>
+        <div id="vehicleRows"></div>
+        <button class="add-row-btn" onclick="addRow('vehicleRows', ['Vehicle','RC/insurance location','Where keys are kept',''])">+ Add a vehicle</button>
+      </div>
+    </section>
+
+    <!-- PAGE 8: IDS & LEGAL -->
+    <section class="page" id="p8">
+      <div class="kicker">Section 08</div>
+      <h2>IDs &amp; Legal Papers</h2>
+      <div class="block">
+        <div class="block-title">Government IDs — where originals are kept</div>
+        <div class="field-row"><label>Aadhaar, PAN, passport</label><input type="text"></div>
+        <div class="field-row"><label>Voter ID, driving licence</label><input type="text"></div>
+      </div>
+      <div class="block">
+        <div class="block-title">Will &amp; legal</div>
+        <div class="field-row"><label>Is there a Will?</label>
+          <select><option>Not made yet</option><option>Yes — unregistered</option><option>Yes — registered</option></select>
+        </div>
+        <div class="field-row"><label>Where it is kept</label><input type="text"></div>
+        <div class="field-row"><label>Executor named</label><input type="text"></div>
+        <div class="field-row"><label>Lawyer who helped draft it</label><input type="text"></div>
+      </div>
+      <p class="note">If there's no Will yet — this passbook is not a substitute for one. Even a simple registered Will avoids months of legal heir certificate delays for your family.</p>
+    </section>
+
+    <!-- PAGE 9: DIGITAL -->
+    <section class="page" id="p9">
+      <div class="kicker">Section 09</div>
+      <h2>Digital Life</h2>
+      <p class="intro">Again, no passwords written here on purpose. Just enough for your family to find the door.</p>
+      <div class="field-row"><label>Password manager used (if any)</label><input type="text"></div>
+      <div class="field-row"><label>Who else knows the master password</label><input type="text"></div>
+      <div class="field-row"><label>Primary email for financial accounts</label><input type="text"></div>
+      <div class="field-row wide"><label>Subscriptions to cancel (list what you remember)</label><textarea></textarea></div>
+      <div class="field-row wide"><label>What should happen to my social media accounts</label><textarea></textarea></div>
+    </section>
+
+    <!-- PAGE 10: EMPLOYER -->
+    <section class="page" id="p10">
+      <div class="kicker">Section 10</div>
+      <h2>Employer &amp; Benefits</h2>
+      <div class="field-row"><label>Employer name</label><input type="text"></div>
+      <div class="field-row"><label>HR / manager contact</label><input type="text"></div>
+      <div class="field-row"><label>PF / UAN number location</label><input type="text"></div>
+      <div class="field-row"><label>Gratuity nominee registered? (Y/N)</label><input type="text"></div>
+      <div class="field-row"><label>Group life/health insurance through employer</label><input type="text"></div>
+      <div class="field-row"><label>ESOPs / vested stock, if any</label><input type="text"></div>
+    </section>
+
+    <!-- PAGE 11: CHILDREN -->
+    <section class="page" id="p11">
+      <div class="kicker">Section 11</div>
+      <h2>Children &amp; Dependents</h2>
+      <div id="childRows"></div>
+      <button class="add-row-btn" onclick="addRow('childRows', ['Name &amp; age','School / class','Guardian if both parents unavailable','Anything specific they need'])">+ Add a child / dependent</button>
+      <div class="field-row wide"><label>Other dependents (parents, siblings) to keep in mind</label><textarea></textarea></div>
+    </section>
+
+    <!-- PAGE 12: WHERE THINGS ARE -->
+    <section class="page" id="p12">
+      <div class="kicker">Section 12</div>
+      <h2>Where Everything Physically Is</h2>
+      <p class="intro">The one page most families actually need in a hurry.</p>
+      <div class="field-row"><label>Main folder of documents</label><input type="text"></div>
+      <div class="field-row"><label>Locker key</label><input type="text"></div>
+      <div class="field-row"><label>Property papers</label><input type="text"></div>
+      <div class="field-row"><label>Insurance policies</label><input type="text"></div>
+      <div class="field-row"><label>This passbook — other copies kept with</label><input type="text"></div>
+    </section>
+
+    <!-- PAGE 13: WISHES -->
+    <section class="page" id="p13">
+      <div class="kicker">Section 13 — Optional</div>
+      <h2>My Wishes</h2>
+      <p class="intro">Entirely optional. Only fill this if it brings you and your family peace, not pressure.</p>
+      <div class="field-row wide"><label>Funeral / last rites preference</label><textarea></textarea></div>
+      <div class="field-row"><label>Organ donation wishes</label><input type="text"></div>
+      <div class="field-row wide"><label>Anything else you'd want your family to know</label><textarea></textarea></div>
+    </section>
+
+  </main>
+
+  <div class="action-bar">
+    <span class="msg">Fill every page you can — even half-filled is better than nothing.</span>
+    <button class="btn-print" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('.tab-btn');
+  const pages = document.querySelectorAll('.page');
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(b => b.classList.remove('active'));
+      pages.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.page).classList.add('active');
+      document.querySelector('.ledger').scrollTop = 0;
+    });
+  });
+
+  function addRow(containerId, labels){
+    const container = document.getElementById(containerId);
+    const wrap = document.createElement('div');
+    wrap.className = 'repeat-wrap';
+    labels.forEach(l => {
+      if(!l) return;
+      const row = document.createElement('div');
+      row.className = 'field-row';
+      row.innerHTML = `<label>${l}</label><input type="text">`;
+      wrap.appendChild(row);
+    });
+    const hr = document.createElement('div');
+    hr.style.borderBottom = '1px dotted var(--paper-line)';
+    hr.style.margin = '10px 0';
+    wrap.appendChild(hr);
+    container.appendChild(wrap);
+  }
+
+  // seed one row per repeatable block so the page isn't empty on load
+  addRow('peopleRows', ['Name','Role (CA / lawyer / RM / agent)','Phone','Notes']);
+  addRow('bankRows', ['Bank + branch','Account type (savings/current/FD)','Nominee registered? (Y/N)','Where statements/passbook are kept']);
+  addRow('lifeInsRows', ['Insurer + policy type','Agent name &amp; phone','Nominee name','Where the policy document is kept']);
+  addRow('otherInsRows', ['Type (health/vehicle/home)','Insurer','Covers whom','Where the document is kept']);
+  addRow('loanRows', ['Lender + loan type','Approx outstanding','Is there loan insurance cover? (Y/N)','Branch / RM contact']);
+  addRow('investRows', ['Type (MF / demat / PF / NPS / PPF / gold / FD)','Where held (broker/AMC/employer)','Nominee registered? (Y/N)','Where records are kept']);
+  addRow('propRows', ['Property (address/type)','Ownership (single/joint/inherited)','Loan against it? (Y/N)','Where papers are kept']);
+  addRow('vehicleRows', ['Vehicle','RC/insurance location','Where keys are kept','']);
+  addRow('childRows', ['Name &amp; age','School / class','Guardian if both parents unavailable','Anything specific they need']);
+</script>
+
+</body>
+</html>

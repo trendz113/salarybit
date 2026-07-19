@@ -531,8 +531,60 @@
     color:#6B7897;
     font-size:12px;
     padding:0 20px 40px;
+    line-height:1.9;
   }
   footer a{color:#9FB0CC;}
+
+  .trust-section{
+    max-width:760px;
+    margin:0 auto 40px;
+    padding:0 20px;
+    color:#C7D0E0;
+  }
+  .trust-card{
+    background:rgba(255,255,255,0.04);
+    border:1px solid #3A4C70;
+    border-radius:var(--radius);
+    padding:20px 22px;
+    font-size:13.5px;
+    line-height:1.7;
+  }
+  .trust-card a{color:#EFE9D8; text-decoration:underline;}
+
+  .sample-section{
+    max-width:760px;
+    margin:0 auto 48px;
+    padding:0 20px;
+  }
+  .sample-section h2{
+    font-family:'Roboto Slab',serif;
+    color:#EFE9D8;
+    font-size:20px;
+    margin-bottom:6px;
+  }
+  .sample-section .sample-sub{
+    color:#9FB0CC;
+    font-size:13.5px;
+    margin-bottom:18px;
+  }
+  .sample-card{
+    background:var(--paper);
+    border-radius:var(--radius);
+    padding:22px 24px;
+    position:relative;
+  }
+  .sample-watermark{
+    position:absolute;
+    top:14px; right:16px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--gold);
+    border:1px solid var(--gold);
+    padding:3px 8px;
+    border-radius:20px;
+  }
 </style>
 </head>
 <body>
@@ -649,6 +701,43 @@
   </div>
 </div>
 
+<div class="sample-section">
+  <h2 class="display">What's in the full report</h2>
+  <p class="sample-sub">A sample, with made-up numbers, so you know exactly what ₹199 gets you before you pay.</p>
+  <div class="sample-card">
+    <div class="sample-watermark">Sample · illustrative</div>
+    <div class="narration" style="margin-top:28px;">Right now, ₹31,200 of your ₹58,000 income goes to EMIs each month — that's 54%. One loan, the gold loan with SBI, is underwater: the EMI doesn't fully cover the interest, so that balance is quietly growing every month. Clearing that one first stops the bleeding before anything else.</div>
+    <div style="font-weight:600; font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); margin-bottom:8px;">Pay off in this order</div>
+    <div class="payoff-tab underwater">
+      <div class="num">1</div>
+      <div style="flex:1">
+        <div class="name">Gold loan – SBI <span class="underwater-tag">underwater</span></div>
+        <div class="detail">Balance is growing — EMI ₹2,900 doesn't cover monthly interest of ₹3,100</div>
+      </div>
+    </div>
+    <div class="payoff-tab">
+      <div class="num">2</div>
+      <div style="flex:1">
+        <div class="name">Personal loan – HDFC</div>
+        <div class="detail">Clears in ~14 months · total interest ₹18,400</div>
+      </div>
+    </div>
+    <div class="payoff-tab">
+      <div class="num">3</div>
+      <div style="flex:1">
+        <div class="name">Phone EMI – Bajaj Finserv</div>
+        <div class="detail">Clears in ~6 months · total interest ₹1,100</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="trust-section">
+  <div class="trust-card">
+    Fix Your Finance is built and maintained independently as part of the <a href="https://salarybit.in">SalaryBit</a> family of tools — see <a href="https://salarybit.in/about.html">who's behind it</a>. Got a question, a bug to report, or an issue with a report you paid for? <a href="https://salarybit.in/contact.html">Contact us</a> directly at <a href="mailto:hello@salarybit.in">hello@salarybit.in</a> — we read every message. Read our <a href="https://salarybit.in/privacy.html">privacy policy</a> for exactly what happens to the numbers you enter.
+  </div>
+</div>
+
 <div class="faq-section">
   <h2 class="display">Frequently asked questions</h2>
   <details class="faq-item">
@@ -684,7 +773,9 @@
 
 <footer>
   Fix Your Finance is an independent tool built to make debt visible, not to sell you a loan.<br>
-  Part of the <a href="https://salarybit.in">SalaryBit</a> family of tools.
+  Part of the <a href="https://salarybit.in">SalaryBit</a> family of tools.<br><br>
+  <a href="https://salarybit.in/about.html">About</a> · <a href="https://salarybit.in/contact.html">Contact</a> · <a href="https://salarybit.in/privacy.html">Privacy Policy</a> · <a href="https://salarybit.in/disclaimer.html">Disclaimer</a><br>
+  Questions or an issue with your report? <a href="mailto:hello@salarybit.in">hello@salarybit.in</a>
 </footer>
 
 <script>

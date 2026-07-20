@@ -1,0 +1,67 @@
+name: Auto-link new blog posts
+
+# Runs whenever a .html file is added/changed inside blog/ (except blog/index.html
+# itself, to avoid triggering off its own commits). Detects which post files were
+# newly ADDED in the push, generates a card for each, and inserts it at the top
+# of both index.html (homepage) and blog/index.html (full blog listing).
+#
+# This never edits or removes existing cards — it only appends new ones.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'blog/*.html'
+      - '!blog/index.html'
+  workflow_dispatch: {}   # lets you trigger it manually from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  update-blog-index:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2   # need at least 2 commits to diff against the previous push
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Detect newly added blog post files
+        id: diff
+        run: |
+          BEFORE="${{ github.event.before }}"
+          if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            BEFORE=$(git rev-parse HEAD~1 2>/dev/null || echo "")
+          fi
+          if [ -n "$BEFORE" ]; then
+            ADDED=$(git diff --name-only --diff-filter=A "$BEFORE" "${{ github.sha }}" -- 'blog/*.html' | grep -v '^blog/index.html$' || true)
+          else
+            ADDED=""
+          fi
+          echo "New files detected:"
+          echo "$ADDED"
+          # flatten to a single space-separated line for the next step
+          echo "files=$(echo $ADDED | tr '\n' ' ')" >> "$GITHUB_OUTPUT"
+
+      - name: Update blog index and homepage
+        if: steps.diff.outputs.files != ''
+        run: python3 scripts/generate_blog_index.py ${{ steps.diff.outputs.files }}
+
+      - name: Commit changes if any
+        if: steps.diff.outputs.files != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html blog/index.html
+          if ! git diff --staged --quiet; then
+            git commit -m "🤖 Auto-link new blog post(s): ${{ steps.diff.outputs.files }}"
+            git push
+          else
+            echo "No changes to commit."
+          fi

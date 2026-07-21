@@ -1,0 +1,81 @@
+name: Site Doctor (auto-fix + health check)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}   # manual "Run workflow" button in the Actions tab
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  site-doctor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Run Site Doctor (auto-fix + report)
+        id: doctor
+        run: |
+          python3 scripts/site_doctor.py | tee doctor_output.txt
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+        continue-on-error: true   # don't fail the job just because manual-review items exist
+
+      - name: Commit auto-fixes (if any)
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: site doctor auto-fix (OG tags, canonical, sitemap)"
+          file_pattern: "*.html blog/*.html tools/*.html sitemap.xml"
+
+      - name: Add report to workflow summary
+        run: cat doctor_output.txt >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Open/update an issue if anything needs manual review
+        if: contains(github.event_name, 'push') || github.event_name == 'workflow_dispatch'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const output = fs.readFileSync('doctor_output.txt', 'utf8');
+            const needsReview = output.includes('[NEEDS REVIEW]') || output.includes('[NEEDS ATTENTION]');
+            const title = 'Site Doctor: items needing manual review';
+
+            if (!needsReview) {
+              // close any previous open report issue since everything's clean now
+              const { data: issues } = await github.rest.issues.listForRepo({
+                owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: ['site-doctor']
+              });
+              for (const issue of issues) {
+                if (issue.title === title) {
+                  await github.rest.issues.update({
+                    owner: context.repo.owner, repo: context.repo.repo,
+                    issue_number: issue.number, state: 'closed'
+                  });
+                }
+              }
+              return;
+            }
+
+            const body = "Automated health check found items that need a human decision (nothing was guessed or auto-changed for these):\n\n```\n" + output + "\n```";
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: ['site-doctor']
+            });
+            const existing = issues.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.update({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existing.number, body
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title, body, labels: ['site-doctor']
+              });
+            }

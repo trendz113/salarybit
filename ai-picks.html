@@ -92,19 +92,6 @@
   .err { color: #FF5C5C; font-size: 13px; padding: 12px 16px; }
   .hidden { display: none; }
 </style>
-<meta property="og:type" content="website">
-<meta property="og:title" content="Crypto AI Picks — Live Binance Market Signals | SalaryBit">
-<meta property="og:description" content="Free live crypto market picks — bullish signals, volume leaders and sentiment across every USDT pair on Binance. No login, no data stored.">
-<meta property="og:url" content="https://salarybit.in/ai-picks.html">
-<meta property="og:site_name" content="SalaryBit">
-<meta property="og:image" content="https://salarybit.in/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Crypto AI Picks — Live Binance Market Signals | SalaryBit">
-<meta name="twitter:description" content="Free live crypto market picks — bullish signals, volume leaders and sentiment across every USDT pair on Binance. No login, no data stored.">
-<meta name="twitter:image" content="https://salarybit.in/og-image.png">
-<link rel="canonical" href="https://salarybit.in/ai-picks.html">
 </head>
 <body>
 <div class="sb-topbar">
@@ -134,9 +121,11 @@
       <div id="listStatus" class="muted">Loading live Binance market data…</div>
       <div id="picksContainer"></div>
       <div id="disclaimerBlock" class="disclaimer hidden">
-        Picks are ranked from a blend of 24h price momentum and trading volume,
-        restricted to the top 100 most liquid USDT pairs on Binance — not investment
-        advice.
+        Picks are scored on momentum, where price sits in its daily range (structure),
+        volume + trade-count (participation), breakout proximity, and Bitcoin's own
+        trend (regime) — restricted to the top 100 most liquid USDT pairs. Not
+        investment advice; verify support/resistance and your own risk/reward before
+        trading.
       </div>
     </div>
     <div id="searchResults" class="section hidden"></div>
@@ -219,6 +208,13 @@ let tabIndex = 4;
 let currentCoin = null;
 let starred = false;
 
+// Stablecoins/fiat-pegged assets move <0.1% typically and are meaningless as "picks."
+// Excluded from ranking only — still fully searchable.
+const NON_TRADE_BASES = new Set([
+  "USDC","FDUSD","TUSD","DAI","USDP","BUSD","USTC","PAX","USDD","EUR","GBP",
+  "AEUR","GUSD","EURI","XUSD","USD1","RLUSD"
+]);
+
 async function getJson(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(String(res.status));
@@ -242,6 +238,8 @@ function avatarHtml(base) {
 }
 
 // ---------- LOAD MARKET UNIVERSE ----------
+let btcRegime = { bullish: true, change: 0 }; // fallback until fetched
+
 async function loadUniverse() {
   try {
     const [info, tickers] = await Promise.all([
@@ -260,37 +258,113 @@ async function loadUniverse() {
           symbol: s.symbol, base: s.baseAsset,
           price: parseFloat(t.lastPrice), change: parseFloat(t.priceChangePercent),
           quoteVolume: parseFloat(t.quoteVolume), highPrice: parseFloat(t.highPrice),
+          lowPrice: parseFloat(t.lowPrice), trades: parseFloat(t.count || 0),
         };
       })
       .filter(Boolean)
       .sort((a, b) => b.quoteVolume - a.quoteVolume);
 
+    // Market regime check: is BTC itself trending up or down on the daily?
+    // Alts mostly follow BTC's mood, so this gates how much we trust an alt's own signal.
+    try {
+      const btcDaily = await getJson(`${BASE}/klines?symbol=BTCUSDT&interval=1d&limit=21`);
+      const btcCloses = btcDaily.map(k => parseFloat(k[4]));
+      const ema = (arr, n) => {
+        const k = 2 / (n + 1);
+        let e = arr.slice(0, n).reduce((a,b)=>a+b,0)/n;
+        for (let i = n; i < arr.length; i++) e = arr[i]*k + e*(1-k);
+        return e;
+      };
+      const ema10 = ema(btcCloses, 10);
+      const ema20 = ema(btcCloses, Math.min(20, btcCloses.length));
+      const btcChange = ((btcCloses[btcCloses.length-1] - btcCloses[btcCloses.length-2]) / btcCloses[btcCloses.length-2]) * 100;
+      btcRegime = { bullish: ema10 > ema20, change: btcChange };
+    } catch (e) { /* fall back to default regime if this fails */ }
+
     document.getElementById("listStatus").classList.add("hidden");
     renderPicks();
     document.getElementById("disclaimerBlock").classList.remove("hidden");
+
+    // Keep prices/changes fresh without re-fetching the full exchange info every time.
+    if (!window.__refreshStarted) {
+      window.__refreshStarted = true;
+      setInterval(refreshTickers, 45000);
+    }
   } catch (e) {
     document.getElementById("listStatus").textContent = "Couldn't load the Binance market list. Try again shortly.";
     document.getElementById("listStatus").className = "err";
   }
 }
 
+async function refreshTickers() {
+  try {
+    const tickers = await getJson(`${BASE}/ticker/24hr`);
+    const tickerMap = new Map(tickers.map(t => [t.symbol, t]));
+    allCoins = allCoins.map(c => {
+      const t = tickerMap.get(c.symbol);
+      if (!t) return c;
+      return {
+        ...c,
+        price: parseFloat(t.lastPrice), change: parseFloat(t.priceChangePercent),
+        quoteVolume: parseFloat(t.quoteVolume), highPrice: parseFloat(t.highPrice),
+        lowPrice: parseFloat(t.lowPrice), trades: parseFloat(t.count || 0),
+      };
+    }).sort((a, b) => b.quoteVolume - a.quoteVolume);
+
+    // Only re-render the picks list if the user is currently on the list view.
+    if (!document.getElementById("listView").classList.contains("hidden")) {
+      renderPicks();
+    }
+    // If viewing a coin detail page, refresh just its live price/change in place.
+    if (currentCoin && !document.getElementById("detailView").classList.contains("hidden")) {
+      const updated = allCoins.find(c => c.symbol === currentCoin.symbol);
+      if (updated) currentCoin = updated;
+    }
+  } catch (e) { /* silent — keep showing last known good data */ }
+}
+
 let picksExpanded = false;
 
 function renderPicks() {
-  // Only consider genuinely liquid coins (top 100 by 24h quote volume) so thin,
-  // pump-and-dump micro-tokens can't dominate the picks list.
-  const liquidUniverse = allCoins.slice(0, 100);
+  // Only consider genuinely liquid, real-moving coins (top 100 by volume,
+  // excluding stablecoin/fiat pairs that never show meaningful momentum).
+  const liquidUniverse = allCoins
+    .filter(c => !NON_TRADE_BASES.has(c.base))
+    .slice(0, 100);
 
   const scored = liquidUniverse.map(c => {
-    // Smooth, non-saturating sentiment: tanh bounds it naturally between ~8-92%
-    // instead of hard-clamping every double-digit move to 5% or 95%.
-    const bullishPct = Math.round((50 + 42 * Math.tanh(c.change / 12)) * 100) / 100;
-    const breakout = c.highPrice > 0 && c.price >= 0.99 * c.highPrice;
-    const volumeRank = Math.log10(c.quoteVolume + 1); // dampened, not linear
-    // Composite score favors coins with both decent momentum AND real volume,
-    // instead of whichever token happened to move the most in raw %.
-    const score = bullishPct * 0.7 + volumeRank * 3;
-    return { ...c, bullishPct, breakout, score };
+    // --- Factor 1: Structure — where does price sit in today's range?
+    // Closing near the high = buyers in control near resistance (bullish structure).
+    const range = c.highPrice - c.lowPrice;
+    const posInRange = range > 0 ? (c.price - c.lowPrice) / range : 0.5; // 0..1
+    const structureScore = posInRange * 100;
+
+    // --- Factor 2: Breakout proximity — testing/near the 24h high?
+    const breakout = c.highPrice > 0 && c.price >= 0.985 * c.highPrice;
+
+    // --- Factor 3: Volume/participation — real trades backing the move, not thin noise.
+    const volumeRank = Math.log10(c.quoteVolume + 1);
+    const tradeRank = Math.log10(c.trades + 1);
+    const participationScore = clamp((volumeRank + tradeRank) * 6, 0, 100);
+
+    // --- Factor 4: Momentum — smooth, non-saturating (tanh keeps big moves from
+    // pinning every score to the same 5%/95% extremes).
+    const momentumScore = 50 + 42 * Math.tanh(c.change / 12);
+
+    // --- Factor 5: BTC regime gate — alt signals get dampened if BTC is bearish,
+    // since alts rarely sustain strength while BTC is falling.
+    const regimeMultiplier = btcRegime.bullish ? 1 : 0.7;
+
+    const composite = (
+      momentumScore * 0.35 +
+      structureScore * 0.25 +
+      participationScore * 0.25 +
+      (breakout ? 100 : 50) * 0.15
+    ) * regimeMultiplier + (1 - regimeMultiplier) * 30; // pull toward neutral-bearish if BTC is weak
+
+    const bullishPct = Math.round(clamp(composite, 4, 96) * 100) / 100;
+
+    return { ...c, bullishPct, breakout, structureScore, participationScore, score: bullishPct * 0.6 + volumeRank * 4 };
   }).sort((a, b) => b.score - a.score).slice(0, 8);
 
   const visible = picksExpanded ? scored : scored.slice(0, 4);
@@ -322,7 +396,11 @@ function renderPicks() {
   `).join("") + (scored.length > 4 ? `
     <div id="picksToggle" style="text-align:center; padding:8px 0; cursor:pointer; color:#848E9C; font-size:16px;">
       ${picksExpanded ? "︿" : "﹀"}
-    </div>` : "");
+    </div>` : "") + `
+    <div style="font-size:11px; color:#B7BDC6; padding:10px 2px 0; line-height:1.6;">
+      BTC regime: <strong style="color:${btcRegime.bullish ? TEAL : RED}">${btcRegime.bullish ? "Bullish (EMA10 > EMA20)" : "Bearish (EMA10 < EMA20)"}</strong>
+      — alt scores are ${btcRegime.bullish ? "at full weight" : "dampened while BTC is weak"}.
+    </div>`;
 
   const toggle = document.getElementById("picksToggle");
   if (toggle) {
@@ -464,8 +542,22 @@ async function loadDetail(coin) {
     const dayRatioPct = last15.length > 1 ? (upDays/(last15.length-1))*100 : 50;
 
     const change24h = ((closes[closes.length-1] - closes[closes.length-2]) / closes[closes.length-2]) * 100;
-    const raw = dayRatioPct*0.5 + clamp(50+smaDiffPct*4,0,100)*0.3 + clamp(50+(volRatio-1)*20,0,100)*0.2;
-    const bullishPct = Math.round(clamp(raw,3,97)*100)/100;
+
+    // Same 5-factor model as the picks list, so a coin's % here matches what it
+    // showed on the list — no more two different numbers for the same coin.
+    const range = coin.highPrice - coin.lowPrice;
+    const posInRange = range > 0 ? (closes[closes.length-1] - coin.lowPrice) / range : 0.5;
+    const structureScore = posInRange * 100;
+    const volumeRank = Math.log10(coin.quoteVolume + 1);
+    const tradeRank = Math.log10((coin.trades || 0) + 1);
+    const participationScore = clamp((volumeRank + tradeRank) * 6, 0, 100);
+    const momentumScore = 50 + 42 * Math.tanh(change24h / 12);
+    const regimeMultiplier = btcRegime.bullish ? 1 : 0.7;
+    const composite = (
+      momentumScore * 0.35 + structureScore * 0.25 + participationScore * 0.25 +
+      (mostTraded ? 100 : 50) * 0.15
+    ) * regimeMultiplier + (1 - regimeMultiplier) * 30;
+    const bullishPct = Math.round(clamp(composite, 4, 96) * 100) / 100;
     const bearishPct = Math.round((100-bullishPct)*100)/100;
 
     document.getElementById("detailPrice").textContent = fmtPrice(closes[closes.length-1]);
@@ -489,8 +581,8 @@ async function loadDetail(coin) {
         <p class="bullet-body">24h trading volume exceeds 20% of the average daily volume over the last 7 days.</p>
       </div>` : ""}
       <div class="bullet">
-        <div class="bullet-title">🧱 Key progress</div>
-        <p class="bullet-body">${coin.base} continues to see active on-chain and exchange participation, reflected in its recent trading activity across spot markets.</p>
+        <div class="bullet-title">₿ Bitcoin regime</div>
+        <p class="bullet-body">BTC's 10-day EMA is currently ${btcRegime.bullish ? "above" : "below"} its 20-day EMA (${btcRegime.bullish ? "bullish" : "bearish"} trend) — altcoin signals are ${btcRegime.bullish ? "at full weight" : "dampened"} accordingly, since alts rarely sustain strength while BTC is weak.</p>
       </div>
       <h3>Market sentiment</h3>
       <div class="sent-bar">

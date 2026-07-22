@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Your ₹300 Recharge Quietly Became ₹400 — The Hidden Math | SalaryBit</title>
+<meta name="description" content="Your 'monthly' recharge actually bills you 13 times a year, not 12. Here's the hidden math behind Airtel, Jio, Vi and BSNL pricing — and what to actually do about it.">
+<meta name="theme-color" content="#5b6af0">
+<meta property="og:title" content="Why Your ₹300 Recharge Quietly Became ₹400 | SalaryBit">
+<meta property="og:description" content="Your 'monthly' recharge actually bills you 13 times a year, not 12. Here's the hidden math and what to do about it.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SalaryBit">
+<style>
+  :root{
+    --indigo:#5b6af0;
+    --indigo-dark:#4450d6;
+    --indigo-pale:#eef0fe;
+    --ink:#1c1e2b;
+    --ink-soft:#4b4f66;
+    --paper:#ffffff;
+    --canvas:#f7f8fc;
+    --line:#e4e6f5;
+    --amber:#fff7e6;
+    --amber-line:#f0c869;
+    --mint:#eefaf3;
+    --mint-line:#5bc793;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--canvas);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .topbar{
+    background:var(--paper);
+    border-bottom:1px solid var(--line);
+    padding:16px 24px;
+  }
+  .topbar-inner{
+    max-width:760px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-weight:700;
+    color:var(--indigo-dark);
+    font-size:17px;
+  }
+  main{
+    max-width:760px;
+    margin:0 auto;
+    padding:40px 24px 80px;
+  }
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:var(--indigo-pale);
+    color:var(--indigo-dark);
+    font-size:13px;
+    font-weight:700;
+    padding:6px 14px;
+    border-radius:999px;
+    margin-bottom:20px;
+  }
+  h1{
+    font-size:clamp(28px,5vw,40px);
+    line-height:1.15;
+    margin:0 0 14px;
+    letter-spacing:-0.02em;
+    color:var(--ink);
+  }
+  .dek{
+    font-size:18px;
+    color:var(--ink-soft);
+    margin:0 0 20px;
+  }
+  .meta{
+    display:flex;
+    gap:16px;
+    font-size:14px;
+    color:var(--ink-soft);
+    margin-bottom:36px;
+    padding-bottom:28px;
+    border-bottom:1px solid var(--line);
+  }
+  .lede{
+    font-size:17px;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+  h2{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:22px;
+    margin:44px 0 16px;
+    color:var(--indigo-dark);
+  }
+  .num{
+    flex:0 0 auto;
+    width:32px;
+    height:32px;
+    border-radius:9px;
+    background:var(--indigo);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:15px;
+    font-weight:700;
+  }
+  p{margin:0 0 16px; font-size:16px; color:var(--ink);}
+  strong{color:var(--indigo-dark);}
+  .callout{
+    display:flex;
+    gap:12px;
+    background:var(--amber);
+    border-left:4px solid var(--amber-line);
+    border-radius:10px;
+    padding:16px 18px;
+    margin:20px 0;
+    font-size:15px;
+  }
+  .callout.tip{
+    background:var(--mint);
+    border-left-color:var(--mint-line);
+  }
+  .callout .icon{font-size:18px; flex:0 0 auto;}
+  .callout p{margin:0; color:var(--ink);}
+  .stat-row{
+    display:flex;
+    gap:14px;
+    margin:20px 0;
+    flex-wrap:wrap;
+  }
+  .stat-card{
+    flex:1 1 160px;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:18px;
+  }
+  .stat-card .big{
+    font-size:26px;
+    font-weight:700;
+    color:var(--indigo-dark);
+    display:block;
+  }
+  .stat-card .small{
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  ol.steps{
+    list-style:none;
+    padding:0;
+    margin:20px 0;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  ol.steps li{
+    display:flex;
+    gap:14px;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px 16px;
+    font-size:15.5px;
+  }
+  ol.steps li .marker{
+    flex:0 0 auto;
+    width:26px;
+    height:26px;
+    border-radius:8px;
+    background:var(--indigo-pale);
+    color:var(--indigo-dark);
+    font-weight:700;
+    font-size:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  ol.checklist li .marker{
+    background:var(--mint);
+    color:#2a9d68;
+  }
+  hr.divider{
+    border:none;
+    border-top:1px solid var(--line);
+    margin:44px 0;
+  }
+  .cta-box{
+    background:linear-gradient(135deg,var(--indigo) 0%, var(--indigo-dark) 100%);
+    border-radius:16px;
+    padding:28px;
+    color:#fff;
+    margin:20px 0;
+  }
+  .cta-box h3{
+    margin:0 0 8px;
+    font-size:19px;
+  }
+  .cta-box p{
+    color:rgba(255,255,255,0.88);
+    margin:0 0 18px;
+    font-size:15px;
+  }
+  .cta-btn{
+    display:inline-block;
+    background:#fff;
+    color:var(--indigo-dark);
+    font-weight:700;
+    padding:12px 22px;
+    border-radius:10px;
+    text-decoration:none;
+    font-size:15px;
+  }
+  .cta-btn.secondary{
+    background:rgba(255,255,255,0.15);
+    color:#fff;
+    margin-left:10px;
+    border:1px solid rgba(255,255,255,0.4);
+  }
+  .cta-row{margin-top:4px;}
+  footer{
+    text-align:center;
+    font-size:13.5px;
+    color:var(--ink-soft);
+    padding:32px 24px 60px;
+  }
+  @media (max-width:480px){
+    .cta-btn.secondary{margin-left:0; margin-top:10px; display:block; text-align:center;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">💰 SalaryBit</div>
+</div>
+
+<main>
+  <span class="eyebrow">📱 Money Leaks</span>
+  <h1>Why Your ₹300 Recharge Quietly Became ₹400</h1>
+  <p class="dek">Airtel, Jio, Vi and BSNL don't raise prices the way you'd notice. They change the validity cycle instead — and most people never do the math on what that actually costs them every year.</p>
+  <div class="meta">
+    <span>📖 7 min read</span>
+    <span>🇮🇳 Made for India</span>
+  </div>
+
+  <p class="lede">Most people assume their mobile bill went up because "everything is getting expensive." That's only half true. The bigger reason is quieter than a price hike — it's built into the <strong>validity period</strong> of your plan, and almost nobody checks it. By the end of this guide, you'll know exactly what you're really paying, why, and what to do about it.</p>
+
+  <h2><span class="num">1</span> The 28-Day Trick Nobody Tells You About</h2>
+  <p>Every "monthly" recharge from Airtel, Jio, and Vi actually runs for <strong>28 days, not 30 or 31</strong>. That sounds like a small detail. It isn't.</p>
+  <p>365 days ÷ 28 days = <strong>13 recharges a year, not 12.</strong></p>
+
+  <div class="stat-row">
+    <div class="stat-card">
+      <span class="big">₹3,588</span>
+      <span class="small">what a genuine 12-cycle year would cost on a ₹299 plan</span>
+    </div>
+    <div class="stat-card">
+      <span class="big">₹3,887</span>
+      <span class="small">what you actually pay across 13 real cycles a year</span>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="icon">⚠️</span>
+    <p><strong>Good to know:</strong> BSNL is the one operator still running most of its plans on a 35-day cycle instead of 28. That alone brings you down to roughly 10–10.5 recharges a year — the closest thing to an honest "monthly" plan left in the market.</p>
+  </div>
+
+  <h2><span class="num">2</span> Where the Extra Money Is Actually Going</h2>
+  <p>This isn't speculation — it's in the telecom companies' own quarterly results. Airtel's average revenue per user (ARPU) sits around ₹254–257 a month in FY26, up close to 10% year-on-year. The company describes this openly as "premiumisation" — moving customers from 2G to 4G/5G, and from plain plans to OTT-bundled ones. Airtel's quarterly profit rose 89% year-on-year in one recent quarter to ₹6,791 crore, and touched ₹7,245 crore the quarter after. Jio posted ₹7,935 crore net profit in the same window, on an ARPU of roughly ₹214–216.</p>
+
+  <div class="callout tip">
+    <span class="icon">💡</span>
+    <p><strong>The key point:</strong> India's mobile subscriber base isn't growing fast — it's close to flat. This profit growth is coming from charging the <em>same</em> people more per month, not from adding new customers.</p>
+  </div>
+
+  <h2><span class="num">3</span> Who's Actually Paying the Highest Hidden Cost</h2>
+  <p>An estimated 250–300 million people in India still use basic feature phones — no internet, no apps, just calls and SMS. Often elderly, rural, or simply not needing a smartphone. For years, they've had almost no access to a plan that gives them just calling, because standalone voice+SMS packs were barely offered or promoted — every "affordable" plan still bundled data they'd never use.</p>
+  <p>TRAI (the telecom regulator) has been pushing operators since December 2024 to mandate real voice+SMS-only vouchers at proportionately lower prices. A fresh consultation ran through April 2026, with an industry open-house in June 2026. Airtel, Jio, and Vi have formally opposed making this mandatory — arguing it undercuts their revenue model.</p>
+
+  <h2><span class="num">4</span> The UPI Connection Almost Nobody Makes</h2>
+  <p>UPI itself is free — no charge to pay or receive money for personal and most merchant transactions. But every UPI payment needs a live data connection to work. So even someone who only wants to pay the sabziwala or the auto driver via UPI now <strong>needs</strong> a data plan — something they'd never have needed for calling alone a decade ago.</p>
+
+  <div class="callout">
+    <span class="icon">⚠️</span>
+    <p><strong>The indirect tax nobody names:</strong> Digital India made payments free. It also made data mandatory to access those free payments — and data is exactly where telecom companies make their money. The free UPI layer sits on top of a very profitable data layer.</p>
+  </div>
+
+  <h2><span class="num">5</span> What This Actually Costs You Over Time</h2>
+  <p>Say you find ₹300 a month you're currently overpaying — on a bundle you don't use, or a shorter validity cycle than you need — and instead of losing it every month, you put it into a SIP earning a typical long-term equity return (~12% annually, not guaranteed, market-linked):</p>
+
+  <div class="stat-row">
+    <div class="stat-card">
+      <span class="big">~₹70,000</span>
+      <span class="small">in 10 years, from ₹300/month invested at ~12%</span>
+    </div>
+    <div class="stat-card">
+      <span class="big">~₹3,00,000</span>
+      <span class="small">in 20 years, same ₹300/month at ~12%</span>
+    </div>
+  </div>
+
+  <p>That's the real cost of treating a ₹300–400 monthly line item as "too small to matter." It compounds — either for the telecom company, or for you.</p>
+
+  <h2><span class="num">6</span> What You Can Actually Do About It</h2>
+  <ol class="steps">
+    <li><span class="marker">1</span>Audit what you're actually using. If the OTT bundle (Hotstar, Prime) that comes with your plan sits unopened, you're paying a premium for a "free" perk you never touch.</li>
+    <li><span class="marker">2</span>Switch to an annual (365-day) plan, even on your current network. It sidesteps the 28-day multiplier entirely and almost always has a lower effective per-day cost than repeated 28-day recharges.</li>
+    <li><span class="marker">3</span>Seriously evaluate BSNL, especially for a secondary number or if you have decent coverage nearby. The 35-day cycle plus lower base pricing can save ₹1,000–1,400 a year on a low-usage line.</li>
+    <li><span class="marker">4</span>If someone in your family genuinely doesn't need data — a parent with a basic phone, for instance — ask your operator by name for a voice/SMS-only STV. TRAI has mandated these must exist; operators just don't market them.</li>
+    <li><span class="marker">5</span>Redirect the savings instead of letting them disappear into the next bill — even a basic SIP turns a "small" monthly saving into real money over a decade.</li>
+  </ol>
+
+  <h2><span class="num">7</span> A Quick Checklist Before Your Next Recharge</h2>
+  <ol class="steps checklist">
+    <li><span class="marker">✓</span>Count your actual validity cycle — is it 28 days or 30? Multiply by the real number of recharges a year, not by 12.</li>
+    <li><span class="marker">✓</span>Check if you're using every bundled perk (OTT, cloud storage) you're paying extra for.</li>
+    <li><span class="marker">✓</span>Compare the per-day cost of your current plan against a 365-day plan on the same network.</li>
+    <li><span class="marker">✓</span>If usage is genuinely low, price out BSNL's equivalent plan before renewing.</li>
+  </ol>
+
+  <hr class="divider">
+
+  <div class="cta-box">
+    <h3>Want to know exactly where your money is leaking every month?</h3>
+    <p>Upload your bank statement and we'll scan every UPI AutoPay, subscription, and recurring charge — recharge bundles included — and show you exactly what's quietly renewing every month.</p>
+    <div class="cta-row">
+      <a class="cta-btn" href="https://salarybit.in/subscription-leak-finder.html">Check My Subscriptions →</a>
+      <a class="cta-btn secondary" href="https://salarybit.in/tools/sip-calculator.html">Try the SIP Calculator →</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  SalaryBit · Built in Hoskote, India · Simple money guidance for everyday Indians
+</footer>
+
+</body>
+</html>

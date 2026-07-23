@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The House Always Gets Its Cut — SalaryBit</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --ink:#1E2A5E;
+    --ledger:#F4EFE3;
+    --ledger-line:#E4E1D8;
+    --loss:#D64545;
+    --gain:#1F9D6B;
+    --amber:#C98A2C;
+    --paper:#FFFFFF;
+    --muted:#6B7280;
+    --brand:#5b6af0;
+    --brand-dark:#4450d6;
+    --bg:#F6F7FB;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+
+  header.hero{
+    background:linear-gradient(180deg, #EEF0FD 0%, var(--bg) 100%);
+    padding:72px 0 56px;
+    border-bottom:1px solid #E1E4F5;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--brand-dark);
+    margin-bottom:18px;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:44px;
+    line-height:1.12;
+    margin:0 0 20px;
+    color:var(--ink);
+  }
+  h1 em{font-style:italic;font-weight:400;color:var(--loss);}
+  .dek{
+    font-size:18px;
+    color:#4B5265;
+    max-width:56ch;
+    margin:0 0 32px;
+  }
+  .byline{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:#7A80A0;
+    display:flex;
+    gap:18px;
+    flex-wrap:wrap;
+  }
+
+  /* the contract-note signature element */
+  .contract-note{
+    background:var(--paper);
+    color:var(--ink);
+    border-radius:8px;
+    margin:40px 0 0;
+    border:1px solid #E4E6F5;
+    box-shadow:0 16px 40px rgba(91,106,240,0.12);
+    overflow:hidden;
+  }
+  .cn-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    padding:16px 22px;
+    border-bottom:1px dashed var(--ledger-line);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--muted);
+    letter-spacing:0.05em;
+    background:#F8F9FE;
+  }
+  .cn-body{padding:20px 22px 24px;}
+  .cn-row{
+    display:flex;
+    justify-content:space-between;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:14.5px;
+    padding:9px 0;
+    border-bottom:1px solid #ECEDF7;
+  }
+  .cn-row:last-child{border-bottom:none;}
+  .cn-row .label{color:var(--muted);}
+  .cn-row .val{font-weight:600;}
+  .cn-row .val.loss{color:var(--loss);}
+  .cn-row .val.gain{color:var(--gain);}
+  .cn-total{
+    margin-top:14px;
+    padding-top:14px;
+    border-top:2px solid var(--brand);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .cn-total .label{font-family:'Fraunces',serif;font-size:16px;}
+  .cn-total .val{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;color:var(--loss);}
+  .cn-note{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    color:var(--muted);
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px dashed var(--ledger-line);
+  }
+
+  main{background:var(--paper);color:var(--ink);}
+  .article{padding:60px 0 40px;}
+  .article p{
+    font-size:17.5px;
+    color:#2E3348;
+    margin:0 0 22px;
+  }
+  .article h2{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:28px;
+    margin:48px 0 18px;
+    color:var(--ink);
+  }
+  .article h3{
+    font-family:'Fraunces',serif;
+    font-size:20px;
+    font-weight:600;
+    margin:32px 0 12px;
+  }
+  .stat-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1px;
+    background:#E4E6F5;
+    margin:28px 0;
+    border:1px solid #E4E6F5;
+    border-radius:8px;
+    overflow:hidden;
+  }
+  .stat-cell{
+    background:var(--paper);
+    padding:22px 20px;
+  }
+  .stat-num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:30px;
+    font-weight:600;
+    color:var(--brand-dark);
+    display:block;
+  }
+  .stat-label{font-size:13.5px;color:var(--muted);margin-top:4px;display:block;}
+
+  .pullquote{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:24px;
+    line-height:1.4;
+    color:var(--ink);
+    border-left:3px solid var(--brand);
+    padding:4px 0 4px 24px;
+    margin:36px 0;
+  }
+
+  .callout{
+    background:#FBF2E4;
+    border:1px solid #E9D5A9;
+    border-radius:8px;
+    padding:22px 24px;
+    margin:32px 0;
+  }
+  .callout .tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--amber);
+    display:block;
+    margin-bottom:8px;
+  }
+
+  ol.steps{padding-left:0;list-style:none;margin:24px 0;}
+  ol.steps li{
+    display:flex;
+    gap:16px;
+    padding:16px 0;
+    border-bottom:1px solid var(--ledger-line);
+  }
+  ol.steps li:last-child{border-bottom:none;}
+  ol.steps .n{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:var(--brand-dark);
+    border:1px solid var(--brand);
+    border-radius:50%;
+    width:26px;height:26px;
+    flex:none;
+    display:flex;align-items:center;justify-content:center;
+  }
+  ol.steps strong{display:block;font-family:'Fraunces',serif;font-size:16.5px;margin-bottom:2px;}
+  ol.steps span.desc{font-size:15px;color:#4A4F63;}
+
+  .sources{
+    font-size:13px;
+    color:var(--muted);
+    border-top:1px solid var(--ledger-line);
+    margin-top:48px;
+    padding-top:20px;
+  }
+  .sources a{color:var(--ink);}
+
+  footer{
+    background:var(--ink);
+    color:#C4C9F2;
+    padding:40px 0 60px;
+    text-align:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+  }
+  footer .brand{color:#FFFFFF;font-family:'Fraunces',serif;font-size:20px;margin-bottom:8px;}
+
+  @media (max-width:600px){
+    h1{font-size:32px;}
+    .stat-row{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div style="font-family:'Fraunces',serif;font-weight:600;font-size:18px;color:var(--brand-dark);margin-bottom:28px;">💰 SalaryBit — Personal Finance for India</div>
+    <div class="eyebrow">Money &amp; Markets</div>
+    <h1>The house always <em>gets its cut.</em><br>You might not.</h1>
+    <p class="dek">Every F&amp;O trade you place pays someone before it pays you — the exchange, your broker, sometimes your "mentor." Here's the actual math behind why 9 out of 10 individual traders in India lose money, and what to do if you're already in deep.</p>
+    <div class="byline">
+      <span>SALARYBIT DESK</span>
+      <span>·</span>
+      <span>8 MIN READ</span>
+      <span>·</span>
+      <span>SOURCED FROM SEBI DATA</span>
+    </div>
+
+    <img src="scale-image.png" alt="A weighing scale showing gold coin stacks on one side and a falling stock chart on the other, with rupee figures ranging from lakhs to crores labeled on each side" style="width:100%;border-radius:4px;margin-top:36px;box-shadow:0 24px 60px rgba(0,0,0,0.35);">
+
+    <div class="contract-note">
+      <div class="cn-head">
+        <span>CONTRACT NOTE — ILLUSTRATIVE</span>
+        <span>SAMPLE / EDUCATIONAL</span>
+      </div>
+      <div class="cn-body">
+        <div class="cn-row"><span class="label">Trader's realised P&amp;L (avg. loss-maker, FY24)</span><span class="val loss">−₹1,50,000</span></div>
+        <div class="cn-row"><span class="label">Exchange transaction charges</span><span class="val gain">Collected ✓</span></div>
+        <div class="cn-row"><span class="label">Broker brokerage &amp; fees</span><span class="val gain">Collected ✓</span></div>
+        <div class="cn-row"><span class="label">STT, stamp duty, GST</span><span class="val gain">Collected ✓</span></div>
+        <div class="cn-total">
+          <span class="label">Whose outcome was certain?</span>
+          <span class="val">NOT YOURS</span>
+        </div>
+        <div class="cn-note">Illustrative note based on SEBI's FY24 average loss figure for individual F&amp;O traders. Every leg of this trade generated fee income regardless of the trader's result.</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap article">
+
+    <p>If you've been trading futures and options for a while, you already know the feeling. One good week convinces you that you've "figured it out." Then three bad weeks convince you that you're one trade away from winning it all back. That second feeling is the one that empties provident funds, breaks mutual fund SIPs, and turns friendships into awkward WhatsApp reminders about a loan that hasn't been repaid.</p>
+
+    <p>This isn't a story about willpower. It's a story about how the system is actually built — and the numbers, straight from India's own market regulator, are worth sitting with before your next trade.</p>
+
+    <h2>What SEBI's own data says</h2>
+    <p>The Securities and Exchange Board of India has studied this exact question three times in three years, and the answer hasn't moved much.</p>
+
+    <div class="stat-row">
+      <div class="stat-cell">
+        <span class="stat-num">93%</span>
+        <span class="stat-label">of individual F&amp;O traders lost money between FY22 and FY24</span>
+      </div>
+      <div class="stat-cell">
+        <span class="stat-num">₹1.8L Cr</span>
+        <span class="stat-label">aggregate losses booked by individual traders over those 3 years</span>
+      </div>
+      <div class="stat-cell">
+        <span class="stat-num">₹28L</span>
+        <span class="stat-label">average loss for the worst-hit 3.5% of traders — about 4 lakh people</span>
+      </div>
+      <div class="stat-cell">
+        <span class="stat-num">75%+</span>
+        <span class="stat-label">of loss-making traders kept trading anyway, year after year</span>
+      </div>
+    </div>
+
+    <p>It gets worse in the most recent data. SEBI's July 2025 update showed individual traders' net losses <em>widened</em> by 41% in FY25 alone, crossing ₹1,05,000 crore in a single year, even as the total number of people trading actually fell. Fewer people are trading — and the ones still in it are losing more per person, not less.</p>
+
+    <p>And this isn't a small, careless minority. The same research found that among traders under 30, the group growing fastest as a share of the market, roughly 9 in 10 also lost money. Being young, online, and confident about "reading the charts" doesn't change the odds.</p>
+
+    <div class="pullquote">You win once. The exchange, the broker, and the platform get paid on every single trade — win or lose.</div>
+
+    <h2>Where the money actually goes</h2>
+    <p>This is the part that rarely gets explained in the reels that got you into trading in the first place. F&amp;O trading isn't a closed game between you and "the market." It's a chain of parties, and most of them earn a fixed cut regardless of what happens to your position.</p>
+
+    <ul style="font-size:17.5px;color:#2A2620;padding-left:20px;">
+      <li style="margin-bottom:10px;"><strong>The exchange</strong> earns a transaction charge on every contract that changes hands — whether that contract made you money or wiped you out.</li>
+      <li style="margin-bottom:10px;"><strong>Your broker</strong> earns brokerage and other charges per order, per lot, per leg. More trades, more revenue for them, regardless of your result.</li>
+      <li style="margin-bottom:10px;"><strong>The government</strong> collects Securities Transaction Tax, stamp duty, and GST on the transaction itself — again, independent of your outcome.</li>
+      <li style="margin-bottom:10px;"><strong>On the other side of most winning trades</strong> sit proprietary trading firms and large institutions running algorithms — SEBI's research found that 96–97% of the profits earned by these professional players came from algorithmic strategies most individual traders have no access to.</li>
+    </ul>
+
+    <p>None of this requires anyone to cheat you. The structure itself guarantees that a large, fee-collecting machine sits between you and every trade — and that machine gets paid first, before you find out if you won or lost.</p>
+
+    <h2>Follow the money: what they actually made, in crores</h2>
+    <p>Numbers make this real faster than any explanation can. Here's what the biggest names in this chain reported as <em>net profit</em> — not revenue, actual profit after every expense — in the financial year ending March 2025 (FY25), the same period SEBI's data shows retail traders losing at record levels.</p>
+
+    <div class="contract-note" style="margin:28px 0 8px;">
+      <div class="cn-head">
+        <span>FY25 NET PROFIT — AS REPORTED</span>
+        <span>SOURCE: PUBLIC FILINGS / MEDIA</span>
+      </div>
+      <div class="cn-body">
+        <div class="cn-row"><span class="label">NSE (National Stock Exchange)</span><span class="val gain">₹12,188 Cr</span></div>
+        <div class="cn-row"><span class="label">Zerodha</span><span class="val gain">₹4,237 Cr</span></div>
+        <div class="cn-row"><span class="label">Groww</span><span class="val gain">₹1,819 Cr</span></div>
+        <div class="cn-row"><span class="label">BSE (Bombay Stock Exchange)</span><span class="val gain">₹1,317 Cr</span></div>
+        <div class="cn-total">
+          <span class="label">Combined, these four alone</span>
+          <span class="val" style="color:var(--gain);">~₹19,561 Cr</span>
+        </div>
+        <div class="cn-note">Same year individual F&amp;O traders' losses widened 41% to over ₹1,05,000 crore, per SEBI's July 2025 study.</div>
+      </div>
+    </div>
+
+    <h3>How each of them actually built that number</h3>
+    <p><strong>NSE</strong> is the biggest single winner in the entire chain, and it isn't close. It's the world's largest derivatives exchange by contract volume, and it earns a small transaction charge on every single futures and options contract traded on it — regardless of who wins. In FY25 its total income crossed ₹19,000 crore, and it handed over nearly ₹60,000 crore to the government exchequer that year through STT, stamp duty, GST, and income tax collected on and around market activity. Retail F&amp;O volume, driven heavily by weekly index options, is a large part of what generates that transaction flow.</p>
+
+    <p><strong>Zerodha</strong> built India's largest brokerage without spending on ads for years — its revenue comes almost entirely from brokerage on F&amp;O trades (equity delivery is free, but options and futures aren't) plus fees on other services. Its FY25 profit actually <em>fell</em> 23% from the year before, which founder Nithin Kamath himself linked publicly to regulatory curbs on speculative F&amp;O trading and lower trading activity — a fairly direct admission that retail F&amp;O volume is the engine behind the number.</p>
+
+    <p><strong>Groww</strong> went the opposite direction — profit roughly tripled year-on-year, crossing ₹1,800 crore, on the back of rapid user growth (it's now India's largest broker by active users) right before its November 2025 stock market listing. More users trading, more transactions, more fee income.</p>
+
+    <p><strong>BSE</strong>, the older of India's two big exchanges, more than tripled its annual profit in FY25 largely on the back of its own expanding derivatives segment — its equity derivatives contracts alone generated over ₹1,400 crore in revenue for the year.</p>
+
+    <div class="pullquote">None of them need you to win. They need you to keep trading.</div>
+
+    <p>That's really the whole story in one line. A brokerage or an exchange has zero financial interest in whether your specific position goes green or red. Their business model is built entirely on volume — the number of orders placed, not the direction they moved. The more actively you trade, win or lose, the better it is for every entity in that chain except possibly you.</p>
+
+    <h2>Why "one more trade" is the trap</h2>
+    <p>The pattern shows up the same way almost every time: a small early win, a growing sense of skill, a loss that feels like bad luck rather than bad odds, and then a series of bigger trades meant to "recover" the loss rather than build on a strategy. SEBI's data on repeat behaviour backs this up directly — more than three out of four people who lost money kept trading in the following period. That's not a market failure. That's the exact psychology gambling is built on: intermittent reward, near-misses that feel like almost-wins, and a sunk cost that keeps growing.</p>
+
+    <p>Paid "mentorship" and signal groups often sit downstream of this same psychology. A course fee or subscription is a fixed, guaranteed income for the person selling it — regardless of whether the strategy taught inside it makes you money. That's worth remembering before the next "proven strategy" pitch lands in your inbox.</p>
+
+    <div class="callout">
+      <span class="tag">If you recognise yourself in this</span>
+      This isn't written to shame anyone. If you've pulled from your PF, broken an SIP, or borrowed money to trade, you're not the only one — you're one of lakhs of people SEBI's own numbers describe. The way out starts with stopping the bleeding, not with one more "recovery trade."
+    </div>
+
+    <h2>If you're already in it — what to actually do</h2>
+    <ol class="steps">
+      <li>
+        <span class="n">1</span>
+        <div>
+          <strong>Stop trading before you plan anything else</strong>
+          <span class="desc">Not "trade smaller" — stop. Every additional trade is another shot at the same odds that got you here.</span>
+        </div>
+      </li>
+      <li>
+        <span class="n">2</span>
+        <div>
+          <strong>Write down the actual damage in one place</strong>
+          <span class="desc">Loan amount, PF withdrawn, SIPs broken, money owed to people. You can't rebuild a plan around a number you're avoiding looking at.</span>
+        </div>
+      </li>
+      <li>
+        <span class="n">3</span>
+        <div>
+          <strong>Deal with high-cost debt first</strong>
+          <span class="desc">A personal loan or borrowed money from a friend usually costs more, in money and in relationships, than any recovery trade could realistically earn back.</span>
+        </div>
+      </li>
+      <li>
+        <span class="n">4</span>
+        <div>
+          <strong>Rebuild PF and SIPs on a fixed monthly amount</strong>
+          <span class="desc">Even a small, automatic, boring contribution restarts compounding — the only reliable "strategy" retail investors consistently benefit from.</span>
+        </div>
+      </li>
+      <li>
+        <span class="n">5</span>
+        <div>
+          <strong>Talk to someone before the next dip in the account</strong>
+          <span class="desc">A family member, a fee-only financial advisor, or a debt counsellor. Isolation is what let the losses compound quietly in the first place.</span>
+        </div>
+      </li>
+    </ol>
+
+    <p>F&amp;O contracts exist for a real purpose — hedging real, underlying exposure for businesses and large investors. That's genuinely different from using them as a way to turn a salary into a jackpot. Nothing about the structure of the market is designed to make that second use case work out for you, and the data above is SEBI's own way of saying so as plainly as a regulator can.</p>
+
+    <div class="sources">
+      Data referenced: SEBI study on individual traders' profit/loss in equity F&amp;O, January 2023 and September 2024 updates; SEBI study on FY25 individual trader losses, July 2025. FY25 company profit figures sourced from NSE, BSE, Zerodha, and Groww's own reported financial results as covered by Business Standard, Economic Times, and other financial press. This article is for general awareness and does not constitute investment advice, and is not an allegation of wrongdoing against any named company — the figures reflect normal, disclosed fee-based revenue models.
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="brand">SalaryBit</div>
+    Money, made simple for the Indian salaried professional.
+  </div>
+</footer>
+
+</body>
+</html>

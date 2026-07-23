@@ -16,6 +16,7 @@ from concurrent.futures import ThreadPoolExecutor
 import razorpay
 import requests as http_requests
 import fitz  # PyMuPDF
+from premium_passbook_pdf import generate_premium_passbook_pdf
 from PIL import Image
 import ctypes
 import ctypes.util
@@ -1380,6 +1381,101 @@ def verify_passbook_payment():
     print(f"[passbook] paid lead: {email or '(no email given)'} | payment_id={payment_id}")
 
     return jsonify({"success": True, "payment_id": payment_id})
+
+
+# ── FAMILY PASSBOOK — PREMIUM A4 PDF ───────────────────────
+# The free tool (family-passbook.html) stays exactly as-is: fill in the
+# browser, hit window.print(). That's still there for anyone who wants
+# it for free, but browser print doesn't paginate reliably to A4 and
+# has none of the SalaryBit branding.
+#
+# This is the paid upgrade: the same filled-in data, rendered server-side
+# with WeasyPrint into a proper, numbered, book-styled A4 PDF — one page
+# per section, running header/footer, brand colours. See
+# premium_passbook_pdf.py for the template itself.
+FAMILY_PASSBOOK_PREMIUM_PRICE_PAISE = 9900  # Rs 99
+
+
+@app.route("/api/create-family-passbook-premium-order", methods=["POST", "OPTIONS"])
+def create_family_passbook_premium_order():
+    """Matches the existing create_*_order() pattern exactly."""
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": FAMILY_PASSBOOK_PREMIUM_PRICE_PAISE,
+            "currency": "INR",
+            "receipt": f"fampass_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
+    except Exception as e:
+        print(f"create-family-passbook-premium-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/verify-family-passbook-premium-payment", methods=["POST", "OPTIONS"])
+def verify_family_passbook_premium_payment():
+    """
+    Verifies the Razorpay signature (same HMAC pattern as every other tool
+    here), then immediately renders the premium PDF from the passbook_data
+    the browser sent along — no second round trip, no server-side storage
+    of what the user typed.
+
+    Expects JSON:
+      {
+        "razorpay_order_id": "...",
+        "razorpay_payment_id": "...",
+        "razorpay_signature": "...",
+        "passbook_data": { "sections": [...] }   // from serializePassbook() in family-passbook.html
+      }
+
+    Returns the PDF as a binary application/pdf response on success, or a
+    JSON error object (so the frontend can branch on Content-Type).
+    """
+    if request.method == "OPTIONS":
+        return "", 200
+    data = request.get_json(silent=True) or {}
+    order_id = data.get("razorpay_order_id")
+    payment_id = data.get("razorpay_payment_id")
+    signature = data.get("razorpay_signature")
+    passbook_data = data.get("passbook_data") or {}
+
+    if not all([order_id, payment_id, signature]):
+        return jsonify({"success": False, "error": "Missing required fields."}), 400
+
+    body = f"{order_id}|{payment_id}"
+    expected = hmac.new(
+        os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+        body.encode(),
+        hashlib.sha256
+    ).hexdigest()
+    if expected != signature:
+        return jsonify({"success": False, "error": "Payment verification failed."}), 400
+
+    if not isinstance(passbook_data, dict) or not passbook_data.get("sections"):
+        return jsonify({"success": False, "error": "No passbook content was received to generate the PDF from."}), 400
+
+    try:
+        pdf_bytes = generate_premium_passbook_pdf(passbook_data, payment_id=payment_id)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"success": False, "error": f"PDF generation failed: {e}"}), 500
+
+    print(f"[family-passbook-premium] paid PDF generated | payment_id={payment_id}")
+
+    return Response(
+        pdf_bytes,
+        mimetype="application/pdf",
+        headers={
+            "Content-Disposition": 'attachment; filename="The-Family-Passbook-Premium.pdf"'
+        }
+    )
 
 
 # ── HEALTH CHECK ──────────────────────────────────────────

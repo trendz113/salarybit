@@ -11,5 +11,5 @@ pyhanko>=0.21.0
 pyhanko-certvalidator>=0.26.0
 asn1crypto>=1.5.1
 pdfplumber>=0.11.0
-weasyprint
+weasyprint==69.0.0
 jinja2

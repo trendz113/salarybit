@@ -4,12 +4,10 @@ flask-cors==4.0.1
 razorpay==1.4.2
 pymupdf==1.24.5
 pyzbar==0.1.9
-pillow==10.4.0
+pillow==10.3.0
 gunicorn==22.0.0
 requests
-pyhanko>=0.21.0
-pyhanko-certvalidator>=0.26.0
-asn1crypto>=1.5.1
-pdfplumber>=0.11.0
-weasyprint==69.0.0
-jinja2
+pdfplumber==0.11.4
+asn1crypto==1.5.1
+pyhanko==0.25.3
+pyhanko-certvalidator==0.26.5

@@ -234,6 +234,8 @@
     justify-content:space-between;
     align-items:center;
     grid-column:1/-1;
+    gap:16px;
+    flex-wrap:wrap;
   }
   .action-bar .msg{color:#B9A46B; font-family:'Courier Prime',monospace; font-size:12px;}
   .btn-print{
@@ -246,10 +248,13 @@
     border-radius:3px;
     font-size:15px;
     cursor:pointer;
+    white-space:nowrap;
   }
   .btn-print:hover{background:#6f2d20;}
+  .btn-print:disabled{opacity:0.6; cursor:wait;}
+  .btn-print .price{font-family:'Courier Prime',monospace; font-size:11px; display:block; color:#F3D9C9; margin-top:2px; font-weight:400;}
 
-  /* ===== Premium upsell banner (top of ledger) ===== */
+  /* ===== Top upsell banner ===== */
   .premium-banner{
     grid-column:1/-1;
     background:linear-gradient(135deg, var(--ink) 0%, #24374F 100%);
@@ -299,19 +304,6 @@
   .btn-premium .price{font-family:'Courier Prime',monospace; font-size:11px; display:block; color:#5C4A1C; margin-top:2px;}
   .btn-premium:disabled{opacity:0.6; cursor:wait;}
 
-  .action-bar .btn-group{display:flex; gap:12px; align-items:center;}
-  .btn-print-free{
-    font-family:'Courier Prime', monospace;
-    font-size:12px;
-    background:transparent;
-    color:#B9A46B;
-    border:1px solid rgba(185,164,107,0.5);
-    padding:10px 16px;
-    border-radius:3px;
-    cursor:pointer;
-  }
-  .btn-print-free:hover{background:rgba(185,164,107,0.1); color:#fff;}
-
   /* ===== Premium status toast ===== */
   .pb-status{
     position:fixed;
@@ -360,7 +352,7 @@
 </style>
 <meta property="og:type" content="website">
 <meta property="og:title" content="The Family Passbook — SalaryBit">
-<meta property="og:description" content="Free tool from SalaryBit for Indian salaried professionals. No login, no data stored.">
+<meta property="og:description" content="A private, printable emergency handbook for your family from SalaryBit. Fill it in your browser — nothing is ever sent anywhere until you choose to unlock printing.">
 <meta property="og:url" content="https://salarybit.in/family-passbook.html">
 <meta property="og:site_name" content="SalaryBit">
 <meta property="og:image" content="https://salarybit.in/og-image.png">
@@ -368,27 +360,27 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="The Family Passbook — SalaryBit">
-<meta name="twitter:description" content="Free tool from SalaryBit for Indian salaried professionals. No login, no data stored.">
+<meta name="twitter:description" content="A private, printable emergency handbook for your family from SalaryBit.">
 <meta name="twitter:image" content="https://salarybit.in/og-image.png">
 <link rel="canonical" href="https://salarybit.in/family-passbook.html">
 </head>
 <body>
 
 <div class="privacy-banner">
-  🔒 <strong>Nothing you type here ever leaves this page.</strong> There is no server, no login, no saving — this runs entirely in your browser. Fill it, print it or save it as a PDF, then close the tab.
+  🔒 <strong>Nothing you type here is ever sent to a server.</strong> Filling in the passbook happens entirely in your browser — no login, no autosave. When you're ready to print or save it as a PDF, a one-time ₹99 unlock opens your browser's print dialog; your entries still never leave this tab.
 </div>
 
 <div class="app">
 
   <div class="premium-banner">
     <div class="pb-copy">
-      <div class="pb-eyebrow">Premium Edition</div>
-      <div class="pb-title display">Get this as a proper, bound A4 PDF</div>
-      <div class="pb-desc">Free "Print/Save as PDF" depends on your browser and often breaks across 15+ oddly-sized pages. The Premium PDF is generated for you — one page per section, numbered, and styled to match — ready to actually print and keep in a folder.</div>
+      <div class="pb-eyebrow">The Family Passbook</div>
+      <div class="pb-title display">Fill it for free. Unlock printing for ₹99.</div>
+      <div class="pb-desc">Take your time filling in every page below — that part costs nothing and nothing is saved or uploaded. When you're ready to print or save the finished passbook as a PDF, a one-time ₹99 payment unlocks your browser's print dialog so you can produce a copy to keep in a folder.</div>
     </div>
-    <button class="btn-premium" id="btnBuyPremium" onclick="buyPremiumPassbook()">
-      Get the Premium PDF
-      <span class="price">₹99 · one-time · via Razorpay</span>
+    <button class="btn-premium" id="btnBuyPremium" onclick="unlockAndPrint()">
+      Unlock &amp; Print — ₹99
+      <span class="price">One-time · via Razorpay</span>
     </button>
   </div>
 
@@ -638,10 +630,10 @@
 
   <div class="action-bar">
     <span class="msg">Fill every page you can — even half-filled is better than nothing.</span>
-    <div class="btn-group">
-      <button class="btn-print-free" onclick="window.print()" title="Uses your browser's print dialog — pagination isn't guaranteed">Free: Print / Save as PDF</button>
-      <button class="btn-print" onclick="buyPremiumPassbook()">Get the Premium A4 PDF — ₹99</button>
-    </div>
+    <button class="btn-print" id="btnPrintFooter" onclick="unlockAndPrint()">
+      Unlock &amp; Print This Passbook
+      <span class="price">₹99 · one-time · via Razorpay</span>
+    </button>
   </div>
 
 </div>
@@ -691,80 +683,15 @@
   addRow('vehicleRows', ['Vehicle','RC/insurance location','Where keys are kept','']);
   addRow('childRows', ['Name &amp; age','School / class','Guardian if both parents unavailable','Anything specific they need']);
 
-  // ── PREMIUM PDF: pull every filled field out of the DOM ──────
-  // Nothing is sent anywhere until the person clicks "Get the Premium PDF"
-  // and completes payment — the free tool above this line still runs
-  // entirely client-side with zero network calls.
+  // ── PAID PRINT UNLOCK ─────────────────────────────────
+  // Filling the form above is completely free and 100% client-side.
+  // Printing/saving-as-PDF is gated behind a one-time ₹99 Razorpay
+  // payment. Nothing you typed into the passbook is ever sent to the
+  // server — only the Razorpay order/payment IDs are exchanged to
+  // verify payment. Once verified, we call the browser's own
+  // window.print() locally.
   const API_BASE = 'https://web-production-456eb.up.railway.app';
-
-  function fieldRowToObj(fr){
-    const label = fr.querySelector('label')?.innerText.trim() || '';
-    let value = '';
-    const inp = fr.querySelector('input, textarea, select');
-    if(inp){
-      if(inp.tagName === 'SELECT'){ value = inp.options[inp.selectedIndex]?.text || ''; }
-      else { value = inp.value || ''; }
-    }
-    return {label, value};
-  }
-
-  function serializeGroupContainer(container){
-    const rows = [];
-    container.querySelectorAll(':scope > .repeat-wrap').forEach(wrap=>{
-      const rowFields = [...wrap.querySelectorAll('.field-row')].map(fieldRowToObj);
-      if(rowFields.some(f => f.value && f.value.trim() !== '')) rows.push(rowFields);
-    });
-    return rows;
-  }
-
-  function serializeSection(section){
-    const kicker = section.querySelector(':scope > .kicker')?.innerText.trim() || '';
-    const title = section.querySelector(':scope > h2')?.innerText.trim() || '';
-    const items = [];
-    Array.from(section.children).forEach(el => {
-      if(el.tagName === 'BUTTON' || el.tagName === 'HR') return;
-      if(el.classList.contains('kicker') || el.tagName === 'H2') return;
-      if(el.classList.contains('intro')){ items.push({type:'intro', text: el.innerText.trim()}); return; }
-      if(el.classList.contains('note')){ items.push({type:'note', text: el.innerText.trim()}); return; }
-      if(el.classList.contains('urgent-tag')){
-        const next = el.nextElementSibling;
-        if(next && next.classList.contains('checklist')){
-          const chkItems = [...next.querySelectorAll('li')].map(li => ({
-            label: li.querySelector('span')?.innerText.trim() || li.innerText.trim(),
-            checked: !!li.querySelector('input[type=checkbox]')?.checked
-          }));
-          items.push({type:'checklist', tag: el.innerText.trim(), items: chkItems});
-        }
-        return;
-      }
-      if(el.classList.contains('checklist')) return; // consumed above
-      if(el.classList.contains('block')){
-        const blockTitle = el.querySelector('.block-title')?.innerText.trim() || '';
-        const rowsContainer = el.querySelector('[id$="Rows"]');
-        if(rowsContainer){
-          items.push({type:'group', title: blockTitle, rows: serializeGroupContainer(rowsContainer)});
-        } else {
-          const fields = [...el.querySelectorAll(':scope > .field-row')].map(fieldRowToObj);
-          if(fields.length) items.push({type:'fields', title: blockTitle, fields});
-        }
-        return;
-      }
-      if(el.id && el.id.endsWith('Rows')){
-        items.push({type:'group', title:'', rows: serializeGroupContainer(el)});
-        return;
-      }
-      if(el.classList.contains('field-row')){
-        const f = fieldRowToObj(el);
-        items.push({type:'fieldrow', label: f.label, value: f.value});
-      }
-    });
-    return {id: section.id, kicker, title, items};
-  }
-
-  function serializePassbook(){
-    const sections = [...document.querySelectorAll('main.ledger > .page')].map(serializeSection);
-    return {generated_at: new Date().toISOString(), sections};
-  }
+  let passbookUnlocked = false;
 
   function showPbStatus(msg, ok){
     const el = document.getElementById('pbStatus');
@@ -775,21 +702,27 @@
   }
 
   function setBuyButtonsBusy(busy, label){
-    document.querySelectorAll('.btn-premium, .btn-print').forEach(b => {
-      b.disabled = busy;
-    });
     const primary = document.getElementById('btnBuyPremium');
+    const footer = document.getElementById('btnPrintFooter');
+    [primary, footer].forEach(b => { if(b) b.disabled = busy; });
     if(primary) primary.innerHTML = busy
       ? label
-      : 'Get the Premium PDF<span class="price">₹99 · one-time · via Razorpay</span>';
+      : 'Unlock &amp; Print — ₹99<span class="price">One-time · via Razorpay</span>';
+    if(footer) footer.innerHTML = busy
+      ? label
+      : 'Unlock &amp; Print This Passbook<span class="price">₹99 · one-time · via Razorpay</span>';
   }
 
-  async function buyPremiumPassbook(){
+  async function unlockAndPrint(){
+    if(passbookUnlocked){
+      window.print();
+      return;
+    }
     try{
-      setBuyButtonsBusy(true, 'Preparing your PDF…');
+      setBuyButtonsBusy(true, 'Preparing secure payment…');
       showPbStatus('Setting up secure payment…');
 
-      const orderRes = await fetch(`${API_BASE}/api/create-family-passbook-premium-order`, { method: 'POST' });
+      const orderRes = await fetch(`${API_BASE}/api/create-family-passbook-order`, { method: 'POST' });
       const order = await orderRes.json();
       if(!order.order_id) throw new Error(order.error || 'Could not start payment.');
 
@@ -799,44 +732,33 @@
         currency: order.currency,
         order_id: order.order_id,
         name: 'SalaryBit — The Family Passbook',
-        description: 'Premium A4 PDF (one-time)',
+        description: 'Unlock printing (one-time)',
         theme: { color: '#8B3A2B' },
         handler: async function(response){
           try{
-            setBuyButtonsBusy(true, 'Generating your PDF…');
-            showPbStatus('Payment received — generating your Premium PDF…');
+            setBuyButtonsBusy(true, 'Verifying payment…');
+            showPbStatus('Payment received — verifying…');
 
-            const passbook_data = serializePassbook();
-            const verifyRes = await fetch(`${API_BASE}/api/verify-family-passbook-premium-payment`, {
+            const verifyRes = await fetch(`${API_BASE}/api/verify-family-passbook-payment`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-                passbook_data
+                razorpay_signature: response.razorpay_signature
               })
             });
-
-            if(!verifyRes.ok || (verifyRes.headers.get('Content-Type') || '').indexOf('application/pdf') === -1){
-              const errBody = await verifyRes.json().catch(() => ({}));
-              throw new Error(errBody.error || 'PDF generation failed after payment. Contact support with your payment ID: ' + response.razorpay_payment_id);
+            const result = await verifyRes.json().catch(() => ({}));
+            if(!verifyRes.ok || !result.success){
+              throw new Error(result.error || 'Payment could not be verified. Contact support with your payment ID: ' + response.razorpay_payment_id);
             }
 
-            const blob = await verifyRes.blob();
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'The-Family-Passbook-Premium.pdf';
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            URL.revokeObjectURL(url);
-
-            showPbStatus('✓ Your Premium PDF has downloaded.', true);
+            passbookUnlocked = true;
+            showPbStatus('✓ Unlocked — opening print dialog…', true);
+            setBuyButtonsBusy(false);
+            setTimeout(() => window.print(), 400);
           } catch(err){
             showPbStatus('⚠ ' + err.message);
-          } finally {
             setBuyButtonsBusy(false);
           }
         },

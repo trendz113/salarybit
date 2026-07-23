@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["zbar", "python3"]
+nixPkgs = ["zbar", "python3", "pango", "cairo", "gdk-pixbuf", "harfbuzz", "fontconfig", "freetype"]
 
 [phases.install]
 cmds = [

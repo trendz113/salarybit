@@ -12,7 +12,9 @@
     "libharfbuzz0b",
     "libfontconfig1",
     "libfreetype6",
-    "shared-mime-info"
+    "shared-mime-info",
+    "fonts-liberation",
+    "fonts-dejavu-core"
   ],
   "steps": {
     "install": {
@@ -32,7 +34,9 @@
       "libharfbuzz0b",
       "libfontconfig1",
       "libfreetype6",
-      "shared-mime-info"
+      "shared-mime-info",
+      "fonts-liberation",
+      "fonts-dejavu-core"
     ],
     "cmd": "gunicorn server_railway:app --bind 0.0.0.0:$PORT --workers 1 --timeout 120 --max-requests 100 --max-requests-jitter 10"
   }

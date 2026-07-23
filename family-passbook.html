@@ -249,9 +249,91 @@
   }
   .btn-print:hover{background:#6f2d20;}
 
+  /* ===== Premium upsell banner (top of ledger) ===== */
+  .premium-banner{
+    grid-column:1/-1;
+    background:linear-gradient(135deg, var(--ink) 0%, #24374F 100%);
+    color:var(--paper);
+    padding:16px 30px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    flex-wrap:wrap;
+    border-bottom:1px solid rgba(233,201,122,0.25);
+  }
+  .premium-banner .pb-copy{max-width:640px;}
+  .premium-banner .pb-eyebrow{
+    font-family:'Courier Prime', monospace;
+    font-size:10.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#E8C97A;
+    margin-bottom:4px;
+  }
+  .premium-banner .pb-title{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:17px;
+    margin-bottom:4px;
+  }
+  .premium-banner .pb-desc{
+    font-size:12.5px;
+    color:#C9D2DC;
+    line-height:1.5;
+  }
+  .btn-premium{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    background:#E8C97A;
+    color:var(--ink);
+    border:none;
+    padding:12px 22px;
+    border-radius:3px;
+    font-size:15px;
+    cursor:pointer;
+    white-space:nowrap;
+    box-shadow:0 4px 14px rgba(232,201,122,0.25);
+  }
+  .btn-premium:hover{background:#f0d68d;}
+  .btn-premium .price{font-family:'Courier Prime',monospace; font-size:11px; display:block; color:#5C4A1C; margin-top:2px;}
+  .btn-premium:disabled{opacity:0.6; cursor:wait;}
+
+  .action-bar .btn-group{display:flex; gap:12px; align-items:center;}
+  .btn-print-free{
+    font-family:'Courier Prime', monospace;
+    font-size:12px;
+    background:transparent;
+    color:#B9A46B;
+    border:1px solid rgba(185,164,107,0.5);
+    padding:10px 16px;
+    border-radius:3px;
+    cursor:pointer;
+  }
+  .btn-print-free:hover{background:rgba(185,164,107,0.1); color:#fff;}
+
+  /* ===== Premium status toast ===== */
+  .pb-status{
+    position:fixed;
+    bottom:24px; right:24px;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Courier Prime', monospace;
+    font-size:13px;
+    padding:14px 18px;
+    border-radius:4px;
+    border-left:4px solid var(--stamp);
+    box-shadow:var(--shadow);
+    z-index:999;
+    max-width:320px;
+    display:none;
+  }
+  .pb-status.show{display:block;}
+  .pb-status.ok{border-left-color:#5C8B62;}
+
   /* ===== Print styles ===== */
   @media print{
-    .privacy-banner, .tab-rail, .action-bar{display:none !important;}
+    .privacy-banner, .tab-rail, .action-bar, .premium-banner, .pb-status{display:none !important;}
     .app{display:block; box-shadow:none; margin:0; max-width:100%;}
     .ledger::before{display:none;}
     .page{display:block !important; padding:14px 6px; page-break-after:always;}
@@ -297,6 +379,18 @@
 </div>
 
 <div class="app">
+
+  <div class="premium-banner">
+    <div class="pb-copy">
+      <div class="pb-eyebrow">Premium Edition</div>
+      <div class="pb-title display">Get this as a proper, bound A4 PDF</div>
+      <div class="pb-desc">Free "Print/Save as PDF" depends on your browser and often breaks across 15+ oddly-sized pages. The Premium PDF is generated for you — one page per section, numbered, and styled to match — ready to actually print and keep in a folder.</div>
+    </div>
+    <button class="btn-premium" id="btnBuyPremium" onclick="buyPremiumPassbook()">
+      Get the Premium PDF
+      <span class="price">₹99 · one-time · via Razorpay</span>
+    </button>
+  </div>
 
   <nav class="tab-rail">
     <div class="rail-title">The Family<br>Passbook<span>SALARYBIT.IN</span></div>
@@ -544,11 +638,17 @@
 
   <div class="action-bar">
     <span class="msg">Fill every page you can — even half-filled is better than nothing.</span>
-    <button class="btn-print" onclick="window.print()">Print / Save as PDF</button>
+    <div class="btn-group">
+      <button class="btn-print-free" onclick="window.print()" title="Uses your browser's print dialog — pagination isn't guaranteed">Free: Print / Save as PDF</button>
+      <button class="btn-print" onclick="buyPremiumPassbook()">Get the Premium A4 PDF — ₹99</button>
+    </div>
   </div>
 
 </div>
 
+<div class="pb-status mono" id="pbStatus"></div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
   const tabs = document.querySelectorAll('.tab-btn');
   const pages = document.querySelectorAll('.page');
@@ -590,6 +690,173 @@
   addRow('propRows', ['Property (address/type)','Ownership (single/joint/inherited)','Loan against it? (Y/N)','Where papers are kept']);
   addRow('vehicleRows', ['Vehicle','RC/insurance location','Where keys are kept','']);
   addRow('childRows', ['Name &amp; age','School / class','Guardian if both parents unavailable','Anything specific they need']);
+
+  // ── PREMIUM PDF: pull every filled field out of the DOM ──────
+  // Nothing is sent anywhere until the person clicks "Get the Premium PDF"
+  // and completes payment — the free tool above this line still runs
+  // entirely client-side with zero network calls.
+  const API_BASE = 'https://web-production-456eb.up.railway.app';
+
+  function fieldRowToObj(fr){
+    const label = fr.querySelector('label')?.innerText.trim() || '';
+    let value = '';
+    const inp = fr.querySelector('input, textarea, select');
+    if(inp){
+      if(inp.tagName === 'SELECT'){ value = inp.options[inp.selectedIndex]?.text || ''; }
+      else { value = inp.value || ''; }
+    }
+    return {label, value};
+  }
+
+  function serializeGroupContainer(container){
+    const rows = [];
+    container.querySelectorAll(':scope > .repeat-wrap').forEach(wrap=>{
+      const rowFields = [...wrap.querySelectorAll('.field-row')].map(fieldRowToObj);
+      if(rowFields.some(f => f.value && f.value.trim() !== '')) rows.push(rowFields);
+    });
+    return rows;
+  }
+
+  function serializeSection(section){
+    const kicker = section.querySelector(':scope > .kicker')?.innerText.trim() || '';
+    const title = section.querySelector(':scope > h2')?.innerText.trim() || '';
+    const items = [];
+    Array.from(section.children).forEach(el => {
+      if(el.tagName === 'BUTTON' || el.tagName === 'HR') return;
+      if(el.classList.contains('kicker') || el.tagName === 'H2') return;
+      if(el.classList.contains('intro')){ items.push({type:'intro', text: el.innerText.trim()}); return; }
+      if(el.classList.contains('note')){ items.push({type:'note', text: el.innerText.trim()}); return; }
+      if(el.classList.contains('urgent-tag')){
+        const next = el.nextElementSibling;
+        if(next && next.classList.contains('checklist')){
+          const chkItems = [...next.querySelectorAll('li')].map(li => ({
+            label: li.querySelector('span')?.innerText.trim() || li.innerText.trim(),
+            checked: !!li.querySelector('input[type=checkbox]')?.checked
+          }));
+          items.push({type:'checklist', tag: el.innerText.trim(), items: chkItems});
+        }
+        return;
+      }
+      if(el.classList.contains('checklist')) return; // consumed above
+      if(el.classList.contains('block')){
+        const blockTitle = el.querySelector('.block-title')?.innerText.trim() || '';
+        const rowsContainer = el.querySelector('[id$="Rows"]');
+        if(rowsContainer){
+          items.push({type:'group', title: blockTitle, rows: serializeGroupContainer(rowsContainer)});
+        } else {
+          const fields = [...el.querySelectorAll(':scope > .field-row')].map(fieldRowToObj);
+          if(fields.length) items.push({type:'fields', title: blockTitle, fields});
+        }
+        return;
+      }
+      if(el.id && el.id.endsWith('Rows')){
+        items.push({type:'group', title:'', rows: serializeGroupContainer(el)});
+        return;
+      }
+      if(el.classList.contains('field-row')){
+        const f = fieldRowToObj(el);
+        items.push({type:'fieldrow', label: f.label, value: f.value});
+      }
+    });
+    return {id: section.id, kicker, title, items};
+  }
+
+  function serializePassbook(){
+    const sections = [...document.querySelectorAll('main.ledger > .page')].map(serializeSection);
+    return {generated_at: new Date().toISOString(), sections};
+  }
+
+  function showPbStatus(msg, ok){
+    const el = document.getElementById('pbStatus');
+    el.textContent = msg;
+    el.classList.add('show');
+    el.classList.toggle('ok', !!ok);
+    if(ok){ setTimeout(()=> el.classList.remove('show'), 6000); }
+  }
+
+  function setBuyButtonsBusy(busy, label){
+    document.querySelectorAll('.btn-premium, .btn-print').forEach(b => {
+      b.disabled = busy;
+    });
+    const primary = document.getElementById('btnBuyPremium');
+    if(primary) primary.innerHTML = busy
+      ? label
+      : 'Get the Premium PDF<span class="price">₹99 · one-time · via Razorpay</span>';
+  }
+
+  async function buyPremiumPassbook(){
+    try{
+      setBuyButtonsBusy(true, 'Preparing your PDF…');
+      showPbStatus('Setting up secure payment…');
+
+      const orderRes = await fetch(`${API_BASE}/api/create-family-passbook-premium-order`, { method: 'POST' });
+      const order = await orderRes.json();
+      if(!order.order_id) throw new Error(order.error || 'Could not start payment.');
+
+      const rzp = new Razorpay({
+        key: order.razorpay_key,
+        amount: order.amount,
+        currency: order.currency,
+        order_id: order.order_id,
+        name: 'SalaryBit — The Family Passbook',
+        description: 'Premium A4 PDF (one-time)',
+        theme: { color: '#8B3A2B' },
+        handler: async function(response){
+          try{
+            setBuyButtonsBusy(true, 'Generating your PDF…');
+            showPbStatus('Payment received — generating your Premium PDF…');
+
+            const passbook_data = serializePassbook();
+            const verifyRes = await fetch(`${API_BASE}/api/verify-family-passbook-premium-payment`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                passbook_data
+              })
+            });
+
+            if(!verifyRes.ok || (verifyRes.headers.get('Content-Type') || '').indexOf('application/pdf') === -1){
+              const errBody = await verifyRes.json().catch(() => ({}));
+              throw new Error(errBody.error || 'PDF generation failed after payment. Contact support with your payment ID: ' + response.razorpay_payment_id);
+            }
+
+            const blob = await verifyRes.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'The-Family-Passbook-Premium.pdf';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+
+            showPbStatus('✓ Your Premium PDF has downloaded.', true);
+          } catch(err){
+            showPbStatus('⚠ ' + err.message);
+          } finally {
+            setBuyButtonsBusy(false);
+          }
+        },
+        modal: {
+          ondismiss: function(){
+            setBuyButtonsBusy(false);
+            showPbStatus('Payment cancelled — no charge was made.');
+          }
+        }
+      });
+      rzp.on('payment.failed', function(resp){
+        setBuyButtonsBusy(false);
+        showPbStatus('⚠ Payment failed: ' + (resp.error?.description || 'please try again.'));
+      });
+      rzp.open();
+    } catch(err){
+      setBuyButtonsBusy(false);
+      showPbStatus('⚠ ' + err.message);
+    }
+  }
 </script>
 
 </body>

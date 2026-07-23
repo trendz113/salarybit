@@ -14,6 +14,14 @@
     "libfreetype6",
     "shared-mime-info"
   ],
+  "steps": {
+    "install": {
+      "commands": [
+        "...",
+        "python -c \"from weasyprint import HTML; print('weasyprint import OK')\""
+      ]
+    }
+  },
   "deploy": {
     "aptPackages": [
       "libzbar0",

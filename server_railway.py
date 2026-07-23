@@ -49,21 +49,6 @@ from pyzbar.pyzbar import decode
 app = Flask(__name__)
 CORS(app)
 
-# ── PREMIUM PASSBOOK PDF (lazy import) ──────────────────────
-# This depends on WeasyPrint, which needs system libs (Pango/Cairo/
-# GDK-Pixbuf) to even import. If those aren't present on the deploy
-# image, importing it at module load time kills every route on the
-# app (gunicorn worker fails to boot). Importing it lazily means only
-# this one feature breaks if the dependency is missing, instead of
-# the whole server going dark.
-generate_premium_passbook_pdf = None
-_premium_pdf_import_error = None
-try:
-    from premium_passbook_pdf import generate_premium_passbook_pdf
-except Exception as _e:
-    _premium_pdf_import_error = str(_e)
-    print(f"[WARN] premium_passbook_pdf unavailable, feature disabled: {_e}")
-
 # Razorpay client
 rzp = razorpay.Client(
     auth=(os.environ.get("RAZORPAY_KEY_ID"), os.environ.get("RAZORPAY_KEY_SECRET"))
@@ -1397,27 +1382,23 @@ def verify_passbook_payment():
     return jsonify({"success": True, "payment_id": payment_id})
 
 
-# ── FAMILY PASSBOOK — PREMIUM A4 PDF ───────────────────────
-# The free tool (family-passbook.html) stays exactly as-is: fill in the
-# browser, hit window.print(). That's still there for anyone who wants
-# it for free, but browser print doesn't paginate reliably to A4 and
-# has none of the SalaryBit branding.
-#
-# This is the paid upgrade: the same filled-in data, rendered server-side
-# with WeasyPrint into a proper, numbered, book-styled A4 PDF — one page
-# per section, running header/footer, brand colours. See
-# premium_passbook_pdf.py for the template itself.
-FAMILY_PASSBOOK_PREMIUM_PRICE_PAISE = 9900  # Rs 99
+# ── FAMILY PASSBOOK ─────────────────────────────────────────
+# There is no free print path anymore: filling the form is free, but
+# generating/printing the finished passbook is a paid unlock (same
+# HMAC verify pattern as every other tool on this file). Nothing about
+# what the person typed is ever sent to the server — payment is verified,
+# then the browser's own window.print() renders the PDF locally.
+FAMILY_PASSBOOK_PRICE_PAISE = 9900  # Rs 99
 
 
-@app.route("/api/create-family-passbook-premium-order", methods=["POST", "OPTIONS"])
-def create_family_passbook_premium_order():
+@app.route("/api/create-family-passbook-order", methods=["POST", "OPTIONS"])
+def create_family_passbook_order():
     """Matches the existing create_*_order() pattern exactly."""
     if request.method == "OPTIONS":
         return "", 200
     try:
         order = rzp.order.create({
-            "amount": FAMILY_PASSBOOK_PREMIUM_PRICE_PAISE,
+            "amount": FAMILY_PASSBOOK_PRICE_PAISE,
             "currency": "INR",
             "receipt": f"fampass_{os.urandom(4).hex()}",
         })
@@ -1428,28 +1409,16 @@ def create_family_passbook_premium_order():
             "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
         })
     except Exception as e:
-        print(f"create-family-passbook-premium-order error: {e}")
+        print(f"create-family-passbook-order error: {e}")
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/api/verify-family-passbook-premium-payment", methods=["POST", "OPTIONS"])
-def verify_family_passbook_premium_payment():
+@app.route("/api/verify-family-passbook-payment", methods=["POST", "OPTIONS"])
+def verify_family_passbook_payment():
     """
-    Verifies the Razorpay signature (same HMAC pattern as every other tool
-    here), then immediately renders the premium PDF from the passbook_data
-    the browser sent along — no second round trip, no server-side storage
-    of what the user typed.
-
-    Expects JSON:
-      {
-        "razorpay_order_id": "...",
-        "razorpay_payment_id": "...",
-        "razorpay_signature": "...",
-        "passbook_data": { "sections": [...] }   // from serializePassbook() in family-passbook.html
-      }
-
-    Returns the PDF as a binary application/pdf response on success, or a
-    JSON error object (so the frontend can branch on Content-Type).
+    Matches the existing verify_*_payment() HMAC pattern exactly. No PDF is
+    generated here and no passbook content is ever sent to the server — once
+    the signature checks out, the frontend unlocks window.print() itself.
     """
     if request.method == "OPTIONS":
         return "", 200
@@ -1457,7 +1426,6 @@ def verify_family_passbook_premium_payment():
     order_id = data.get("razorpay_order_id")
     payment_id = data.get("razorpay_payment_id")
     signature = data.get("razorpay_signature")
-    passbook_data = data.get("passbook_data") or {}
 
     if not all([order_id, payment_id, signature]):
         return jsonify({"success": False, "error": "Missing required fields."}), 400
@@ -1471,32 +1439,9 @@ def verify_family_passbook_premium_payment():
     if expected != signature:
         return jsonify({"success": False, "error": "Payment verification failed."}), 400
 
-    if not isinstance(passbook_data, dict) or not passbook_data.get("sections"):
-        return jsonify({"success": False, "error": "No passbook content was received to generate the PDF from."}), 400
+    print(f"[family-passbook] paid unlock | payment_id={payment_id}")
 
-    if generate_premium_passbook_pdf is None:
-        return jsonify({
-            "success": False,
-            "error": "PDF rendering is temporarily unavailable on the server. Please try again shortly.",
-            "detail": _premium_pdf_import_error,
-        }), 503
-
-    try:
-        pdf_bytes = generate_premium_passbook_pdf(passbook_data, payment_id=payment_id)
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        return jsonify({"success": False, "error": f"PDF generation failed: {e}"}), 500
-
-    print(f"[family-passbook-premium] paid PDF generated | payment_id={payment_id}")
-
-    return Response(
-        pdf_bytes,
-        mimetype="application/pdf",
-        headers={
-            "Content-Disposition": 'attachment; filename="The-Family-Passbook-Premium.pdf"'
-        }
-    )
+    return jsonify({"success": True, "payment_id": payment_id})
 
 
 # ── HEALTH CHECK ──────────────────────────────────────────

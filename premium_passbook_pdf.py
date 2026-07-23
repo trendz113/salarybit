@@ -29,6 +29,23 @@ Why WeasyPrint: it respects real CSS Paged Media (@page, running headers/
 footers, page-break-before), which is exactly what gets this right where
 browser window.print() falls apart — every section renders as its own
 A4 page with a fixed header/footer instead of overflowing unpredictably.
+
+FONT NOTE (important): earlier versions of this file pulled Fraunces /
+Source Serif 4 / Courier Prime from Google Fonts via a CSS @import at
+render time. On Railway, that fetch is unreliable (no guaranteed
+outbound access at PDF-build time), and when it silently fails,
+WeasyPrint falls back to a substitute font with different character
+widths than the layout was sized for — text then wraps mid-word in
+places sized for the narrower intended font ("VERIFIED" -> "VERIFI" /
+"ED", "WNY1I9K1" -> "WNY1I9" / "K1"). That's what made the premium PDF
+look broken.
+
+Fix: use only fonts that are installed locally on the server via apt
+(Liberation Serif/Sans/Mono, DejaVu Serif as a fallback) — no network
+call happens at render time, so output is identical every deploy.
+Make sure these apt packages are present in railpack.json:
+  fonts-liberation
+  fonts-dejavu-core
 """
 
 import html
@@ -48,14 +65,16 @@ BRAND = {
     "white_ish": "#FBF8F0",
 }
 
-FONT_IMPORT = (
-    "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;"
-    "0,9..144,700;0,9..144,900;1,9..144,600&family=Source+Serif+4:opsz,wght@8..60,400;"
-    "8..60,500;8..60,600&family=Courier+Prime:wght@400;700&display=swap"
-)
+# Locally-installed fonts only — no @import, no network fetch at render
+# time. Liberation Serif/Sans/Mono are metric-solid, always present once
+# the fonts-liberation apt package is installed; DejaVu Serif is the
+# fallback if that package is ever missing.
+FONT_DISPLAY = "'Liberation Serif', 'DejaVu Serif', Georgia, serif"
+FONT_BODY = "'Liberation Serif', 'DejaVu Serif', Georgia, serif"
+FONT_MONO = "'Liberation Mono', 'DejaVu Sans Mono', 'Courier New', monospace"
 
 CSS_TEMPLATE = """
-@import url('{{ font_import }}');
+* { box-sizing: border-box; }
 
 @page {
   size: A4;
@@ -73,36 +92,37 @@ CSS_TEMPLATE = """
   @bottom-center { content: none; }
 }
 
-* { box-sizing: border-box; }
 body {
   margin: 0;
-  font-family: 'Source Serif 4', serif;
+  font-family: {{ font_body }};
   color: {{ ink }};
   font-size: 12.5px;
   line-height: 1.5;
 }
-.display { font-family: 'Fraunces', serif; }
-.mono { font-family: 'Courier Prime', monospace; }
+.display { font-family: {{ font_display }}; }
+.mono { font-family: {{ font_mono }}; }
 
 #running-header {
   position: running(running-header);
-  font-family: 'Courier Prime', monospace;
+  font-family: {{ font_mono }};
   font-size: 8.5px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: {{ brass_dark }};
   width: 100%;
   text-align: center;
+  white-space: nowrap;
   border-bottom: 1px solid {{ paper_line }};
   padding-bottom: 4mm;
 }
 #running-footer {
   position: running(running-footer);
-  font-family: 'Courier Prime', monospace;
+  font-family: {{ font_mono }};
   font-size: 8.5px;
   color: {{ sage }};
   width: 100%;
   text-align: center;
+  white-space: nowrap;
 }
 #running-footer .pageno::after { content: counter(page) " / " counter(pages); }
 
@@ -124,93 +144,102 @@ body {
   justify-content: space-between;
 }
 .cover-eyebrow {
-  font-family: 'Courier Prime', monospace;
-  font-size: 11px;
-  letter-spacing: 0.22em;
+  font-family: {{ font_mono }};
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #B9A46B;
+  white-space: nowrap;
 }
 .cover-title {
-  font-family: 'Fraunces', serif;
-  font-weight: 900;
-  font-size: 54px;
-  line-height: 1.05;
+  font-family: {{ font_display }};
+  font-weight: 700;
+  font-size: 46px;
+  line-height: 1.12;
   margin: 10mm 0 4mm;
+  max-width: 130mm;
 }
 .cover-subtitle {
-  font-family: 'Fraunces', serif;
+  font-family: {{ font_display }};
   font-style: italic;
-  font-weight: 500;
-  font-size: 17px;
+  font-size: 15px;
   color: #E8C97A;
-  max-width: 130mm;
+  max-width: 118mm;
+  line-height: 1.5;
 }
 .premium-seal {
   position: absolute;
   top: 26mm;
   right: 20mm;
-  width: 30mm;
-  height: 30mm;
+  width: 32mm;
+  height: 32mm;
   border-radius: 50%;
   border: 1.6px solid #E8C97A;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  transform: rotate(8deg);
 }
 .premium-seal .seal-inner {
   border: 1px solid #E8C97A;
   border-radius: 50%;
-  width: 25mm;
-  height: 25mm;
+  width: 27mm;
+  height: 27mm;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Courier Prime', monospace;
-  font-size: 8px;
-  letter-spacing: 0.08em;
+  font-family: {{ font_mono }};
+  font-size: 7.5px;
+  letter-spacing: 0.06em;
   color: #E8C97A;
-  line-height: 1.5;
+  line-height: 1.7;
   padding: 2mm;
 }
 .cover-owner-block {
-  font-family: 'Courier Prime', monospace;
-  font-size: 12px;
+  font-family: {{ font_mono }};
+  font-size: 11.5px;
   color: {{ paper }};
   border-top: 1px solid rgba(243,236,217,0.25);
   border-bottom: 1px solid rgba(243,236,217,0.25);
   padding: 6mm 0;
 }
-.cover-owner-block .row { display: flex; justify-content: space-between; padding: 1.4mm 0; }
-.cover-owner-block .k { color: #B9A46B; letter-spacing: 0.06em; }
-.cover-owner-block .v { font-weight: 700; }
+.cover-owner-block .row { display: flex; justify-content: space-between; padding: 1.6mm 0; gap: 6mm; }
+.cover-owner-block .k { color: #B9A46B; letter-spacing: 0.04em; white-space: nowrap; }
+.cover-owner-block .v { font-weight: 700; text-align: right; word-break: break-word; }
 .cover-footer {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  font-family: 'Courier Prime', monospace;
-  font-size: 10px;
+  font-family: {{ font_mono }};
+  font-size: 9.5px;
   color: #8C9AA6;
+  gap: 6mm;
 }
-.cover-footer .brand { color: #E8C97A; font-size: 12px; letter-spacing: 0.1em; }
+.cover-footer .brand {
+  color: #E8C97A;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  flex: none;
+}
 
 /* ───────── CONTENT PAGES ───────── */
 .sec {
   page-break-before: always;
 }
 .sec-kicker {
-  font-family: 'Courier Prime', monospace;
+  font-family: {{ font_mono }};
   font-size: 10px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: {{ stamp }};
   margin-bottom: 2mm;
+  white-space: nowrap;
 }
 .sec-title {
-  font-family: 'Fraunces', serif;
-  font-weight: 900;
-  font-size: 24px;
+  font-family: {{ font_display }};
+  font-weight: 700;
+  font-size: 23px;
   margin: 0 0 3mm;
   border-bottom: 2px solid {{ brass }};
   padding-bottom: 3mm;
@@ -239,7 +268,7 @@ body {
   page-break-inside: avoid;
 }
 .fblock-title {
-  font-family: 'Fraunces', serif;
+  font-family: {{ font_display }};
   font-weight: 700;
   font-size: 12.5px;
   color: {{ brass_dark }};
@@ -254,7 +283,7 @@ body {
 }
 .frow:last-child { border-bottom: none; }
 .frow .lbl {
-  font-family: 'Courier Prime', monospace;
+  font-family: {{ font_mono }};
   font-size: 9.5px;
   color: {{ ink }};
   opacity: 0.75;
@@ -281,23 +310,24 @@ body {
   page-break-inside: avoid;
 }
 .grow-card .grow-index {
-  font-family: 'Courier Prime', monospace;
+  font-family: {{ font_mono }};
   font-size: 8.5px;
   color: {{ brass_dark }};
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   margin-bottom: 1mm;
 }
 
 .tag {
   display: inline-block;
-  font-family: 'Courier Prime', monospace;
+  font-family: {{ font_mono }};
   font-size: 9px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: #fff;
   background: {{ stamp }};
   padding: 1mm 2.5mm;
   border-radius: 2px;
   margin: 3mm 0 2mm;
+  white-space: nowrap;
 }
 .chk-list { list-style: none; padding: 0; margin: 0 0 4mm; }
 .chk-list li {
@@ -331,8 +361,8 @@ HTML_TEMPLATE = """
 <section class="cover-page">
   <div>
     <div class="cover-eyebrow">SalaryBit.in &nbsp;·&nbsp; Premium Edition</div>
-    <div class="cover-title display">The Family<br>Passbook</div>
-    <div class="cover-subtitle">One document your family can open on the worst day of<br>their life, and know exactly what to do.</div>
+    <div class="cover-title display">The Family Passbook</div>
+    <div class="cover-subtitle">One document your family can open on the worst day of their life, and know exactly what to do.</div>
   </div>
   <div class="premium-seal">
     <div class="seal-inner mono">VERIFIED<br>COPY<br>№ {{ passbook_no }}</div>
@@ -497,7 +527,9 @@ def generate_premium_passbook_pdf(passbook_data: dict, payment_id: str = "") -> 
     passbook_no = (payment_id[-8:] if payment_id else datetime.now().strftime("%y%m%d%H%M")).upper()
     prepared_on = datetime.now().strftime("%d %b %Y")
 
-    css = Template(CSS_TEMPLATE).render(font_import=FONT_IMPORT, **BRAND)
+    css = Template(CSS_TEMPLATE).render(
+        font_display=FONT_DISPLAY, font_body=FONT_BODY, font_mono=FONT_MONO, **BRAND
+    )
     html_out = Template(HTML_TEMPLATE).render(
         sections=sections,
         owner_name=_esc(owner_name),

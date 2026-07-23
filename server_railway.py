@@ -16,7 +16,6 @@ from concurrent.futures import ThreadPoolExecutor
 import razorpay
 import requests as http_requests
 import fitz  # PyMuPDF
-from premium_passbook_pdf import generate_premium_passbook_pdf
 from PIL import Image
 import ctypes
 import ctypes.util
@@ -49,6 +48,21 @@ from pyzbar.pyzbar import decode
 # ── APP INIT ──────────────────────────────────────────────
 app = Flask(__name__)
 CORS(app)
+
+# ── PREMIUM PASSBOOK PDF (lazy import) ──────────────────────
+# This depends on WeasyPrint, which needs system libs (Pango/Cairo/
+# GDK-Pixbuf) to even import. If those aren't present on the deploy
+# image, importing it at module load time kills every route on the
+# app (gunicorn worker fails to boot). Importing it lazily means only
+# this one feature breaks if the dependency is missing, instead of
+# the whole server going dark.
+generate_premium_passbook_pdf = None
+_premium_pdf_import_error = None
+try:
+    from premium_passbook_pdf import generate_premium_passbook_pdf
+except Exception as _e:
+    _premium_pdf_import_error = str(_e)
+    print(f"[WARN] premium_passbook_pdf unavailable, feature disabled: {_e}")
 
 # Razorpay client
 rzp = razorpay.Client(
@@ -1459,6 +1473,13 @@ def verify_family_passbook_premium_payment():
 
     if not isinstance(passbook_data, dict) or not passbook_data.get("sections"):
         return jsonify({"success": False, "error": "No passbook content was received to generate the PDF from."}), 400
+
+    if generate_premium_passbook_pdf is None:
+        return jsonify({
+            "success": False,
+            "error": "PDF rendering is temporarily unavailable on the server. Please try again shortly.",
+            "detail": _premium_pdf_import_error,
+        }), 503
 
     try:
         pdf_bytes = generate_premium_passbook_pdf(passbook_data, payment_id=payment_id)

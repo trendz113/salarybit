@@ -4,12 +4,28 @@
     "python": "3.12"
   },
   "buildAptPackages": [
-    "libzbar0"
+    "libzbar0",
+    "libpango-1.0-0",
+    "libpangocairo-1.0-0",
+    "libcairo2",
+    "libgdk-pixbuf2.0-0",
+    "libharfbuzz0b",
+    "libfontconfig1",
+    "libfreetype6",
+    "shared-mime-info"
   ],
   "deploy": {
     "aptPackages": [
-      "libzbar0"
+      "libzbar0",
+      "libpango-1.0-0",
+      "libpangocairo-1.0-0",
+      "libcairo2",
+      "libgdk-pixbuf2.0-0",
+      "libharfbuzz0b",
+      "libfontconfig1",
+      "libfreetype6",
+      "shared-mime-info"
     ],
-    "cmd": "gunicorn server:app --bind 0.0.0.0:$PORT --workers 1 --timeout 120 --max-requests 100 --max-requests-jitter 10"
+    "cmd": "gunicorn server_railway:app --bind 0.0.0.0:$PORT --workers 1 --timeout 120 --max-requests 100 --max-requests-jitter 10"
   }
 }

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Many People Actually Have ₹1 Crore Term Insurance? | SalaryBit</title>
+<meta name="description" content="Why ULIPs and LIC endowment plans get sold instead of pure term insurance, why age is the biggest cost driver, and a live calculator to see what your age costs you today.">
+<style>
+  :root{
+    --ink:#0f2b2e;
+    --ink-soft:#42575a;
+    --paper:#f4faf8;
+    --paper-warm:#fbf8f3;
+    --teal:#0d6e6e;
+    --teal-deep:#0a4f52;
+    --teal-light:#eaf6f4;
+    --coral:#e2643b;
+    --border:rgba(15,43,46,0.14);
+    --mono: 'Courier New', monospace;
+    --serif: 'Georgia', 'Times New Roman', serif;
+    --sans: Arial, Helvetica, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper-warm);
+    color:var(--ink);
+    font-family:var(--serif);
+    line-height:1.75;
+  }
+  .topbar{
+    background:var(--ink);
+    color:#fff;
+    font-family:var(--sans);
+    font-size:14px;
+    padding:10px 20px;
+    text-align:center;
+    letter-spacing:.3px;
+  }
+  .topbar a{color:#8fd8d3; text-decoration:none;}
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    background:#fff;
+    padding:0 0 60px 0;
+  }
+
+  /* HERO */
+  header.hero{
+    background: linear-gradient(135deg, var(--teal) 0%, var(--teal-deep) 100%);
+    color:#fff;
+    padding:44px 32px 0 32px;
+    font-family:var(--sans);
+  }
+  .brand{
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    opacity:.85;
+    margin-bottom:16px;
+  }
+  .category-pill{
+    display:inline-block;
+    background:rgba(255,255,255,.18);
+    padding:4px 12px;
+    border-radius:20px;
+    font-size:12px;
+    margin-bottom:16px;
+  }
+  h1.title{
+    font-family:var(--serif);
+    font-size:clamp(26px,4.5vw,36px);
+    line-height:1.22;
+    margin:0 0 14px 0;
+  }
+  .meta{font-size:13px;opacity:.85;margin-bottom:28px;}
+  .hero-img{width:100%;display:block;border-bottom:4px solid var(--coral);}
+
+  /* CONTENT */
+  .content{padding:40px 32px 0 32px;}
+  .lede{
+    font-size:18px;
+    color:var(--ink-soft);
+    font-style:italic;
+    border-left:3px solid var(--teal);
+    padding-left:16px;
+    margin:0 0 32px 0;
+  }
+  .content p{font-size:17px;margin:0 0 20px 0;color:var(--ink);}
+  h2{
+    font-family:var(--sans);
+    font-size:21px;
+    color:var(--teal-deep);
+    border-bottom:2px solid var(--teal-light);
+    padding-bottom:8px;
+    margin:44px 0 18px 0;
+  }
+  h3{
+    font-family:var(--sans);
+    font-size:15.5px;
+    font-weight:bold;
+    color:var(--teal-deep);
+    margin:26px 0 10px 0;
+  }
+  .content ul, .content ol{margin:0 0 22px 0;padding-left:22px;}
+  .content li{font-size:16px;margin-bottom:9px;}
+
+  .callout{
+    background:var(--teal-light);
+    border-radius:10px;
+    padding:20px 22px;
+    margin:0 0 24px 0;
+    font-family:var(--sans);
+  }
+  .callout strong{color:var(--teal-deep);}
+
+  .gold-note{
+    background:#fdf1ec;
+    border:1px solid #f3d9cc;
+    border-radius:10px;
+    padding:16px 20px;
+    margin:0 0 24px 0;
+    font-family:var(--sans);
+    font-size:15px;
+    color:#8a3f24;
+  }
+
+  figure{margin:32px 0;}
+  figure img{width:100%;border-radius:12px;display:block;border:1px solid var(--border);}
+  figcaption{
+    font-family:var(--sans);
+    font-size:13px;
+    color:var(--ink-soft);
+    text-align:center;
+    margin-top:8px;
+  }
+
+  /* CALCULATOR */
+  .calc-card{
+    background:var(--paper);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:28px 24px;
+    margin:32px 0;
+  }
+  .calc-eyebrow{
+    font-family:var(--mono);
+    font-size:11.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--teal-deep);
+    margin-bottom:8px;
+  }
+  .calc-h{font-family:var(--serif);font-size:22px;margin:0 0 8px;color:var(--ink);}
+  .calc-sub{font-family:var(--sans);font-size:14px;color:var(--ink-soft);margin:0 0 22px;line-height:1.55;}
+  .age-row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px;font-family:var(--sans);}
+  .age-label{font-size:13px;color:var(--ink-soft);font-weight:700;letter-spacing:0.02em;}
+  .age-value{font-family:var(--serif);font-size:38px;color:var(--teal-deep);font-weight:700;}
+  input[type=range]{
+    -webkit-appearance:none; width:100%; height:6px; border-radius:4px;
+    background: linear-gradient(90deg, var(--teal) 0%, var(--teal) var(--pct,20%), var(--border) var(--pct,20%), var(--border) 100%);
+    margin: 14px 0 4px;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; width:22px;height:22px;border-radius:50%;
+    background:var(--coral); border:3px solid #fff; box-shadow:0 0 0 1px var(--coral);
+    cursor:pointer; margin-top:-8px;
+  }
+  input[type=range]::-moz-range-thumb{
+    width:22px;height:22px;border-radius:50%; background:var(--coral);
+    border:3px solid #fff; box-shadow:0 0 0 1px var(--coral); cursor:pointer;
+  }
+  .scale{display:flex;justify-content:space-between;font-size:11px;color:#7a9192;font-family:var(--mono);margin-bottom:22px;}
+  .results{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;font-family:var(--sans);}
+  .stat{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px 16px 12px;}
+  .stat .k{font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);font-weight:700;margin-bottom:6px;}
+  .stat .v{font-family:var(--serif);font-size:22px;color:var(--ink);font-weight:700;}
+  .stat .v span{font-size:13px;color:var(--ink-soft);font-weight:400;}
+  .cover-note{margin-top:16px;font-size:12.5px;color:var(--ink-soft);line-height:1.55;border-top:1px solid var(--border);padding-top:14px;font-family:var(--sans);}
+  .cover-note b{color:var(--ink);}
+  .cta-line{margin-top:10px;font-size:13px;color:var(--teal-deep);font-weight:700;font-family:var(--sans);}
+  @media (max-width:480px){.results{grid-template-columns:1fr;}}
+
+  table{width:100%;border-collapse:collapse;margin:0 0 24px 0;font-family:var(--sans);font-size:14.5px;}
+  th,td{border:1px solid var(--border);padding:10px 12px;text-align:left;}
+  th{background:var(--teal-light);color:var(--teal-deep);}
+
+  .closing{
+    background:var(--ink);
+    color:#f4faf8;
+    font-family:var(--sans);
+    padding:32px;
+    margin:44px 0 0 0;
+    font-size:15.5px;
+    line-height:1.7;
+  }
+  .cta{
+    background:var(--coral);
+    text-align:center;
+    padding:24px 32px;
+  }
+  .cta a{
+    color:#fff;
+    font-family:var(--sans);
+    font-weight:bold;
+    font-size:16px;
+    text-decoration:none;
+  }
+  .disclaimer{font-family:var(--sans);font-size:12.5px;color:#8fa1a2;line-height:1.6;}
+  .foot{
+    text-align:center;
+    font-family:var(--sans);
+    font-size:12.5px;
+    color:#8fa1a2;
+    padding:26px 20px 40px;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  Free tools for India's salaried class &middot; <a href="https://salarybit.in">salarybit.in</a>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="brand">SalaryBit &middot; Insurance</div>
+    <span class="category-pill">8 min read</span>
+    <h1 class="title">How many people you know actually have ₹1 Crore term insurance?</h1>
+    <p class="meta">Not a ULIP. Not an LIC endowment plan sold by a family agent. A plain, boring, pure term plan — the one thing built purely to protect your family.</p>
+  </header>
+  <img class="hero-img" src="images/hero-confident-1cr.png" alt="A young professional standing confidently with a glowing shield labeled 1 Crore behind them">
+
+  <div class="content">
+    <p class="lede">Written from 19 years around this industry — starting with the IRDA exam in 2007, and time spent in Corporate Strategy at ICICI Prudential Life Insurance.</p>
+
+    <p>Ask this question in any group of working professionals and watch the silence: <strong>"How many of you have a ₹1 Crore term insurance policy — not a ULIP, not an LIC endowment plan?"</strong></p>
+
+    <p>Most people either don't have life insurance at all, or they have something an advisor sold them years ago that they've never actually looked at closely. This is why that happens — and it isn't an accident.</p>
+
+    <h2>The manipulation, in plain terms</h2>
+    <p>When you're 22-25 years old and just started earning, a ₹1 Crore term plan can cost as little as ₹500-700 a month — less than a food delivery order. At that price point, an advisor's commission on your premium is tiny. It isn't worth their time to sit with you for an hour explaining a plan that earns them a few hundred rupees.</p>
+
+    <p>So what do they sell you instead? A <strong>ULIP — Unit Linked Insurance Plan</strong>. You'll be told it "gives you insurance, market returns, and tax saving, all in one." It sounds efficient. Here's what usually isn't explained alongside it:</p>
+
+    <ul>
+      <li>ULIP premiums typically run 10-20x higher than a pure term plan, for a fraction of the actual life cover</li>
+      <li>A large chunk of your premium in the early years goes toward premium allocation, fund management, mortality, and policy admin charges — before a rupee touches the market</li>
+      <li>The insurance component is usually small, often close to 10x your annual premium, nowhere near ₹1 Crore</li>
+      <li>A mutual fund SIP typically offers more transparent market exposure without an insurance wrapper</li>
+      <li>There are simpler ways to save tax that don't lock you into a 15-20 year contract with high charges</li>
+    </ul>
+
+    <div class="callout">
+      <strong>This isn't a conspiracy theory</strong> — it's arithmetic connected to how commission works. A bigger premium ticket means a bigger commission for whoever sold it. The incentive is tied to ticket size, not to how well the plan actually protects your family.
+    </div>
+
+    <figure>
+      <img src="images/ulip-vs-term-coins.png" alt="Side by side comparison of a small ULIP shield with a large stack of coins versus a large Term Plan shield with a small stack of coins">
+      <figcaption>Same rupee outlay, very different protection.</figcaption>
+    </figure>
+
+    <h2>Then there's the LIC route</h2>
+    <p>Most people's first brush with "insurance" is an LIC endowment or money-back plan, usually bought through a family agent or relative out of obligation. Respectfully — these are savings products dressed up as insurance. The actual life cover is small relative to what you pay, and the returns barely beat inflation over 20 years. It isn't what your family needs if something happens to you tomorrow.</p>
+
+    <h2>Insure your life the way you insure your vehicle — except lock it in once</h2>
+    <p>You renew your vehicle insurance every year without thinking twice. Your life needs the same discipline, except here you get to lock in a rate once and keep it for decades. The day you get your first salary is the day to buy term insurance — not "after marriage," not "after kids," not "next year."</p>
+
+    <h3>Why age matters so much</h3>
+    <p>Insurers price term insurance on mortality risk — the statistical likelihood of death at your current age, projected across the policy term. The younger and healthier you are when you lock in the rate, the lower your premium stays for the entire term, often 30-35 years.</p>
+
+    <p>Wait till you're 40, and the same ₹1 Crore cover can cost ₹18,000-20,000+ a year, more with any health history. Wait till 50, and it can climb to ₹35,000-45,000+. The insurer isn't being unfair here — this is actuarial math. But the advisor who could have sold you this at 25, for a fraction of the cost, had no incentive to.</p>
+
+    <figure>
+      <img src="images/age-premium-curve.png" alt="A rising curve showing insurance premium increasing with age, with a small protected figure early on the curve and a larger figure later on the curve">
+      <figcaption>The same ₹1 Crore cover, priced at two different ages.</figcaption>
+    </figure>
+
+    <div class="calc-card">
+      <div class="calc-eyebrow">₹1 Crore Term Cover &middot; Illustrative Estimator</div>
+      <div class="calc-h">What would your age cost you today?</div>
+      <p class="calc-sub">Move the slider to your current age. This shows roughly what a healthy, non-smoking applicant pays each year for a pure term plan with ₹1 Crore life cover, running until age 60-65 — the earlier you lock it in, the longer that low rate stays fixed.</p>
+
+      <div class="age-row">
+        <span class="age-label">YOUR AGE</span>
+        <span class="age-value" id="ageOut">28</span>
+      </div>
+      <input type="range" id="ageSlider" min="18" max="60" value="28" step="1">
+      <div class="scale"><span>18</span><span>30</span><span>40</span><span>50</span><span>60</span></div>
+
+      <div class="results">
+        <div class="stat">
+          <div class="k">Est. annual premium</div>
+          <div class="v" id="yearly">—</div>
+        </div>
+        <div class="stat">
+          <div class="k">Est. monthly premium</div>
+          <div class="v" id="monthly">—</div>
+        </div>
+      </div>
+
+      <div class="cover-note">
+        <b>Cover amount:</b> ₹1,00,00,000 (1 Crore) &nbsp;&middot;&nbsp; <b>Term:</b> until age 60-65<br>
+        At this age, waiting even 5 more years typically pushes this premium up <span id="delta5">—</span> — because pricing is based on your age at purchase, not the age you eventually claim.
+      </div>
+      <div class="cta-line">Lock in today's rate — it only gets more expensive from here.</div>
+    </div>
+
+    <table>
+      <tr><th>Age</th><th>Est. annual premium (₹1 Cr, till 60-65)</th></tr>
+      <tr><td>25</td><td>~₹7,500/year</td></tr>
+      <tr><td>30</td><td>~₹9,500/year</td></tr>
+      <tr><td>35</td><td>~₹13,000/year</td></tr>
+      <tr><td>40</td><td>~₹18,000/year</td></tr>
+      <tr><td>45</td><td>~₹26,000/year</td></tr>
+      <tr><td>50</td><td>~₹38,000/year</td></tr>
+      <tr><td>55</td><td>~₹58,000/year</td></tr>
+    </table>
+
+    <h2>What happens once you quit or retire</h2>
+    <p>The health and life cover your employer gives you disappears the day you leave. If you're diagnosed with a critical illness after that, or if something happens to you, your family is on their own — unless you have a personal term policy and health cover running independently in your own name, one that doesn't depend on your employment.</p>
+
+    <figure>
+      <img src="images/family-protection-umbrella.png" alt="A family standing together under a glowing protective shield-shaped umbrella in their living room">
+      <figcaption>Cover that stays with your family, not your employer.</figcaption>
+    </figure>
+
+    <div class="gold-note">
+      💡 <strong>The takeaway:</strong> A ULIP is not your term insurance. An LIC endowment plan from a family agent is not your term insurance. An employer group policy is not your term insurance once you leave the job. Term insurance is the one thing built purely to protect your family — bought early, it barely costs anything.
+    </div>
+
+    <h2>My honest ask</h2>
+    <ul>
+      <li><strong>In your 20s or early 30s?</strong> Take a ₹1 Crore term plan this week. Compare 4-5 insurers directly online, not through an advisor who profits from steering you elsewhere.</li>
+      <li><strong>Already have a ULIP you were told is "your insurance"?</strong> Check the actual life cover in your policy document — you may be surprised how small it is.</li>
+      <li><strong>Only covered by your employer's group policy?</strong> Get personal term insurance separately, before a health scare makes it more expensive or, in the worst case, uninsurable.</li>
+    </ul>
+
+    <figure>
+      <img src="images/cta-compare-plans.png" alt="A hand comparing insurance plans on a phone screen">
+      <figcaption>Compare a few plans this week — it's the cheapest big decision you'll make all year.</figcaption>
+    </figure>
+
+  </div>
+
+  <div class="closing">
+    So — do you have your ₹1 Crore term cover yet? Comment your age and your answer. Let's actually see how many of us are protected versus how many of us have been sold something else with better marketing.
+  </div>
+
+  <div class="cta">
+    <a href="/insurance-mitra.html">🛡️ Check your family's insurance gap free on Insurance Mitra →</a>
+  </div>
+
+  <div class="content">
+    <p class="disclaimer">Premium figures on this page are illustrative estimates based on typical market ranges for a healthy, non-smoking applicant and will vary by insurer, gender, smoking status, occupation, and medical history — always compare live quotes from 3-4 insurers before buying. This article is for informational purposes only and is not financial or insurance advice. Consult an IRDAI-licensed advisor before purchasing a policy.</p>
+  </div>
+
+  <footer class="foot">
+    © 2026 SalaryBit.in — Honest Personal Finance for India's Salaried Class<br>
+    Hoskote · Bengaluru · Karnataka
+  </footer>
+
+</div>
+
+<script>
+  const points = [
+    [18, 5800], [22, 6500], [25, 7500], [28, 8600], [30, 9500],
+    [32, 10800], [35, 13000], [38, 15300], [40, 18000], [42, 21000],
+    [45, 26000], [48, 31500], [50, 38000], [52, 45500], [55, 58000],
+    [57, 70000], [60, 92000]
+  ];
+
+  function premiumFor(age){
+    for(let i=0;i<points.length-1;i++){
+      const [a1,p1]=points[i], [a2,p2]=points[i+1];
+      if(age>=a1 && age<=a2){
+        const t=(age-a1)/(a2-a1);
+        return p1 + t*(p2-p1);
+      }
+    }
+    return points[points.length-1][1];
+  }
+
+  function fmtINR(n){
+    n = Math.round(n/50)*50;
+    return '₹' + n.toLocaleString('en-IN');
+  }
+
+  const slider = document.getElementById('ageSlider');
+  const ageOut = document.getElementById('ageOut');
+  const yearlyOut = document.getElementById('yearly');
+  const monthlyOut = document.getElementById('monthly');
+  const delta5 = document.getElementById('delta5');
+
+  function render(){
+    const age = parseInt(slider.value,10);
+    const pct = ((age-18)/(60-18))*100;
+    slider.style.setProperty('--pct', pct+'%');
+    ageOut.textContent = age;
+    const yearly = premiumFor(age);
+    yearlyOut.innerHTML = fmtINR(yearly) + '<span>/yr</span>';
+    monthlyOut.innerHTML = fmtINR(yearly/12) + '<span>/mo</span>';
+
+    const laterAge = Math.min(age+5, 60);
+    const laterPremium = premiumFor(laterAge);
+    const pctUp = Math.round(((laterPremium-yearly)/yearly)*100);
+    delta5.textContent = pctUp > 0 ? ('by about ' + pctUp + '%') : 'only slightly';
+  }
+
+  slider.addEventListener('input', render);
+  render();
+</script>
+
+</body>
+</html>

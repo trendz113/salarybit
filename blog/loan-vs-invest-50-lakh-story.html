@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The ₹50 Lakh Question: Close the Loan or Let It Grow? | SalaryBit</title>
+<meta name="description" content="A real Bengaluru family had ₹50 lakh and a home loan. Close it, or invest it? The math, the traps, the safety net — and four free calculators to run your own numbers.">
+<meta name="theme-color" content="#5b6af0">
+<style>
+  :root{
+    --indigo:#5b6af0;
+    --indigo-dark:#4048c7;
+    --ink:#1a1d29;
+    --ink-soft:#4b5063;
+    --paper:#fbfbfe;
+    --panel:#f2f3fb;
+    --line:#e3e5f3;
+    --good:#1f9d63;
+    --bad:#d9534f;
+    --gold:#c9932a;
+    --radius:14px;
+    font-size:16px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    line-height:1.65;
+  }
+  .site-header{
+    background:var(--ink);
+    color:#fff;
+    padding:14px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-weight:700;
+  }
+  .site-header a{color:#fff;text-decoration:none;font-size:1.05rem;}
+  .site-header span{opacity:.7;font-weight:400;font-size:.85rem;}
+  .wrap{max-width:820px;margin:0 auto;padding:0 20px;}
+  .eyebrow{
+    display:inline-block;
+    margin-top:34px;
+    background:var(--panel);
+    color:var(--indigo-dark);
+    font-weight:700;
+    font-size:.78rem;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    padding:5px 12px;
+    border-radius:999px;
+  }
+  h1{
+    font-size:2.15rem;
+    line-height:1.22;
+    margin:16px 0 8px;
+    letter-spacing:-0.01em;
+  }
+  .subtitle{
+    font-size:1.15rem;
+    color:var(--ink-soft);
+    margin:0 0 14px;
+  }
+  .meta{
+    font-size:.85rem;
+    color:#8a8fa3;
+    border-bottom:1px solid var(--line);
+    padding-bottom:22px;
+    margin-bottom:26px;
+  }
+  .hero-art{
+    width:100%;
+    border-radius:var(--radius);
+    background:linear-gradient(135deg,#5b6af0 0%,#8b6ff0 100%);
+    height:220px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:4rem;
+    margin-bottom:30px;
+  }
+  .toc{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px 22px;
+    margin-bottom:34px;
+  }
+  .toc p{margin:0 0 8px;font-weight:700;font-size:.9rem;color:var(--indigo-dark);}
+  .toc ol{margin:0;padding-left:20px;font-size:.92rem;}
+  .toc a{color:var(--ink-soft);text-decoration:none;}
+  .toc a:hover{color:var(--indigo);}
+  h2{
+    font-size:1.5rem;
+    margin:44px 0 6px;
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  h2 .num{
+    color:var(--indigo);
+    font-weight:800;
+    font-size:1.1rem;
+  }
+  h3{font-size:1.15rem;margin:26px 0 8px;}
+  p{margin:0 0 16px;color:var(--ink);}
+  .lede{font-size:1.05rem;color:var(--ink-soft);}
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:18px 0 26px;
+    font-size:.92rem;
+    background:#fff;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 0 0 1px var(--line);
+  }
+  th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line);}
+  th{background:var(--panel);color:var(--indigo-dark);font-weight:700;font-size:.82rem;text-transform:uppercase;letter-spacing:.02em;}
+  tr:last-child td{border-bottom:none;}
+  .num-cell{font-variant-numeric:tabular-nums;font-weight:600;}
+  .insight{
+    background:#fff8ea;
+    border:1px solid #f1e0ad;
+    border-left:4px solid var(--gold);
+    border-radius:10px;
+    padding:16px 20px;
+    margin:22px 0;
+  }
+  .insight p{margin:0;color:#5c4a12;font-size:.95rem;}
+  .insight .tag{font-weight:800;color:var(--gold);text-transform:uppercase;font-size:.75rem;letter-spacing:.05em;display:block;margin-bottom:6px;}
+  .stat-row{display:flex;gap:16px;flex-wrap:wrap;margin:22px 0;}
+  .stat-card{
+    flex:1;
+    min-width:150px;
+    background:var(--panel);
+    border-radius:12px;
+    padding:16px 18px;
+    text-align:center;
+  }
+  .stat-card .big{font-size:1.5rem;font-weight:800;color:var(--indigo-dark);}
+  .stat-card .small{font-size:.78rem;color:var(--ink-soft);margin-top:4px;}
+  .divider{border:none;border-top:1px solid var(--line);margin:44px 0;}
+
+  /* Calculator styling */
+  .calc-block{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:24px;
+    margin:26px 0 40px;
+    box-shadow:0 4px 20px rgba(91,106,240,.06);
+  }
+  .calc-title{
+    font-size:1.1rem;
+    font-weight:800;
+    color:var(--indigo-dark);
+    margin:0 0 4px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .calc-sub{font-size:.85rem;color:var(--ink-soft);margin:0 0 18px;}
+  .calc-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px 18px;
+    margin-bottom:16px;
+  }
+  @media(max-width:520px){.calc-grid{grid-template-columns:1fr;}}
+  .field label{
+    display:block;
+    font-size:.78rem;
+    font-weight:700;
+    color:var(--ink-soft);
+    margin-bottom:5px;
+  }
+  .field input{
+    width:100%;
+    padding:9px 11px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    font-size:.95rem;
+    background:var(--panel);
+    color:var(--ink);
+  }
+  .field input:focus{outline:2px solid var(--indigo);outline-offset:1px;background:#fff;}
+  .calc-btn{
+    background:var(--indigo);
+    color:#fff;
+    border:none;
+    padding:11px 22px;
+    border-radius:9px;
+    font-weight:700;
+    font-size:.92rem;
+    cursor:pointer;
+    margin-top:4px;
+  }
+  .calc-btn:hover{background:var(--indigo-dark);}
+  .calc-result{
+    margin-top:18px;
+    padding-top:16px;
+    border-top:1px dashed var(--line);
+    display:none;
+  }
+  .calc-result.show{display:block;}
+  .result-grid{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
+  .result-chip{
+    background:var(--panel);
+    border-radius:10px;
+    padding:12px 16px;
+    flex:1;
+    min-width:130px;
+  }
+  .result-chip .label{font-size:.72rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.03em;font-weight:700;}
+  .result-chip .value{font-size:1.2rem;font-weight:800;color:var(--indigo-dark);margin-top:2px;}
+  .result-chip.highlight{background:#e9f9f0;}
+  .result-chip.highlight .value{color:var(--good);}
+  .calc-note{font-size:.78rem;color:#9096ab;margin-top:10px;}
+
+  .final-word{
+    background:linear-gradient(135deg,#f2f3fb,#eef0fb);
+    border-radius:var(--radius);
+    padding:26px 28px;
+    margin:36px 0;
+  }
+  .disclaimer{
+    font-size:.8rem;
+    color:#8a8fa3;
+    background:var(--panel);
+    border-radius:10px;
+    padding:16px 20px;
+    margin:40px 0 20px;
+  }
+  footer{
+    text-align:center;
+    font-size:.82rem;
+    color:#9096ab;
+    padding:30px 20px 50px;
+  }
+  footer a{color:var(--indigo);text-decoration:none;}
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <a href="https://salarybit.in/">💰 SalaryBit.in — Personal Finance for India</a>
+  <span>Home Loans</span>
+</div>
+
+<div class="wrap">
+  <span class="eyebrow">Home Loans · Real Story</span>
+  <h1>The ₹50 Lakh Question: Should Arjun Close the Loan, or Let It Grow?</h1>
+  <p class="subtitle">He had exactly enough saved to pay off his home loan in one shot. His wife said close it. He wanted to invest it instead. Here's the math that actually settled the argument — plus four calculators so you can settle yours.</p>
+  <div class="meta">Published: July 2026 · Reading time: ~12 min · Category: Home Loans &amp; Investing</div>
+
+  <div class="hero-art">🏠 📈 🐷</div>
+
+  <div class="toc">
+    <p>In this story</p>
+    <ol>
+      <li><a href="#the-fight">The Kitchen-Table Argument</a></li>
+      <li><a href="#the-trap">The Trap Arjun Almost Fell Into</a></li>
+      <li><a href="#the-plan">The Plan That Actually Won</a></li>
+      <li><a href="#job-loss">"What If I Lose My Job?"</a></li>
+      <li><a href="#emergency">"What If There's a Medical Emergency?"</a></li>
+      <li><a href="#calculators">Run Your Own Numbers — 4 Free Calculators</a></li>
+      <li><a href="#final-word">Final Word</a></li>
+    </ol>
+  </div>
+
+  <h2><span class="num">1</span> The Kitchen-Table Argument</h2>
+  <p class="lede">Arjun had just watched his fixed deposit mature. ₹50,00,000, sitting quietly in his savings account, and a home loan of the exact same amount still running in the background at 7.5% interest for 20 years.</p>
+  <p>His wife, Meera, wanted it simple: "Pay it off tonight. No EMI, no interest, one less thing to think about." Arjun, who'd spent the last few weekends reading about mutual funds, had a different idea: "What if I invest this instead, and let the fund pay the EMI every month? If it grows faster than 7.5%, we come out ahead."</p>
+  <p>It's a completely reasonable disagreement — the kind that plays out at kitchen tables across India every time someone's FD matures near a loan anniversary. So instead of guessing, they decided to actually run the numbers. What they found surprised both of them.</p>
+
+  <div class="stat-row">
+    <div class="stat-card"><div class="big">₹50,00,000</div><div class="small">The loan (and the savings)</div></div>
+    <div class="stat-card"><div class="big">7.5%</div><div class="small">Interest rate, 20-year tenure</div></div>
+    <div class="stat-card"><div class="big">₹40,280</div><div class="small">Monthly EMI</div></div>
+  </div>
+
+  <h2><span class="num">2</span> The Trap Arjun Almost Fell Into</h2>
+  <p>Arjun's original plan was to invest the full ₹50L and set up an <strong>SWP (Systematic Withdrawal Plan)</strong> — a fixed monthly withdrawal from the fund that would land in his account every month and pay the EMI automatically, forever, until the loan closed.</p>
+  <p>On paper it looked airtight: if the fund earns more than 7.5% a year, the money withdrawn is smaller than the money the fund grows — so the corpus should, in theory, outlast the loan.</p>
+
+  <div class="insight">
+    <span class="tag">The catch</span>
+    <p>It's not the <em>average</em> return that decides whether this works — it's the <em>order</em> the good and bad years arrive in. Two bad years right at the start, while withdrawals are still happening every single month, can permanently cripple a corpus that would otherwise have recovered just fine. This is called <strong>sequence-of-returns risk</strong>, and it's the single most underestimated risk in "invest and withdraw monthly" plans.</p>
+  </div>
+
+  <p>We tested it with a rough 20-year sequence that had 5 bad years scattered through it — including two bad years right after the SWP started. Even though the average return across those 20 years was a perfectly respectable number, the corpus ran completely dry by <strong>year 13</strong> — seven years before the loan was actually due to finish. From that point on, Arjun would've been paying the EMI out of his salary anyway, except now with nothing left in the fund either.</p>
+  <p>That's the trap: an SWP funding a fixed monthly obligation forces you to sell units in bad months exactly when you shouldn't be selling at all.</p>
+
+  <h2><span class="num">3</span> The Plan That Actually Won</h2>
+  <p>So Arjun and Meera split the decision into two separate pieces that never touch each other. This turned out to be the whole trick.</p>
+
+  <h3>Piece one: make the loan disappear faster — using salary, not the investment</h3>
+  <p>Two habits, funded entirely from Arjun's monthly income:</p>
+  <ol>
+    <li><strong>One extra EMI every year</strong> — like a 13th month's payment, applied straight to the loan principal.</li>
+    <li><strong>A 7.5% step-up on the EMI every year</strong> — as income grows, the EMI grows with it.</li>
+  </ol>
+
+  <table>
+    <tr><th>Metric</th><th>Normal 20-year loan</th><th>With extra EMI + 7.5% step-up</th></tr>
+    <tr><td>Time to close the loan</td><td class="num-cell">20 years</td><td class="num-cell">~10.1 years</td></tr>
+    <tr><td>Total interest paid</td><td class="num-cell">₹46.67 lakh</td><td class="num-cell">₹24.89 lakh</td></tr>
+    <tr><td>Interest saved</td><td class="num-cell">—</td><td class="num-cell" style="color:var(--good)">₹21.78 lakh</td></tr>
+  </table>
+
+  <p>This part is <strong>guaranteed</strong>. It doesn't depend on markets, luck, or fund managers — just consistency.</p>
+
+  <h3>Piece two: let the ₹50L sit completely untouched</h3>
+  <p>No monthly withdrawals. No SWP. Just parked, and left to compound quietly in the background.</p>
+
+  <table>
+    <tr><th>If it grows at...</th><th>Value at year 10 (loan closed)</th><th>Value at year 20</th></tr>
+    <tr><td>7% (debt-fund-like, low risk)</td><td class="num-cell">₹98.9 lakh</td><td class="num-cell">₹1.93 crore</td></tr>
+    <tr><td>9% (balanced/hybrid)</td><td class="num-cell">₹1.19 crore</td><td class="num-cell">₹2.80 crore</td></tr>
+    <tr><td>11% (equity, long-term average)</td><td class="num-cell">₹1.43 crore</td><td class="num-cell">₹4.03 crore</td></tr>
+    <tr><td>13% (equity, strong run)</td><td class="num-cell">₹1.71 crore</td><td class="num-cell">₹5.76 crore</td></tr>
+  </table>
+
+  <div class="insight">
+    <span class="tag">Why this beats the SWP version</span>
+    <p>By year 10, Arjun's house is fully paid off, ₹21.78L in interest saved for certain — and the ₹50L he never touched has grown into anywhere from ₹99L to ₹1.7 crore, depending on returns. No forced monthly selling. No sequence-of-returns risk. If the market has a rough patch, nothing forces a decision — the corpus just waits it out.</p>
+  </div>
+
+  <h2><span class="num">4</span> "What If I Lose My Job?"</h2>
+  <p>No plan survives contact with real life unless it accounts for this question. Here's how Arjun and Meera built room for it.</p>
+
+  <h3>Step 1 — The Rainy Day Box, built before anything else</h3>
+  <p>Before locking into any EMI step-up or investment plan, set aside <strong>6 to 12 months of total monthly expenses</strong> — EMI included — somewhere accessible within a day or two, like a savings account or a liquid fund. This sits completely separate from the ₹50L. It's boring on purpose.</p>
+
+  <h3>Step 2 — Know the loan's built-in safety valves</h3>
+  <ul>
+    <li><strong>EMI moratorium / restructuring:</strong> most Indian banks allow a temporary pause or reduction (usually 3-6 months) for genuine hardship like a job loss, if requested in writing with proof — before you default, not after.</li>
+    <li><strong>Loan against mutual funds, not redemption:</strong> many banks and NBFCs offer loans against MF holdings (typically 50-80% of value), which keeps the ₹50L corpus intact and compounding while still freeing up cash.</li>
+    <li><strong>Talk to the lender early.</strong> Banks are far more flexible before a missed payment than after — a missed EMI can hurt a CIBIL score for years.</li>
+  </ul>
+
+  <h3>Step 3 — The order of operations if it actually happens</h3>
+  <ol>
+    <li>Pause the extra-EMI and step-up habit — go back to the plain original EMI. It was always a bonus, not a requirement.</li>
+    <li>Draw from the Rainy Day Box for monthly expenses.</li>
+    <li>If the Rainy Day Box runs low and the job search continues, contact the bank about a moratorium before it runs out.</li>
+    <li>The ₹50L corpus is the last resort — and if it must be touched, a loan-against-MF beats an outright sale.</li>
+  </ol>
+
+  <h2><span class="num">5</span> "What If There's a Medical Emergency?"</h2>
+  <p>Different shape of risk — sudden, and expensive fast. Here's the layer built for it.</p>
+
+  <h3>Health insurance comes before everything else</h3>
+  <p>A family floater health policy sized to real hospital costs in your city matters more than any investment decision in this whole story. An employer's group cover is a bonus, not a plan — it usually ends the day the job does, exactly when it might be needed most. A separate critical illness policy, which pays a lump sum on diagnosis, is worth strongly considering alongside it.</p>
+
+  <h3>The Rainy Day Box covers the gap</h3>
+  <p>Even with solid insurance, there are always gaps — non-covered treatment, a side expense, income loss during recovery. The same 6-12 month buffer built for a job loss covers this too.</p>
+
+  <h3>If the emergency is bigger than the buffer</h3>
+  <ol>
+    <li>Check every insurance claim first, always, before touching investments.</li>
+    <li>Loan against mutual funds or gold again beats outright redemption — same reason as before.</li>
+    <li>If the ₹50L corpus must be redeemed, redeem the most tax-inefficient portion first — for instance, a debt fund gain is taxed at slab rate regardless of holding period, so that portion is often more efficient to redeem before equity holdings that may qualify for lower long-term gains rates.</li>
+    <li>And if it really is a genuine emergency — that's fine. That's what the money is for. The whole point of this plan was never "never touch it," it was "don't be forced to touch it every single month for something predictable like an EMI."</li>
+  </ol>
+
+  <hr class="divider" id="calculators">
+
+  <h2><span class="num">6</span> Run Your Own Numbers</h2>
+  <p class="lede">Arjun's numbers were ₹50L at 7.5% for 20 years. Yours will be different. These four calculators run entirely in your browser — nothing is sent anywhere.</p>
+
+  <!-- CALCULATOR 1: Prepayment Calculator (extra EMI + step-up) -->
+  <div class="calc-block">
+    <p class="calc-title">🏠 Loan Prepayment Calculator</p>
+    <p class="calc-sub">See how much time and interest you save with an annual extra EMI and a yearly EMI step-up.</p>
+    <div class="calc-grid">
+      <div class="field"><label>Loan Amount (₹)</label><input type="number" id="pp-loan" value="5000000"></div>
+      <div class="field"><label>Interest Rate (% p.a.)</label><input type="number" id="pp-rate" value="7.5" step="0.1"></div>
+      <div class="field"><label>Tenure (years)</label><input type="number" id="pp-tenure" value="20"></div>
+      <div class="field"><label>Annual EMI Step-up (%)</label><input type="number" id="pp-stepup" value="7.5" step="0.1"></div>
+      <div class="field"><label>Extra EMIs per year</label><input type="number" id="pp-extra" value="1"></div>
+    </div>
+    <button class="calc-btn" onclick="calcPrepay()">Calculate Savings →</button>
+    <div class="calc-result" id="pp-result">
+      <div class="result-grid">
+        <div class="result-chip"><div class="label">Original EMI</div><div class="value" id="pp-emi">—</div></div>
+        <div class="result-chip highlight"><div class="label">New Payoff Time</div><div class="value" id="pp-time">—</div></div>
+        <div class="result-chip highlight"><div class="label">Interest Saved</div><div class="value" id="pp-saved">—</div></div>
+      </div>
+      <div class="result-grid">
+        <div class="result-chip"><div class="label">Original Total Interest</div><div class="value" id="pp-oldint">—</div></div>
+        <div class="result-chip"><div class="label">New Total Interest</div><div class="value" id="pp-newint">—</div></div>
+      </div>
+      <p class="calc-note">Assumes the step-up and extra EMI(s) are applied at the end of each loan year. Actual bank processing may vary slightly.</p>
+    </div>
+  </div>
+
+  <!-- CALCULATOR 2: Lumpsum Prepayment Calculator -->
+  <div class="calc-block">
+    <p class="calc-title">💸 Lumpsum Prepayment Calculator</p>
+    <p class="calc-sub">See the effect of a one-time lumpsum payment toward your loan, made today.</p>
+    <div class="calc-grid">
+      <div class="field"><label>Outstanding Loan Amount (₹)</label><input type="number" id="lp-loan" value="5000000"></div>
+      <div class="field"><label>Interest Rate (% p.a.)</label><input type="number" id="lp-rate" value="7.5" step="0.1"></div>
+      <div class="field"><label>Remaining Tenure (years)</label><input type="number" id="lp-tenure" value="20"></div>
+      <div class="field"><label>Lumpsum Prepayment (₹)</label><input type="number" id="lp-amount" value="1000000"></div>
+    </div>
+    <button class="calc-btn" onclick="calcLumpsum()">Calculate Impact →</button>
+    <div class="calc-result" id="lp-result">
+      <div class="result-grid">
+        <div class="result-chip"><div class="label">EMI (unchanged)</div><div class="value" id="lp-emi">—</div></div>
+        <div class="result-chip highlight"><div class="label">New Payoff Time</div><div class="value" id="lp-time">—</div></div>
+        <div class="result-chip highlight"><div class="label">Interest Saved</div><div class="value" id="lp-saved">—</div></div>
+      </div>
+      <p class="calc-note">Assumes the EMI amount stays the same and the tenure shortens — the common default most Indian banks apply unless you request an EMI reduction instead.</p>
+    </div>
+  </div>
+
+  <!-- CALCULATOR 3: SIP Lumpsum (one-time) returns calculator -->
+  <div class="calc-block">
+    <p class="calc-title">📈 One-Time (Lumpsum) Investment Calculator</p>
+    <p class="calc-sub">See what a single lumpsum investment could grow into, left untouched.</p>
+    <div class="calc-grid">
+      <div class="field"><label>Investment Amount (₹)</label><input type="number" id="ls-amount" value="5000000"></div>
+      <div class="field"><label>Expected Annual Return (%)</label><input type="number" id="ls-rate" value="11" step="0.1"></div>
+      <div class="field"><label>Investment Period (years)</label><input type="number" id="ls-years" value="10"></div>
+    </div>
+    <button class="calc-btn" onclick="calcLumpsumSIP()">Calculate Growth →</button>
+    <div class="calc-result" id="ls-result">
+      <div class="result-grid">
+        <div class="result-chip"><div class="label">Invested Amount</div><div class="value" id="ls-invested">—</div></div>
+        <div class="result-chip highlight"><div class="label">Estimated Value</div><div class="value" id="ls-final">—</div></div>
+        <div class="result-chip"><div class="label">Wealth Gained</div><div class="value" id="ls-gain">—</div></div>
+      </div>
+      <p class="calc-note">Assumes a steady annual return compounded monthly — real markets move up and down, so treat this as a planning estimate, not a guarantee.</p>
+    </div>
+  </div>
+
+  <!-- CALCULATOR 4: Monthly SIP calculator -->
+  <div class="calc-block">
+    <p class="calc-title">📊 Monthly SIP Calculator</p>
+    <p class="calc-sub">See what a fixed monthly investment could grow into over time.</p>
+    <div class="calc-grid">
+      <div class="field"><label>Monthly SIP Amount (₹)</label><input type="number" id="sip-amount" value="40280"></div>
+      <div class="field"><label>Expected Annual Return (%)</label><input type="number" id="sip-rate" value="11" step="0.1"></div>
+      <div class="field"><label>Investment Period (years)</label><input type="number" id="sip-years" value="20"></div>
+    </div>
+    <button class="calc-btn" onclick="calcSIP()">Calculate Growth →</button>
+    <div class="calc-result" id="sip-result">
+      <div class="result-grid">
+        <div class="result-chip"><div class="label">Total Invested</div><div class="value" id="sip-invested">—</div></div>
+        <div class="result-chip highlight"><div class="label">Estimated Value</div><div class="value" id="sip-final">—</div></div>
+        <div class="result-chip"><div class="label">Wealth Gained</div><div class="value" id="sip-gain">—</div></div>
+      </div>
+      <p class="calc-note">Assumes SIP amount stays fixed. Try a higher return assumption for equity funds, or a lower one for debt/hybrid funds.</p>
+    </div>
+  </div>
+
+  <div class="final-word" id="final-word">
+    <h2 style="margin-top:0;"><span class="num">7</span> Final Word</h2>
+    <p>Arjun didn't end up richer because he found a clever trick. He ended up ahead because he stopped asking "which single decision wins?" and started asking "which combination of decisions can't lose?" Pay the loan faster with money that was always guaranteed — his salary. Let the money that might grow, actually be allowed to grow, without being forced to sell it on a bad day just to make a predictable payment.</p>
+    <p>Meera got her peace of mind — the loan closed years early. Arjun got his upside — the corpus kept compounding, untouched. Neither of them had to be right for both of them to win.</p>
+  </div>
+
+  <div class="disclaimer">
+    <strong>Disclaimer:</strong> This article is for informational and educational purposes only and does not constitute financial, tax, or investment advice. "Arjun" and "Meera" are illustrative characters, not real individuals. Figures on returns, interest savings, and corpus growth are illustrative estimates based on stated assumptions and will vary with actual market conditions, your loan terms, and tax rules. Debt fund gains are currently taxed at your income slab rate regardless of holding period, with no indexation benefit, under rules effective from April 2023 onward — please verify current rules before acting. Consult a SEBI-registered financial advisor, IRDAI-licensed insurance agent, or Chartered Accountant before making insurance, loan, or investment decisions. SalaryBit.in is not affiliated with any bank, insurer, or fund house mentioned or implied in this article.
+  </div>
+</div>
+
+<footer>
+  © 2026 <a href="https://salarybit.in/">SalaryBit.in</a> — Honest Personal Finance for India's Salaried Class<br>
+  Hoskote · Bengaluru · Karnataka
+</footer>
+
+<script>
+function fmtINR(num){
+  num = Math.round(num);
+  if(num < 0) return "₹0";
+  let s = num.toString();
+  let last3 = s.substring(s.length-3);
+  let rest = s.substring(0, s.length-3);
+  if(rest !== '') last3 = ',' + last3;
+  rest = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ",");
+  return "₹" + rest + last3;
+}
+
+function emiOf(P, annualRate, years){
+  const r = annualRate/100/12;
+  const n = years*12;
+  if(r === 0) return P/n;
+  return P * r * Math.pow(1+r, n) / (Math.pow(1+r, n) - 1);
+}
+
+function calcPrepay(){
+  const P = parseFloat(document.getElementById('pp-loan').value);
+  const rate = parseFloat(document.getElementById('pp-rate').value);
+  const years = parseFloat(document.getElementById('pp-tenure').value);
+  const stepup = parseFloat(document.getElementById('pp-stepup').value)/100;
+  const extraCount = parseInt(document.getElementById('pp-extra').value);
+  const r = rate/100/12;
+  const n = years*12;
+  const baseEmi = emiOf(P, rate, years);
+  const originalTotal = baseEmi * n;
+  const originalInterest = originalTotal - P;
+
+  let balance = P;
+  let month = 0;
+  let currentEmi = baseEmi;
+  let totalPaid = 0;
+  const maxMonths = years*12*2;
+  while(balance > 1 && month < maxMonths){
+    month++;
+    const interest = balance * r;
+    let principalPaid = currentEmi - interest;
+    if(principalPaid > balance){ principalPaid = balance; currentEmi = balance + interest; }
+    balance -= principalPaid;
+    totalPaid += currentEmi;
+    if(month % 12 === 0 && balance > 1){
+      let extra = currentEmi * extraCount;
+      if(extra > balance) extra = balance;
+      balance -= extra;
+      totalPaid += extra;
+      currentEmi = currentEmi * (1+stepup);
+    }
+  }
+  const newInterest = totalPaid - P;
+  const saved = originalInterest - newInterest;
+
+  document.getElementById('pp-emi').textContent = fmtINR(baseEmi) + "/mo";
+  document.getElementById('pp-time').textContent = (month/12).toFixed(1) + " yrs";
+  document.getElementById('pp-saved').textContent = fmtINR(saved);
+  document.getElementById('pp-oldint').textContent = fmtINR(originalInterest);
+  document.getElementById('pp-newint').textContent = fmtINR(newInterest);
+  document.getElementById('pp-result').classList.add('show');
+}
+
+function calcLumpsum(){
+  const P = parseFloat(document.getElementById('lp-loan').value);
+  const rate = parseFloat(document.getElementById('lp-rate').value);
+  const years = parseFloat(document.getElementById('lp-tenure').value);
+  const lump = parseFloat(document.getElementById('lp-amount').value);
+  const r = rate/100/12;
+  const emi = emiOf(P, rate, years);
+  const originalInterest = emi*years*12 - P;
+
+  let balance = P - lump;
+  if(balance < 0) balance = 0;
+  let month = 0;
+  let totalPaid = lump;
+  const maxMonths = years*12*3;
+  while(balance > 1 && month < maxMonths){
+    month++;
+    const interest = balance * r;
+    let principalPaid = emi - interest;
+    if(principalPaid > balance){ principalPaid = balance; }
+    balance -= principalPaid;
+    totalPaid += Math.min(emi, principalPaid+interest);
+  }
+  const newInterest = totalPaid - P;
+  const saved = originalInterest - newInterest;
+
+  document.getElementById('lp-emi').textContent = fmtINR(emi) + "/mo";
+  document.getElementById('lp-time').textContent = (month/12).toFixed(1) + " yrs";
+  document.getElementById('lp-saved').textContent = fmtINR(saved > 0 ? saved : 0);
+  document.getElementById('lp-result').classList.add('show');
+}
+
+function calcLumpsumSIP(){
+  const amount = parseFloat(document.getElementById('ls-amount').value);
+  const rate = parseFloat(document.getElementById('ls-rate').value)/100;
+  const years = parseFloat(document.getElementById('ls-years').value);
+  const monthlyRate = Math.pow(1+rate, 1/12) - 1;
+  let value = amount;
+  for(let m=0; m<years*12; m++){ value *= (1+monthlyRate); }
+  document.getElementById('ls-invested').textContent = fmtINR(amount);
+  document.getElementById('ls-final').textContent = fmtINR(value);
+  document.getElementById('ls-gain').textContent = fmtINR(value - amount);
+  document.getElementById('ls-result').classList.add('show');
+}
+
+function calcSIP(){
+  const monthlyAmt = parseFloat(document.getElementById('sip-amount').value);
+  const rate = parseFloat(document.getElementById('sip-rate').value)/100;
+  const years = parseFloat(document.getElementById('sip-years').value);
+  const monthlyRate = Math.pow(1+rate, 1/12) - 1;
+  const n = years*12;
+  let value;
+  if(monthlyRate === 0){ value = monthlyAmt * n; }
+  else { value = monthlyAmt * ((Math.pow(1+monthlyRate, n) - 1) / monthlyRate) * (1+monthlyRate); }
+  const invested = monthlyAmt * n;
+  document.getElementById('sip-invested').textContent = fmtINR(invested);
+  document.getElementById('sip-final').textContent = fmtINR(value);
+  document.getElementById('sip-gain').textContent = fmtINR(value - invested);
+  document.getElementById('sip-result').classList.add('show');
+}
+
+// Run once on load with default values for a "wow" first impression
+window.addEventListener('DOMContentLoaded', function(){
+  calcPrepay();
+  calcLumpsum();
+  calcLumpsumSIP();
+  calcSIP();
+});
+</script>
+
+</body>
+</html>

@@ -28,7 +28,22 @@ import pdfplumber
 import re
 from collections import defaultdict
 from pdfminer.pdfdocument import PDFPasswordIncorrect, PDFEncryptionError
-from pdfplumber.utils.exceptions import PdfminerException
+try:
+    from pdfplumber.utils.exceptions import PdfminerException
+except ImportError:
+    # Fallback for environments where the installed pdfplumber build is
+    # missing this submodule (e.g. stale build cache, or a local file/folder
+    # named "pdfplumber" shadowing the real package on the import path).
+    # This should not happen with pdfplumber==0.11.4 as pinned in
+    # requirements.txt — if you're seeing this fallback in production logs,
+    # check for: (1) a file/folder literally named "pdfplumber" in the repo
+    # root, (2) a stale Railway build cache (redeploy without cache).
+    print("WARNING: pdfplumber.utils.exceptions.PdfminerException not found — "
+          "using a fallback exception class. PDF password-protection "
+          "detection for bank statements will be less precise until this "
+          "is fixed. See comment above this line for likely causes.")
+    class PdfminerException(Exception):
+        pass
 
 from asn1crypto import pem, x509 as asn1_x509
 from pyhanko.pdf_utils.reader import PdfFileReader
@@ -1502,6 +1517,219 @@ def verify_jobswitch_payment():
 
     print(f"[jobswitch] paid unlock | payment_id={payment_id}")
 
+    return jsonify({"success": True, "payment_id": payment_id})
+
+
+# ── PF CLAIM REJECTION DECODER ───────────────────────────────
+# Pure client-side lookup (a static DATA table keyed by remark). The paid
+# unlock is just the HMAC-verified reveal — same pattern as passbook/
+# jobswitch. Nothing the user selected is ever sent to this server.
+PFDECODER_PRICE_PAISE = 9900  # Rs 99
+
+
+@app.route("/api/create-pfdecoder-order", methods=["POST", "OPTIONS"])
+def create_pfdecoder_order():
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": PFDECODER_PRICE_PAISE,
+            "currency": "INR",
+            "receipt": f"pfdecoder_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
+    except Exception as e:
+        print(f"create-pfdecoder-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/verify-pfdecoder-payment", methods=["POST", "OPTIONS"])
+def verify_pfdecoder_payment():
+    """Matches the existing verify_*_payment() HMAC pattern exactly."""
+    if request.method == "OPTIONS":
+        return "", 200
+    data = request.get_json(silent=True) or {}
+    order_id = data.get("razorpay_order_id")
+    payment_id = data.get("razorpay_payment_id")
+    signature = data.get("razorpay_signature")
+
+    if not all([order_id, payment_id, signature]):
+        return jsonify({"success": False, "error": "Missing required fields."}), 400
+
+    body = f"{order_id}|{payment_id}"
+    expected = hmac.new(
+        os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+        body.encode(),
+        hashlib.sha256
+    ).hexdigest()
+    if expected != signature:
+        return jsonify({"success": False, "error": "Payment verification failed."}), 400
+
+    print(f"[pfdecoder] paid unlock | payment_id={payment_id}")
+    return jsonify({"success": True, "payment_id": payment_id})
+
+
+# ── PAN CORRECTION NAVIGATOR ─────────────────────────────────
+# Pure client-side wizard. Same paid-unlock pattern — nothing typed is
+# ever sent to this server.
+PANCORRECTION_PRICE_PAISE = 9900  # Rs 99
+
+
+@app.route("/api/create-pancorrection-order", methods=["POST", "OPTIONS"])
+def create_pancorrection_order():
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": PANCORRECTION_PRICE_PAISE,
+            "currency": "INR",
+            "receipt": f"pancorrection_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
+    except Exception as e:
+        print(f"create-pancorrection-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/verify-pancorrection-payment", methods=["POST", "OPTIONS"])
+def verify_pancorrection_payment():
+    """Matches the existing verify_*_payment() HMAC pattern exactly."""
+    if request.method == "OPTIONS":
+        return "", 200
+    data = request.get_json(silent=True) or {}
+    order_id = data.get("razorpay_order_id")
+    payment_id = data.get("razorpay_payment_id")
+    signature = data.get("razorpay_signature")
+
+    if not all([order_id, payment_id, signature]):
+        return jsonify({"success": False, "error": "Missing required fields."}), 400
+
+    body = f"{order_id}|{payment_id}"
+    expected = hmac.new(
+        os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+        body.encode(),
+        hashlib.sha256
+    ).hexdigest()
+    if expected != signature:
+        return jsonify({"success": False, "error": "Payment verification failed."}), 400
+
+    print(f"[pancorrection] paid unlock | payment_id={payment_id}")
+    return jsonify({"success": True, "payment_id": payment_id})
+
+
+# ── SUPERANNUATION FUND NAVIGATOR ────────────────────────────
+# Pure client-side decision tree. Same paid-unlock pattern — nothing
+# selected is ever sent to this server.
+SUPERANNUATION_PRICE_PAISE = 9900  # Rs 99
+
+
+@app.route("/api/create-superannuation-order", methods=["POST", "OPTIONS"])
+def create_superannuation_order():
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": SUPERANNUATION_PRICE_PAISE,
+            "currency": "INR",
+            "receipt": f"superann_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
+    except Exception as e:
+        print(f"create-superannuation-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/verify-superannuation-payment", methods=["POST", "OPTIONS"])
+def verify_superannuation_payment():
+    """Matches the existing verify_*_payment() HMAC pattern exactly."""
+    if request.method == "OPTIONS":
+        return "", 200
+    data = request.get_json(silent=True) or {}
+    order_id = data.get("razorpay_order_id")
+    payment_id = data.get("razorpay_payment_id")
+    signature = data.get("razorpay_signature")
+
+    if not all([order_id, payment_id, signature]):
+        return jsonify({"success": False, "error": "Missing required fields."}), 400
+
+    body = f"{order_id}|{payment_id}"
+    expected = hmac.new(
+        os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+        body.encode(),
+        hashlib.sha256
+    ).hexdigest()
+    if expected != signature:
+        return jsonify({"success": False, "error": "Payment verification failed."}), 400
+
+    print(f"[superannuation] paid unlock | payment_id={payment_id}")
+    return jsonify({"success": True, "payment_id": payment_id})
+
+
+# ── RELIEVING LETTER ESCALATION KIT ──────────────────────────
+# Pure client-side letter generator. Same paid-unlock pattern — nothing
+# typed (name, company, days) is ever sent to this server.
+RELIEVINGLETTER_PRICE_PAISE = 9900  # Rs 99
+
+
+@app.route("/api/create-relievingletter-order", methods=["POST", "OPTIONS"])
+def create_relievingletter_order():
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": RELIEVINGLETTER_PRICE_PAISE,
+            "currency": "INR",
+            "receipt": f"relieveletter_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
+    except Exception as e:
+        print(f"create-relievingletter-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/verify-relievingletter-payment", methods=["POST", "OPTIONS"])
+def verify_relievingletter_payment():
+    """Matches the existing verify_*_payment() HMAC pattern exactly."""
+    if request.method == "OPTIONS":
+        return "", 200
+    data = request.get_json(silent=True) or {}
+    order_id = data.get("razorpay_order_id")
+    payment_id = data.get("razorpay_payment_id")
+    signature = data.get("razorpay_signature")
+
+    if not all([order_id, payment_id, signature]):
+        return jsonify({"success": False, "error": "Missing required fields."}), 400
+
+    body = f"{order_id}|{payment_id}"
+    expected = hmac.new(
+        os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+        body.encode(),
+        hashlib.sha256
+    ).hexdigest()
+    if expected != signature:
+        return jsonify({"success": False, "error": "Payment verification failed."}), 400
+
+    print(f"[relievingletter] paid unlock | payment_id={payment_id}")
     return jsonify({"success": True, "payment_id": payment_id})
 
 

@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Two Employer Tax Calculator — Job Switch Mid-Year Tax India FY 2026-27 | SalaryBit</title>
-<meta name="description" content="Switched jobs mid-year and have two Form 16s? Combine both employers' income to find your true tax liability, spot shortfall or refund, and avoid an IT notice. Free, instant.">
+<title>Job Switch Tax AI Analyzer — Two Form 16 Comparison India FY 2026-27 | SalaryBit</title>
+<meta name="description" content="Switched jobs mid-year and have two Form 16s? Upload both — AI reads them, combines your income, and tells you the true tax you owe or the refund you're due. No manual entry.">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#5b6af0">
 <link rel="canonical" href="https://salarybit.in/tools/job-switch-tax-calculator.html">
-<meta property="og:title" content="Two Employer Tax Calculator — Job Switch Mid-Year Tax India FY 2026-27 | SalaryBit">
+<meta property="og:title" content="Job Switch Tax AI Analyzer — Two Form 16 Comparison India FY 2026-27 | SalaryBit">
 <meta property="og:image" content="https://salarybit.in/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://salarybit.in/og-image.png">
-<meta property="og:description" content="Switched jobs mid-year and have two Form 16s? Combine both employers' income to find your true tax liability, spot shortfall or refund, and avoid an IT notice. Free, instant.">
+<meta property="og:description" content="Switched jobs mid-year and have two Form 16s? Upload both — AI reads them, combines your income, and tells you the true tax you owe or the refund you're due. No manual entry.">
 <meta property="og:url" content="https://salarybit.in/tools/job-switch-tax-calculator.html">
 <meta property="og:site_name" content="SalaryBit">
 <meta property="og:type" content="website">
@@ -23,9 +23,9 @@
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "Job Switch / Two Employer Tax Calculator — SalaryBit",
+  "name": "Job Switch Tax AI Analyzer — SalaryBit",
   "url": "https://salarybit.in/tools/job-switch-tax-calculator.html",
-  "description": "Combine income and TDS from two employers after a mid-year job switch to find true tax liability, shortfall, or refund for Indian salaried employees.",
+  "description": "Upload two Form 16s from a mid-year job switch. AI extracts the numbers and combines income from both employers to find your true tax liability, shortfall, or refund.",
   "applicationCategory": "FinanceApplication",
   "operatingSystem": "All",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" },
@@ -53,7 +53,7 @@
 html{scroll-behavior:smooth}
 body{font-family:var(--body);background:var(--snow);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:5rem}
 .nav{background:rgba(247,247,252,.97);backdrop-filter:blur(20px);position:sticky;top:0;z-index:200;border-bottom:1px solid var(--border)}
-.nav-inner{max-width:860px;margin:0 auto;padding:0 1rem;height:52px;display:flex;align-items:center;gap:.75rem}
+.nav-inner{max-width:760px;margin:0 auto;padding:0 1rem;height:52px;display:flex;align-items:center;gap:.75rem}
 .brand{display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0}
 .brand-mark{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--teal));display:flex;align-items:center;justify-content:center;font-size:13px}
 .brand-name{font-family:var(--display);font-size:17px;font-weight:800;color:var(--ink);letter-spacing:-.02em}
@@ -61,47 +61,81 @@ body{font-family:var(--body);background:var(--snow);color:var(--ink);line-height
 .nav-back:hover{color:var(--ink)}
 .nav-badge{font-size:10px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--teal));color:#fff;padding:3px 9px;border-radius:20px;flex-shrink:0;letter-spacing:.03em}
 .tool-hero{background:linear-gradient(135deg,var(--ink) 0%,var(--ink2) 60%,#1e1e40 100%);padding:1.5rem 1rem 1.25rem}
-.tool-hero-inner{max-width:860px;margin:0 auto}
+.tool-hero-inner{max-width:760px;margin:0 auto}
 .tool-badge-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:3px 10px;font-size:9px;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.625rem}
 .tool-hero h1{font-family:var(--display);font-size:clamp(20px,4vw,30px);color:#fff;font-weight:800;line-height:1.2;margin-bottom:.4rem}
 .tool-hero p{font-size:13px;color:rgba(255,255,255,.5);max-width:560px;line-height:1.5}
-.tool-wrap{max-width:860px;margin:0 auto;padding:1.25rem 1rem;display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start}
-@media(max-width:600px){.tool-wrap{grid-template-columns:1fr;padding:.875rem .75rem;gap:.875rem}}
+.tool-wrap{max-width:760px;margin:0 auto;padding:1.25rem 1rem}
 .panel{background:#fff;border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow)}
 .panel-head{padding:.875rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .panel-title{font-family:var(--display);font-size:14px;font-weight:700;color:var(--ink)}
-.panel-sub{font-size:10px;font-weight:700;color:var(--mist);background:var(--pale);padding:2px 8px;border-radius:10px}
-.panel-body{padding:1rem}
+.panel-body{padding:1.125rem}
+/* UPLOAD BOXES */
+.upload-row{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-bottom:1rem}
+@media(max-width:560px){.upload-row{grid-template-columns:1fr}}
+.upload-slot label.slot-label{display:block;font-size:11px;font-weight:700;color:var(--ink3);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.04em}
+.upload-box{border:2px dashed var(--border);border-radius:var(--r-sm);padding:1.25rem .875rem;text-align:center;cursor:pointer;transition:.15s;position:relative;background:var(--snow)}
+.upload-box:hover,.upload-box.drag{border-color:var(--accent);background:var(--accent-bg)}
+.upload-box.filled{border-style:solid;border-color:var(--green);background:var(--green-bg)}
+.upload-box input{display:none}
+.upload-icon{font-size:26px;margin-bottom:.375rem}
+.upload-label{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:.2rem}
+.upload-hint{font-size:10.5px;color:var(--mist);line-height:1.4}
+.upload-filename{font-size:11px;font-weight:700;color:var(--green);margin-top:.375rem;word-break:break-all}
+.pw-field{margin-top:.5rem;display:none}
+.pw-field input{width:100%;height:34px;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:0 10px;font-size:12px;font-family:var(--body)}
 .field{margin-bottom:.75rem}
 .field label{display:block;font-size:11px;font-weight:700;color:var(--ink3);margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em}
-.fld{width:100%;height:40px;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:0 11px;font-family:var(--body);font-size:13px;color:var(--ink);background:#fff;outline:none;transition:.15s}
-.fld:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(91,106,240,.1)}
+.fld{width:100%;height:40px;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:0 11px;font-family:var(--body);font-size:13px;color:var(--ink);background:#fff;outline:none}
 select.fld{cursor:pointer}
-.fld-hint{font-size:10px;color:var(--mist);margin-top:2px}
-.section-divider{display:flex;align-items:center;gap:.5rem;margin:1rem 0 .625rem;font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em}
-.section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
-.cta{width:100%;height:42px;background:linear-gradient(135deg,var(--accent),var(--teal));color:#fff;border:none;border-radius:var(--r-sm);font-family:var(--body);font-size:14px;font-weight:700;cursor:pointer;transition:.2s;margin-top:.75rem}
-.cta:hover{opacity:.9;box-shadow:0 4px 16px rgba(91,106,240,.35)}
-.result-hero{background:linear-gradient(135deg,var(--ink),var(--ink2));border-radius:var(--r);padding:1.25rem;color:#fff;text-align:center;margin-bottom:.75rem}
-.result-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.45);margin-bottom:.3rem}
-.result-val{font-family:var(--display);font-size:clamp(26px,5vw,36px);font-weight:800;color:#fff;line-height:1}
-.result-sub{font-size:11px;color:rgba(255,255,255,.45);margin-top:.25rem}
+.cta{width:100%;height:44px;background:linear-gradient(135deg,var(--accent),var(--teal));color:#fff;border:none;border-radius:var(--r-sm);font-family:var(--body);font-size:14px;font-weight:700;cursor:pointer;transition:.2s}
+.cta:hover{opacity:.9}
+.cta:disabled{opacity:.5;cursor:not-allowed}
+.privacy-note{font-size:11px;color:var(--mist);text-align:center;margin-top:.625rem;line-height:1.5}
+/* LOADING */
+.loading{display:none;text-align:center;padding:2rem 1rem}
+.loading.show{display:block}
+.spin{width:34px;height:34px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;margin:0 auto 1rem;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:13px;font-weight:600;color:var(--ink3)}
+/* RESULTS */
+.results{display:none;margin-top:1.125rem}
+.results.show{display:block}
+.result-hero{border-radius:var(--r);padding:1.5rem 1.25rem;color:#fff;text-align:center;margin-bottom:.875rem}
+.result-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.5);margin-bottom:.4rem}
+.result-val{font-family:var(--display);font-size:clamp(28px,6vw,40px);font-weight:800;color:#fff;line-height:1}
+.result-sub{font-size:12px;color:rgba(255,255,255,.5);margin-top:.4rem}
 .rcard{background:var(--pale);border:1px solid var(--border);border-radius:var(--r-sm);padding:.875rem;margin-bottom:.5rem}
 .rrow{display:flex;justify-content:space-between;align-items:center;padding:.3rem 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--ink3)}
 .rrow:last-child{border-bottom:none}
 .rrow span:last-child{font-weight:700;color:var(--ink)}
 .rrow.g span:last-child{color:var(--green)}
 .rrow.r span:last-child{color:var(--rose)}
-.rrow.a span:last-child{color:var(--amber)}
-.insight{display:flex;gap:.625rem;padding:.75rem .875rem;border-radius:var(--r-sm);font-size:12px;line-height:1.55;margin-top:.625rem}
-.insight-icon{font-size:16px;flex-shrink:0;margin-top:1px}
-.insight.green{background:var(--green-bg);border:1px solid rgba(22,163,74,.2);color:var(--green)}
-.insight.red{background:var(--rose-bg);border:1px solid rgba(224,92,92,.2);color:var(--rose)}
-.insight.blue{background:var(--accent-bg);border:1px solid var(--accent-border);color:var(--accent)}
-.insight.gold{background:var(--amber-bg);border:1px solid rgba(217,119,6,.2);color:var(--amber)}
-.insight strong{font-weight:700}
-.placeholder{text-align:center;padding:2rem 1rem;color:var(--mist);font-size:13px}
-.seo{max-width:860px;margin:0 auto;padding:1.5rem 1rem 2rem}
+/* PAID UNLOCK */
+.unlock-box{background:linear-gradient(135deg,var(--ink),var(--ink2));border-radius:var(--r);padding:1.125rem;color:#fff;margin-top:.875rem}
+.unlock-head{display:flex;align-items:center;gap:.5rem;margin-bottom:.625rem}
+.unlock-icon{font-size:20px}
+.unlock-title{font-family:var(--display);font-size:15px;font-weight:800;color:#fff}
+.unlock-list{list-style:none;margin:.75rem 0;padding:0}
+.unlock-list li{font-size:12px;color:rgba(255,255,255,.75);padding:.3rem 0 .3rem 1.4rem;position:relative;line-height:1.5}
+.unlock-list li::before{content:'✓';position:absolute;left:0;color:var(--teal);font-weight:800}
+.unlock-price{font-family:var(--display);font-size:26px;font-weight:800;color:#fff;margin:.5rem 0 .125rem}
+.unlock-cta{width:100%;height:44px;background:linear-gradient(135deg,var(--teal),#0b8781);color:#fff;border:none;border-radius:var(--r-sm);font-family:var(--body);font-size:14px;font-weight:700;cursor:pointer;margin-top:.5rem}
+.unlock-cta:hover{opacity:.92}
+.unlock-cta:disabled{opacity:.6;cursor:not-allowed}
+.unlock-status{font-size:11px;color:rgba(255,255,255,.55);margin-top:.5rem;text-align:center;min-height:14px}
+.error-box{display:none;background:var(--rose-bg);border:1px solid rgba(224,92,92,.3);border-radius:var(--r-sm);padding:.875rem;font-size:12.5px;color:var(--rose);margin-top:.875rem;line-height:1.6}
+.error-box.show{display:block}
+/* PRINTABLE REPORT */
+#js-report{display:none}
+.report-block{background:#fff;border:1px solid var(--border);border-radius:var(--r-sm);padding:1rem;margin-top:.75rem}
+.report-block h4{font-family:var(--display);font-size:13px;font-weight:800;color:var(--ink);margin-bottom:.5rem}
+.report-block p,.report-block li{font-size:12px;color:var(--ink3);line-height:1.65}
+.report-block ol{padding-left:1.1rem;margin-top:.375rem}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;background:var(--accent-bg);color:var(--accent);border-radius:50%;font-size:10px;font-weight:800;margin-right:.4rem}
+.email-draft{background:var(--pale);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem;font-size:11.5px;color:var(--ink3);line-height:1.6;white-space:pre-wrap;font-family:'DM Sans',sans-serif;margin-top:.375rem}
+/* SEO */
+.seo{max-width:760px;margin:0 auto;padding:1.5rem 1rem 2rem}
 .seo h2{font-family:var(--display);font-size:20px;font-weight:800;color:var(--ink);margin-bottom:.625rem;margin-top:1.5rem}
 .seo h2:first-child{margin-top:0}
 .seo h3{font-family:var(--display);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:.375rem;margin-top:1rem}
@@ -123,33 +157,10 @@ select.fld{cursor:pointer}
 .mob-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:9px;font-weight:600;color:var(--mist);text-decoration:none;padding:.375rem .25rem .5rem}
 .mob-tab.active{color:var(--accent)}
 .mob-tab-icon{font-size:19px;line-height:1}
-/* PAID REPORT UNLOCK */
-.unlock-box{background:linear-gradient(135deg,var(--ink),var(--ink2));border-radius:var(--r);padding:1.125rem;color:#fff;margin-top:.875rem}
-.unlock-head{display:flex;align-items:center;gap:.5rem;margin-bottom:.625rem}
-.unlock-icon{font-size:20px}
-.unlock-title{font-family:var(--display);font-size:15px;font-weight:800;color:#fff}
-.unlock-list{list-style:none;margin:.75rem 0;padding:0}
-.unlock-list li{font-size:12px;color:rgba(255,255,255,.75);padding:.3rem 0 .3rem 1.4rem;position:relative;line-height:1.5}
-.unlock-list li::before{content:'✓';position:absolute;left:0;color:var(--teal);font-weight:800}
-.unlock-price{font-family:var(--display);font-size:26px;font-weight:800;color:#fff;margin:.5rem 0 .125rem}
-.unlock-price span{font-size:12px;font-weight:600;color:rgba(255,255,255,.5);text-decoration:line-through;margin-right:.4rem}
-.unlock-cta{width:100%;height:44px;background:linear-gradient(135deg,var(--teal),#0b8781);color:#fff;border:none;border-radius:var(--r-sm);font-family:var(--body);font-size:14px;font-weight:700;cursor:pointer;margin-top:.5rem}
-.unlock-cta:hover{opacity:.92}
-.unlock-cta:disabled{opacity:.6;cursor:not-allowed}
-.unlock-status{font-size:11px;color:rgba(255,255,255,.55);margin-top:.5rem;text-align:center;min-height:14px}
-/* PRINTABLE REPORT */
-#js-report{display:none}
-.report-block{background:#fff;border:1px solid var(--border);border-radius:var(--r-sm);padding:1rem;margin-top:.75rem}
-.report-block h4{font-family:var(--display);font-size:13px;font-weight:800;color:var(--ink);margin-bottom:.5rem}
-.report-block p,.report-block li{font-size:12px;color:var(--ink3);line-height:1.65}
-.report-block ol{padding-left:1.1rem;margin-top:.375rem}
-.step-num{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;background:var(--accent-bg);color:var(--accent);border-radius:50%;font-size:10px;font-weight:800;margin-right:.4rem}
-.email-draft{background:var(--pale);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem;font-size:11.5px;color:var(--ink3);line-height:1.6;white-space:pre-wrap;font-family:'DM Sans',sans-serif;margin-top:.375rem}
 @media print{
-  .nav,.mob-bar,.tool-hero,.unlock-box,.cta,.seo,#js-result .rcard,.result-hero{display:none !important}
+  .nav,.mob-bar,.tool-hero,.unlock-box,.cta,.seo,#js-result,.error-box{display:none !important}
   #js-report{display:block !important}
   body{padding-bottom:0}
-  .tool-wrap{grid-template-columns:1fr;padding:0}
   .panel{box-shadow:none;border:none}
 }
 </style>
@@ -165,105 +176,94 @@ select.fld{cursor:pointer}
 
 <section class="tool-hero">
   <div class="tool-hero-inner">
-    <div class="tool-badge-pill">🔀 Free · Instant · Two Employers</div>
-    <h1>Job Switch Tax Calculator</h1>
-    <p>Left one job and joined another mid-year? Each employer only deducts TDS on the salary <em style="color:#fff;font-style:normal">they</em> paid you — nobody checks your combined income. Enter both Form 16s here to find your true tax liability, and whether you owe a shortfall or are due a refund.</p>
+    <div class="tool-badge-pill">🤖 AI-Powered · Upload &amp; Compare</div>
+    <h1>Job Switch Tax AI Analyzer</h1>
+    <p>Left one job and joined another mid-year? Upload both Form 16s — no typing numbers. AI reads them, combines your income across both employers, and tells you exactly what you owe or what's owed to you.</p>
   </div>
 </section>
 
 <div class="tool-wrap">
   <div class="panel">
-    <div class="panel-head"><div class="panel-title">📋 Both Employers, One Year</div><div class="panel-sub">FY 2026-27</div></div>
+    <div class="panel-head"><div class="panel-title">📄 Upload Both Form 16s</div></div>
     <div class="panel-body">
 
-      <div class="section-divider">🏢 Employer 1 — Previous Job</div>
-      <div class="field">
-        <label>Gross Salary Paid by Employer 1 (₹)</label>
-        <input class="fld" id="js-gross1" type="number" placeholder="e.g. 450000" oninput="calcJobSwitch()">
-        <div class="fld-hint">Total salary paid before you resigned — from Form 16 Part B</div>
-      </div>
-      <div class="field">
-        <label>TDS Deducted by Employer 1 (₹)</label>
-        <input class="fld" id="js-tds1" type="number" placeholder="e.g. 8000" oninput="calcJobSwitch()">
-      </div>
-      <div class="field">
-        <label>Standard Deduction Claimed by Employer 1 (₹)</label>
-        <select class="fld" id="js-sd1" onchange="calcJobSwitch()">
-          <option value="1">Yes — ₹75,000 (New) / ₹50,000 (Old) applied</option>
-          <option value="0">No — not applied</option>
-        </select>
-      </div>
-
-      <div class="section-divider">🏢 Employer 2 — Current Job</div>
-      <div class="field">
-        <label>Gross Salary Paid by Employer 2 (₹)</label>
-        <input class="fld" id="js-gross2" type="number" placeholder="e.g. 850000" oninput="calcJobSwitch()">
-        <div class="fld-hint">Total salary paid for rest of the financial year</div>
-      </div>
-      <div class="field">
-        <label>TDS Deducted by Employer 2 (₹)</label>
-        <input class="fld" id="js-tds2" type="number" placeholder="e.g. 35000" oninput="calcJobSwitch()">
-      </div>
-      <div class="field">
-        <label>Did you submit Form 12B to Employer 2?</label>
-        <select class="fld" id="js-form12b" onchange="calcJobSwitch()">
-          <option value="0">No — most people skip this</option>
-          <option value="1">Yes — I declared previous salary</option>
-        </select>
-        <div class="fld-hint">If not submitted, Employer 2 taxed you as if you earned only from them — this is usually where the shortfall comes from</div>
+      <div class="upload-row">
+        <div class="upload-slot">
+          <label class="slot-label">Employer 1 — Previous Job</label>
+          <div class="upload-box" id="uploadBox1">
+            <div class="upload-icon">📄</div>
+            <div class="upload-label">Tap to upload Form 16</div>
+            <div class="upload-hint">PDF only · read once, never stored</div>
+            <div class="upload-filename" id="filename1"></div>
+            <input type="file" id="fileInput1" accept="application/pdf">
+          </div>
+          <div class="pw-field" id="pwField1">
+            <input type="password" id="pw1" placeholder="PDF password (if protected)">
+          </div>
+        </div>
+        <div class="upload-slot">
+          <label class="slot-label">Employer 2 — Current Job</label>
+          <div class="upload-box" id="uploadBox2">
+            <div class="upload-icon">📄</div>
+            <div class="upload-label">Tap to upload Form 16</div>
+            <div class="upload-hint">PDF only · read once, never stored</div>
+            <div class="upload-filename" id="filename2"></div>
+            <input type="file" id="fileInput2" accept="application/pdf">
+          </div>
+          <div class="pw-field" id="pwField2">
+            <input type="password" id="pw2" placeholder="PDF password (if protected)">
+          </div>
+        </div>
       </div>
 
-      <div class="section-divider">📐 Deductions (claim once, across both)</div>
       <div class="field">
         <label>Tax Regime</label>
-        <select class="fld" id="js-regime" onchange="calcJobSwitch()">
+        <select class="fld" id="js-regime">
           <option value="new">New Regime</option>
           <option value="old">Old Regime</option>
         </select>
       </div>
-      <div class="field">
-        <label>80C Investments (₹) — Old Regime only, max ₹1.5L</label>
-        <input class="fld" id="js-80c" type="number" placeholder="e.g. 150000" oninput="calcJobSwitch()">
-      </div>
-      <div class="field">
-        <label>80D Health Insurance Premium (₹) — Old Regime only</label>
-        <input class="fld" id="js-80d" type="number" placeholder="e.g. 25000" oninput="calcJobSwitch()">
-      </div>
-      <div class="field">
-        <label>HRA Exemption Claimed (₹) — Old Regime only</label>
-        <input class="fld" id="js-hra" type="number" placeholder="e.g. 120000" oninput="calcJobSwitch()">
-      </div>
-      <div class="field">
-        <label>NPS Employer Contribution (₹) — 80CCD(2), both regimes</label>
-        <input class="fld" id="js-nps" type="number" placeholder="e.g. 40000" oninput="calcJobSwitch()">
-      </div>
-      <button class="cta" onclick="calcJobSwitch()">Reconcile My Tax →</button>
-    </div>
-  </div>
 
-  <div class="panel">
-    <div class="panel-head"><div class="panel-title">📊 True Tax Position</div></div>
-    <div class="panel-body">
-      <div id="js-result"><div class="placeholder">Enter both employers' salary and TDS to see your real tax position</div></div>
+      <button class="cta" id="analyzeBtn" disabled>Analyze My Tax →</button>
+      <div class="privacy-note">Both PDFs are read once to extract salary &amp; TDS figures, then deleted — never stored on our servers.</div>
 
-      <div class="unlock-box" id="js-unlock-box" style="display:none">
-        <div class="unlock-head"><span class="unlock-icon">🔓</span><span class="unlock-title">Get Your Full Action Report</span></div>
-        <ul class="unlock-list">
-          <li>Downloadable PDF with the full income & tax breakdown — save it or show your CA</li>
-          <li>Step-by-step Challan 280 self-assessment payment guide, pre-filled with your exact amount</li>
-          <li>Ready-to-send email draft to HR/payroll to fix future TDS deduction (Form 12B)</li>
-          <li>Section 234B/234C interest note so you know exactly what waiting costs you</li>
-        </ul>
-        <div class="unlock-price">₹49</div>
-        <button class="unlock-cta" id="js-unlock-btn" onclick="startJobswitchPayment()">Unlock Full Report — ₹49</button>
-        <div class="unlock-status" id="js-unlock-status"></div>
+      <div class="loading" id="loading">
+        <div class="spin"></div>
+        <div class="loading-text" id="loadingText">Reading your Form 16s…</div>
       </div>
+
+      <div class="error-box" id="errorBox"></div>
+
+      <div class="results" id="results">
+        <div class="result-hero" id="resultHero">
+          <div class="result-label" id="resultLabel">Tax Position</div>
+          <div class="result-val" id="resultVal">₹0</div>
+          <div class="result-sub" id="resultSub"></div>
+        </div>
+        <div class="rcard">
+          <div class="rrow"><span>Combined Annual Income (both employers)</span><span id="combinedIncome">₹0</span></div>
+        </div>
+
+        <div class="unlock-box" id="js-unlock-box">
+          <div class="unlock-head"><span class="unlock-icon">🔓</span><span class="unlock-title">Get Your Full Action Report</span></div>
+          <ul class="unlock-list">
+            <li>Employer-by-employer breakdown — gross salary, TDS, employer names as read from your Form 16s</li>
+            <li>Downloadable PDF you can save or show your CA</li>
+            <li>Step-by-step Challan 280 self-assessment payment guide, pre-filled with your exact amount</li>
+            <li>Ready-to-send email draft to HR/payroll to fix future TDS deduction (Form 12B)</li>
+          </ul>
+          <div class="unlock-price">₹49</div>
+          <button class="unlock-cta" id="js-unlock-btn" onclick="startJobswitchPayment()">Unlock Full Report — ₹49</button>
+          <div class="unlock-status" id="js-unlock-status"></div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 
 <!-- PRINTABLE FULL REPORT — hidden on screen, shown only via window.print() after payment -->
-<div class="tool-wrap" id="js-report" style="grid-template-columns:1fr">
+<div class="tool-wrap" id="js-report">
   <div class="panel">
     <div class="panel-head"><div class="panel-title">📄 Job Switch Tax Report — SalaryBit</div></div>
     <div class="panel-body" id="js-report-body"></div>
@@ -275,33 +275,27 @@ select.fld{cursor:pointer}
   <p>When you switch jobs between April and March, you get <strong>two Form 16s</strong> — one from each employer. Each employer calculates TDS only on the salary <strong>they</strong> paid you, applying the full slab benefit and standard deduction as if that was your only income for the year. Neither employer knows what the other paid you unless you submit <strong>Form 12B</strong> to your new employer.</p>
   <p>If you got a hike when you switched — common when moving jobs is a 20-40% salary bump — your <strong>combined annual income</strong> can push you into a higher tax slab than either employer individually accounted for. The result: you're <strong>under-deducted</strong> through the year, and the shortfall shows up as a demand when you file your ITR, sometimes with <strong>interest under Section 234B/234C</strong> for not paying advance tax on time.</p>
 
-  <h3>Common Mistakes When You Have Two Form 16s</h3>
-  <ul>
-    <li><strong>Standard deduction claimed twice</strong> — each employer applies ₹75,000 (New Regime) or ₹50,000 (Old Regime) independently, but you're only entitled to it once for the year</li>
-    <li><strong>80C or HRA claimed at both employers</strong> — if you declared the same investment proofs or rent receipts to both, deductions get double counted</li>
-    <li><strong>Not paying self-assessment tax before filing</strong> — if there's a shortfall, this attracts interest the longer you wait</li>
-    <li><strong>Assuming "TDS was deducted so I'm covered"</strong> — TDS from two employers rarely adds up to your true combined liability</li>
-  </ul>
+  <h3>Why Upload Instead of Typing Numbers</h3>
+  <p>Manually copying figures off a Form 16 is easy to get wrong — people mix up gross salary with taxable salary, or miss which TDS row is the final total. This tool reads your actual Form 16 PDFs directly and extracts the numbers for you, so the reconciliation is based on what your employers actually reported, not a guess.</p>
 
   <h3>What To Do If You Owe a Shortfall</h3>
   <ol>
     <li>Pay the balance via <strong>Challan 280</strong> on the income tax portal, under "Self Assessment Tax (300)"</li>
     <li>File before the ITR deadline (usually <strong>July 31</strong>) to avoid Section 234A late-filing interest on top</li>
     <li>Report income from <strong>both</strong> Form 16s under "Salary" in your ITR — don't file using only one</li>
-    <li>Double-check you haven't claimed standard deduction, 80C, or HRA twice before submitting</li>
   </ol>
 
   <div class="faq-item">
-    <div class="faq-q">Why didn't my new employer deduct enough TDS?</div>
-    <div class="faq-a">Unless you submit Form 12B (details of salary from your previous employer) to your new employer, they have no way of knowing your prior income. They calculate your TDS slab-wise assuming their salary is your only income for the full year — which usually under-deducts tax once both incomes are combined.</div>
+    <div class="faq-q">Is my Form 16 data safe to upload?</div>
+    <div class="faq-a">Your PDFs are read once in memory to extract the salary and TDS figures, then permanently deleted — they are never stored on our servers or used for anything beyond generating your report.</div>
   </div>
   <div class="faq-item">
-    <div class="faq-q">Can I still submit Form 12B after joining?</div>
-    <div class="faq-a">Ideally you submit it when joining. If you didn't, you can still manually combine both incomes yourself at ITR filing time and pay any shortfall as self-assessment tax before filing — you don't need your employer to fix it retroactively.</div>
+    <div class="faq-q">Why didn't my new employer deduct enough TDS?</div>
+    <div class="faq-a">Unless you submit Form 12B (details of salary from your previous employer) to your new employer, they have no way of knowing your prior income. They calculate TDS assuming their salary is your only income for the year — which usually under-deducts tax once both incomes are combined.</div>
   </div>
   <div class="faq-item">
     <div class="faq-q">What if I'm owed a refund instead?</div>
-    <div class="faq-a">This can happen if your combined income is lower than what one employer assumed (e.g. you took unpaid leave, or moved to a lower-paying role). File your ITR with both Form 16s and the excess TDS will be refunded after processing.</div>
+    <div class="faq-a">This can happen if your combined income is lower than what one employer assumed. File your ITR with both Form 16s and the excess TDS will be refunded after processing.</div>
   </div>
 </div>
 
@@ -310,7 +304,7 @@ select.fld{cursor:pointer}
   <div class="related-grid">
     <a class="related-card" href="/tools/old-vs-new-tax-regime.html"><div class="related-icon">📋</div><div class="related-name">Old vs New Regime</div><div class="related-desc">Compare side by side</div></a>
     <a class="related-card" href="/tools/salary-calculator.html"><div class="related-icon">💰</div><div class="related-name">Salary Calculator</div><div class="related-desc">Full CTC to in-hand</div></a>
-    <a class="related-card" href="/tools/notice-period-calculator.html"><div class="related-icon">📋</div><div class="related-name">Notice Period</div><div class="related-desc">Buyout cost</div></a>
+    <a class="related-card" href="/tax-ai.html"><div class="related-icon">🧾</div><div class="related-name">Tax AI</div><div class="related-desc">CA-level Form 16 analysis</div></a>
     <a class="related-card" href="/notice-shield.html"><div class="related-icon">🛡️</div><div class="related-name">Notice Shield</div><div class="related-desc">Decode IT notices</div></a>
   </div>
 </div>
@@ -324,123 +318,112 @@ select.fld{cursor:pointer}
 </nav>
 
 <script>
+const API_BASE = 'https://web-production-456eb.up.railway.app';
 function fmtI(n){return '₹'+Math.round(n).toLocaleString('en-IN');}
 
-function oldTax(t){
-  let tax=0;
-  if(t<=250000)tax=0;
-  else if(t<=500000)tax=(t-250000)*0.05;
-  else if(t<=1000000)tax=12500+(t-500000)*0.20;
-  else tax=112500+(t-1000000)*0.30;
-  if(t<=500000)tax=0;
-  return Math.round(tax*1.04);
+// ── Upload slot wiring ──────────────────────────────────────
+let file1=null, file2=null;
+function wireSlot(boxId, inputId, filenameId, pwFieldId, setFile){
+  const box=document.getElementById(boxId), input=document.getElementById(inputId);
+  const filenameEl=document.getElementById(filenameId), pwField=document.getElementById(pwFieldId);
+  box.addEventListener('click', ()=> input.click());
+  box.addEventListener('dragover', e=>{ e.preventDefault(); box.classList.add('drag'); });
+  box.addEventListener('dragleave', ()=> box.classList.remove('drag'));
+  box.addEventListener('drop', e=>{
+    e.preventDefault(); box.classList.remove('drag');
+    if(e.dataTransfer.files.length){ input.files=e.dataTransfer.files; handleFile(); }
+  });
+  input.addEventListener('change', handleFile);
+  function handleFile(){
+    const f=input.files[0];
+    if(!f) return;
+    setFile(f);
+    box.classList.add('filled');
+    filenameEl.textContent=f.name;
+    pwField.style.display='block';
+    updateAnalyzeBtn();
+  }
 }
-function newTax(t, grossForRebate){
-  let tax=0;
-  if(t<=400000)tax=0;
-  else if(t<=800000)tax=(t-400000)*0.05;
-  else if(t<=1200000)tax=20000+(t-800000)*0.10;
-  else if(t<=1600000)tax=60000+(t-1200000)*0.15;
-  else if(t<=2000000)tax=120000+(t-1600000)*0.20;
-  else if(t<=2400000)tax=200000+(t-2000000)*0.25;
-  else tax=300000+(t-2400000)*0.30;
-  if(grossForRebate<=1200000)tax=0;
-  return Math.round(tax*1.04);
-}
+wireSlot('uploadBox1','fileInput1','filename1','pwField1', f=>file1=f);
+wireSlot('uploadBox2','fileInput2','filename2','pwField2', f=>file2=f);
 
-function calcJobSwitch(){
-  const gross1=parseFloat(document.getElementById('js-gross1').value)||0;
-  const tds1=parseFloat(document.getElementById('js-tds1').value)||0;
-  const sd1=document.getElementById('js-sd1').value;
-  const gross2=parseFloat(document.getElementById('js-gross2').value)||0;
-  const tds2=parseFloat(document.getElementById('js-tds2').value)||0;
-  const form12b=document.getElementById('js-form12b').value;
-  const regime=document.getElementById('js-regime').value;
-  const c80=Math.min(parseFloat(document.getElementById('js-80c').value)||0,150000);
-  const c80d=parseFloat(document.getElementById('js-80d').value)||0;
-  const hra=parseFloat(document.getElementById('js-hra').value)||0;
-  const nps=parseFloat(document.getElementById('js-nps').value)||0;
+const analyzeBtn=document.getElementById('analyzeBtn');
+function updateAnalyzeBtn(){ analyzeBtn.disabled = !(file1 && file2); }
 
-  if(!gross1 && !gross2){
-    document.getElementById('js-result').innerHTML='<div class="placeholder">Enter both employers\' salary and TDS to see your real tax position</div>';
-    document.getElementById('js-unlock-box').style.display='none';
-    return;
+// ── Analyze (free scan) ─────────────────────────────────────
+const loading=document.getElementById('loading');
+const loadingText=document.getElementById('loadingText');
+const errorBox=document.getElementById('errorBox');
+const results=document.getElementById('results');
+const resultHero=document.getElementById('resultHero');
+const resultLabel=document.getElementById('resultLabel');
+const resultVal=document.getElementById('resultVal');
+const resultSub=document.getElementById('resultSub');
+const combinedIncome=document.getElementById('combinedIncome');
+
+window._jsScanId = null;
+
+analyzeBtn.addEventListener('click', async ()=>{
+  if(!file1 || !file2) return;
+  errorBox.classList.remove('show');
+  results.classList.remove('show');
+  loading.classList.add('show');
+  analyzeBtn.disabled=true;
+  loadingText.textContent='Reading your Form 16s…';
+
+  const fd=new FormData();
+  fd.append('form16_1', file1);
+  fd.append('form16_2', file2);
+  fd.append('regime', document.getElementById('js-regime').value);
+  const pw1=document.getElementById('pw1').value.trim();
+  const pw2=document.getElementById('pw2').value.trim();
+  if(pw1) fd.append('password1', pw1);
+  if(pw2) fd.append('password2', pw2);
+
+  try{
+    setTimeout(()=>{ if(loading.classList.contains('show')) loadingText.textContent='Extracting salary & TDS figures…'; }, 2500);
+    setTimeout(()=>{ if(loading.classList.contains('show')) loadingText.textContent='Computing your true tax liability…'; }, 5500);
+
+    const res=await fetch(`${API_BASE}/api/jobswitch-scan`, { method:'POST', body:fd });
+    const data=await res.json();
+    loading.classList.remove('show');
+    analyzeBtn.disabled=false;
+
+    if(data.error){
+      let msg = data.message || data.error;
+      if(data.error === 'password_protected'){
+        msg = data.message;
+      }
+      errorBox.textContent = msg;
+      errorBox.classList.add('show');
+      return;
+    }
+
+    window._jsScanId = data.scan_id;
+    renderFreeResult(data);
+  } catch(err){
+    loading.classList.remove('show');
+    analyzeBtn.disabled=false;
+    errorBox.textContent='Could not reach the server. Please check your connection and try again.';
+    errorBox.classList.add('show');
   }
-  document.getElementById('js-unlock-box').style.display='block';
+});
 
-  const totalGross = gross1 + gross2;
-  const totalTDS = tds1 + tds2;
-  const stdDeduction = regime==='new' ? 75000 : 50000;
-
-  let taxableIncome, tax;
-  if(regime==='old'){
-    taxableIncome = Math.max(0, totalGross - stdDeduction - hra - c80 - c80d - nps);
-    tax = oldTax(taxableIncome);
-  } else {
-    taxableIncome = Math.max(0, totalGross - stdDeduction - nps);
-    tax = newTax(taxableIncome, totalGross);
-  }
-
-  const diff = tax - totalTDS;
-  const owesMore = diff > 0;
-
-  let doubleClaimWarning = '';
-  if(sd1==='1'){
-    doubleClaimWarning = `<div class="insight gold"><span class="insight-icon">⚠️</span><div><strong>Double standard-deduction risk:</strong> Employer 1 already applied ${fmtI(stdDeduction)} standard deduction, and Employer 2 almost certainly applied it again independently. This calculator applies it only <strong>once</strong> — correctly — for your true liability shown here.</div></div>`;
-  }
-
-  let form12bNote = '';
-  if(form12b==='0' && gross1>0 && gross2>0){
-    form12bNote = `<div class="insight blue"><span class="insight-icon">ℹ️</span><div>You didn't submit Form 12B, so Employer 2 taxed you as if their salary was your only income for the year. This is the most common reason for a shortfall after a job switch.</div></div>`;
-  }
-
-  document.getElementById('js-result').innerHTML=`
-    <div class="result-hero" style="background:${owesMore?'linear-gradient(135deg,#4a1e1e,#5c2424)':'linear-gradient(135deg,var(--ink),var(--ink2))'}">
-      <div class="result-label">${owesMore?'Tax Shortfall — Pay by ITR Deadline':'You\'re Covered / Refund Due'}</div>
-      <div class="result-val">${fmtI(Math.abs(diff))}</div>
-      <div class="result-sub">${owesMore?'Owed as Self-Assessment Tax (Challan 280)':'Excess TDS — claim as refund in ITR'}</div>
-    </div>
-    <div class="rcard">
-      <div class="rrow"><span>Employer 1 Gross</span><span>${fmtI(gross1)}</span></div>
-      <div class="rrow"><span>Employer 2 Gross</span><span>${fmtI(gross2)}</span></div>
-      <div class="rrow"><span>Combined Annual Income</span><span>${fmtI(totalGross)}</span></div>
-      <div class="rrow"><span>Taxable Income (${regime==='new'?'New':'Old'} Regime)</span><span>${fmtI(taxableIncome)}</span></div>
-      <div class="rrow"><span>True Tax Liability</span><span>${fmtI(tax)}</span></div>
-      <div class="rrow"><span>TDS by Employer 1</span><span>${fmtI(tds1)}</span></div>
-      <div class="rrow"><span>TDS by Employer 2</span><span>${fmtI(tds2)}</span></div>
-      <div class="rrow ${owesMore?'r':'g'}"><span>Total TDS Deducted</span><span>${fmtI(totalTDS)}</span></div>
-    </div>
-    ${form12bNote}
-    ${doubleClaimWarning}
-    <div class="insight ${owesMore?'red':'green'}">
-      <span class="insight-icon">${owesMore?'💸':'✅'}</span>
-      <div>${owesMore
-        ? `<strong>Pay ${fmtI(diff)} as self-assessment tax</strong> via Challan 280 (code 300) before filing your ITR. The longer you wait past March 31, the more interest accrues under Section 234B/234C.`
-        : `<strong>Your combined TDS covers your true liability</strong> — if TDS exceeds tax due, file your ITR with both Form 16s to claim the ${fmtI(Math.abs(diff))} refund.`}
-      </div>
-    </div>
-  `;
-
-  window._jsData = {
-    gross1, tds1, sd1, gross2, tds2, form12b, regime,
-    c80, c80d, hra, nps, totalGross, totalTDS, stdDeduction,
-    taxableIncome, tax, diff, owesMore
-  };
+function renderFreeResult(data){
+  const owesMore = data.owes_more;
+  resultHero.style.background = owesMore ? 'linear-gradient(135deg,#4a1e1e,#5c2424)' : 'linear-gradient(135deg,var(--ink),var(--ink2))';
+  resultLabel.textContent = owesMore ? 'Tax Shortfall — Pay by ITR Deadline' : "You're Covered / Refund Due";
+  resultVal.textContent = fmtI(data.amount);
+  resultSub.textContent = owesMore ? 'Owed as Self-Assessment Tax (Challan 280)' : 'Excess TDS — claim as refund in ITR';
+  combinedIncome.textContent = fmtI(data.combined_income);
+  results.classList.add('show');
 }
 
 // ── Paid report unlock (Razorpay) ──────────────────────────
-// Backend routes: POST /api/create-jobswitch-order -> {order_id, amount, currency, razorpay_key}
-//                 POST /api/verify-jobswitch-payment -> {success, payment_id}
-// No calculator input is ever sent to the server — every number in the
-// report is already computed client-side, same as the free result above.
-// Once payment is verified, we build the printable report DOM and call
-// window.print() so the user can save it as PDF.
-const API_BASE = '';
-
 async function startJobswitchPayment(){
   const btn = document.getElementById('js-unlock-btn');
   const status = document.getElementById('js-unlock-status');
-  if(!window._jsData){ return; }
+  if(!window._jsScanId){ return; }
   if(typeof Razorpay === 'undefined'){
     status.textContent = 'Payment script did not load — check your connection and reload.';
     return;
@@ -471,14 +454,17 @@ async function startJobswitchPayment(){
             body: JSON.stringify({
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature
+              razorpay_signature: response.razorpay_signature,
+              scan_id: window._jsScanId
             })
           });
           const verify = await verifyRes.json();
-          if(verify.success){
+          if(verify.success && verify.report){
             status.textContent = 'Payment verified — opening your report to save as PDF.';
-            buildJobswitchReport(window._jsData);
+            buildJobswitchReport(verify.report);
             setTimeout(()=> window.print(), 400);
+          } else if(verify.success){
+            status.textContent = verify.error || 'Payment succeeded but the report could not be generated. Contact support with payment ID: ' + (verify.payment_id || '');
           } else {
             status.textContent = 'Payment could not be verified. If money was deducted, contact support with payment ID: ' + (response.razorpay_payment_id || '');
           }
@@ -507,17 +493,17 @@ async function startJobswitchPayment(){
 
 function buildJobswitchReport(d){
   const today = new Date().toLocaleDateString('en-IN', {year:'numeric', month:'long', day:'numeric'});
-  const owesMore = d.owesMore;
+  const owesMore = d.owes_more;
   const amount = Math.abs(d.diff);
 
   const emailDraft = `Subject: Correction needed — TDS deduction basis (previous employer income)
 
 Hi [HR/Payroll Team],
 
-I joined on [date] after previously working at my last employer for this financial year. I'd like to share my previous employer's salary and TDS details (Form 12B) so my TDS here is calculated on my correct combined annual income, not just the salary paid by this company.
+I joined after previously working at ${d.employer1_name} for part of this financial year. I'd like to share my previous employer's salary and TDS details (Form 12B) so my TDS here is calculated on my correct combined annual income, not just the salary paid by this company.
 
-Previous employer gross salary: ₹${d.gross1.toLocaleString('en-IN')}
-Previous employer TDS deducted: ₹${d.tds1.toLocaleString('en-IN')}
+Previous employer (${d.employer1_name}) gross salary: ${fmtI(d.gross1)}
+Previous employer TDS deducted: ${fmtI(d.tds1)}
 
 Could you please update my TDS calculation for the remaining months of this financial year to account for this? Happy to share the Form 16 / payslips as proof if needed.
 
@@ -527,20 +513,20 @@ Thanks,
   document.getElementById('js-report-body').innerHTML = `
     <div class="report-block">
       <h4>Report generated ${today} · SalaryBit.in</h4>
-      <p>This report reconciles your income and TDS across two employers for FY 2026-27 under the ${d.regime==='new'?'New':'Old'} Tax Regime.</p>
+      <p>This report reconciles your income and TDS across two employers for FY 2026-27 under the ${d.regime==='new'?'New':'Old'} Tax Regime, based on the Form 16 PDFs you uploaded.</p>
     </div>
     <div class="report-block">
       <h4>Income & Tax Summary</h4>
       <div class="rcard">
-        <div class="rrow"><span>Employer 1 Gross Salary</span><span>${fmtI(d.gross1)}</span></div>
-        <div class="rrow"><span>Employer 1 TDS Deducted</span><span>${fmtI(d.tds1)}</span></div>
-        <div class="rrow"><span>Employer 2 Gross Salary</span><span>${fmtI(d.gross2)}</span></div>
-        <div class="rrow"><span>Employer 2 TDS Deducted</span><span>${fmtI(d.tds2)}</span></div>
-        <div class="rrow"><span>Combined Annual Income</span><span>${fmtI(d.totalGross)}</span></div>
-        <div class="rrow"><span>Standard Deduction Applied (once)</span><span>${fmtI(d.stdDeduction)}</span></div>
-        <div class="rrow"><span>Taxable Income</span><span>${fmtI(d.taxableIncome)}</span></div>
-        <div class="rrow"><span>True Tax Liability</span><span>${fmtI(d.tax)}</span></div>
-        <div class="rrow"><span>Total TDS Deducted (both employers)</span><span>${fmtI(d.totalTDS)}</span></div>
+        <div class="rrow"><span>${d.employer1_name} — Gross Salary</span><span>${fmtI(d.gross1)}</span></div>
+        <div class="rrow"><span>${d.employer1_name} — TDS Deducted</span><span>${fmtI(d.tds1)}</span></div>
+        <div class="rrow"><span>${d.employer2_name} — Gross Salary</span><span>${fmtI(d.gross2)}</span></div>
+        <div class="rrow"><span>${d.employer2_name} — TDS Deducted</span><span>${fmtI(d.tds2)}</span></div>
+        <div class="rrow"><span>Combined Annual Income</span><span>${fmtI(d.total_gross)}</span></div>
+        <div class="rrow"><span>Standard Deduction Applied (once)</span><span>${fmtI(d.std_deduction)}</span></div>
+        <div class="rrow"><span>Taxable Income</span><span>${fmtI(d.taxable_income)}</span></div>
+        <div class="rrow"><span>True Tax Liability</span><span>${fmtI(d.true_tax)}</span></div>
+        <div class="rrow"><span>Total TDS Deducted (both employers)</span><span>${fmtI(d.total_tds)}</span></div>
         <div class="rrow ${owesMore?'r':'g'}"><span>${owesMore?'Shortfall to Pay':'Refund Due'}</span><span>${fmtI(amount)}</span></div>
       </div>
     </div>
@@ -561,7 +547,7 @@ Thanks,
     ` : `
     <div class="report-block">
       <h4>Claiming Your Refund</h4>
-      <p>Your combined TDS of ${fmtI(d.totalTDS)} exceeds your true tax liability of ${fmtI(d.tax)}. File your ITR reporting income from <strong>both</strong> Form 16s — the excess of ${fmtI(amount)} will be processed as a refund after your return is verified, typically within a few weeks of e-verification.</p>
+      <p>Your combined TDS of ${fmtI(d.total_tds)} exceeds your true tax liability of ${fmtI(d.true_tax)}. File your ITR reporting income from <strong>both</strong> Form 16s — the excess of ${fmtI(amount)} will be processed as a refund after your return is verified, typically within a few weeks of e-verification.</p>
     </div>
     `}
     <div class="report-block">
@@ -571,7 +557,7 @@ Thanks,
     </div>
     <div class="report-block">
       <h4>Disclaimer</h4>
-      <p>This report is generated using standard FY 2026-27 slab rates for informational purposes and does not constitute tax advice. Consult a qualified CA for your specific situation, especially if you have additional income sources, capital gains, or foreign assets.</p>
+      <p>This report is generated using standard FY 2026-27 slab rates and AI-extracted figures from your uploaded Form 16s, for informational purposes — it does not constitute tax advice. Please verify the extracted numbers against your actual Form 16s, and consult a qualified CA for your specific situation, especially if you have additional income sources, capital gains, or foreign assets.</p>
     </div>
   `;
 }

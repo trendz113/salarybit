@@ -7,7 +7,7 @@ pyzbar==0.1.9
 pillow==10.3.0
 gunicorn==22.0.0
 requests
-pdfplumber==0.11.4
+pdfplumber==0.11.10
 asn1crypto==1.5.1
 pyhanko==0.25.3
 pyhanko-certvalidator==0.26.5

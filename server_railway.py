@@ -1444,6 +1444,67 @@ def verify_family_passbook_payment():
     return jsonify({"success": True, "payment_id": payment_id})
 
 
+# ── JOB SWITCH TAX CALCULATOR ────────────────────────────────
+# Same pattern as passbook/family-passbook: the free calculator already runs
+# entirely client-side, so the paid unlock is just the HMAC-verified full
+# report (Challan 280 guide + Form 12B email draft) via window.print().
+# Nothing the user typed is ever sent to this server.
+JOBSWITCH_PRICE_PAISE = 4900  # Rs 49
+
+
+@app.route("/api/create-jobswitch-order", methods=["POST", "OPTIONS"])
+def create_jobswitch_order():
+    """Matches the existing create_*_order() pattern exactly."""
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": JOBSWITCH_PRICE_PAISE,
+            "currency": "INR",
+            "receipt": f"jobswitch_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
+    except Exception as e:
+        print(f"create-jobswitch-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/verify-jobswitch-payment", methods=["POST", "OPTIONS"])
+def verify_jobswitch_payment():
+    """
+    Matches the existing verify_*_payment() HMAC pattern exactly. No PDF is
+    generated here and no calculator input is ever sent to the server — once
+    the signature checks out, the frontend unlocks window.print() itself.
+    """
+    if request.method == "OPTIONS":
+        return "", 200
+    data = request.get_json(silent=True) or {}
+    order_id = data.get("razorpay_order_id")
+    payment_id = data.get("razorpay_payment_id")
+    signature = data.get("razorpay_signature")
+
+    if not all([order_id, payment_id, signature]):
+        return jsonify({"success": False, "error": "Missing required fields."}), 400
+
+    body = f"{order_id}|{payment_id}"
+    expected = hmac.new(
+        os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+        body.encode(),
+        hashlib.sha256
+    ).hexdigest()
+    if expected != signature:
+        return jsonify({"success": False, "error": "Payment verification failed."}), 400
+
+    print(f"[jobswitch] paid unlock | payment_id={payment_id}")
+
+    return jsonify({"success": True, "payment_id": payment_id})
+
+
 # ── HEALTH CHECK ──────────────────────────────────────────
 @app.route("/", methods=["GET"])
 def health():

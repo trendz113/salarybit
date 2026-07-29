@@ -532,44 +532,6 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 .hero-deeplink{font-size:10px;font-weight:600;color:rgba(255,255,255,.55);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:3px 9px;border-radius:20px;text-decoration:none}
 .hero-deeplink:hover{background:rgba(255,255,255,.12);color:#fff}
 
-/* ═══ FLOATING COIN BUBBLES (hero) ═══ */
-.coin-layer{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
-.coin{
-  position:absolute;bottom:-60px;
-  font-size:22px;line-height:1;
-  cursor:pointer;pointer-events:auto;
-  animation:coinFloat linear infinite;
-  filter:drop-shadow(0 2px 6px rgba(0,0,0,.25));
-  user-select:none;
-  transition:transform .15s;
-}
-.coin:hover{transform:scale(1.15)}
-.coin.popped{animation:none!important;pointer-events:none}
-@keyframes coinFloat{
-  0%{transform:translateY(0) rotate(0deg);opacity:0}
-  8%{opacity:.85}
-  92%{opacity:.85}
-  100%{transform:translateY(-115vh) rotate(360deg);opacity:0}
-}
-@keyframes coinPop{
-  0%{transform:scale(1);opacity:1}
-  60%{transform:scale(1.6);opacity:.7}
-  100%{transform:scale(2.2);opacity:0}
-}
-.coin-tip{
-  position:fixed;z-index:9999;
-  background:#1a1a2e;color:#fff;font-family:var(--body,'DM Sans',sans-serif);
-  font-size:13px;font-weight:600;line-height:1.5;
-  padding:10px 16px;border-radius:12px;
-  box-shadow:0 8px 24px rgba(0,0,0,.35);
-  max-width:240px;
-  opacity:0;transform:translateY(8px) scale(.92);
-  transition:opacity .25s,transform .25s;
-  pointer-events:none;
-}
-.coin-tip.show{opacity:1;transform:translateY(0) scale(1)}
-.coin-tip a{color:#a5b4fc;text-decoration:underline}
-
 /* ═══ SPIN THE WHEEL WIDGET ═══ */
 .wheel-fab{
   position:fixed;right:22px;bottom:22px;z-index:9500;
@@ -803,7 +765,6 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
 <!-- HERO -->
 <section class="hero" style="position:relative">
-  <div class="coin-layer" id="coinLayer"></div>
   <div class="hero-inner">
     <div class="hero-top">
       <div class="hero-left">
@@ -820,6 +781,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           <a class="hero-chip" href="/subscription-leak-finder.html" style="background:rgba(91,106,240,.15);border-color:rgba(91,106,240,.3)">🔍 Subscription Leak Finder</a>
           <a class="hero-chip" href="/mf-analyzer-bot.html" style="background:rgba(22,163,74,.15);border-color:rgba(22,163,74,.3)">📊 MF Analyzer</a>
           <a class="hero-chip" href="/family-passbook.html" style="background:rgba(139,58,43,.15);border-color:rgba(139,58,43,.35)">📔 Family Passbook — In Case of Emergency</a>
+          <a class="hero-chip" href="/tools/job-switch-tax-calculator.html" style="background:rgba(91,106,240,.15);border-color:rgba(91,106,240,.35)">🔀 Job Switch Tax Calculator</a>
           <a class="hero-chip" href="/tools/household-expense-bill.html" style="background:rgba(13,148,136,.15);border-color:rgba(13,148,136,.35)">🧾 Household Expense Bill</a>
           <a class="hero-chip" href="/ai-picks.html" style="background:rgba(212,160,23,.15);border-color:rgba(212,160,23,.35)">🪙 Crypto AI Picks</a>
           <a class="hero-chip" href="/tools/salary-calculator.html">💰 Salary Calculator (Free)</a>
@@ -863,7 +825,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       </div>
       <div class="hero-stats">
         <div class="stamp-badge">🇮🇳<br>MADE FOR<br>INDIA</div>
-        <div class="hero-stat"><div class="hero-stat-val">17+</div><div class="hero-stat-label">Tools</div></div>
+        <div class="hero-stat"><div class="hero-stat-val">19+</div><div class="hero-stat-label">Tools</div></div>
         <div class="hero-stat"><div class="hero-stat-val" id="hvc-num">—</div><div class="hero-stat-label">Today's visitors</div></div>
         <div class="hero-stat"><div class="hero-stat-val">Free</div><div class="hero-stat-label">Always</div></div>
       </div>
@@ -1533,6 +1495,27 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
           <div style="display:flex;align-items:center;justify-content:space-between;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.08)">
             <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.4)">20 min · 100% private</span>
             <span style="font-size:13px;font-weight:700;color:#f3d4c4">Fill My Passbook →</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="/tools/job-switch-tax-calculator.html" style="text-decoration:none;display:flex;flex-direction:column;background:rgba(255,255,255,.04);border:1px solid rgba(91,106,240,.3);border-radius:18px;overflow:hidden;transition:transform .2s,background .2s,border-color .2s" onmouseover="this.style.background='rgba(91,106,240,.12)';this.style.borderColor='rgba(91,106,240,.6)';this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(255,255,255,.04)';this.style.borderColor='rgba(91,106,240,.3)';this.style.transform='translateY(0)'">
+        <div style="background:linear-gradient(135deg,#5b6af0,#0ea5a0);padding:1.5rem 1.5rem 1.25rem;position:relative;overflow:hidden">
+          <div style="position:absolute;top:-12px;right:-12px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.08)"></div>
+          <div style="font-size:32px;margin-bottom:.5rem;position:relative">🔀</div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.6);margin-bottom:.3rem;position:relative">Job Switch · New</div>
+          <h3 style="font-family:var(--display);font-size:20px;color:#fff;line-height:1.2;margin:0;position:relative">Job Switch Tax Calculator</h3>
+        </div>
+        <div style="padding:1.25rem;flex:1;display:flex;flex-direction:column;gap:.875rem">
+          <p style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;flex:1;margin:0">Two Form 16s after a mid-year job switch? Combine both employers' income to find your true tax liability — shortfall or refund, instantly.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:.375rem">
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#a5b4fc">Two Employers</span>
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#86efac">Free Calculator</span>
+            <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#fcd34d">Full Report ₹49</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.08)">
+            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.4)">Avoid an IT notice</span>
+            <span style="font-size:13px;font-weight:700;color:#a5b4fc">Reconcile My Tax →</span>
           </div>
         </div>
       </a>
@@ -3059,65 +3042,7 @@ function buildRoadmap(monthlyInHand,grossAnnual,bestRegime,regimeSaving,age,ctc)
   </div>
 </div>
 
-<div class="coin-tip" id="coinTip"></div>
-
-<script>
-// ═══════════════════════════════════════
-// FUN WIDGET 1 — FLOATING COIN BUBBLES
-// ═══════════════════════════════════════
-(function(){
-  const coinEmojis=['🪙','💰','💵','🏦'];
-  const coinFacts=[
-    {t:'₹78,000 crore lies unclaimed in Indian banks.', l:'/family-passbook.html', a:'Check your family →'},
-    {t:'A 1-EMI-extra-per-year habit can close a home loan years early.', l:'/tools/home-loan-emi-calculator.html', a:'Try it →'},
-    {t:'₹5,000/month SIP for 20 years ≈ ₹50 Lakh+ at 12% CAGR.', l:'/tools/sip-calculator.html', a:'Calculate →'},
-    {t:'Old vs New tax regime — most people pick the wrong one.', l:'/tools/old-vs-new-tax-regime.html', a:'Compare now →'},
-    {t:'The average forgotten subscription costs ₹3,600/year.', l:'/subscription-leak-finder.html', a:'Find leaks →'},
-    {t:'₹1 Cr term cover can cost less than your monthly food delivery bill.', l:'/insurance-mitra.html', a:'Get a quote →'},
-  ];
-  const layer=document.getElementById('coinLayer');
-  if(!layer) return;
-  const tip=document.getElementById('coinTip');
-
-  function spawnCoin(){
-    const c=document.createElement('div');
-    c.className='coin';
-    c.textContent=coinEmojis[Math.floor(Math.random()*coinEmojis.length)];
-    const left=Math.random()*92+2;
-    const dur=(Math.random()*7+9).toFixed(1);
-    const delay=(Math.random()*4).toFixed(1);
-    c.style.left=left+'%';
-    c.style.animationDuration=dur+'s';
-    c.style.animationDelay=delay+'s';
-    c.style.fontSize=(Math.random()*14+18)+'px';
-    c.addEventListener('click',(e)=>popCoin(c,e));
-    layer.appendChild(c);
-    setTimeout(()=>{ if(c.parentNode) c.remove(); },(parseFloat(dur)+parseFloat(delay))*1000+300);
-  }
-
-  function popCoin(c,e){
-    if(c.classList.contains('popped'))return;
-    c.classList.add('popped');
-    c.style.animation='coinPop .45s ease forwards';
-    const fact=coinFacts[Math.floor(Math.random()*coinFacts.length)];
-    const rect=c.getBoundingClientRect();
-    tip.innerHTML=fact.t+' <a href="'+fact.l+'">'+fact.a+'</a>';
-    let x=rect.left-90, y=rect.top-70;
-    x=Math.max(10,Math.min(window.innerWidth-250,x));
-    y=Math.max(10,y);
-    tip.style.left=x+'px';
-    tip.style.top=y+'px';
-    tip.classList.add('show');
-    clearTimeout(tip._hideTimer);
-    tip._hideTimer=setTimeout(()=>tip.classList.remove('show'),3800);
-    setTimeout(()=>{ if(c.parentNode) c.remove(); },420);
-  }
-
-  for(let i=0;i<7;i++) setTimeout(spawnCoin, i*900);
-  setInterval(spawnCoin, 2600);
-})();
-
-// ═══════════════════════════════════════
+<script>// ═══════════════════════════════════════
 // FUN WIDGET 2 — SPIN THE WHEEL
 // ═══════════════════════════════════════
 const wheelSegments=[

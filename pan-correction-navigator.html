@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAN Correction Navigator — Fix PAN Card Mismatches | SalaryBit</title>
+<meta name="description" content="Name, DOB or address mismatch on your PAN card? Find out exactly what's wrong, whether you need a correction at all, and which portal to use — before you file anything.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#1f3a5f">
+<link rel="canonical" href="https://salarybit.in/pan-correction-navigator.html">
+<meta property="og:title" content="PAN Correction Navigator — Fix PAN Card Mismatches | SalaryBit">
+<meta property="og:image" content="https://salarybit.in/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://salarybit.in/og-image.png">
+<meta property="og:description" content="Name, DOB or address mismatch on your PAN card? Find out exactly what's wrong, whether you need a correction at all, and which portal to use — before you file anything.">
+<meta property="og:url" content="https://salarybit.in/pan-correction-navigator.html">
+<meta property="og:site_name" content="SalaryBit">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%231f3a5f'/><text y='22' x='5' font-size='18'>🪪</text></svg>">
+<style>
+  :root{
+    --ink:#1c2430; --paper:#faf8f3; --panel:#ffffff; --line:#e2ddd0;
+    --navy:#1f3a5f; --navy-deep:#152943; --amber:#b8752c; --green:#2f6f5e; --red:#a53f3f; --muted:#6b6458;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:Georgia,'Iowan Old Style',serif;line-height:1.5;}
+  .sans{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}
+  header{background:var(--navy-deep);color:#f2ede1;padding:36px 20px 30px;text-align:center;}
+  header .eyebrow{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;font-size:11px;color:#c9b98a;margin-bottom:10px;}
+  header h1{margin:0 0 8px;font-size:clamp(24px,4vw,34px);font-weight:400;}
+  header p{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#cfd6de;max-width:520px;margin:0 auto;font-size:15px;}
+  main{max-width:640px;margin:0 auto;padding:34px 20px 70px;}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:26px 24px;}
+  .step{display:none;}
+  .step.active{display:block;}
+  label{display:block;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;margin-top:18px;}
+  label:first-child{margin-top:0;}
+  input[type=text]{
+    width:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:16px;
+    padding:12px 14px;border:1px solid #c7c0ae;border-radius:3px;background:#fff;color:var(--ink);
+  }
+  .radio-row{display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;}
+  .radio-opt{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:14px;border:1px solid #c7c0ae;border-radius:20px;padding:8px 16px;cursor:pointer;
+    background:#fff;transition:all .15s;
+  }
+  .radio-opt.selected{background:var(--navy);color:#fff;border-color:var(--navy);}
+  .btn{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--navy);color:#fff;border:none;padding:13px 26px;border-radius:3px;
+    font-size:15px;font-weight:600;cursor:pointer;margin-top:24px;
+  }
+  .btn:hover{background:var(--navy-deep);}
+  .btn.ghost{background:transparent;color:var(--navy);border:1px solid var(--navy);margin-right:10px;}
+  .result{border-top:2px solid var(--navy);padding-top:20px;margin-top:10px;}
+  .tag{display:inline-block;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:20px;margin-bottom:12px;}
+  .tag.minor{background:#e6efe9;color:var(--green);}
+  .tag.major{background:#fbeadb;color:var(--amber);}
+  .tag.duplicate{background:#f3e4e4;color:var(--red);}
+  .result h3{margin:0 0 10px;font-size:20px;font-weight:400;}
+  .result p{margin:0 0 14px;color:#3a3428;}
+  .fixbox{background:#f4f0e5;border-left:3px solid var(--navy);padding:14px 16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;margin-bottom:14px;}
+  .fixbox strong{display:block;margin-bottom:6px;color:var(--navy-deep);}
+  .fixbox ol,.fixbox ul{margin:0;padding-left:18px;}
+  .fixbox li{margin-bottom:6px;}
+  .progress{display:flex;gap:6px;margin-bottom:24px;}
+  .progress span{height:3px;flex:1;background:var(--line);border-radius:2px;}
+  .progress span.done{background:var(--navy);}
+  .disclaimer{margin-top:28px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:12.5px;color:var(--muted);text-align:center;}
+  .price-note{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:12.5px;color:var(--muted);margin-top:8px;}
+  .pay-error{display:none;margin-top:14px;background:#f3e4e4;border-left:3px solid var(--red);padding:12px 14px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13.5px;color:#5c2b2b;}
+  .pay-error.show{display:block;}
+  .btn:disabled{opacity:.6;cursor:not-allowed;}
+</style>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">SalaryBit Tools</div>
+  <h1>PAN Correction Navigator</h1>
+  <p>Figure out exactly what's mismatched, whether you even need a correction, and which portal to use — before you file anything.</p>
+</header>
+
+<main>
+  <div class="panel">
+    <div class="progress">
+      <span id="p1" class="done"></span><span id="p2"></span><span id="p3"></span>
+    </div>
+
+    <div class="step active" id="step1">
+      <label for="panName">Name exactly as printed on your PAN card</label>
+      <input type="text" id="panName" placeholder="e.g. DEEPAK R KUMAR">
+
+      <label for="aadhaarName">Name exactly as printed on your Aadhaar</label>
+      <input type="text" id="aadhaarName" placeholder="e.g. Deepak Kumar">
+
+      <label for="bankName">Name as it appears in your bank KYC (optional)</label>
+      <input type="text" id="bankName" placeholder="e.g. Deepak Kumar R">
+
+      <label>Do you hold, or suspect you hold, more than one PAN?</label>
+      <div class="radio-row" id="dupGroup">
+        <div class="radio-opt" data-val="no">No, just this one</div>
+        <div class="radio-opt" data-val="yes">Yes / not sure</div>
+      </div>
+
+      <button class="btn" onclick="goStep(2)">Continue →</button>
+    </div>
+
+    <div class="step" id="step2">
+      <label>Which agency issued your PAN? Check the back of your card.</label>
+      <div class="radio-row" id="issuerGroup">
+        <div class="radio-opt" data-val="protean">Protean (formerly NSDL)</div>
+        <div class="radio-opt" data-val="uti">UTIITSL</div>
+        <div class="radio-opt" data-val="unsure">Not sure</div>
+      </div>
+      <div style="margin-top:26px;">
+        <button class="btn ghost" onclick="goStep(1)">← Back</button>
+        <button class="btn" id="genBtn" onclick="startPayment()">Unlock my result — ₹99 →</button>
+      </div>
+      <div class="price-note sans">One-time ₹99. Nothing you've typed is sent anywhere until after payment.</div>
+      <div class="pay-error sans" id="payError"></div>
+    </div>
+
+    <div class="step" id="step3">
+      <div class="result sans" id="result"></div>
+      <button class="btn" id="downloadPdfBtn" style="display:none;background:#b8752c;margin-right:8px;" onclick="downloadPDF()">⬇ Download as PDF</button>
+      <button class="btn ghost" onclick="goStep(1)">Start over</button>
+    </div>
+  </div>
+
+  <p class="disclaimer">This tool gives directional guidance based on common PAN/Aadhaar correction scenarios. Final decisions on document requirements rest with Protean/UTIITSL and the Income Tax Department.</p>
+</main>
+
+<script>
+let state = { duplicate: 'no', issuer: 'unsure' };
+
+document.querySelectorAll('#dupGroup .radio-opt').forEach(el => {
+  el.addEventListener('click', () => {
+    document.querySelectorAll('#dupGroup .radio-opt').forEach(x => x.classList.remove('selected'));
+    el.classList.add('selected');
+    state.duplicate = el.dataset.val;
+  });
+});
+document.querySelectorAll('#issuerGroup .radio-opt').forEach(el => {
+  el.addEventListener('click', () => {
+    document.querySelectorAll('#issuerGroup .radio-opt').forEach(x => x.classList.remove('selected'));
+    el.classList.add('selected');
+    state.issuer = el.dataset.val;
+  });
+});
+document.querySelector('#dupGroup .radio-opt[data-val="no"]').classList.add('selected');
+document.querySelector('#issuerGroup .radio-opt[data-val="unsure"]').classList.add('selected');
+
+function goStep(n){
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step'+n).classList.add('active');
+  document.getElementById('p1').classList.toggle('done', n>=1);
+  document.getElementById('p2').classList.toggle('done', n>=2);
+  document.getElementById('p3').classList.toggle('done', n>=3);
+}
+
+function normalize(s){
+  return s.trim().toLowerCase().replace(/[.]/g,'').replace(/\s+/g,' ');
+}
+function tokens(s){ return normalize(s).split(' ').filter(Boolean); }
+
+function compareNames(a, b){
+  if(!a || !b) return 'unknown';
+  const ta = tokens(a), tb = tokens(b);
+  const na = normalize(a).replace(/\s/g,'');
+  const nb = normalize(b).replace(/\s/g,'');
+  if(na === nb) return 'identical';
+  // check if one is a subset/reorder of the other (e.g. missing middle name, reordered)
+  const setA = new Set(ta), setB = new Set(tb);
+  const overlap = [...setA].filter(x => setB.has(x)).length;
+  const minLen = Math.min(setA.size, setB.size);
+  if(overlap >= minLen - 1 && minLen > 0) return 'minor';
+  return 'major';
+}
+
+// ── PAYMENT ────────────────────────────────────────────────
+// Configure this to your Railway backend base URL (same one used by
+// job-switch-tax-calculator.html / family-passbook.html).
+const API_BASE = "https://web-production-456eb.up.railway.app";
+
+function showPayError(msg){
+  const el = document.getElementById('payError');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+function clearPayError(){
+  document.getElementById('payError').classList.remove('show');
+}
+
+async function startPayment(){
+  clearPayError();
+  if(!document.getElementById('panName').value.trim()){
+    showPayError('Please go back and enter your PAN name first.');
+    return;
+  }
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  btn.textContent = 'Processing…';
+
+  try {
+    const orderRes = await fetch(`${API_BASE}/api/create-pancorrection-order`, { method: 'POST' });
+    if(!orderRes.ok) throw new Error('Could not start payment. Please try again.');
+    const order = await orderRes.json();
+    if(order.error) throw new Error(order.error);
+
+    const options = {
+      key: order.razorpay_key,
+      amount: order.amount,
+      currency: order.currency,
+      order_id: order.order_id,
+      name: 'SalaryBit',
+      description: 'PAN Correction Navigator',
+      handler: async function(response){
+        try {
+          const verifyRes = await fetch(`${API_BASE}/api/verify-pancorrection-payment`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature
+            })
+          });
+          const verify = await verifyRes.json();
+          if(verify.success){
+            btn.disabled = false;
+            btn.textContent = 'Unlock my result — ₹99 →';
+            showResult();
+          } else {
+            showPayError(verify.error || 'Payment verification failed. If you were charged, contact support for a refund.');
+            btn.disabled = false;
+            btn.textContent = 'Unlock my result — ₹99 →';
+          }
+        } catch(e){
+          showPayError('Payment succeeded but verification failed to reach the server. Contact support with your payment ID: ' + response.razorpay_payment_id);
+          btn.disabled = false;
+          btn.textContent = 'Unlock my result — ₹99 →';
+        }
+      },
+      modal: {
+        ondismiss: function(){
+          btn.disabled = false;
+          btn.textContent = 'Unlock my result — ₹99 →';
+        }
+      },
+      theme: { color: '#1f3a5f' }
+    };
+    const rzp = new Razorpay(options);
+    rzp.on('payment.failed', function(){
+      showPayError('Payment failed. You have not been charged — please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Unlock my result — ₹99 →';
+    });
+    rzp.open();
+  } catch(e){
+    showPayError(e.message || 'Something went wrong starting the payment.');
+    btn.disabled = false;
+    btn.textContent = 'Unlock my result — ₹99 →';
+  }
+}
+
+function showResult(){
+  goStep(3);
+  const panName = document.getElementById('panName').value;
+  const aadhaarName = document.getElementById('aadhaarName').value;
+  const bankName = document.getElementById('bankName').value;
+  const cmp = compareNames(panName, aadhaarName);
+  const el = document.getElementById('result');
+
+  let html = '';
+
+  if(state.duplicate === 'yes'){
+    html += `<span class="tag duplicate">Priority issue</span>
+    <h3>Sort out the duplicate PAN first</h3>
+    <p>Holding two PANs is not a correction issue — it's a compliance issue. The law requires you to surrender the extra one, not edit either.</p>
+    <div class="fixbox">
+      <strong>What to do</strong>
+      <ol>
+        <li>Identify both PAN numbers.</li>
+        <li>File Form 49A "PAN correction" and mention the duplicate PAN for surrender, on the Protean or UTIITSL portal.</li>
+        <li>Keep the PAN that's linked to your bank accounts, ITR history, and Aadhaar.</li>
+        <li>Do this before attempting any name/DOB correction — corrections on a PAN that's about to be surrendered are wasted effort.</li>
+      </ol>
+    </div>`;
+  }
+
+  if(cmp === 'identical'){
+    html += `<span class="tag minor">No correction needed</span>
+    <h3>Your PAN and Aadhaar names match</h3>
+    <p>Based on what you entered, your PAN and Aadhaar names are effectively identical. If PAN-Aadhaar linking is still failing, the issue is more likely date of birth or a data-entry gap — not the name.</p>
+    <div class="fixbox">
+      <strong>Next step</strong>
+      <ol>
+        <li>Try linking again on the Income Tax e-filing portal using Aadhaar OTP.</li>
+        <li>If it still fails, double check date of birth on both documents next — that's the next most common cause.</li>
+      </ol>
+    </div>`;
+  } else if(cmp === 'minor'){
+    html += `<span class="tag minor">Minor mismatch — likely no correction needed</span>
+    <h3>Your names are close enough to link directly</h3>
+    <p>The difference looks like a missing middle name, initial, or word order — the kind of gap that PAN-Aadhaur OTP linking can usually absorb without filing a formal correction on either document.</p>
+    <div class="fixbox">
+      <strong>Try this first</strong>
+      <ol>
+        <li>Go to the Income Tax e-filing portal → Link Aadhaar, and attempt linking via Aadhaar OTP.</li>
+        <li>If it succeeds, you're done — no correction filing needed.</li>
+        <li>If it's rejected as "name mismatch", move to the formal correction path below.</li>
+      </ol>
+    </div>`;
+  } else {
+    html += `<span class="tag major">Names differ significantly — correction likely required</span>
+    <h3>You'll probably need to file a formal correction</h3>
+    <p>The difference between your PAN and Aadhaar names is large enough that automatic linking will likely fail. You'll need to correct one document to match the other.</p>
+    <div class="fixbox">
+      <strong>Decide which document to fix</strong>
+      <ul>
+        <li>Since more services now key off Aadhaar (banking, KYC, digital verification), most people correct PAN to match Aadhaar rather than the other way round.</li>
+        <li>If your Aadhaar itself has the error (e.g. a typo from your original enrolment), fix that at UIDAI instead — it's usually faster.</li>
+      </ul>
+    </div>`;
+  }
+
+  // Issuer-specific guidance
+  let issuerBlock = '';
+  if(state.issuer === 'protean'){
+    issuerBlock = `<div class="fixbox">
+      <strong>Your PAN was issued by Protean (NSDL)</strong>
+      <ol>
+        <li>Go to the Protean eGov Technologies website → Online PAN Services → "Changes or Correction in PAN Data/Reprint".</li>
+        <li>Fill the form, tick only the fields you're correcting (name, DOB, etc).</li>
+        <li>Upload proof: Aadhaar as both identity and address proof usually covers a name correction.</li>
+        <li>Pay the fee and note your acknowledgement number to track status.</li>
+      </ol>
+    </div>`;
+  } else if(state.issuer === 'uti'){
+    issuerBlock = `<div class="fixbox">
+      <strong>Your PAN was issued by UTIITSL</strong>
+      <ol>
+        <li>Go to the UTIITSL PAN services portal and choose "PAN Card Change Request".</li>
+        <li>Enter your existing PAN and tick the fields you're correcting.</li>
+        <li>Upload the same proof documents as above (Aadhaar generally covers both identity and address).</li>
+        <li>Track status using the coupon number generated after payment.</li>
+      </ol>
+    </div>`;
+  } else {
+    issuerBlock = `<div class="fixbox">
+      <strong>Check the back of your physical PAN card</strong>
+      <p style="margin:0;">It will say either "Protean eGov Technologies Limited" (formerly NSDL) or "UTI Infrastructure Technology And Services Limited" (UTIITSL). Use that portal specifically — either can technically process any PAN, but starting with the original issuer avoids delays.</p>
+    </div>`;
+  }
+
+  document.getElementById('result').innerHTML = html + issuerBlock;
+  document.getElementById('downloadPdfBtn').style.display = 'inline-block';
+}
+
+function downloadPDF(){
+  const el = document.getElementById('result');
+  html2pdf().set({
+    margin: 10,
+    filename: 'pan-correction-navigator-salarybit.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, backgroundColor: '#ffffff' },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  }).from(el).save();
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+</body>
+</html>

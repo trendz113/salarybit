@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Superannuation Fund Navigator — Withdrawal & Tax Rules | SalaryBit</title>
+<meta name="description" content="Leaving your job or retiring? Find out what you can withdraw from your superannuation fund, how it's taxed, and the steps to claim it.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#1f3a5f">
+<link rel="canonical" href="https://salarybit.in/superannuation-navigator.html">
+<meta property="og:title" content="Superannuation Fund Navigator — Withdrawal & Tax Rules | SalaryBit">
+<meta property="og:image" content="https://salarybit.in/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://salarybit.in/og-image.png">
+<meta property="og:description" content="Leaving your job or retiring? Find out what you can withdraw from your superannuation fund, how it's taxed, and the steps to claim it.">
+<meta property="og:url" content="https://salarybit.in/superannuation-navigator.html">
+<meta property="og:site_name" content="SalaryBit">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%231f3a5f'/><text y='22' x='5' font-size='18'>🏛️</text></svg>">
+<style>
+  :root{
+    --ink:#1c2430; --paper:#faf8f3; --panel:#ffffff; --line:#e2ddd0;
+    --navy:#1f3a5f; --navy-deep:#152943; --amber:#b8752c; --green:#2f6f5e; --red:#a53f3f; --muted:#6b6458;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:Georgia,'Iowan Old Style',serif;line-height:1.5;}
+  .sans{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}
+  header{background:var(--navy-deep);color:#f2ede1;padding:36px 20px 30px;text-align:center;}
+  header .eyebrow{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;font-size:11px;color:#c9b98a;margin-bottom:10px;}
+  header h1{margin:0 0 8px;font-size:clamp(24px,4vw,34px);font-weight:400;}
+  header p{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#cfd6de;max-width:520px;margin:0 auto;font-size:15px;}
+  main{max-width:640px;margin:0 auto;padding:34px 20px 70px;}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:26px 24px;}
+  label{display:block;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;margin-top:20px;}
+  label:first-child{margin-top:0;}
+  input[type=number],input[type=text]{
+    width:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:16px;
+    padding:12px 14px;border:1px solid #c7c0ae;border-radius:3px;background:#fff;color:var(--ink);
+  }
+  .radio-row{display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;}
+  .radio-opt{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;border:1px solid #c7c0ae;border-radius:20px;padding:8px 16px;cursor:pointer;background:#fff;}
+  .radio-opt.selected{background:var(--navy);color:#fff;border-color:var(--navy);}
+  .btn{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--navy);color:#fff;border:none;padding:13px 26px;border-radius:3px;font-size:15px;font-weight:600;cursor:pointer;margin-top:26px;}
+  .btn:hover{background:var(--navy-deep);}
+  .result{border-top:2px solid var(--navy);padding-top:20px;margin-top:26px;display:none;}
+  .result.show{display:block;}
+  .tag{display:inline-block;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:20px;margin-bottom:12px;}
+  .tag.ok{background:#e6efe9;color:var(--green);}
+  .tag.check{background:#fbeadb;color:var(--amber);}
+  .tag.no{background:#f3e4e4;color:var(--red);}
+  .result h3{margin:0 0 10px;font-size:20px;font-weight:400;}
+  .result p{margin:0 0 14px;color:#3a3428;}
+  .fixbox{background:#f4f0e5;border-left:3px solid var(--navy);padding:14px 16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;margin-bottom:14px;}
+  .fixbox strong{display:block;margin-bottom:6px;color:var(--navy-deep);}
+  .fixbox ul,.fixbox ol{margin:0;padding-left:18px;}
+  .fixbox li{margin-bottom:6px;}
+  .disclaimer{margin-top:28px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:12.5px;color:var(--muted);text-align:center;}
+  .price-note{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:12.5px;color:var(--muted);margin-top:8px;}
+  .pay-error{display:none;margin-top:14px;background:#f3e4e4;border-left:3px solid var(--red);padding:12px 14px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13.5px;color:#5c2b2b;}
+  .pay-error.show{display:block;}
+  .btn:disabled{opacity:.6;cursor:not-allowed;}
+</style>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">SalaryBit Tools</div>
+  <h1>Superannuation Fund Navigator</h1>
+  <p>Most people forget this line item exists until they're exiting a job. Find out what you can withdraw, and how it's taxed.</p>
+</header>
+
+<main>
+  <div class="panel">
+    <label>Why are you accessing the fund?</label>
+    <div class="radio-row" id="reasonGroup">
+      <div class="radio-opt" data-val="resignation">Resigning / switching jobs</div>
+      <div class="radio-opt" data-val="retirement">Retiring</div>
+      <div class="radio-opt" data-val="death_disability">Death or disability (claiming on someone's behalf)</div>
+    </div>
+
+    <label>Have you already received, or are you also eligible for, gratuity from this employer?</label>
+    <div class="radio-row" id="gratuityGroup">
+      <div class="radio-opt" data-val="yes">Yes</div>
+      <div class="radio-opt" data-val="no">No</div>
+      <div class="radio-opt" data-val="unsure">Not sure</div>
+    </div>
+
+    <label>Do you know if your fund is an "approved superannuation fund" (check offer letter or HR)?</label>
+    <div class="radio-row" id="approvedGroup">
+      <div class="radio-opt" data-val="yes">Yes, approved</div>
+      <div class="radio-opt" data-val="unsure">Not sure</div>
+    </div>
+
+    <button class="btn" id="genBtn" onclick="startPayment()">Unlock my options — ₹99 →</button>
+    <div class="price-note sans">One-time ₹99. Your selections stay in your browser until after payment.</div>
+    <div class="pay-error sans" id="payError"></div>
+
+    <div class="result sans" id="result"></div>
+    <button class="btn" id="downloadPdfBtn" style="display:none;background:#2f6f5e;margin-top:14px;" onclick="downloadPDF()">⬇ Download as PDF</button>
+  </div>
+
+  <p class="disclaimer">Superannuation schemes are employer- and trust-specific — unlike EPF, there's no single central formula. Treat this as a starting map, and confirm exact figures with your HR team or the fund's insurer (often LIC).</p>
+</main>
+
+<script>
+let state = {};
+function bindGroup(id, key){
+  document.querySelectorAll('#'+id+' .radio-opt').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('#'+id+' .radio-opt').forEach(x => x.classList.remove('selected'));
+      el.classList.add('selected');
+      state[key] = el.dataset.val;
+    });
+  });
+}
+bindGroup('reasonGroup','reason');
+bindGroup('gratuityGroup','gratuity');
+bindGroup('approvedGroup','approved');
+
+// ── PAYMENT ────────────────────────────────────────────────
+// Configure this to your Railway backend base URL (same one used by
+// job-switch-tax-calculator.html / family-passbook.html).
+const API_BASE = "https://web-production-456eb.up.railway.app";
+
+function showPayError(msg){
+  const el = document.getElementById('payError');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+function clearPayError(){
+  document.getElementById('payError').classList.remove('show');
+}
+
+async function startPayment(){
+  clearPayError();
+  if(!state.reason){ showPayError("Please select why you're accessing the fund first."); return; }
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  btn.textContent = 'Processing…';
+
+  try {
+    const orderRes = await fetch(`${API_BASE}/api/create-superannuation-order`, { method: 'POST' });
+    if(!orderRes.ok) throw new Error('Could not start payment. Please try again.');
+    const order = await orderRes.json();
+    if(order.error) throw new Error(order.error);
+
+    const options = {
+      key: order.razorpay_key,
+      amount: order.amount,
+      currency: order.currency,
+      order_id: order.order_id,
+      name: 'SalaryBit',
+      description: 'Superannuation Fund Navigator',
+      handler: async function(response){
+        try {
+          const verifyRes = await fetch(`${API_BASE}/api/verify-superannuation-payment`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature
+            })
+          });
+          const verify = await verifyRes.json();
+          if(verify.success){
+            btn.style.display = 'none';
+            document.querySelector('.price-note').style.display = 'none';
+            showResult();
+          } else {
+            showPayError(verify.error || 'Payment verification failed. If you were charged, contact support for a refund.');
+            btn.disabled = false;
+            btn.textContent = 'Unlock my options — ₹99 →';
+          }
+        } catch(e){
+          showPayError('Payment succeeded but verification failed to reach the server. Contact support with your payment ID: ' + response.razorpay_payment_id);
+          btn.disabled = false;
+          btn.textContent = 'Unlock my options — ₹99 →';
+        }
+      },
+      modal: {
+        ondismiss: function(){
+          btn.disabled = false;
+          btn.textContent = 'Unlock my options — ₹99 →';
+        }
+      },
+      theme: { color: '#1f3a5f' }
+    };
+    const rzp = new Razorpay(options);
+    rzp.on('payment.failed', function(){
+      showPayError('Payment failed. You have not been charged — please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Unlock my options — ₹99 →';
+    });
+    rzp.open();
+  } catch(e){
+    showPayError(e.message || 'Something went wrong starting the payment.');
+    btn.disabled = false;
+    btn.textContent = 'Unlock my options — ₹99 →';
+  }
+}
+
+function showResult(){
+  const r = document.getElementById('result');
+  let html = '';
+
+  if(state.reason === 'resignation'){
+    html = `<span class="tag check">Scheme-dependent</span>
+    <h3>Resignation: usually no in-service withdrawal, and it's fully taxable</h3>
+    <p>Superannuation funds are built for retirement, not job switches. Most schemes don't allow you to cash out on resignation the way you can with PF — your options are typically limited to two paths.</p>
+    <div class="fixbox">
+      <strong>Your likely options</strong>
+      <ol>
+        <li><strong>Transfer to your new employer's superannuation scheme</strong> — only possible if the new employer also offers one, and is usually the cleanest option since it stays tax-deferred.</li>
+        <li><strong>Leave it as a "paid-up" fund with the trust/insurer</strong> until you retire or change jobs again — ask HR whether this is allowed.</li>
+        <li><strong>Full withdrawal on resignation</strong> — some schemes do permit this, but the entire amount becomes taxable as income in the year you withdraw it, added to your salary income for that year.</li>
+      </ol>
+    </div>
+    <div class="fixbox">
+      <strong>What to actually do</strong>
+      <ul>
+        <li>Ask your HR/payroll team for your fund's specific "trust deed" or scheme rules — this determines what's even allowed, and it varies company to company.</li>
+        <li>If a resignation withdrawal is allowed and you're in a high tax bracket, transferring rather than withdrawing usually saves significant tax.</li>
+      </ul>
+    </div>`;
+  } else if(state.reason === 'retirement'){
+    const gratuityNote = state.gratuity === 'yes'
+      ? "Since you're also getting gratuity, many schemes cap your superannuation lump-sum withdrawal — check whether your specific scheme applies this cap before assuming you can take more."
+      : "Without gratuity in the picture, some schemes allow a larger lump-sum withdrawal — again, this is scheme-specific, so verify with HR.";
+    html = `<span class="tag ok">Standard retirement path</span>
+    <h3>Retirement: partial tax-free lump sum, rest as taxed pension</h3>
+    <p>This is the scenario superannuation funds are actually designed for, so the rules are more standard across schemes — though the exact percentage still varies by trust.</p>
+    <div class="fixbox">
+      <strong>The general structure</strong>
+      <ol>
+        <li>You can typically withdraw around one-third of the accumulated corpus as a lump sum — this portion is usually tax-exempt.</li>
+        <li>The remaining balance must go toward purchasing an annuity (a regular pension), and this annuity income is taxed at your normal income slab rate as you receive it.</li>
+        <li>${gratuityNote}</li>
+      </ol>
+    </div>
+    <div class="fixbox">
+      <strong>Before you sign anything</strong>
+      <ul>
+        <li>Ask for the exact lump-sum percentage your specific trust allows — it isn't always exactly one-third.</li>
+        <li>Compare annuity providers if you're given a choice — rates and payout structures differ.</li>
+        <li>Confirm in writing whether the lump sum you're being offered is actually tax-exempt under your fund's specific approval status.</li>
+      </ul>
+    </div>`;
+  } else {
+    html = `<span class="tag ok">Death / disability claim</span>
+    <h3>This is the one case with the most flexibility</h3>
+    <p>Superannuation rules are generally most lenient for death or permanent disability — the five-year or tenure-based restrictions that apply to normal exits are usually waived.</p>
+    <div class="fixbox">
+      <strong>What to do</strong>
+      <ol>
+        <li>Contact the deceased/disabled employee's last HR team to identify which insurer or trust holds the fund (commonly LIC for many Indian employers).</li>
+        <li>Gather: death certificate or disability certificate, legal heir proof or nomination form, and the employee's fund/policy number.</li>
+        <li>The full corpus is generally payable to the nominee or legal heir — ask the insurer directly for their specific claim form and process, since this varies by insurer.</li>
+      </ol>
+    </div>`;
+  }
+
+  if(state.approved !== 'yes'){
+    html += `<div class="fixbox">
+      <strong>Worth checking: is your fund "approved"?</strong>
+      <p style="margin:0;">Tax exemptions on superannuation only apply if the fund is approved by the Income Tax Commissioner. Ask your HR team to confirm this in writing — an unapproved fund changes the tax treatment on everything above.</p>
+    </div>`;
+  }
+
+  r.innerHTML = html;
+  r.classList.add('show');
+  document.getElementById('downloadPdfBtn').style.display = 'inline-block';
+}
+
+function downloadPDF(){
+  const el = document.getElementById('result');
+  html2pdf().set({
+    margin: 10,
+    filename: 'superannuation-navigator-salarybit.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, backgroundColor: '#ffffff' },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  }).from(el).save();
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+</body>
+</html>

@@ -57,12 +57,8 @@
   .fixbox ul,.fixbox ol{margin:0;padding-left:18px;}
   .fixbox li{margin-bottom:6px;}
   .disclaimer{margin-top:28px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:12.5px;color:var(--muted);text-align:center;}
-  .price-note{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:12.5px;color:var(--muted);margin-top:8px;}
-  .pay-error{display:none;margin-top:14px;background:#f3e4e4;border-left:3px solid var(--red);padding:12px 14px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13.5px;color:#5c2b2b;}
-  .pay-error.show{display:block;}
   .btn:disabled{opacity:.6;cursor:not-allowed;}
 </style>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
@@ -94,9 +90,7 @@
       <div class="radio-opt" data-val="unsure">Not sure</div>
     </div>
 
-    <button class="btn" id="genBtn" onclick="startPayment()">Unlock my options — ₹99 →</button>
-    <div class="price-note sans">One-time ₹99. Your selections stay in your browser until after payment.</div>
-    <div class="pay-error sans" id="payError"></div>
+    <button class="btn" id="genBtn" onclick="showResult()">See my options →</button>
 
     <div class="result sans" id="result"></div>
     <button class="btn" id="downloadPdfBtn" style="display:none;background:#2f6f5e;margin-top:14px;" onclick="downloadPDF()">⬇ Download as PDF</button>
@@ -120,90 +114,8 @@ bindGroup('reasonGroup','reason');
 bindGroup('gratuityGroup','gratuity');
 bindGroup('approvedGroup','approved');
 
-// ── PAYMENT ────────────────────────────────────────────────
-// Configure this to your Railway backend base URL (same one used by
-// job-switch-tax-calculator.html / family-passbook.html).
-const API_BASE = "https://web-production-456eb.up.railway.app";
-
-function showPayError(msg){
-  const el = document.getElementById('payError');
-  el.textContent = msg;
-  el.classList.add('show');
-}
-function clearPayError(){
-  document.getElementById('payError').classList.remove('show');
-}
-
-async function startPayment(){
-  clearPayError();
-  if(!state.reason){ showPayError("Please select why you're accessing the fund first."); return; }
-  const btn = document.getElementById('genBtn');
-  btn.disabled = true;
-  btn.textContent = 'Processing…';
-
-  try {
-    const orderRes = await fetch(`${API_BASE}/api/create-superannuation-order`, { method: 'POST' });
-    if(!orderRes.ok) throw new Error('Could not start payment. Please try again.');
-    const order = await orderRes.json();
-    if(order.error) throw new Error(order.error);
-
-    const options = {
-      key: order.razorpay_key,
-      amount: order.amount,
-      currency: order.currency,
-      order_id: order.order_id,
-      name: 'SalaryBit',
-      description: 'Superannuation Fund Navigator',
-      handler: async function(response){
-        try {
-          const verifyRes = await fetch(`${API_BASE}/api/verify-superannuation-payment`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature
-            })
-          });
-          const verify = await verifyRes.json();
-          if(verify.success){
-            btn.style.display = 'none';
-            document.querySelector('.price-note').style.display = 'none';
-            showResult();
-          } else {
-            showPayError(verify.error || 'Payment verification failed. If you were charged, contact support for a refund.');
-            btn.disabled = false;
-            btn.textContent = 'Unlock my options — ₹99 →';
-          }
-        } catch(e){
-          showPayError('Payment succeeded but verification failed to reach the server. Contact support with your payment ID: ' + response.razorpay_payment_id);
-          btn.disabled = false;
-          btn.textContent = 'Unlock my options — ₹99 →';
-        }
-      },
-      modal: {
-        ondismiss: function(){
-          btn.disabled = false;
-          btn.textContent = 'Unlock my options — ₹99 →';
-        }
-      },
-      theme: { color: '#1f3a5f' }
-    };
-    const rzp = new Razorpay(options);
-    rzp.on('payment.failed', function(){
-      showPayError('Payment failed. You have not been charged — please try again.');
-      btn.disabled = false;
-      btn.textContent = 'Unlock my options — ₹99 →';
-    });
-    rzp.open();
-  } catch(e){
-    showPayError(e.message || 'Something went wrong starting the payment.');
-    btn.disabled = false;
-    btn.textContent = 'Unlock my options — ₹99 →';
-  }
-}
-
 function showResult(){
+  if(!state.reason){ alert("Please select why you're accessing the fund first."); return; }
   const r = document.getElementById('result');
   let html = '';
 

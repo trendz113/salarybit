@@ -70,12 +70,8 @@
   .progress span{height:3px;flex:1;background:var(--line);border-radius:2px;}
   .progress span.done{background:var(--navy);}
   .disclaimer{margin-top:28px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:12.5px;color:var(--muted);text-align:center;}
-  .price-note{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:12.5px;color:var(--muted);margin-top:8px;}
-  .pay-error{display:none;margin-top:14px;background:#f3e4e4;border-left:3px solid var(--red);padding:12px 14px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13.5px;color:#5c2b2b;}
-  .pay-error.show{display:block;}
   .btn:disabled{opacity:.6;cursor:not-allowed;}
 </style>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
@@ -119,10 +115,8 @@
       </div>
       <div style="margin-top:26px;">
         <button class="btn ghost" onclick="goStep(1)">← Back</button>
-        <button class="btn" id="genBtn" onclick="startPayment()">Unlock my result — ₹99 →</button>
+        <button class="btn" id="genBtn" onclick="showResult()">See my result →</button>
       </div>
-      <div class="price-note sans">One-time ₹99. Nothing you've typed is sent anywhere until after payment.</div>
-      <div class="pay-error sans" id="payError"></div>
     </div>
 
     <div class="step" id="step3">
@@ -182,93 +176,11 @@ function compareNames(a, b){
   return 'major';
 }
 
-// ── PAYMENT ────────────────────────────────────────────────
-// Configure this to your Railway backend base URL (same one used by
-// job-switch-tax-calculator.html / family-passbook.html).
-const API_BASE = "https://web-production-456eb.up.railway.app";
-
-function showPayError(msg){
-  const el = document.getElementById('payError');
-  el.textContent = msg;
-  el.classList.add('show');
-}
-function clearPayError(){
-  document.getElementById('payError').classList.remove('show');
-}
-
-async function startPayment(){
-  clearPayError();
+function showResult(){
   if(!document.getElementById('panName').value.trim()){
-    showPayError('Please go back and enter your PAN name first.');
+    alert('Please go back and enter your PAN name first.');
     return;
   }
-  const btn = document.getElementById('genBtn');
-  btn.disabled = true;
-  btn.textContent = 'Processing…';
-
-  try {
-    const orderRes = await fetch(`${API_BASE}/api/create-pancorrection-order`, { method: 'POST' });
-    if(!orderRes.ok) throw new Error('Could not start payment. Please try again.');
-    const order = await orderRes.json();
-    if(order.error) throw new Error(order.error);
-
-    const options = {
-      key: order.razorpay_key,
-      amount: order.amount,
-      currency: order.currency,
-      order_id: order.order_id,
-      name: 'SalaryBit',
-      description: 'PAN Correction Navigator',
-      handler: async function(response){
-        try {
-          const verifyRes = await fetch(`${API_BASE}/api/verify-pancorrection-payment`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature
-            })
-          });
-          const verify = await verifyRes.json();
-          if(verify.success){
-            btn.disabled = false;
-            btn.textContent = 'Unlock my result — ₹99 →';
-            showResult();
-          } else {
-            showPayError(verify.error || 'Payment verification failed. If you were charged, contact support for a refund.');
-            btn.disabled = false;
-            btn.textContent = 'Unlock my result — ₹99 →';
-          }
-        } catch(e){
-          showPayError('Payment succeeded but verification failed to reach the server. Contact support with your payment ID: ' + response.razorpay_payment_id);
-          btn.disabled = false;
-          btn.textContent = 'Unlock my result — ₹99 →';
-        }
-      },
-      modal: {
-        ondismiss: function(){
-          btn.disabled = false;
-          btn.textContent = 'Unlock my result — ₹99 →';
-        }
-      },
-      theme: { color: '#1f3a5f' }
-    };
-    const rzp = new Razorpay(options);
-    rzp.on('payment.failed', function(){
-      showPayError('Payment failed. You have not been charged — please try again.');
-      btn.disabled = false;
-      btn.textContent = 'Unlock my result — ₹99 →';
-    });
-    rzp.open();
-  } catch(e){
-    showPayError(e.message || 'Something went wrong starting the payment.');
-    btn.disabled = false;
-    btn.textContent = 'Unlock my result — ₹99 →';
-  }
-}
-
-function showResult(){
   goStep(3);
   const panName = document.getElementById('panName').value;
   const aadhaarName = document.getElementById('aadhaarName').value;

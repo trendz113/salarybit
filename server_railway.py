@@ -837,6 +837,13 @@ def verify_and_decode():
 
 # ── QR DECODE LOGIC ───────────────────────────────────────
 def decode_qr_from_pdf(pdf_path):
+    # Skip images larger than 500x500 — those are property photos, not QR
+    # codes. Loading + upscaling a large photo up to 12x is what previously
+    # caused a SIGKILL OOM crash on Railway, silently losing the request
+    # after payment had already succeeded.
+    MAX_PIXELS = 500 * 500
+    MIN_SIZE = 50
+
     doc = fitz.open(pdf_path)
     results = []
     seen = set()
@@ -847,16 +854,22 @@ def decode_qr_from_pdf(pdf_path):
             xref = img_info[0]
             try:
                 base_img = doc.extract_image(xref)
+                iw = base_img["width"]
+                ih = base_img["height"]
+                if iw * ih > MAX_PIXELS or iw < MIN_SIZE or ih < MIN_SIZE:
+                    continue
                 img = Image.open(io.BytesIO(base_img["image"]))
                 decoded = None
                 for scale in [1, 4, 8, 12]:
-                    w = img.width * scale
-                    h = img.height * scale
+                    w = min(img.width * scale, 1200)
+                    h = min(img.height * scale, 1200)
                     scaled = img.resize((w, h), Image.NEAREST)
                     found = decode(scaled)
+                    del scaled
                     if found:
                         decoded = found[0].data.decode("utf-8", errors="replace")
                         break
+                del img
                 if decoded and "+++" in decoded and decoded not in seen:
                     seen.add(decoded)
                     parts = decoded.split("+++", 1)

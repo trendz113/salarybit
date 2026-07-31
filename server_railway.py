@@ -482,16 +482,22 @@ def identify_merchants_claude(recurring_list):
     """
     Uses ANTHROPIC_API_KEY to identify merchant narrations via Claude,
     same urllib.request pattern as the rest of this file (no SDK dependency).
+
+    Returns (enriched_list, ai_failed) — ai_failed is True when the Claude
+    call itself failed or its response didn't parse, so the caller can
+    surface a visible warning instead of silently shipping an "Unknown"
+    report to a paying customer.
     """
     claude_key = os.environ.get("ANTHROPIC_API_KEY")
     if not claude_key or not recurring_list:
-        return [
+        fallback = [
             {**r, "identified_as": "Unknown - check manually",
              "category": "Unknown",
              "how_to_cancel": "Check NPCI UPI Autopay portal or your bank app",
              "payment_method": guess_payment_method(r["narration_sample"])}
             for r in recurring_list
         ]
+        return fallback, bool(recurring_list) and not claude_key
 
     txn_summaries = [
         {"narration": r["narration_sample"], "amount": r["amount"], "frequency": r["frequency"]}
@@ -515,7 +521,7 @@ Output format:
 
     payload = json.dumps({
         "model": "claude-sonnet-4-6",
-        "max_tokens": 2048,
+        "max_tokens": 4000,
         "temperature": 0.2,
         "messages": [{"role": "user", "content": prompt}]
     }).encode("utf-8")
@@ -529,6 +535,7 @@ Output format:
         },
         method="POST"
     )
+    ai_failed = False
     try:
         with urllib.request.urlopen(req, timeout=60) as resp:
             result = json.loads(resp.read().decode("utf-8"))
@@ -538,6 +545,7 @@ Output format:
     except Exception as e:
         print(f"identify_merchants_claude error: {e}")
         identifications = []
+        ai_failed = True
 
     id_map = {i["narration"]: i for i in identifications}
     enriched = []
@@ -553,7 +561,7 @@ Output format:
             "how_to_cancel": match.get("how_to_cancel", "Check NPCI UPI Autopay or your bank app"),
             "payment_method": payment_method,
         })
-    return enriched
+    return enriched, ai_failed
 
 
 # ── EMBED HTML ────────────────────────────────────────────
@@ -1042,7 +1050,7 @@ def claude_proxy():
 
     payload = json.dumps({
         "model": body.get("model") or "claude-sonnet-4-6",
-        "max_tokens": min(int(body.get("max_tokens") or 1000), 2048),
+        "max_tokens": min(int(body.get("max_tokens") or 1000), 8000),
         "messages": messages
     }).encode("utf-8")
 
@@ -1308,13 +1316,22 @@ def verify_subscription_payment():
             "payment_id": payment_id
         })
 
-    enriched = identify_merchants_claude(recurring)
-    return jsonify({
+    enriched, ai_failed = identify_merchants_claude(recurring)
+    response = {
         "success": True,
         "subscriptions": enriched,
         "total_annual_cost": round(sum(r["annual_cost"] for r in enriched), 2),
         "count": len(enriched)
-    })
+    }
+    if ai_failed:
+        response["warning"] = (
+            "We detected your recurring charges, but couldn't identify all the merchants "
+            "automatically this time. Some entries below may show as \"Unknown\" — you can "
+            "still see the amount, frequency, and cancel guidance for each. Refresh in a "
+            "minute to try identification again, or contact support with this payment ID."
+        )
+        response["payment_id"] = payment_id
+    return jsonify(response)
 
 
 # ── PATIENCE PASSBOOK ──────────────────────────────────────

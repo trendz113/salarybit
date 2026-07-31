@@ -199,6 +199,16 @@ select.fld{cursor:pointer}
   </div>
 </div>
 
+<div class="seo" id="lead-magnet-card" style="background:var(--pale);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;">
+  <h2 style="font-size:16px;margin-bottom:.375rem;">📄 Want this as a full CA-style PDF breakdown?</h2>
+  <p style="font-size:13px;color:var(--ink3);margin-bottom:.75rem;">We're building a downloadable PDF version of this comparison with a complete deduction checklist. Leave your email and we'll send it the moment it's ready — no spam, one email.</p>
+  <form id="lead-form" style="display:flex;gap:.5rem;flex-wrap:wrap;" onsubmit="return submitLead(event)">
+    <input type="email" id="lead-email" required placeholder="you@example.com" style="flex:1;min-width:200px;padding:.625rem .75rem;border:1px solid var(--border);border-radius:var(--r-sm);font-size:13px;">
+    <button type="submit" class="cta" style="width:auto;padding:.625rem 1.25rem;">Notify Me</button>
+  </form>
+  <div id="lead-msg" style="font-size:12px;margin-top:.5rem;"></div>
+</div>
+
 <div class="seo">
   <h2>Old vs New Tax Regime — Complete FY 2026-27 Guide</h2>
   <p>India's income tax system offers two regimes for salaried employees: the <strong>Old Tax Regime</strong> (with deductions and exemptions) and the <strong>New Tax Regime</strong> (lower rates, minimal deductions). Since FY 2024-25, the New Regime is the <strong>default</strong> — you must actively opt for the Old Regime.</p>
@@ -342,6 +352,37 @@ function calcRegime(){
       <div class="rrow"><span>New Regime Taxable Income</span><span>${fmtI(Math.round(newTaxable))}</span></div>
     </div>
     ${gross>2000000?`<div class="insight blue" style="margin-top:.625rem;"><span class="insight-icon">🧾</span><div>At this income, RSUs, ESOPs or a dual Form-16 year can change the picture significantly. <a href="/tools/esop-rsu-tax-calculator.html" style="color:var(--accent);font-weight:600;">Check your ESOP/RSU tax</a> or <a href="/tools/job-switch-tax-calculator.html" style="color:var(--accent);font-weight:600;">run a job-switch tax analysis</a>.</div></div>`:''}`;
+}
+
+const LEAD_API_BASE = 'https://web-production-456eb.up.railway.app';
+async function submitLead(e){
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type="submit"]');
+  const msg = document.getElementById('lead-msg');
+  const email = document.getElementById('lead-email').value.trim();
+  btn.disabled = true; btn.textContent = 'Sending...';
+  try{
+    const res = await fetch(LEAD_API_BASE + '/api/capture-lead', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({email: email, source: 'old-vs-new-tax-regime-pdf-waitlist'})
+    });
+    const data = await res.json();
+    if(res.ok){
+      msg.style.color = 'var(--green)';
+      msg.textContent = "You're on the list — we'll email you the moment the PDF is ready.";
+      document.getElementById('lead-form').style.display = 'none';
+    } else {
+      msg.style.color = 'var(--rose)';
+      msg.textContent = data.error || 'Something went wrong. Please try again.';
+      btn.disabled = false; btn.textContent = 'Notify Me';
+    }
+  } catch(err){
+    msg.style.color = 'var(--rose)';
+    msg.textContent = "Couldn't reach the server. Please try again in a moment.";
+    btn.disabled = false; btn.textContent = 'Notify Me';
+  }
+  return false;
 }
 </script>
 </body></html>

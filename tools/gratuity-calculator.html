@@ -280,7 +280,8 @@ function calcGratuity(){
       <div class="rrow g"><span>Tax-free (up to ₹20L)</span><span>${fmtI(Math.round(taxFree))}</span></div>
       <div class="rrow ${taxable>0?'r':'g'}"><span>Taxable (above ₹20L)</span><span>${taxable>0?fmtI(Math.round(taxable)):'Nil'}</span></div>
     </div>
-    <div class="insight green"><span class="insight-icon">✅</span><div><strong>You are eligible for gratuity.</strong> Up to ₹20 lakh is tax-free under Section 10(10).${taxable>0?' The ₹'+Math.round(taxable).toLocaleString('en-IN')+' above ₹20L is taxable as salary.':''}</div></div>`
+    <div class="insight green"><span class="insight-icon">✅</span><div><strong>You are eligible for gratuity.</strong> Up to ₹20 lakh is tax-free under Section 10(10).${taxable>0?' The ₹'+Math.round(taxable).toLocaleString('en-IN')+' above ₹20L is taxable as salary.':''}</div></div>
+    <div class="insight blue" style="margin-top:.625rem;"><span class="insight-icon">📄</span><div>Employer delaying your final settlement or relieving letter? <a href="/relieving-letter-kit.html" style="color:var(--accent);font-weight:600;">Get the escalation kit</a>.</div></div>`
   :`<div class="insight red"><span class="insight-icon">⚠️</span><div><strong>Not yet eligible.</strong> You need at least 5 continuous years. You need ${(5-years).toFixed(1)} more years.</div></div>`;
 }
 </script>

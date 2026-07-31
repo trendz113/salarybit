@@ -312,6 +312,7 @@ function calcCG(){
       <div class="rrow r"><span>Health & Education Cess (4%)</span><span>${fmtI(Math.round(cess))}</span></div>
       <div class="rrow g"><span>Net Profit After Tax</span><span>${fmtI(Math.round(netProfit))}</span></div>
     </div>
-    ${note?`<div class="insight blue"><span class="insight-icon">💡</span><div>${note}</div></div>`:''}`;
+    ${note?`<div class="insight blue"><span class="insight-icon">💡</span><div>${note}</div></div>`:''}
+    ${(asset==='us_stock'||taxableGain>1000000)?`<div class="insight blue" style="margin-top:.625rem;"><span class="insight-icon">🧾</span><div>${asset==='us_stock'?'Foreign share gains need Schedule FA and Schedule CG in ITR-2.':'Gains this size are worth getting right at filing time.'} <a href="/tax-ai.html" style="color:var(--accent);font-weight:600;">See the ITR-2 filing guide</a>.</div></div>`:''}`;
 }
 </script>

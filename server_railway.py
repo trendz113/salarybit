@@ -1734,6 +1734,43 @@ def verify_relievingletter_payment():
 
 
 # ── HEALTH CHECK ──────────────────────────────────────────
+@app.route("/api/capture-lead", methods=["POST", "OPTIONS"])
+def capture_lead():
+    """
+    Stores lead emails from waitlist/lead-magnet forms (e.g. the
+    'Full CA Tax Breakdown PDF' waitlist on old-vs-new-tax-regime.html).
+
+    NOTE: Writes to a local JSON file. Railway's filesystem is ephemeral —
+    this file will NOT survive a redeploy or restart. This is fine for a
+    quick MVP / low volume, but for anything you care about keeping,
+    swap LEADS_FILE for a real store (Postgres, Google Sheet via webhook,
+    Airtable, etc.) before you rely on this for real lead generation.
+    """
+    if request.method == "OPTIONS":
+        return "", 200
+
+    data = request.get_json(silent=True) or {}
+    email = (data.get("email") or "").strip().lower()
+    source = (data.get("source") or "unknown").strip()[:100]
+
+    if not email or "@" not in email or "." not in email.split("@")[-1]:
+        return jsonify({"error": "Please enter a valid email address."}), 400
+
+    LEADS_FILE = os.path.join(os.path.dirname(__file__), "leads.jsonl")
+    entry = {
+        "email": email,
+        "source": source,
+        "ts": datetime.utcnow().isoformat() + "Z",
+    }
+    try:
+        with open(LEADS_FILE, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    except Exception as e:
+        return jsonify({"error": "Could not save right now, please try again."}), 500
+
+    return jsonify({"status": "ok"}), 200
+
+
 @app.route("/", methods=["GET"])
 def health():
     return jsonify({"status": "ok", "service": "SalaryBit API"})

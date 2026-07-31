@@ -252,6 +252,46 @@ footer a { color: var(--text3); text-decoration: none; }
 <meta property="og:title" content="e-Khata QR Decoder — SalaryBit">
 <meta property="og:description" content="Free tool from SalaryBit for Indian salaried professionals. No login, no data stored.">
 <meta property="og:url" content="https://salarybit.in/qr-decoder.html">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the QR string used for?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The QR string (e.g. 2933699+++MIIB/AYJKoZIhvc...) is a PKCS#7 digital signature embedded in government documents like e-Khata. It is used to verify document authenticity and is required by certain legal and banking processes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which PDFs does this work on?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "This tool works on e-Khata documents issued by BBMP, BBSCC, and other Karnataka municipal corporations. It supports any government PDF with embedded image-based QR codes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my document data safe?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Your PDF is processed in memory only and is never stored on any server. Once the QR string is extracted and returned to you, the file is discarded immediately."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if the QR is not found?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If our system cannot decode the QR from your PDF, you will receive a full refund within 24 hours. Contact us at support@salarybit.in."
+      }
+    }
+  ]
+}
+</script>
 <meta property="og:site_name" content="SalaryBit">
 <meta property="og:image" content="https://salarybit.in/og-image.png">
 <meta property="og:image:width" content="1200">

@@ -1,0 +1,221 @@
+diff --git a/Procfile b/Procfile
+index fa8974b..ff46bfc 100644
+--- a/Procfile
++++ b/Procfile
+@@ -1 +1 @@
+-web: gunicorn server_railway:app --bind 0.0.0.0:$PORT --worker-class gthread --workers 1 --threads 4 --timeout 200 --max-requests 100 --max-requests-jitter 10
++web: gunicorn server_railway:app --bind 0.0.0.0:$PORT --workers 2 --timeout 200 --max-requests 100 --max-requests-jitter 10
+diff --git a/nixpacks.toml b/nixpacks.toml
+index 8997c42..547a2bb 100644
+--- a/nixpacks.toml
++++ b/nixpacks.toml
+@@ -8,4 +8,4 @@ cmds = [
+ ]
+ 
+ [start]
+-cmd = "/app/venv/bin/gunicorn server_railway:app --bind 0.0.0.0:$PORT --worker-class gthread --workers 1 --threads 4 --timeout 120"
++cmd = "/app/venv/bin/gunicorn server_railway:app --bind 0.0.0.0:$PORT --workers 2 --timeout 200"
+diff --git a/server_railway.py b/server_railway.py
+index e427f14..b77df85 100644
+--- a/server_railway.py
++++ b/server_railway.py
+@@ -9,6 +9,8 @@ import urllib.request
+ import urllib.error
+ import base64
+ import uuid
++import sqlite3
++import threading
+ import time as _time
+ from datetime import datetime
+ from concurrent.futures import ThreadPoolExecutor
+@@ -69,6 +71,97 @@ rzp = razorpay.Client(
+     auth=(os.environ.get("RAZORPAY_KEY_ID"), os.environ.get("RAZORPAY_KEY_SECRET"))
+ )
+ 
++# ── SHARED SCAN CACHE (disk-backed, SQLite) ───────────────
++# Replaces the old in-memory dicts. A plain Python dict only lives inside
++# one process's memory — with >1 gunicorn worker (processes), each worker
++# has its own separate copy, so a scan created on worker A is invisible to
++# worker B's payment-verify request (~50% of paying customers hit this).
++# SQLite in WAL mode is safe to share across both multiple processes and
++# multiple threads, so this works regardless of gunicorn worker config.
++_CACHE_DB_PATH = os.path.join(os.environ.get("SCAN_CACHE_DIR", "/tmp"), "scan_cache.db")
++_cache_init_lock = threading.Lock()
++
++
++def _cache_conn():
++    conn = sqlite3.connect(_CACHE_DB_PATH, timeout=10, check_same_thread=False)
++    conn.execute("PRAGMA journal_mode=WAL;")
++    return conn
++
++
++def _cache_init():
++    with _cache_init_lock:
++        conn = _cache_conn()
++        conn.execute("""
++            CREATE TABLE IF NOT EXISTS scan_cache (
++                scan_id   TEXT PRIMARY KEY,
++                namespace TEXT NOT NULL,
++                data      TEXT NOT NULL,
++                ts        REAL NOT NULL
++            )
++        """)
++        conn.commit()
++        conn.close()
++
++
++_cache_init()
++
++
++def _cache_put(namespace, payload, ttl_seconds):
++    _cache_gc(namespace, ttl_seconds)
++    scan_id = uuid.uuid4().hex
++    conn = _cache_conn()
++    conn.execute(
++        "INSERT INTO scan_cache (scan_id, namespace, data, ts) VALUES (?, ?, ?, ?)",
++        (scan_id, namespace, json.dumps(payload), _time.time()),
++    )
++    conn.commit()
++    conn.close()
++    return scan_id
++
++
++def _cache_pop(namespace, scan_id, ttl_seconds):
++    conn = _cache_conn()
++    row = conn.execute(
++        "SELECT data, ts FROM scan_cache WHERE scan_id = ? AND namespace = ?",
++        (scan_id, namespace),
++    ).fetchone()
++    if row:
++        conn.execute("DELETE FROM scan_cache WHERE scan_id = ?", (scan_id,))
++        conn.commit()
++    conn.close()
++    if not row:
++        return None
++    data, ts = row
++    if _time.time() - ts > ttl_seconds:
++        return None
++    return json.loads(data)
++
++
++def _cache_peek(namespace, scan_id, ttl_seconds):
++    conn = _cache_conn()
++    row = conn.execute(
++        "SELECT data, ts FROM scan_cache WHERE scan_id = ? AND namespace = ?",
++        (scan_id, namespace),
++    ).fetchone()
++    conn.close()
++    if not row:
++        return None
++    data, ts = row
++    if _time.time() - ts > ttl_seconds:
++        return None
++    return json.loads(data)
++
++
++def _cache_gc(namespace, ttl_seconds):
++    conn = _cache_conn()
++    conn.execute(
++        "DELETE FROM scan_cache WHERE namespace = ? AND ts < ?",
++        (namespace, _time.time() - ttl_seconds),
++    )
++    conn.commit()
++    conn.close()
++
++
+ # ── CCA CERTS FOLDER ─────────────────────────────────────
+ CERTS_FOLDER = os.path.join(os.path.dirname(__file__), "certs")
+ 
+@@ -1007,31 +1100,20 @@ SUBSCRIPTION_SCAN_PRICE_PAISE = 4900  # Rs 49
+ # Holds the (already-detected, not-yet-AI-identified) recurring charge list
+ # between the free scan and the paid unlock, so unlock is a single fast
+ # Claude call instead of re-parsing the statement.
+-_SUBSCRIPTION_SCAN_CACHE = {}
+ _SCAN_CACHE_TTL = 1800  # 30 minutes
+ 
+ 
+ def _scan_cache_put(recurring_list):
+-    _scan_cache_gc()
+-    scan_id = uuid.uuid4().hex
+-    _SUBSCRIPTION_SCAN_CACHE[scan_id] = {"recurring": recurring_list, "ts": _time.time()}
+-    return scan_id
++    return _cache_put("subscription", {"recurring": recurring_list}, _SCAN_CACHE_TTL)
+ 
+ 
+ def _scan_cache_pop(scan_id):
+-    entry = _SUBSCRIPTION_SCAN_CACHE.pop(scan_id, None)
+-    if not entry:
+-        return None
+-    if _time.time() - entry["ts"] > _SCAN_CACHE_TTL:
+-        return None
+-    return entry["recurring"]
++    entry = _cache_pop("subscription", scan_id, _SCAN_CACHE_TTL)
++    return entry["recurring"] if entry else None
+ 
+ 
+ def _scan_cache_gc():
+-    now = _time.time()
+-    expired = [k for k, v in _SUBSCRIPTION_SCAN_CACHE.items() if now - v["ts"] > _SCAN_CACHE_TTL]
+-    for k in expired:
+-        _SUBSCRIPTION_SCAN_CACHE.pop(k, None)
++    _cache_gc("subscription", _SCAN_CACHE_TTL)
+ 
+ 
+ # ── GENERIC CLAUDE PROXY (for client-side AI tools like MF Analyzer Bot) ──
+@@ -1776,46 +1858,32 @@ def verify_relievingletter_payment():
+ # 80CCD(2) tax-saving tip, and a next-month take-home estimate.
+ PAYSLIP_COMPARE_PRICE_PAISE = 9900  # Rs 99
+ 
+-# In-memory cache: scan_id -> {"texts": [...raw payslip text...], "ts": epoch}
+-# Mirrors _SUBSCRIPTION_SCAN_CACHE — holds extracted text between the free
+-# upload and the paid Claude call so payment doesn't require re-uploading.
+-_PAYSLIP_SCAN_CACHE = {}
++# Disk-backed cache (see _cache_put/_cache_pop/_cache_peek above) — holds
++# extracted text between the free upload and the paid Claude call so
++# payment doesn't require re-uploading, and survives regardless of how
++# many gunicorn worker processes/threads are handling requests.
+ _PAYSLIP_CACHE_TTL = 1800  # 30 minutes
+ 
+ 
+ def _payslip_cache_put(texts):
+-    _payslip_cache_gc()
+-    scan_id = uuid.uuid4().hex
+-    _PAYSLIP_SCAN_CACHE[scan_id] = {"texts": texts, "ts": _time.time()}
+-    return scan_id
++    return _cache_put("payslip", {"texts": texts}, _PAYSLIP_CACHE_TTL)
+ 
+ 
+ def _payslip_cache_pop(scan_id):
+-    entry = _PAYSLIP_SCAN_CACHE.pop(scan_id, None)
+-    if not entry:
+-        return None
+-    if _time.time() - entry["ts"] > _PAYSLIP_CACHE_TTL:
+-        return None
+-    return entry["texts"]
++    entry = _cache_pop("payslip", scan_id, _PAYSLIP_CACHE_TTL)
++    return entry["texts"] if entry else None
+ 
+ 
+ def _payslip_cache_peek(scan_id):
+     """Like _payslip_cache_pop but does NOT remove the entry. Used so a failed
+     Claude call doesn't destroy the payslip text — only a successful report
+     consumes the cache entry."""
+-    entry = _PAYSLIP_SCAN_CACHE.get(scan_id)
+-    if not entry:
+-        return None
+-    if _time.time() - entry["ts"] > _PAYSLIP_CACHE_TTL:
+-        return None
+-    return entry["texts"]
++    entry = _cache_peek("payslip", scan_id, _PAYSLIP_CACHE_TTL)
++    return entry["texts"] if entry else None
+ 
+ 
+ def _payslip_cache_gc():
+-    now = _time.time()
+-    expired = [k for k, v in _PAYSLIP_SCAN_CACHE.items() if now - v["ts"] > _PAYSLIP_CACHE_TTL]
+-    for k in expired:
+-        _PAYSLIP_SCAN_CACHE.pop(k, None)
++    _cache_gc("payslip", _PAYSLIP_CACHE_TTL)
+ 
+ 
+ def _extract_take_home_teaser(text):

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payslip Comparer — Understand Your Salary Slip | SalaryBit</title>
+<meta name="description" content="Upload 2-4 months of payslips and get a plain-English report on exactly what changed, why (including New Labour Code wage restructuring), an NPS tax-saving tip, and next month's take-home estimate.">
+<style>
+  :root {
+    --bg: #0b0e14;
+    --bg-card: #151a24;
+    --bg-card-light: #1c2230;
+    --green: #00e676;
+    --green-dark: #00c264;
+    --ink: #ffffff;
+    --muted: #8b93a7;
+    --line: #232938;
+    --warn: #ff6b5e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, 'Inter', 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 40px 20px 100px; }
+  .eyebrow {
+    display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--green); background: rgba(0,230,118,0.1);
+    padding: 6px 12px; border-radius: 20px; margin-bottom: 20px;
+  }
+  h1 { font-size: clamp(30px, 6vw, 46px); line-height: 1.12; margin: 0 0 16px; font-weight: 700; letter-spacing: -0.01em; }
+  h1 .accent { color: var(--green); }
+  .sub { font-size: 17px; color: var(--muted); max-width: 560px; margin-bottom: 36px; }
+
+  .upload-box {
+    border: 1.5px dashed var(--line); background: var(--bg-card); border-radius: 16px;
+    padding: 48px 24px; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s;
+  }
+  .upload-box:hover, .upload-box.drag { border-color: var(--green); background: var(--bg-card-light); }
+  .upload-box input { display: none; }
+  .upload-icon {
+    width: 56px; height: 56px; margin: 0 auto 16px; background: rgba(0,230,118,0.12);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;
+  }
+  .upload-label { font-size: 16px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+  .upload-hint { font-size: 13px; color: var(--muted); }
+
+  .filelist { margin-top: 16px; }
+  .filepill {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 16px; background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 12px; font-size: 14px; margin-bottom: 8px;
+  }
+  .filepill button { background: none; border: none; color: var(--warn); cursor: pointer; font-size: 13px; font-weight: 600; }
+
+  .cta-btn {
+    margin-top: 20px; width: 100%; background: var(--green); color: #04140c; border: none;
+    padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer;
+  }
+  .cta-btn:disabled { background: #2a3040; color: var(--muted); cursor: not-allowed; }
+  .secondary-btn {
+    margin-top: 10px; width: 100%; background: transparent; color: var(--green);
+    border: 1.5px solid var(--green); padding: 13px; border-radius: 12px; font-size: 15px;
+    font-weight: 600; cursor: pointer;
+  }
+
+  .loading { display: none; text-align: center; padding: 40px 0; }
+  .loading.show { display: block; }
+  .spinner {
+    border: 3px solid var(--line); border-top: 3px solid var(--green); border-radius: 50%;
+    width: 32px; height: 32px; animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { color: var(--muted); font-size: 14px; }
+
+  .card {
+    background: var(--bg-card); border: 1px solid var(--line); border-radius: 16px;
+    padding: 24px; margin-top: 24px; display: none;
+  }
+  .card.show { display: block; }
+
+  .headline { font-size: 16px; line-height: 1.6; }
+  .teaser-numbers { display: flex; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
+  .teaser-numbers .stat { background: var(--bg-card-light); border-radius: 12px; padding: 14px 18px; }
+  .teaser-numbers .stat .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .teaser-numbers .stat .value { font-size: 22px; font-weight: 700; margin-top: 4px; }
+  .teaser-numbers .stat .value.up { color: var(--green); }
+  .teaser-numbers .stat .value.down { color: var(--warn); }
+
+  .lock-box {
+    text-align: center; padding: 28px 20px; margin-top: 20px; border-radius: 14px;
+    background: linear-gradient(180deg, rgba(0,230,118,0.08), rgba(0,230,118,0.02));
+    border: 1px dashed rgba(0,230,118,0.4);
+  }
+  .lock-box p { color: var(--muted); font-size: 14px; margin-bottom: 6px; }
+  .lock-box .price { font-size: 34px; font-weight: 800; color: var(--ink); margin: 8px 0 14px; }
+  .lock-box .price span { font-size: 15px; color: var(--muted); font-weight: 400; }
+  .unlock-features { text-align: left; max-width: 380px; margin: 0 auto 18px; font-size: 13.5px; color: var(--muted); }
+  .unlock-features div { margin-bottom: 6px; }
+
+  .section-h { font-size: 17px; font-weight: 700; margin: 24px 0 10px; color: var(--green); }
+  .why-box {
+    background: var(--bg-card-light); border-radius: 12px; padding: 18px 20px;
+    font-size: 15px; line-height: 1.65;
+  }
+  .change-row { border-bottom: 1px solid var(--line); padding: 12px 0; font-size: 14px; }
+  .change-row:last-child { border-bottom: none; }
+  .change-row .reason { color: var(--muted); margin-top: 4px; }
+  .flag-list { font-size: 14px; color: var(--muted); padding-left: 18px; }
+  .estimate-box {
+    background: var(--bg-card-light); border-radius: 12px; padding: 18px 20px;
+  }
+  .estimate-box .range { font-size: 26px; font-weight: 700; color: var(--green); }
+
+  .error { color: var(--warn); font-size: 14px; margin-top: 12px; text-align: center; }
+  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 40px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="eyebrow">SalaryBit Tool</span>
+  <h1>What changed in your <span class="accent">salary</span>, and why?</h1>
+  <p class="sub">Upload 2–4 months of payslips. We'll tell you exactly what changed — increment, New Labour Code restructuring, arrears, tax swings — in plain English, plus an NPS tax-saving tip and next month's estimate.</p>
+
+  <div id="uploadCard">
+    <label class="upload-box" id="dropzone" for="fileInput">
+      <div class="upload-icon">📄</div>
+      <div class="upload-label">Click or drop payslip PDFs here</div>
+      <div class="upload-hint">2–4 PDFs · digital payslips only (not scanned photos)</div>
+      <input type="file" id="fileInput" accept="application/pdf" multiple>
+    </label>
+    <div class="filelist" id="fileList"></div>
+    <button class="cta-btn" id="analyzeBtn" disabled>Compare My Payslips</button>
+    <div class="error" id="uploadError" style="display:none;"></div>
+  </div>
+
+  <div class="loading" id="loadingCard">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loadingText">Reading your payslips…</div>
+  </div>
+
+  <div class="card" id="resultCard">
+    <div class="headline" id="headlineText"></div>
+    <div class="teaser-numbers" id="teaserNumbers"></div>
+
+    <div class="lock-box" id="lockBox">
+      <p>Full report includes:</p>
+      <div class="unlock-features">
+        <div>✅ Plain-English "why your take-home changed" explanation</div>
+        <div>✅ Every changed line item, with exact reasons</div>
+        <div>✅ Backdated arrears decoded (if any)</div>
+        <div>✅ New Labour Code wage-restructuring check</div>
+        <div>✅ NPS tax-saving tip (New Tax Regime)</div>
+        <div>✅ Next month's take-home estimate</div>
+        <div>✅ Downloadable PDF report</div>
+      </div>
+      <div class="price">₹99 <span>one-time</span></div>
+      <button class="cta-btn" id="unlockBtn">Unlock Full Report</button>
+    </div>
+
+    <div class="loading" id="unlockLoading">
+      <div class="spinner"></div>
+      <div class="loading-text">Generating your report…</div>
+    </div>
+
+    <div id="fullReport"></div>
+    <button class="secondary-btn" id="downloadBtn" style="display:none;">⬇ Download PDF Report</button>
+  </div>
+
+  <footer>SalaryBit · Built in Hoskote · Educational analysis, not tax/legal advice — confirm with your HR or a CA.</footer>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+const API_BASE = 'https://web-production-456eb.up.railway.app';
+
+let selectedFiles = [];
+let scanId = null;
+let lastAnalysis = null;
+
+const fileInput = document.getElementById('fileInput');
+const fileList = document.getElementById('fileList');
+const analyzeBtn = document.getElementById('analyzeBtn');
+const uploadError = document.getElementById('uploadError');
+const dropzone = document.getElementById('dropzone');
+
+fileInput.addEventListener('change', (e) => {
+  selectedFiles = Array.from(e.target.files).slice(0, 4);
+  renderFileList();
+});
+
+function renderFileList() {
+  fileList.innerHTML = selectedFiles.map((f, i) => `
+    <div class="filepill">
+      <span>📎 ${f.name}</span>
+      <button onclick="removeFile(${i})">Remove</button>
+    </div>`).join('');
+  analyzeBtn.disabled = selectedFiles.length < 2;
+  uploadError.style.display = 'none';
+}
+function removeFile(i) {
+  selectedFiles.splice(i, 1);
+  renderFileList();
+}
+
+['dragover', 'dragleave', 'drop'].forEach(evt => {
+  dropzone.addEventListener(evt, (e) => {
+    e.preventDefault();
+    dropzone.classList.toggle('drag', evt === 'dragover');
+    if (evt === 'drop') {
+      selectedFiles = Array.from(e.dataTransfer.files).filter(f => f.type === 'application/pdf').slice(0, 4);
+      renderFileList();
+    }
+  });
+});
+
+analyzeBtn.addEventListener('click', async () => {
+  uploadError.style.display = 'none';
+  document.getElementById('uploadCard').style.display = 'none';
+  document.getElementById('loadingCard').classList.add('show');
+  document.getElementById('loadingText').textContent = 'Reading your payslips…';
+
+  const formData = new FormData();
+  selectedFiles.forEach(f => formData.append('payslips', f));
+
+  try {
+    const res = await fetch(API_BASE + '/api/payslip-scan', { method: 'POST', body: formData });
+    const data = await res.json();
+    document.getElementById('loadingCard').classList.remove('show');
+
+    if (!res.ok || data.error) {
+      document.getElementById('uploadCard').style.display = 'block';
+      uploadError.textContent = data.error || 'Something went wrong. Please try again.';
+      uploadError.style.display = 'block';
+      return;
+    }
+
+    scanId = data.scan_id;
+    renderTeaser(data);
+    document.getElementById('resultCard').classList.add('show');
+  } catch (err) {
+    document.getElementById('loadingCard').classList.remove('show');
+    document.getElementById('uploadCard').style.display = 'block';
+    uploadError.textContent = 'Network error — please try again.';
+    uploadError.style.display = 'block';
+  }
+});
+
+function renderTeaser(data) {
+  document.getElementById('headlineText').textContent =
+    `We read ${data.file_count} payslips successfully. Unlock the full report to see exactly what changed and why.`;
+
+  const teaserDiv = document.getElementById('teaserNumbers');
+  teaserDiv.innerHTML = '';
+  if (typeof data.take_home_delta === 'number') {
+    const up = data.take_home_delta >= 0;
+    teaserDiv.innerHTML = `
+      <div class="stat">
+        <div class="label">First month take-home</div>
+        <div class="value">₹${data.first_take_home.toLocaleString('en-IN')}</div>
+      </div>
+      <div class="stat">
+        <div class="label">Latest month take-home</div>
+        <div class="value">₹${data.last_take_home.toLocaleString('en-IN')}</div>
+      </div>
+      <div class="stat">
+        <div class="label">Change</div>
+        <div class="value ${up ? 'up' : 'down'}">${up ? '+' : ''}₹${data.take_home_delta.toLocaleString('en-IN')}</div>
+      </div>`;
+  }
+}
+
+document.getElementById('unlockBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('unlockBtn');
+  btn.disabled = true;
+  btn.textContent = 'Loading...';
+
+  try {
+    const orderRes = await fetch(API_BASE + '/api/create-payslip-order', { method: 'POST' });
+    const order = await orderRes.json();
+    if (order.error) { throw new Error(order.error); }
+
+    const options = {
+      key: order.razorpay_key,
+      amount: order.amount,
+      currency: order.currency,
+      order_id: order.order_id,
+      name: 'SalaryBit',
+      description: 'Payslip Comparer — Full Report',
+      handler: async function (response) {
+        document.getElementById('lockBox').style.display = 'none';
+        document.getElementById('unlockLoading').classList.add('show');
+        try {
+          const verifyRes = await fetch(API_BASE + '/api/verify-payslip-payment', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              scan_id: scanId
+            })
+          });
+          const verify = await verifyRes.json();
+          document.getElementById('unlockLoading').classList.remove('show');
+          if (verify.success && verify.analysis) {
+            lastAnalysis = verify.analysis;
+            renderFullReport(verify.analysis);
+            document.getElementById('downloadBtn').style.display = 'block';
+          } else if (verify.success) {
+            alert(verify.error || 'Payment succeeded but the report could not be generated. Please contact support.');
+            document.getElementById('lockBox').style.display = 'block';
+          } else {
+            alert('Payment verification failed. If money was deducted, it will be refunded within 24 hours.');
+            document.getElementById('lockBox').style.display = 'block';
+            btn.disabled = false; btn.textContent = 'Unlock Full Report';
+          }
+        } catch (e) {
+          document.getElementById('unlockLoading').classList.remove('show');
+          document.getElementById('lockBox').style.display = 'block';
+          alert('Could not load your report. If money was deducted, it will be refunded within 24 hours.');
+          btn.disabled = false; btn.textContent = 'Unlock Full Report';
+        }
+      },
+      modal: { ondismiss: function () { btn.disabled = false; btn.textContent = 'Unlock Full Report'; } },
+      theme: { color: '#00e676' }
+    };
+    new Razorpay(options).open();
+  } catch (err) {
+    alert('Could not start payment. Please try again.');
+    btn.disabled = false; btn.textContent = 'Unlock Full Report';
+  }
+});
+
+function renderFullReport(a) {
+  const el = document.getElementById('fullReport');
+  if (a.single_payslip) {
+    el.innerHTML = `<div class="section-h">Summary</div><div class="why-box">${a.summary}</div>`;
+    return;
+  }
+
+  let html = '';
+  if (a.why_amount_changed) {
+    html += `<div class="section-h">Why Your Take-Home Changed</div><div class="why-box">${a.why_amount_changed}</div>`;
+  }
+  if (a.changes && a.changes.length) {
+    html += `<div class="section-h">Every Change, Explained</div>`;
+    a.changes.forEach(c => {
+      html += `<div class="change-row"><strong>${c.component}</strong> (${c.type}):
+        ${c.from_month} ₹${Number(c.from_value).toLocaleString('en-IN')} → ${c.to_month} ₹${Number(c.to_value).toLocaleString('en-IN')}
+        (Δ ₹${Number(c.delta).toLocaleString('en-IN')}, ${c.delta_pct}%)
+        <div class="reason">${c.likely_reason || ''}</div></div>`;
+    });
+  }
+  if (a.arrears_detected && a.arrears_detected.length) {
+    html += `<div class="section-h">Backdated Arrears Detected</div>`;
+    a.arrears_detected.forEach(ar => {
+      html += `<div class="change-row"><strong>${ar.line_item}</strong>: ₹${Number(ar.amount).toLocaleString('en-IN')}
+        <div class="reason">${ar.explanation}</div></div>`;
+    });
+  }
+  if (a.wage_code_note) {
+    html += `<div class="section-h">New Labour Code Check</div><div class="why-box">${a.wage_code_note}</div>`;
+  }
+  if (a.nps_tax_saving_tip) {
+    const n = a.nps_tax_saving_tip;
+    html += `<div class="section-h">NPS Tax-Saving Tip (New Regime)</div><div class="why-box">
+      ${n.estimated_annual_saving ? `<strong>Estimated annual saving: ₹${Number(n.estimated_annual_saving).toLocaleString('en-IN')}</strong><br>` : ''}
+      ${n.explanation || ''}</div>`;
+  }
+  if (a.flags_for_hr && a.flags_for_hr.length) {
+    html += `<div class="section-h">Worth Raising With HR</div><ul class="flag-list">` +
+      a.flags_for_hr.map(f => `<li>${f}</li>`).join('') + `</ul>`;
+  }
+  if (a.next_month_estimate) {
+    const n = a.next_month_estimate;
+    html += `<div class="section-h">Next Month Estimate — ${n.label}</div>
+      <div class="estimate-box"><div class="range">₹${Number(n.estimated_take_home_low).toLocaleString('en-IN')} – ₹${Number(n.estimated_take_home_high).toLocaleString('en-IN')}</div>
+      <div class="reason" style="margin-top:8px;">${n.basis || ''}</div></div>`;
+  }
+  el.innerHTML = html;
+}
+
+document.getElementById('downloadBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('downloadBtn');
+  btn.disabled = true; btn.textContent = 'Generating PDF…';
+  try {
+    const res = await fetch(API_BASE + '/api/payslip-report-pdf', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ analysis: lastAnalysis })
+    });
+    if (!res.ok) throw new Error('PDF generation failed');
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'salarybit-payslip-report.pdf';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    alert('Could not generate the PDF right now. Please try again.');
+  } finally {
+    btn.disabled = false; btn.textContent = '⬇ Download PDF Report';
+  }
+});
+</script>
+</body>
+</html>

@@ -11,3 +11,4 @@ pdfplumber==0.11.9
 asn1crypto==1.5.1
 pyhanko==0.25.3
 pyhanko-certvalidator==0.26.5
+reportlab==4.2.5

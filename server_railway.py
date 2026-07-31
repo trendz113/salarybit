@@ -1733,6 +1733,455 @@ def verify_relievingletter_payment():
     return jsonify({"success": True, "payment_id": payment_id})
 
 
+# ── PAYSLIP COMPARER / PAY STRUCTURE SIMULATOR ───────────────
+# Users upload 2-4 months of payslips. Free step extracts text + a
+# best-effort take-home teaser (regex, no Claude call — payslip layouts
+# vary too much across employers to trust regex for anything beyond a
+# quick headline number, so this degrades gracefully to a generic
+# message rather than a wrong one). Paid step (₹99) sends the raw text
+# of every payslip to Claude, which structures, compares, and explains
+# what changed and why — including New Labour Code wage-restructuring
+# detection, backdated-arrears math, a plain-language "why your amount
+# changed" explanation for non-finance users, a New Tax Regime NPS
+# 80CCD(2) tax-saving tip, and a next-month take-home estimate.
+PAYSLIP_COMPARE_PRICE_PAISE = 9900  # Rs 99
+
+# In-memory cache: scan_id -> {"texts": [...raw payslip text...], "ts": epoch}
+# Mirrors _SUBSCRIPTION_SCAN_CACHE — holds extracted text between the free
+# upload and the paid Claude call so payment doesn't require re-uploading.
+_PAYSLIP_SCAN_CACHE = {}
+_PAYSLIP_CACHE_TTL = 1800  # 30 minutes
+
+
+def _payslip_cache_put(texts):
+    _payslip_cache_gc()
+    scan_id = uuid.uuid4().hex
+    _PAYSLIP_SCAN_CACHE[scan_id] = {"texts": texts, "ts": _time.time()}
+    return scan_id
+
+
+def _payslip_cache_pop(scan_id):
+    entry = _PAYSLIP_SCAN_CACHE.pop(scan_id, None)
+    if not entry:
+        return None
+    if _time.time() - entry["ts"] > _PAYSLIP_CACHE_TTL:
+        return None
+    return entry["texts"]
+
+
+def _payslip_cache_gc():
+    now = _time.time()
+    expired = [k for k, v in _PAYSLIP_SCAN_CACHE.items() if now - v["ts"] > _PAYSLIP_CACHE_TTL]
+    for k in expired:
+        _PAYSLIP_SCAN_CACHE.pop(k, None)
+
+
+def _extract_take_home_teaser(text):
+    """Best-effort only. Payslip layouts vary a lot across employers, so
+    this looks for a 'Take Home Pay' label followed by a rupee figure
+    within a short window of text, and returns None (not a guess) if it
+    can't find one confidently. The paid Claude step does the real,
+    format-agnostic parsing."""
+    m = re.search(r'Take\s*Home\s*Pay[^\d₹]{0,15}₹?\s*([\d,]+\.\d{1,2})', text, re.IGNORECASE)
+    if not m:
+        return None
+    try:
+        return float(m.group(1).replace(",", ""))
+    except ValueError:
+        return None
+
+
+@app.route('/payslip-comparer', methods=['GET'])
+def payslip_comparer_page():
+    """Serves the tool itself, same static-HTML-next-to-server pattern as
+    subscription-leak-finder.html and patience-passbook.html."""
+    html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'payslip-comparer.html')
+    with open(html_path, 'r', encoding='utf-8') as f:
+        content_html = f.read()
+    return Response(content_html, mimetype='text/html')
+
+
+@app.route('/api/payslip-scan', methods=['POST', 'OPTIONS'])
+def payslip_scan():
+    """Free step: extract text from 2-4 uploaded payslip PDFs, cache it,
+    and return a lightweight teaser (file count + best-effort take-home
+    numbers if regex finds them). No Claude call here — see docstring
+    above the price constant for why."""
+    if request.method == "OPTIONS":
+        return "", 200
+
+    files = request.files.getlist('payslips')
+    if not files:
+        return jsonify({"error": "Upload at least 2 payslip PDFs to compare (up to 4)."}), 400
+    if len(files) < 2:
+        return jsonify({"error": "Upload at least 2 payslips so there's something to compare."}), 400
+    if len(files) > 4:
+        return jsonify({"error": "Max 4 payslips at a time — pick the ones you most want compared."}), 400
+
+    texts = []
+    take_home_values = []
+    for f in files:
+        if not f.filename.lower().endswith('.pdf'):
+            return jsonify({"error": f"{f.filename} is not a PDF."}), 400
+        try:
+            with pdfplumber.open(f) as pdf:
+                pages_text = [(p.extract_text() or "") for p in pdf.pages]
+            text = "\n".join(pages_text).strip()
+        except Exception as e:
+            return jsonify({"error": f"Could not read {f.filename}: {e}"}), 400
+        if not text:
+            return jsonify({
+                "error": f"{f.filename} looks like a scanned image with no extractable text. "
+                         f"Please upload the original digital payslip PDF, not a scan or photo."
+            }), 400
+        texts.append(text)
+        take_home_values.append(_extract_take_home_teaser(text))
+
+    scan_id = _payslip_cache_put(texts)
+    teaser = {"scan_id": scan_id, "file_count": len(texts)}
+
+    known = [v for v in take_home_values if v is not None]
+    if len(known) >= 2:
+        teaser["take_home_delta"] = round(known[-1] - known[0], 2)
+        teaser["first_take_home"] = round(known[0], 2)
+        teaser["last_take_home"] = round(known[-1], 2)
+
+    return jsonify(teaser)
+
+
+@app.route('/api/create-payslip-order', methods=['POST', 'OPTIONS'])
+def create_payslip_order():
+    """Matches the existing create_*_order() pattern exactly."""
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": PAYSLIP_COMPARE_PRICE_PAISE,
+            "currency": "INR",
+            "receipt": f"payslipcmp_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
+    except Exception as e:
+        print(f"create-payslip-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+PAYSLIP_ANALYSIS_SYSTEM_PROMPT = """You are a meticulous Indian payroll and personal-finance \
+analyst writing for SalaryBit, a platform for Indian salaried professionals. You'll receive the \
+raw extracted text of 2-4 consecutive monthly payslips for one person, in upload order (assume \
+chronological, oldest first, unless the payslip text itself shows dates proving otherwise).
+
+The single most important thing you produce is "why_amount_changed": a warm, plain-English \
+paragraph (4-6 sentences) explaining, for someone with ZERO finance background, exactly why \
+their take-home pay went up or down. Lead with the one biggest cause. No jargon without \
+immediately explaining it in parentheses. This is the one section every paying customer reads \
+first — it has to be completely correct and completely clear, or the product fails at its one job.
+
+Your job:
+1. Parse each payslip into structured line items (earnings, deductions, take-home, PF, income
+   tax, loan recovery, Form 16 / tax-summary figures if present).
+2. Compare month over month: every component that appeared, disappeared, increased, or
+   decreased, with exact rupee deltas and percentage change.
+3. Explain WHY, considering real causes: annual increment/promotion, bonus/variable pay timing,
+   India's New Labour Codes wage restructuring (Code on Wages requires Basic + Dearness
+   Allowance to be at least 50% of total remuneration — many employers restructured Basic/HRA/
+   Special Allowance during 2025-2026, often paying backdated arrears as a lump sum), backdated
+   arrears (look for "BF"/"Brought Forward"/"Arrears" lines — if a delta is roughly N times a
+   recurring monthly delta, that's N months of arrears), PF changes (PF is a % of Basic),
+   income-tax/TDS swings (can spike temporarily from one-time arrears inflating that month's
+   projected annual income, then normalize), loan disbursement/payoff, equity/RSU events
+   (one-time, not recurring pay), professional tax/ESI changes, LOP (loss-of-pay) days.
+4. Flag anything that looks like an error or worth a question to HR/payroll.
+5. Wage-code note: what % of total earnings is Basic (+DA if shown)? Trending toward or away
+   from the 50% floor?
+6. NPS tax-saving tip for the New Tax Regime (assume New Tax Regime unless the payslip text
+   explicitly says "Tax Regime: Old"): under Section 80CCD(2), an EMPLOYER's contribution to the
+   employee's NPS account is deductible even under the new regime, up to 14% of Basic + DA — this
+   applies to private-sector employees too (since FY2025-26), and does not reduce the employer's
+   CTC cost, just reclassifies part of it. The employee's OWN NPS contribution under 80CCD(1B)
+   (₹50,000 extra) is NOT deductible under the new regime — old regime only; do not recommend it
+   as a new-regime tax-saver. If the payslip shows no employer NPS line item, explain this as an
+   actionable opportunity: ask HR to route part of CTC into employer NPS under 80CCD(2), and
+   estimate the annual tax saving using their approximate marginal slab rate implied by the
+   Form-16/tax-summary figures if present (New Tax Regime FY2026-27 slabs, unchanged from
+   FY2025-26 per Budget 2026: 0-4L nil, 4-8L 5%, 8-12L 10%, 12-16L 15%, 16-20L 20%, 20-24L 25%,
+   above 24L 30%, with a rebate that makes total taxable income up to ~₹12L effectively tax-free).
+   If employer NPS is already present, just confirm it's working in their favour and estimate the
+   saving from what's already being contributed.
+7. Estimate NEXT month's take-home: assume the most recent month's *recurring* components repeat
+   with no further one-time arrears/equity/bonus, adjust income tax down if the most recent
+   month's TDS looks arrears-inflated (use the Form 16 "tax deducted so far" vs "tax payable and
+   surcharge" figures, spread the remainder over the remaining months of the financial year
+   April-March if visible), and account for any loan recovery that is scheduled to continue or
+   finish based on the loan balance shown.
+
+Do NOT invent figures. If a payslip's text is garbled or a field unclear, say so plainly instead
+of guessing. This is educational analysis, not a substitute for a CA or the employer's HR/payroll
+team — say so briefly where relevant, without hedging so much it undermines the confident,
+customer-facing "why_amount_changed" explanation people are paying for.
+
+Respond ONLY with a single JSON object (no markdown fences, no preamble), matching this shape:
+
+{
+  "why_amount_changed": "the 4-6 sentence plain-English paragraph described above",
+  "months": [
+    {"label": "June 2026", "take_home": 153105.00, "total_earnings": 180043.03,
+     "total_deductions": 26938.00, "basic": 60896.50, "basic_pct_of_earnings": 33.8}
+  ],
+  "headline_summary": "1-2 sentence summary of the single biggest story across these payslips.",
+  "changes": [
+    {"component": "Basic Salary", "type": "increase|decrease|new|removed",
+     "from_month": "June 2026", "from_value": 60896.50,
+     "to_month": "July 2026", "to_value": 71495.03,
+     "delta": 10598.53, "delta_pct": 17.4, "likely_reason": "plain-English explanation"}
+  ],
+  "arrears_detected": [
+    {"line_item": "BF Basic Arrears", "amount": 31795.59,
+     "explanation": "= 3 x the recurring Basic increase of 10598.53, i.e. 3 months of backdated arrears"}
+  ],
+  "flags_for_hr": ["anything worth questioning, or empty list"],
+  "wage_code_note": "1-2 sentences on Basic vs the 50% threshold and whether this looks like labour-code-driven restructuring, or null",
+  "nps_tax_saving_tip": {
+    "has_employer_nps": true,
+    "estimated_annual_saving": 20800,
+    "explanation": "1-3 sentences, concrete and actionable, following the 80CCD(2) rules above"
+  },
+  "next_month_estimate": {
+    "label": "August 2026",
+    "estimated_take_home_low": 134000, "estimated_take_home_high": 137000,
+    "basis": "1-2 sentence explanation of the estimate"
+  }
+}
+
+If only ONE usable payslip is present, instead return:
+{"single_payslip": true, "summary": "...", "why_amount_changed": null, "breakdown": {...}, "flags_for_hr": [...]}
+"""
+
+
+def _call_claude_payslip_analysis(payslip_texts):
+    claude_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not claude_key:
+        raise RuntimeError("Server not configured. Missing ANTHROPIC_API_KEY.")
+
+    numbered = "\n\n".join(
+        f"===== PAYSLIP {i+1} of {len(payslip_texts)} =====\n{t}"
+        for i, t in enumerate(payslip_texts)
+    )
+
+    payload = json.dumps({
+        "model": "claude-sonnet-4-6",
+        "max_tokens": 4000,
+        "system": PAYSLIP_ANALYSIS_SYSTEM_PROMPT,
+        "messages": [{"role": "user", "content": numbered}]
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": claude_key,
+            "anthropic-version": "2023-06-01"
+        },
+        method="POST"
+    )
+    with urllib.request.urlopen(req, timeout=90) as resp:
+        result = json.loads(resp.read().decode("utf-8"))
+
+    raw = "".join(
+        block.get("text", "") for block in result.get("content", []) if block.get("type") == "text"
+    ).strip()
+    if raw.startswith("```"):
+        raw = raw.strip("`")
+        if raw.lower().startswith("json"):
+            raw = raw[4:]
+    return json.loads(raw)
+
+
+@app.route('/api/verify-payslip-payment', methods=['POST', 'OPTIONS'])
+def verify_payslip_payment():
+    """Matches the existing verify_*_payment() HMAC pattern exactly. On
+    success, runs the (single) Claude analysis call on the cached payslip
+    text and returns the full report in the same response."""
+    if request.method == "OPTIONS":
+        return "", 200
+    data = request.get_json(silent=True) or {}
+    order_id = data.get("razorpay_order_id")
+    payment_id = data.get("razorpay_payment_id")
+    signature = data.get("razorpay_signature")
+    scan_id = data.get("scan_id")
+
+    if not all([order_id, payment_id, signature]):
+        return jsonify({"success": False, "error": "Missing required fields."}), 400
+
+    body = f"{order_id}|{payment_id}"
+    expected = hmac.new(
+        os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+        body.encode(),
+        hashlib.sha256
+    ).hexdigest()
+    if expected != signature:
+        return jsonify({"success": False, "error": "Payment verification failed."}), 400
+
+    print(f"[payslip-comparer] paid unlock | payment_id={payment_id}")
+
+    if not scan_id:
+        return jsonify({"success": True})
+
+    texts = _payslip_cache_pop(scan_id)
+    if texts is None:
+        return jsonify({
+            "success": True,
+            "error": "Your session expired. Payment succeeded, but please re-upload your "
+                     "payslips (you will not be charged again — contact support with this "
+                     "payment ID if needed) to view the report.",
+            "payment_id": payment_id
+        })
+
+    try:
+        analysis = _call_claude_payslip_analysis(texts)
+    except Exception as e:
+        print(f"payslip analysis error: {type(e).__name__}: {e}")
+        return jsonify({
+            "success": True,
+            "error": "Payment succeeded but the report could not be generated right now. "
+                     "Please contact support with this payment ID and we'll generate it for you.",
+            "payment_id": payment_id
+        })
+
+    return jsonify({"success": True, "analysis": analysis, "payment_id": payment_id})
+
+
+@app.route('/api/payslip-report-pdf', methods=['POST', 'OPTIONS'])
+def payslip_report_pdf():
+    """Regenerates the paid report as a downloadable PDF. Requires the
+    already-verified analysis JSON to be POSTed back (no server-side
+    payment re-check here since this only runs after verify-payslip-payment
+    has already handed the analysis to the browser — same trust boundary
+    as every other client-rendered paid report on this site)."""
+    if request.method == "OPTIONS":
+        return "", 200
+    data = request.get_json(silent=True) or {}
+    analysis = data.get("analysis")
+    if not analysis:
+        return jsonify({"error": "No report data provided."}), 400
+
+    try:
+        from reportlab.lib.pagesizes import A4
+        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib.units import mm
+        from reportlab.lib import colors as rl_colors
+        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+    except ImportError:
+        return jsonify({"error": "PDF generation not available on the server."}), 500
+
+    buf = io.BytesIO()
+    doc = SimpleDocTemplate(buf, pagesize=A4, topMargin=20 * mm, bottomMargin=20 * mm,
+                             leftMargin=18 * mm, rightMargin=18 * mm)
+    styles = getSampleStyleSheet()
+    title_style = ParagraphStyle("TitleX", parent=styles["Title"], textColor=rl_colors.HexColor("#0b0e14"))
+    h2 = ParagraphStyle("H2X", parent=styles["Heading2"], textColor=rl_colors.HexColor("#00a656"), spaceBefore=14)
+    body = styles["BodyText"]
+    small = ParagraphStyle("Small", parent=styles["BodyText"], fontSize=8.5, textColor=rl_colors.grey)
+
+    story = [
+        Paragraph("SalaryBit — Payslip Comparison Report", title_style),
+        Paragraph(datetime.now().strftime("Generated %d %b %Y"), small),
+        Spacer(1, 8 * mm),
+    ]
+
+    if analysis.get("single_payslip"):
+        story.append(Paragraph("Summary", h2))
+        story.append(Paragraph(analysis.get("summary", ""), body))
+    else:
+        if analysis.get("why_amount_changed"):
+            story.append(Paragraph("Why Your Take-Home Changed", h2))
+            story.append(Paragraph(analysis["why_amount_changed"], body))
+
+        months = analysis.get("months", [])
+        if months:
+            story.append(Paragraph("Month-by-Month Snapshot", h2))
+            rows = [["Month", "Total Earnings", "Total Deductions", "Take Home", "Basic", "Basic % of Earnings"]]
+            for m in months:
+                rows.append([
+                    m.get("label", ""), f"Rs {m.get('total_earnings', 0):,.2f}",
+                    f"Rs {m.get('total_deductions', 0):,.2f}", f"Rs {m.get('take_home', 0):,.2f}",
+                    f"Rs {m.get('basic', 0):,.2f}", f"{m.get('basic_pct_of_earnings', 0):.1f}%",
+                ])
+            t = Table(rows, repeatRows=1, hAlign="LEFT")
+            t.setStyle(TableStyle([
+                ("BACKGROUND", (0, 0), (-1, 0), rl_colors.HexColor("#00a656")),
+                ("TEXTCOLOR", (0, 0), (-1, 0), rl_colors.white),
+                ("FONTSIZE", (0, 0), (-1, -1), 8),
+                ("GRID", (0, 0), (-1, -1), 0.5, rl_colors.HexColor("#cbd5e1")),
+                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [rl_colors.white, rl_colors.HexColor("#f8fafc")]),
+            ]))
+            story.append(t)
+
+        changes = analysis.get("changes", [])
+        if changes:
+            story.append(Paragraph("What Changed & Why", h2))
+            for c in changes:
+                line = (f"<b>{c.get('component')}</b> ({c.get('type')}): {c.get('from_month','')} "
+                        f"Rs {c.get('from_value',0):,.2f} to {c.get('to_month','')} "
+                        f"Rs {c.get('to_value',0):,.2f} (Delta Rs {c.get('delta',0):,.2f}, {c.get('delta_pct',0):.1f}%)")
+                story.append(Paragraph(line, body))
+                story.append(Paragraph(c.get("likely_reason", ""), small))
+                story.append(Spacer(1, 3 * mm))
+
+        arrears = analysis.get("arrears_detected", [])
+        if arrears:
+            story.append(Paragraph("Arrears / Backdated Payments Detected", h2))
+            for a in arrears:
+                story.append(Paragraph(f"<b>{a.get('line_item')}</b>: Rs {a.get('amount',0):,.2f}", body))
+                story.append(Paragraph(a.get("explanation", ""), small))
+                story.append(Spacer(1, 2 * mm))
+
+        if analysis.get("wage_code_note"):
+            story.append(Paragraph("New Labour Code / Wage Structure Note", h2))
+            story.append(Paragraph(analysis["wage_code_note"], body))
+
+        nps = analysis.get("nps_tax_saving_tip")
+        if nps:
+            story.append(Paragraph("NPS Tax-Saving Tip (New Tax Regime)", h2))
+            if nps.get("estimated_annual_saving"):
+                story.append(Paragraph(f"Estimated annual tax saving: Rs {nps['estimated_annual_saving']:,.0f}", body))
+            story.append(Paragraph(nps.get("explanation", ""), small))
+
+        flags = analysis.get("flags_for_hr", [])
+        if flags:
+            story.append(Paragraph("Worth Raising With HR/Payroll", h2))
+            for fl in flags:
+                story.append(Paragraph(f"- {fl}", body))
+
+        nxt = analysis.get("next_month_estimate")
+        if nxt:
+            story.append(Paragraph(f"Next Month Estimate — {nxt.get('label','')}", h2))
+            story.append(Paragraph(
+                f"Estimated take-home: Rs {nxt.get('estimated_take_home_low',0):,.0f} - "
+                f"Rs {nxt.get('estimated_take_home_high',0):,.0f}", body))
+            story.append(Paragraph(nxt.get("basis", ""), small))
+
+    story.append(Spacer(1, 8 * mm))
+    story.append(Paragraph(
+        "This report is an educational analysis generated with AI assistance and does not "
+        "constitute tax, legal, or financial advice. Verify figures with your employer's "
+        "payroll/HR team or a qualified CA. \u2014 SalaryBit.in", small))
+
+    doc.build(story)
+    buf.seek(0)
+    filename = f"salarybit-payslip-report-{datetime.now().strftime('%Y%m%d')}.pdf"
+    return Response(
+        buf.read(), mimetype="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+
 # ── HEALTH CHECK ──────────────────────────────────────────
 @app.route("/api/capture-lead", methods=["POST", "OPTIONS"])
 def capture_lead():

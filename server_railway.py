@@ -1769,6 +1769,18 @@ def _payslip_cache_pop(scan_id):
     return entry["texts"]
 
 
+def _payslip_cache_peek(scan_id):
+    """Like _payslip_cache_pop but does NOT remove the entry. Used so a failed
+    Claude call doesn't destroy the payslip text — only a successful report
+    consumes the cache entry."""
+    entry = _PAYSLIP_SCAN_CACHE.get(scan_id)
+    if not entry:
+        return None
+    if _time.time() - entry["ts"] > _PAYSLIP_CACHE_TTL:
+        return None
+    return entry["texts"]
+
+
 def _payslip_cache_gc():
     now = _time.time()
     expired = [k for k, v in _PAYSLIP_SCAN_CACHE.items() if now - v["ts"] > _PAYSLIP_CACHE_TTL]
@@ -1975,7 +1987,7 @@ def _call_claude_payslip_analysis(payslip_texts):
 
     payload = json.dumps({
         "model": "claude-sonnet-4-6",
-        "max_tokens": 4000,
+        "max_tokens": 8000,
         "system": PAYSLIP_ANALYSIS_SYSTEM_PROMPT,
         "messages": [{"role": "user", "content": numbered}]
     }).encode("utf-8")
@@ -2033,7 +2045,7 @@ def verify_payslip_payment():
     if not scan_id:
         return jsonify({"success": True})
 
-    texts = _payslip_cache_pop(scan_id)
+    texts = _payslip_cache_peek(scan_id)
     if texts is None:
         return jsonify({
             "success": True,
@@ -2053,6 +2065,8 @@ def verify_payslip_payment():
                      "Please contact support with this payment ID and we'll generate it for you.",
             "payment_id": payment_id
         })
+
+    _payslip_cache_pop(scan_id)  # only consume the cache once the report actually succeeded
 
     return jsonify({"success": True, "analysis": analysis, "payment_id": payment_id})
 

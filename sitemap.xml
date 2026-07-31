@@ -110,11 +110,6 @@
     <ns0:priority>0.8</ns0:priority>
   </ns0:url>
   <ns0:url>
-    <ns0:loc>https://salarybit.in/job-agent.html</ns0:loc>
-    <ns0:lastmod>2026-07-01</ns0:lastmod>
-    <ns0:priority>0.8</ns0:priority>
-  </ns0:url>
-  <ns0:url>
     <ns0:loc>https://salarybit.in/mf-analyzer-bot.html</ns0:loc>
     <ns0:lastmod>2026-07-01</ns0:lastmod>
     <ns0:priority>0.8</ns0:priority>
@@ -415,15 +410,6 @@
     <ns0:loc>https://salarybit.in/blog/life-passbook-blog.html</ns0:loc>
   </ns0:url>
   <ns0:url>
-    <ns0:loc>https://salarybit.in/tools/life-passbook.html</ns0:loc>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://salarybit.in/life-passbook (1).html</ns0:loc>
-  </ns0:url>
-  <ns0:url>
     <ns0:loc>https://salarybit.in/life-passbook.html</ns0:loc>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://salarybit.in/blog/life-blog.html</ns0:loc>
   </ns0:url>
 </ns0:urlset>

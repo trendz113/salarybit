@@ -1740,11 +1740,15 @@ def capture_lead():
     Stores lead emails from waitlist/lead-magnet forms (e.g. the
     'Full CA Tax Breakdown PDF' waitlist on old-vs-new-tax-regime.html).
 
-    NOTE: Writes to a local JSON file. Railway's filesystem is ephemeral —
-    this file will NOT survive a redeploy or restart. This is fine for a
-    quick MVP / low volume, but for anything you care about keeping,
-    swap LEADS_FILE for a real store (Postgres, Google Sheet via webhook,
-    Airtable, etc.) before you rely on this for real lead generation.
+    Primary store: a Google Sheet, via a webhook URL set in the
+    GOOGLE_SHEET_WEBHOOK_URL environment variable on Railway
+    (see salarybit-lead-sheet-webhook.gs for the Apps Script to deploy).
+
+    Fallback store: a local leads.jsonl file. Railway's filesystem is
+    ephemeral, so this file will NOT survive a redeploy or restart —
+    it only exists so a lead isn't silently lost if the Sheet webhook
+    is unreachable for a moment. Set GOOGLE_SHEET_WEBHOOK_URL for the
+    real, durable copy.
     """
     if request.method == "OPTIONS":
         return "", 200
@@ -1756,17 +1760,35 @@ def capture_lead():
     if not email or "@" not in email or "." not in email.split("@")[-1]:
         return jsonify({"error": "Please enter a valid email address."}), 400
 
-    LEADS_FILE = os.path.join(os.path.dirname(__file__), "leads.jsonl")
     entry = {
         "email": email,
         "source": source,
         "ts": datetime.utcnow().isoformat() + "Z",
     }
+
+    sheet_webhook_url = os.environ.get("GOOGLE_SHEET_WEBHOOK_URL", "").strip()
+    sheet_ok = False
+    if sheet_webhook_url:
+        try:
+            req = urllib.request.Request(
+                sheet_webhook_url,
+                data=json.dumps({"email": email, "source": source}).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            with urllib.request.urlopen(req, timeout=8) as resp:
+                resp.read()
+            sheet_ok = True
+        except Exception:
+            sheet_ok = False  # fall through to local file below
+
+    LEADS_FILE = os.path.join(os.path.dirname(__file__), "leads.jsonl")
     try:
         with open(LEADS_FILE, "a", encoding="utf-8") as f:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
-    except Exception as e:
-        return jsonify({"error": "Could not save right now, please try again."}), 500
+    except Exception:
+        if not sheet_ok:
+            return jsonify({"error": "Could not save right now, please try again."}), 500
 
     return jsonify({"status": "ok"}), 200
 

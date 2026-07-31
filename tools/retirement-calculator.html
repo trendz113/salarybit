@@ -235,7 +235,8 @@ function calcRet(){
       <div class="rrow r"><span>Corpus Gap</span><b>${fr(Math.round(gap))}</b></div>
       ${monthlySIP>0?`<div class="rrow a"><span>Monthly SIP Needed to Close Gap</span><b>${fi(Math.round(monthlySIP))}</b></div>`:''}
     </div>
-    ${monthlySIP>0?`<div class="insight blue"><span class="ii">📊</span><div>Invest <strong>${fi(Math.round(monthlySIP))}/month</strong> in equity mutual funds (SIP) for ${yrs} years at ${(ret*100).toFixed(0)}% to close the retirement gap.</div></div>`:'<div class="insight green"><span class="ii">✅</span><div>Your current savings, when grown at the expected return rate, are sufficient to meet your retirement corpus goal!</div></div>'}`;
+    ${monthlySIP>0?`<div class="insight blue"><span class="ii">📊</span><div>Invest <strong>${fi(Math.round(monthlySIP))}/month</strong> in equity mutual funds (SIP) for ${yrs} years at ${(ret*100).toFixed(0)}% to close the retirement gap.</div></div>`:'<div class="insight green"><span class="ii">✅</span><div>Your current savings, when grown at the expected return rate, are sufficient to meet your retirement corpus goal!</div></div>'}
+    ${monthlySIP>0?`<div class="insight blue" style="margin-top:.625rem;"><span class="ii">🧮</span><div>Before committing to a new SIP, make sure existing debt isn't costing more than these investments will earn. <a href="/fix-your-finance.html" style="color:var(--accent);font-weight:600;">Check your full financial picture</a>.</div></div>`:''}`;
 }
 </script>
 <nav class="bnav">

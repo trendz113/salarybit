@@ -297,6 +297,7 @@ function calcLC(){
     </div>
     ${lcHtml}
     <div class="insight ${basicCompliant?'green':'gold'}"><span class="insight-icon">${basicCompliant?'✅':'⚖️'}</span><div>${basicCompliant?`<strong>Your salary structure already meets the Labour Code requirement.</strong> ${gratuityNote}`:`<strong>Your salary will likely be restructured when the Code is notified in your state.</strong> Basic must rise to ${fmtI(requiredBasic)}/mo. ${gratuityNote}`}</div></div>
+    ${!basicCompliant?`<div class="insight blue" style="margin-top:.625rem;"><span class="insight-icon">🧮</span><div>A lower take-home from higher PF is easier to absorb if the rest of your budget is already mapped out. <a href="/fix-your-finance.html" style="color:var(--accent);font-weight:600;">Check your full financial picture</a>.</div></div>`:''}
   `;
 }
 </script>

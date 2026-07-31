@@ -2032,7 +2032,14 @@ def _call_claude_payslip_analysis(payslip_texts):
         },
         method="POST"
     )
-    with urllib.request.urlopen(req, timeout=90) as resp:
+
+    # 8000-token structured analyses across up to 4 payslips can legitimately
+    # take longer than 90s. One attempt, generous timeout, no stacked retry —
+    # retrying the same slow call would risk exceeding gunicorn's worker
+    # timeout (Procfile) and getting SIGKILLed instead of failing cleanly.
+    # NOTE: bump gunicorn's --timeout in the Procfile to stay comfortably
+    # above this value (see accompanying Procfile change).
+    with urllib.request.urlopen(req, timeout=170) as resp:
         result = json.loads(resp.read().decode("utf-8"))
 
     raw = "".join(
@@ -2294,3 +2301,4 @@ def health():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+

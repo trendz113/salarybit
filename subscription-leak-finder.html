@@ -422,6 +422,8 @@
       <div class="count" id="itemCount">0 subscriptions detected · per year</div>
     </div>
 
+    <div id="aiWarningBanner" style="display:none;background:#3a2a10;border:1px solid #a9772e;color:#f0c88a;padding:12px 16px;border-radius:8px;font-size:14px;margin-bottom:16px;"></div>
+
     <div class="item-list" id="itemList"></div>
 
     <div class="lock-overlay" id="lockOverlay">
@@ -751,6 +753,14 @@ unlockBtn.addEventListener('click', async () => {
 function unlockResults(verify) {
   const items = verify.subscriptions || [];
   itemList.innerHTML = '';
+
+  const warningBanner = document.getElementById('aiWarningBanner');
+  if (verify.warning) {
+    warningBanner.textContent = '⚠️ ' + verify.warning;
+    warningBanner.style.display = 'block';
+  } else {
+    warningBanner.style.display = 'none';
+  }
 
   items.forEach(item => {
     const row = document.createElement('div');

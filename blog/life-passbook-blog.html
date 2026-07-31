@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life Passbook: What Your Daily Savings Are Actually Worth | SalaryBit</title>
+<meta name="description" content="Enter your date of birth and see how many days you've lived — then see what ₹1, ₹100 or ₹1,000 a day would be worth today at 12% returns. Free calculator.">
+<link rel="canonical" href="https://salarybit.in/blog/life-passbook-blog.html">
+
+<meta property="og:title" content="Life Passbook: What Your Daily Savings Are Actually Worth | SalaryBit">
+<meta property="og:description" content="Enter your date of birth and see how many days you've lived — then see what ₹1, ₹100 or ₹1,000 a day would be worth today at 12% returns. Free calculator.">
+<meta property="og:image" content="https://salarybit.in/blog/images/life-passbook-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="SalaryBit">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://salarybit.in/blog/life-passbook-blog.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Life Passbook: What Your Daily Savings Are Actually Worth | SalaryBit">
+<meta name="twitter:description" content="Enter your date of birth and see how many days you've lived — then see what ₹1, ₹100 or ₹1,000 a day would be worth today at 12% returns. Free calculator.">
+<meta name="twitter:image" content="https://salarybit.in/blog/images/life-passbook-cover.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,900&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --navy:#12233F;
+    --gold:#B8892E;
+    --gold-bright:#D9AC4F;
+    --paper:#F6F1E4;
+    --paper-line:#CFC4A0;
+    --ink:#1C1A14;
+    --ink-soft:#5C5646;
+    --stamp:#7C2A2A;
+    --credit:#2F5D3A;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:#FFFDF8;
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.65;
+  }
+  a{color:var(--stamp); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+
+  /* ---------- Nav ---------- */
+  header.site-nav{
+    background:var(--navy);
+    padding:16px 24px;
+  }
+  .nav-inner{
+    max-width:800px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  .logo{
+    color:#F7ECD2;
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:19px;
+  }
+  .nav-links{
+    display:flex;
+    gap:22px;
+    font-size:14px;
+  }
+  .nav-links a{color:#D8DFEC;}
+  .nav-links a.cta{
+    color:var(--gold-bright);
+    font-weight:600;
+  }
+
+  /* ---------- Article shell ---------- */
+  main{
+    max-width:700px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+  .breadcrumb{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:28px 0 6px;
+  }
+  .category-badge{
+    display:inline-block;
+    background:var(--paper);
+    color:var(--stamp);
+    font-family:'Space Mono',monospace;
+    font-size:11.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    padding:5px 12px;
+    border-radius:20px;
+    margin-bottom:18px;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:clamp(28px,5vw,42px);
+    line-height:1.15;
+    margin:0 0 14px;
+    color:var(--navy);
+  }
+  .meta-line{
+    font-family:'Space Mono',monospace;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-bottom:28px;
+    padding-bottom:24px;
+    border-bottom:1px solid var(--paper-line);
+  }
+  .deck{
+    font-size:17px;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+
+  article h2{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:23px;
+    color:var(--navy);
+    margin:40px 0 14px;
+  }
+  article p{
+    font-size:16px;
+    margin:0 0 18px;
+  }
+  article ul, article ol{
+    font-size:16px;
+    margin:0 0 20px;
+    padding-left:22px;
+  }
+  article li{margin-bottom:10px;}
+  article strong{color:var(--navy);}
+
+  .callout{
+    background:var(--paper);
+    border-left:4px solid var(--gold);
+    padding:16px 18px;
+    border-radius:4px;
+    margin:24px 0;
+    font-size:15px;
+  }
+  .callout strong{color:var(--stamp);}
+
+  table.ledger{
+    width:100%;
+    border-collapse:collapse;
+    margin:24px 0 30px;
+    font-size:14.5px;
+  }
+  table.ledger caption{
+    text-align:left;
+    font-family:'Space Mono',monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:10px;
+  }
+  table.ledger th{
+    text-align:left;
+    font-family:'Space Mono',monospace;
+    font-size:11px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    padding:0 10px 10px 0;
+    border-bottom:1px solid var(--paper-line);
+  }
+  table.ledger th:not(:first-child), table.ledger td:not(:first-child){text-align:right;}
+  table.ledger td{
+    padding:12px 10px 12px 0;
+    border-bottom:1px dashed var(--paper-line);
+    font-family:'Space Mono',monospace;
+  }
+  table.ledger td:first-child{font-family:'Inter',sans-serif;}
+  table.ledger .gain{color:var(--credit); font-weight:700;}
+
+  .faq-item{margin-bottom:20px;}
+  .faq-item p.q{
+    font-weight:600;
+    color:var(--navy);
+    margin-bottom:6px;
+  }
+
+  .cta-box{
+    background:var(--navy);
+    border-radius:8px;
+    padding:28px 26px;
+    text-align:center;
+    margin:40px 0;
+  }
+  .cta-box p{color:#D8DFEC; margin-bottom:16px; font-size:15px;}
+  .cta-box a{
+    display:inline-block;
+    background:var(--gold-bright);
+    color:var(--navy);
+    font-weight:600;
+    padding:12px 26px;
+    border-radius:5px;
+    font-size:15px;
+  }
+  .cta-box a:hover{text-decoration:none; background:#e8c169;}
+
+  .disclaimer{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    border-top:1px solid var(--paper-line);
+    padding-top:20px;
+    margin-top:10px;
+  }
+
+  footer{
+    max-width:700px;
+    margin:50px auto 0;
+    padding:24px 24px 50px;
+    text-align:center;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  footer .foot-links{
+    margin-top:10px;
+    display:flex;
+    justify-content:center;
+    gap:18px;
+  }
+
+  @media (max-width:520px){
+    .nav-links{gap:14px; font-size:13px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site-nav">
+  <div class="nav-inner">
+    <a class="logo" href="https://salarybit.in/">💰 SalaryBit</a>
+    <nav class="nav-links">
+      <a href="https://salarybit.in/">Calculator</a>
+      <a href="https://salarybit.in/about.html">About</a>
+      <a href="https://salarybit.in/" class="cta">Try Calculator →</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <p class="breadcrumb"><a href="https://salarybit.in/blog/">← Back to Guides</a></p>
+  <span class="category-badge">📖 Personal Finance Tools</span>
+
+  <h1>Life Passbook: What Your Daily Savings Are Actually Worth</h1>
+  <p class="deck">A free calculator that answers one question: how many days have you actually lived — and what would ₹1, ₹100 or ₹1,000 a day have been worth if invested from the day you were born?</p>
+  <p class="meta-line">Published: July 2026 · Reading time: ~5 min · Category: Personal Finance Tools</p>
+
+  <img src="/blog/images/life-passbook-cover.png" alt="An open Indian bank passbook on a desk at sunrise, with a hand writing a fresh entry in gold ink, captioned 'For a Better Tomorrow'" style="width:100%;height:auto;border-radius:10px;margin-bottom:32px;display:block">
+
+  <article>
+    <p>Most SIP calculators ask you to picture the future: invest ₹5,000 a month for 20 years, get X lakhs. Useful, but hard to feel — it's a made-up future, and it doesn't cost anything to imagine a future that hasn't happened yet.</p>
+
+    <p>This calculator flips that around. Enter a date of birth, and it works out exactly how many days that person has lived — then shows what that many days of investing ₹1, ₹100, or ₹1,000 a day would be worth <strong>today</strong>, growing at 12% a year. It's the same compounding math behind any SIP calculator, just applied to a number that's already real instead of one that's still hypothetical.</p>
+
+    <h2>The question it's built to answer</h2>
+
+    <p>Not "what if you invest for 20 years," but "what if every day you've already lived had a rupee riding on it, compounding at 12%, starting the day you were born." That single reframe is what makes the number land differently — it isn't a projection you have to trust, it's built entirely from days that have already passed.</p>
+
+    <h2>How it works</h2>
+
+    <p>Enter a date of birth. The tool counts the exact number of days between then and today — no rounding.</p>
+
+    <p>It then runs that day-count through three lanes: ₹1 a day, ₹100 a day, ₹1,000 a day. For each one, it shows two figures side by side — the total amount invested, and what that amount would be worth today if it had compounded at 12% a year the entire time.</p>
+
+    <div class="callout">
+      Nothing is stored or sent anywhere. The calculation runs entirely in the browser, same as every other tool on this site.
+    </div>
+
+    <h2>A worked example, at age 30</h2>
+
+    <p>At age 30, a person has lived roughly 10,950 days. Here's what the ledger shows for that timeline:</p>
+
+    <table class="ledger">
+      <caption>₹ amounts invested daily since birth, compounding at 12% p.a.</caption>
+      <thead>
+        <tr><th>Daily amount</th><th>Total invested</th><th>Value today @ 12%</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>₹1 / day</td><td>₹10,950</td><td class="gain">~₹31,500</td></tr>
+        <tr><td>₹100 / day</td><td>₹10.95 lakh</td><td class="gain">~₹31.5 lakh</td></tr>
+        <tr><td>₹1,000 / day</td><td>₹1.1 crore</td><td class="gain">~₹3.15 crore</td></tr>
+      </tbody>
+    </table>
+
+    <p>The invested column is just multiplication — anyone can do that in their head. The value-today column is compounding doing what compounding does when nobody interrupts it. That gap between the two columns is the whole argument for starting early, shown instead of stated.</p>
+
+    <h2>Why the gap matters more than the total</h2>
+
+    <p>Nobody can go back and start on day one — that's not really the point of the calculator. The point is what the gap between the two columns shows: a small daily amount, left alone to compound, does most of the work by itself over a long enough stretch.</p>
+
+    <p>And this is the part that's actually useful, not just a novelty: ₹100 a day starting <strong>today</strong> still has an entire remaining runway ahead of it. For anyone already running a SIP, this is a quick way to see the shape of consistent daily investing over decades, using their own timeline instead of a generic 20-year projection. For anyone not running one yet, it's a reason to start this week instead of next year.</p>
+
+    <h2>Frequently asked questions</h2>
+
+    <div class="faq-item">
+      <p class="q">Does this store my date of birth anywhere?</p>
+      <p>No. Everything runs in your browser. Nothing is sent to or saved on any server.</p>
+    </div>
+    <div class="faq-item">
+      <p class="q">Can I check amounts other than ₹1, ₹100, ₹1,000?</p>
+      <p>Those three are shown so you can compare small, medium, and serious daily amounts at a glance. The invested side scales exactly linearly — double the amount, double the number. The compounded side scales almost exactly the same way, so you can estimate anything in between in your head.</p>
+    </div>
+    <div class="faq-item">
+      <p class="q">Is 12% a realistic number to use?</p>
+      <p>It's a commonly used long-term reference figure for Indian equity mutual funds over full market cycles — not a promise, and not any single year's return. Actual returns depend on the funds you pick and the years you hold them. Check a fund's real historical performance before investing based on any calculator, including this one.</p>
+    </div>
+
+    <div class="cta-box">
+      <p>See what your own days are worth.</p>
+      <a href="https://salarybit.in/life-passbook.html">Open the calculator →</a>
+    </div>
+
+    <p class="disclaimer">This is for illustration only and is not investment advice. Please consult a qualified financial advisor before making investment decisions. Returns shown are illustrative and not guaranteed; actual market returns vary and can be negative in any given year.</p>
+  </article>
+</main>
+
+<footer>
+  © 2026 SalaryBit.in — Honest Personal Finance for India's Salaried Class<br>
+  Hoskote · Bengaluru · Karnataka
+  <div class="foot-links">
+    <a href="https://salarybit.in/">Home</a>
+    <a href="https://salarybit.in/about.html">About</a>
+    <a href="https://salarybit.in/blog/">Blog</a>
+  </div>
+</footer>
+
+</body>
+</html>

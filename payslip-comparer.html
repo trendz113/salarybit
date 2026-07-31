@@ -180,6 +180,12 @@
       <div class="loading-text">Generating your report…</div>
     </div>
 
+    <div class="lock-box" id="retryBox" style="display:none;">
+      <p id="retryMessage" style="color:var(--warn);"></p>
+      <p style="font-size:13px;opacity:0.7;">Payment ID: <span id="retryPaymentId"></span> — you will not be charged again.</p>
+      <button class="cta-btn" id="retryBtn">Retry Generating Report</button>
+    </div>
+
     <div id="fullReport"></div>
     <button class="secondary-btn" id="downloadBtn" style="display:none;">⬇ Download PDF Report</button>
   </div>
@@ -287,6 +293,52 @@ function renderTeaser(data) {
   }
 }
 
+let lastPaymentPayload = null; // set once Razorpay confirms payment; reused by retry so we never re-charge
+
+async function verifyAndRenderReport(payload) {
+  document.getElementById('lockBox').style.display = 'none';
+  document.getElementById('retryBox').style.display = 'none';
+  document.getElementById('unlockLoading').classList.add('show');
+  try {
+    const verifyRes = await fetch(API_BASE + '/api/verify-payslip-payment', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const verify = await verifyRes.json();
+    document.getElementById('unlockLoading').classList.remove('show');
+    if (verify.success && verify.analysis) {
+      lastAnalysis = verify.analysis;
+      renderFullReport(verify.analysis);
+      document.getElementById('downloadBtn').style.display = 'block';
+    } else if (verify.success) {
+      // Payment already succeeded server-side — offer a retry instead of a
+      // fresh "Unlock" button, which would trigger a second Razorpay charge.
+      document.getElementById('retryPaymentId').textContent = verify.payment_id || payload.razorpay_payment_id;
+      document.getElementById('retryMessage').textContent =
+        verify.error || 'Payment succeeded but the report could not be generated. Please retry, or contact support with the payment ID below if this keeps happening.';
+      document.getElementById('retryBox').style.display = 'block';
+    } else {
+      alert('Payment verification failed. If money was deducted, it will be refunded within 24 hours.');
+      document.getElementById('lockBox').style.display = 'block';
+      const btn = document.getElementById('unlockBtn');
+      btn.disabled = false; btn.textContent = 'Unlock Full Report';
+    }
+  } catch (e) {
+    document.getElementById('unlockLoading').classList.remove('show');
+    document.getElementById('retryPaymentId').textContent = payload.razorpay_payment_id;
+    document.getElementById('retryMessage').textContent = 'Network error while loading your report. Please retry — you will not be charged again.';
+    document.getElementById('retryBox').style.display = 'block';
+  }
+}
+
+document.getElementById('retryBtn').addEventListener('click', () => {
+  if (!lastPaymentPayload) {
+    alert('Could not retry automatically — please contact support with your payment ID.');
+    return;
+  }
+  verifyAndRenderReport(lastPaymentPayload);
+});
+
 document.getElementById('unlockBtn').addEventListener('click', async () => {
   const btn = document.getElementById('unlockBtn');
   btn.disabled = true;
@@ -305,38 +357,14 @@ document.getElementById('unlockBtn').addEventListener('click', async () => {
       name: 'SalaryBit',
       description: 'Payslip Comparer — Full Report',
       handler: async function (response) {
-        document.getElementById('lockBox').style.display = 'none';
-        document.getElementById('unlockLoading').classList.add('show');
-        try {
-          const verifyRes = await fetch(API_BASE + '/api/verify-payslip-payment', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              scan_id: scanId
-            })
-          });
-          const verify = await verifyRes.json();
-          document.getElementById('unlockLoading').classList.remove('show');
-          if (verify.success && verify.analysis) {
-            lastAnalysis = verify.analysis;
-            renderFullReport(verify.analysis);
-            document.getElementById('downloadBtn').style.display = 'block';
-          } else if (verify.success) {
-            alert(verify.error || 'Payment succeeded but the report could not be generated. Please contact support.');
-            document.getElementById('lockBox').style.display = 'block';
-          } else {
-            alert('Payment verification failed. If money was deducted, it will be refunded within 24 hours.');
-            document.getElementById('lockBox').style.display = 'block';
-            btn.disabled = false; btn.textContent = 'Unlock Full Report';
-          }
-        } catch (e) {
-          document.getElementById('unlockLoading').classList.remove('show');
-          document.getElementById('lockBox').style.display = 'block';
-          alert('Could not load your report. If money was deducted, it will be refunded within 24 hours.');
-          btn.disabled = false; btn.textContent = 'Unlock Full Report';
-        }
+        lastPaymentPayload = {
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+          scan_id: scanId
+        };
+        await verifyAndRenderReport(lastPaymentPayload);
+        btn.disabled = false; btn.textContent = 'Unlock Full Report';
       },
       modal: { ondismiss: function () { btn.disabled = false; btn.textContent = 'Unlock Full Report'; } },
       theme: { color: '#00e676' }

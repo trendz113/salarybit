@@ -320,7 +320,8 @@ function calcSal(){
       <div class="rrow r"><span>Income Tax TDS / month</span><span>− ${fmtI(monthlyTax)}</span></div>
       <div class="rrow g"><span>Take-Home (In-Hand)</span><span>${fmtI(inhand)}</span></div>
     </div>
-    <div class="insight blue"><span class="insight-icon">💡</span><div>Your effective take-home is <strong>${((inhand/gross)*100).toFixed(0)}% of gross</strong>. ${monthlyTax>5000?'Switching regimes or optimising deductions could save you ₹'+Math.round(monthlyTax*0.15).toLocaleString('en-IN')+'/mo.':''}</div></div>`;
+    <div class="insight blue"><span class="insight-icon">💡</span><div>Your effective take-home is <strong>${((inhand/gross)*100).toFixed(0)}% of gross</strong>. ${monthlyTax>5000?'Switching regimes or optimising deductions could save you ₹'+Math.round(monthlyTax*0.15).toLocaleString('en-IN')+'/mo.':''}</div></div>
+    ${annualGross>2000000?`<div class="insight blue" style="margin-top:10px;"><span class="insight-icon">🧾</span><div>Package over ₹20L usually means RSUs, ESOPs, or a dual Form-16 year. <a href="/tools/esop-rsu-tax-calculator.html" style="color:var(--accent);font-weight:600;">Check your ESOP/RSU tax</a> or <a href="/tools/job-switch-tax-calculator.html" style="color:var(--accent);font-weight:600;">run a job-switch tax analysis</a> to avoid surprises at filing time.</div></div>`:''}`;
 }
 </script>
 </body></html>

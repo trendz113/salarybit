@@ -477,7 +477,7 @@
       <form id="reportForm">
         <div class="report-row">
           <input type="email" id="reportEmail" placeholder="you@email.com" required/>
-          <button type="submit" id="reportSubmitBtn">Send me my report — ₹49</button>
+          <button type="submit" id="reportSubmitBtn">Send me my report — ₹99</button>
         </div>
       </form>
       <div class="note" id="reportStatus"></div>
@@ -817,12 +817,12 @@ document.getElementById('reportForm').addEventListener('submit', async (e)=>{
           statusEl.textContent = 'Payment succeeded but verification failed to reach the server — contact support with payment ID: ' + (response.razorpay_payment_id || '');
         }
         btn.disabled = false;
-        btn.textContent = 'Send me my report — ₹49';
+        btn.textContent = 'Send me my report — ₹99';
       },
       modal: {
         ondismiss: function(){
           btn.disabled = false;
-          btn.textContent = 'Send me my report — ₹49';
+          btn.textContent = 'Send me my report — ₹99';
           statusEl.textContent = 'Checkout closed — no payment taken.';
         }
       },
@@ -832,7 +832,7 @@ document.getElementById('reportForm').addEventListener('submit', async (e)=>{
   } catch(err){
     statusEl.textContent = 'Could not start checkout: ' + err.message;
     btn.disabled = false;
-    btn.textContent = 'Send me my report — ₹49';
+    btn.textContent = 'Send me my report — ₹99';
   }
 });
 </script>

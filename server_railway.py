@@ -786,7 +786,7 @@ def create_order():
         return "", 200
     try:
         order = rzp.order.create({
-            "amount": 4900,
+            "amount": 9900,  # Rs 99 (standardized across all paid tools)
             "currency": "INR",
             "receipt": f"qr_{os.urandom(4).hex()}",
         })
@@ -931,7 +931,7 @@ def validate_signature():
 
 # ── SUBSCRIPTION LEAK FINDER ──────────────────────────────
 
-SUBSCRIPTION_SCAN_PRICE_PAISE = 4900  # Rs 49
+SUBSCRIPTION_SCAN_PRICE_PAISE = 9900  # Rs 99
 
 # In-memory cache: scan_id -> {"recurring": [...], "ts": epoch_seconds}
 # Holds the (already-detected, not-yet-AI-identified) recurring charge list
@@ -1043,7 +1043,7 @@ def claude_proxy():
 
 
 # ── MF ANALYZER BOT — CREATE ORDER ────────────────────────
-MF_REPORT_AMOUNT = 19900  # ₹199 one-time full report
+MF_REPORT_AMOUNT = 9900  # ₹99 one-time full report (standardized across all paid tools)
 
 @app.route("/api/create-mf-order", methods=["POST", "OPTIONS"])
 def create_mf_order():
@@ -1300,7 +1300,7 @@ def verify_subscription_payment():
 
 
 # ── PATIENCE PASSBOOK ──────────────────────────────────────
-PASSBOOK_PRICE_PAISE = 4900  # Rs 49
+PASSBOOK_PRICE_PAISE = 9900  # Rs 99
 
 
 @app.route('/patience-passbook', methods=['GET'])
@@ -1446,7 +1446,7 @@ def verify_family_passbook_payment():
 # entirely client-side, so the paid unlock is just the HMAC-verified full
 # report (Challan 280 guide + Form 12B email draft) via window.print().
 # Nothing the user typed is ever sent to this server.
-JOBSWITCH_PRICE_PAISE = 4900  # Rs 49
+JOBSWITCH_PRICE_PAISE = 9900  # Rs 99
 
 
 @app.route("/api/create-jobswitch-order", methods=["POST", "OPTIONS"])

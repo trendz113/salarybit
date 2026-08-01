@@ -786,7 +786,7 @@ def create_order():
         return "", 200
     try:
         order = rzp.order.create({
-            "amount": 9900,  # Rs 99 (standardized across all paid tools)
+            "amount": 2900,  # Rs 29 (deterministic QR decode, no AI cost)
             "currency": "INR",
             "receipt": f"qr_{os.urandom(4).hex()}",
         })
@@ -931,7 +931,7 @@ def validate_signature():
 
 # ── SUBSCRIPTION LEAK FINDER ──────────────────────────────
 
-SUBSCRIPTION_SCAN_PRICE_PAISE = 9900  # Rs 99
+SUBSCRIPTION_SCAN_PRICE_PAISE = 4900  # Rs 49 (useful insight, lower urgency than PF/PAN)
 
 # In-memory cache: scan_id -> {"recurring": [...], "ts": epoch_seconds}
 # Holds the (already-detected, not-yet-AI-identified) recurring charge list
@@ -1043,7 +1043,7 @@ def claude_proxy():
 
 
 # ── MF ANALYZER BOT — CREATE ORDER ────────────────────────
-MF_REPORT_AMOUNT = 9900  # ₹99 one-time full report (standardized across all paid tools)
+MF_REPORT_AMOUNT = 24900  # Rs 249 one-time full report (deepest/most valuable AI report)
 
 @app.route("/api/create-mf-order", methods=["POST", "OPTIONS"])
 def create_mf_order():
@@ -1300,7 +1300,7 @@ def verify_subscription_payment():
 
 
 # ── PATIENCE PASSBOOK ──────────────────────────────────────
-PASSBOOK_PRICE_PAISE = 9900  # Rs 99
+PASSBOOK_PRICE_PAISE = 1900  # Rs 19 (static calculator, nominal fee)
 
 
 @app.route('/patience-passbook', methods=['GET'])
@@ -1385,7 +1385,7 @@ def verify_passbook_payment():
 # HMAC verify pattern as every other tool on this file). Nothing about
 # what the person typed is ever sent to the server — payment is verified,
 # then the browser's own window.print() renders the PDF locally.
-FAMILY_PASSBOOK_PRICE_PAISE = 9900  # Rs 99
+FAMILY_PASSBOOK_PRICE_PAISE = 1900  # Rs 19 (static calculator, nominal fee)
 
 
 @app.route("/api/create-family-passbook-order", methods=["POST", "OPTIONS"])
@@ -1508,7 +1508,7 @@ def verify_jobswitch_payment():
 # details. Payment is verified with the same HMAC pattern used everywhere
 # else on the site; a promo/bypass code is also accepted so the flow can be
 # tested end-to-end without a real charge (see PROMO_BYPASS_CODE below).
-PFDECODER_PRICE_PAISE = 9900  # Rs 99
+PFDECODER_PRICE_PAISE = 19900  # Rs 199 (real Claude-generated CA-grade resolution report)
 
 # Testing bypass: set PROMO_BYPASS_CODE in Railway's env vars to override
 # this default once you're done testing. Any tool using this helper accepts
@@ -1703,7 +1703,7 @@ def verify_pfdecoder_payment():
 # NSDL/Protean or UTIITSL) versus holding a duplicate PAN (slow, offline,
 # routed through the jurisdictional Assessing Officer, not a correction
 # form at all).
-PANCORRECTION_PRICE_PAISE = 9900  # Rs 99
+PANCORRECTION_PRICE_PAISE = 19900  # Rs 199 (real Claude-generated CA-grade resolution report)
 
 PANCORRECTION_SYSTEM_PROMPT = """You are a senior tax consultant (CA-level) preparing a formal case
 resolution report for a paying client dealing with a PAN card problem in India. The client has paid
@@ -2037,7 +2037,7 @@ def verify_relievingletter_payment():
 # detection, backdated-arrears math, a plain-language "why your amount
 # changed" explanation for non-finance users, a New Tax Regime NPS
 # 80CCD(2) tax-saving tip, and a next-month take-home estimate.
-PAYSLIP_COMPARE_PRICE_PAISE = 9900  # Rs 99
+PAYSLIP_COMPARE_PRICE_PAISE = 19900  # Rs 199
 
 # In-memory cache: scan_id -> {"texts": [...raw payslip text...], "ts": epoch}
 # Mirrors _SUBSCRIPTION_SCAN_CACHE — holds extracted text between the free

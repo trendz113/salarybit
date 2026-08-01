@@ -881,76 +881,6 @@ def decode_qr_from_pdf(pdf_path):
     return results
 
 
-# ── CREATE RESUME ORDER ───────────────────────────────────
-@app.route("/api/create-resume-order", methods=["POST", "OPTIONS"])
-def create_resume_order():
-    if request.method == "OPTIONS":
-        return "", 200
-    try:
-        order = rzp.order.create({
-            "amount": 9900,
-            "currency": "INR",
-            "receipt": f"resume_{os.urandom(4).hex()}",
-        })
-        return jsonify({"order_id": order["id"], "amount": order["amount"], "currency": order["currency"], "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")})
-    except Exception as e:
-        print(f"create-resume-order error: {e}")
-        return jsonify({"error": str(e)}), 500
-
-
-# ── AI RESUME REWRITER ────────────────────────────────────
-@app.route("/api/rewrite-resume", methods=["POST", "OPTIONS"])
-def rewrite_resume():
-    if request.method == "OPTIONS":
-        return "", 200
-    data = request.get_json()
-    resume = data.get("resume", "").strip()
-    jd = data.get("jd", "").strip()
-    if not resume or not jd:
-        return jsonify({"error": "Missing resume or jd"}), 400
-    groq_key = os.environ.get("GROQ_API_KEY")
-    if not groq_key:
-        return jsonify({"error": "GROQ_API_KEY not set on server"}), 500
-    prompt = f"""You are an expert ATS resume optimizer for the Indian job market.
-
-RESUME:
-{resume}
-
-JOB DESCRIPTION:
-{jd}
-
-Analyze and respond ONLY with valid JSON, no markdown, no explanation:
-{{
-  "ats_before": <integer 0-100, realistic ATS match score of original resume>,
-  "ats_after": <integer 0-100, ATS score after rewriting>,
-  "present_keywords": [<array of important keywords from JD already in resume>],
-  "missing_keywords": [<array of important keywords from JD missing in resume>],
-  "rewritten_resume": "<full rewritten resume, ATS optimized, same facts, better phrasing, keywords added naturally>"
-}}"""
-    payload = json.dumps({
-        "model": "llama-3.3-70b-versatile",
-        "temperature": 0.3,
-        "max_tokens": 4096,
-        "messages": [{"role": "user", "content": prompt}]
-    }).encode("utf-8")
-    req = urllib.request.Request(
-        "https://api.groq.com/openai/v1/chat/completions",
-        data=payload,
-        headers={"Content-Type": "application/json", "Authorization": f"Bearer {groq_key}"},
-        method="POST"
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            result = json.loads(resp.read().decode("utf-8"))
-        raw = result["choices"][0]["message"]["content"]
-        clean = raw.replace("```json", "").replace("```", "").strip()
-        parsed = json.loads(clean)
-        return jsonify(parsed)
-    except Exception as e:
-        print(f"rewrite-resume error: {e}")
-        return jsonify({"error": str(e)}), 500
-
-
 # ── FOOTBALL PROXY ────────────────────────────────────────
 @app.route('/api/football')
 def football_proxy():
@@ -1061,9 +991,31 @@ def claude_proxy():
     if not messages:
         return jsonify({"error": "Missing messages in request body"}), 400
 
+    requested_max_tokens = min(int(body.get("max_tokens") or 1000), 8000)
+
+    # Calls above this threshold are the paid analysis/report generations
+    # (MF Analyzer's CAS analysis + Wealth Report). The free chat feature
+    # only ever requests 1000, so it's unaffected. Previously this proxy had
+    # no payment check at all for these — anyone could call it directly and
+    # get the paid output without ever paying.
+    FREE_TIER_MAX_TOKENS = 1200
+    if requested_max_tokens > FREE_TIER_MAX_TOKENS:
+        order_id = body.get("razorpay_order_id")
+        payment_id = body.get("razorpay_payment_id")
+        signature = body.get("razorpay_signature")
+        if not all([order_id, payment_id, signature]):
+            return jsonify({"error": "Payment verification required for this request."}), 402
+        expected = hmac.new(
+            os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+            f"{order_id}|{payment_id}".encode(),
+            hashlib.sha256
+        ).hexdigest()
+        if expected != signature:
+            return jsonify({"error": "Payment verification failed."}), 402
+
     payload = json.dumps({
         "model": body.get("model") or "claude-sonnet-4-6",
-        "max_tokens": min(int(body.get("max_tokens") or 1000), 8000),
+        "max_tokens": requested_max_tokens,
         "messages": messages
     }).encode("utf-8")
 
@@ -2160,9 +2112,9 @@ def payslip_report_pdf():
             rows = [["Month", "Total Earnings", "Total Deductions", "Take Home", "Basic", "Basic % of Earnings"]]
             for m in months:
                 rows.append([
-                    m.get("label", ""), f"Rs {(m.get('total_earnings') or 0):,.2f}",
-                    f"Rs {(m.get('total_deductions') or 0):,.2f}", f"Rs {(m.get('take_home') or 0):,.2f}",
-                    f"Rs {(m.get('basic') or 0):,.2f}", f"{(m.get('basic_pct_of_earnings') or 0):.1f}%",
+                    m.get("label", ""), f"Rs {m.get('total_earnings', 0):,.2f}",
+                    f"Rs {m.get('total_deductions', 0):,.2f}", f"Rs {m.get('take_home', 0):,.2f}",
+                    f"Rs {m.get('basic', 0):,.2f}", f"{m.get('basic_pct_of_earnings', 0):.1f}%",
                 ])
             t = Table(rows, repeatRows=1, hAlign="LEFT")
             t.setStyle(TableStyle([
@@ -2179,8 +2131,8 @@ def payslip_report_pdf():
             story.append(Paragraph("What Changed & Why", h2))
             for c in changes:
                 line = (f"<b>{c.get('component')}</b> ({c.get('type')}): {c.get('from_month','')} "
-                        f"Rs {(c.get('from_value') or 0):,.2f} to {c.get('to_month','')} "
-                        f"Rs {(c.get('to_value') or 0):,.2f} (Delta Rs {(c.get('delta') or 0):,.2f}, {(c.get('delta_pct') or 0):.1f}%)")
+                        f"Rs {c.get('from_value',0):,.2f} to {c.get('to_month','')} "
+                        f"Rs {c.get('to_value',0):,.2f} (Delta Rs {c.get('delta',0):,.2f}, {c.get('delta_pct',0):.1f}%)")
                 story.append(Paragraph(line, body))
                 story.append(Paragraph(c.get("likely_reason", ""), small))
                 story.append(Spacer(1, 3 * mm))
@@ -2189,7 +2141,7 @@ def payslip_report_pdf():
         if arrears:
             story.append(Paragraph("Arrears / Backdated Payments Detected", h2))
             for a in arrears:
-                story.append(Paragraph(f"<b>{a.get('line_item')}</b>: Rs {(a.get('amount') or 0):,.2f}", body))
+                story.append(Paragraph(f"<b>{a.get('line_item')}</b>: Rs {a.get('amount',0):,.2f}", body))
                 story.append(Paragraph(a.get("explanation", ""), small))
                 story.append(Spacer(1, 2 * mm))
 
@@ -2214,8 +2166,8 @@ def payslip_report_pdf():
         if nxt:
             story.append(Paragraph(f"Next Month Estimate — {nxt.get('label','')}", h2))
             story.append(Paragraph(
-                f"Estimated take-home: Rs {(nxt.get('estimated_take_home_low') or 0):,.0f} - "
-                f"Rs {(nxt.get('estimated_take_home_high') or 0):,.0f}", body))
+                f"Estimated take-home: Rs {nxt.get('estimated_take_home_low',0):,.0f} - "
+                f"Rs {nxt.get('estimated_take_home_high',0):,.0f}", body))
             story.append(Paragraph(nxt.get("basis", ""), small))
 
     story.append(Spacer(1, 8 * mm))

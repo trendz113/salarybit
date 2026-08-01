@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PF Claim Rejection Decoder — CA-Grade EPFO Resolution Report | SalaryBit</title>
-<meta name="description" content="Got your EPF withdrawal, transfer or pension claim rejected? Get a free instant read, then a personalised CA-grade resolution report for ₹99 — built for your exact case.">
+<meta name="description" content="Got your EPF withdrawal, transfer or pension claim rejected? Get a free instant read, then a personalised CA-grade resolution report for ₹199 — built for your exact case.">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#1f3a5f">
 <link rel="canonical" href="https://salarybit.in/pf-rejection-decoder.html">
@@ -14,7 +14,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://salarybit.in/og-image.png">
-<meta property="og:description" content="Got your EPF withdrawal, transfer or pension claim rejected? Get a free instant read, then a personalised CA-grade resolution report for ₹99 — built for your exact case.">
+<meta property="og:description" content="Got your EPF withdrawal, transfer or pension claim rejected? Get a free instant read, then a personalised CA-grade resolution report for ₹199 — built for your exact case.">
 <meta property="og:url" content="https://salarybit.in/pf-rejection-decoder.html">
 <script type="application/ld+json">
 {
@@ -294,7 +294,7 @@
       <div class="lockbox">
         <div class="kicker">CA-Grade Resolution Report</div>
         <h4>Get the full, personalised report</h4>
-        <div class="price">₹99 <span>one-time, this case</span></div>
+        <div class="price">₹199 <span>one-time, this case</span></div>
         <ul>
           <li>Root-cause analysis written for your specific claim, not a generic category</li>
           <li>Numbered, step-by-step resolution plan</li>
@@ -302,7 +302,7 @@
           <li>Escalation path if standard steps don't resolve it in time</li>
           <li>Downloadable as a formal PDF report</li>
         </ul>
-        <button class="btn sans" id="payBtn">Generate my ₹99 report →</button>
+        <button class="btn sans" id="payBtn">Generate my ₹199 report →</button>
         <div id="payError" class="err-text" style="display:none;"></div>
         <span class="promo-toggle" id="promoToggle">Have a promo code?</span>
         <div class="promo-row" id="promoRow">
@@ -354,7 +354,7 @@
     </div>
   </div>
 
-  <p class="disclaimer">The free instant read is a general guide based on common EPFO rejection categories. The ₹99 report is generated for your specific case details but remains procedural guidance, not legal advice — when in doubt, confirm with the EPFO helpline (1800-118-005) or your regional office.</p>
+  <p class="disclaimer">The free instant read is a general guide based on common EPFO rejection categories. The ₹199 report is generated for your specific case details but remains procedural guidance, not legal advice — when in doubt, confirm with the EPFO helpline (1800-118-005) or your regional office.</p>
 </main>
 
 <script>
@@ -469,7 +469,7 @@ const DATA = {
     explain: "Not every EPFO remark fits the common list — this can still be resolved, but needs the specific wording to diagnose accurately.",
     steps: [
       "Add the exact remark text and any extra context in the fields below.",
-      "The ₹99 report will read your specific description rather than relying on a generic category."
+      "The ₹199 report will read your specific description rather than relying on a generic category."
     ]
   }
 };
@@ -550,13 +550,13 @@ async function startPayment(){
           razorpay_signature: response.razorpay_signature
         });
       },
-      modal:{ ondismiss: function(){ btn.disabled = false; btn.textContent = 'Generate my ₹99 report →'; } },
+      modal:{ ondismiss: function(){ btn.disabled = false; btn.textContent = 'Generate my ₹199 report →'; } },
       theme:{ color:"#1f3a5f" }
     });
     rzp.open();
   }catch(e){
     btn.disabled = false;
-    btn.textContent = 'Generate my ₹99 report →';
+    btn.textContent = 'Generate my ₹199 report →';
     errBox.textContent = 'Something went wrong starting payment: ' + e.message;
     errBox.style.display = 'block';
   }

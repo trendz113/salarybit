@@ -324,7 +324,7 @@ footer a { color: var(--text3); text-decoration: none; }
     <h1>Decode Your<br/><em>QR String</em> Instantly</h1>
     <p>Upload any government PDF — we extract and decode the embedded QR string in seconds.</p>
     <div class="price-pill">
-      <strong>₹99</strong> per decode · instant result
+      <strong>₹29</strong> per decode · instant result
     </div>
   </section>
 
@@ -384,7 +384,7 @@ footer a { color: var(--text3); text-decoration: none; }
     </div>
     <div class="step">
       <span class="step-num">02</span>
-      <div class="step-title">Pay ₹99</div>
+      <div class="step-title">Pay ₹29</div>
       <div class="step-sub">UPI · Cards · Net Banking</div>
     </div>
     <div class="step">
@@ -481,7 +481,7 @@ if (!CONFIG.isTestMode) {
   document.getElementById('modeBadge').style.setProperty('--dot-bg', 'var(--green)');
 }
 
-const PRICE_PAISE = 4900; // ₹99
+const PRICE_PAISE = 4900; // ₹29
 let uploadedFile = null;
 
 // Drag & drop
@@ -506,7 +506,7 @@ function loadFile(f) {
   document.getElementById('uzMain').textContent = 'PDF ready ✓';
   document.getElementById('uzFilename').textContent = f.name + ' · ' + (f.size / 1024).toFixed(1) + ' KB';
   const btn = document.getElementById('payBtn');
-  btn.innerHTML = `<span>Pay ₹99 &amp; Decode QR</span><span class="price-tag">₹99</span>`;
+  btn.innerHTML = `<span>Pay ₹29 &amp; Decode QR</span><span class="price-tag">₹29</span>`;
   btn.disabled = false;
   document.getElementById('statusArea').innerHTML = '';
   document.getElementById('resultArea').innerHTML = '';
@@ -554,7 +554,7 @@ async function startPayment() {
       modal: {
         ondismiss: function() {
           document.getElementById('payBtn').disabled = false;
-          document.getElementById('payBtn').innerHTML = `<span>Pay ₹99 &amp; Decode QR</span><span class="price-tag">₹99</span>`;
+          document.getElementById('payBtn').innerHTML = `<span>Pay ₹29 &amp; Decode QR</span><span class="price-tag">₹29</span>`;
           showStatus('');
         }
       }
@@ -564,7 +564,7 @@ async function startPayment() {
 
   } catch (err) {
     document.getElementById('payBtn').disabled = false;
-    document.getElementById('payBtn').innerHTML = `<span>Pay ₹99 &amp; Decode QR</span><span class="price-tag">₹99</span>`;
+    document.getElementById('payBtn').innerHTML = `<span>Pay ₹29 &amp; Decode QR</span><span class="price-tag">₹29</span>`;
     showError('Payment failed: ' + err.message);
   }
 }
@@ -671,7 +671,7 @@ function showError(msg) {
   document.getElementById('statusArea').innerHTML = `<div class="error-box">${msg}</div>`;
   document.getElementById('payBtn').disabled = !uploadedFile;
   if (uploadedFile) {
-    document.getElementById('payBtn').innerHTML = `<span>Try Again — Pay ₹99</span><span class="price-tag">₹99</span>`;
+    document.getElementById('payBtn').innerHTML = `<span>Try Again — Pay ₹29</span><span class="price-tag">₹29</span>`;
   }
 }
 

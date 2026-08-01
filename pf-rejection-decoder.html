@@ -202,24 +202,24 @@
   .err-text{ color:var(--red); font-size:13px; margin-top:10px; font-family:inherit; }
 
   /* ── CA-grade paid report ── */
-  .report{ display:none; margin-top:24px; border-top:3px double var(--navy); padding-top:22px; }
+  .report{ display:none; margin-top:24px; border-top:3px double #1f3a5f; padding-top:22px; background:#ffffff; }
   .report.show{ display:block; }
   .report-head{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin-bottom:20px; }
-  .report-head .rtitle{ font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--amber); font-weight:700; }
-  .report-head h2{ font-family:'Georgia',serif; font-weight:400; font-size:22px; margin:6px 0 10px; color:var(--navy-deep); }
-  .report-meta-line{ font-size:12px; color:var(--muted); border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:8px 0; display:flex; flex-wrap:wrap; gap:4px 16px; }
-  .section-h{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--navy); margin:22px 0 10px; }
+  .report-head .rtitle{ font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#b8752c; font-weight:700; }
+  .report-head h2{ font-family:'Georgia',serif; font-weight:400; font-size:22px; margin:6px 0 10px; color:#152943; }
+  .report-meta-line{ font-size:12px; color:#6b6458; border-top:1px solid #e2ddd0; border-bottom:1px solid #e2ddd0; padding:8px 0; display:flex; flex-wrap:wrap; gap:4px 16px; }
+  .section-h{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:#1f3a5f; margin:22px 0 10px; }
   .prose{ font-size:15px; color:#2c261c; margin:0 0 6px; }
   .steps-list{ counter-reset:step; list-style:none; padding:0; margin:0; }
-  .steps-list li{ counter-increment:step; position:relative; padding:10px 0 10px 34px; border-bottom:1px solid var(--line); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+  .steps-list li{ counter-increment:step; position:relative; padding:10px 0 10px 34px; border-bottom:1px solid #e2ddd0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
   .steps-list li:last-child{ border-bottom:none; }
-  .steps-list li::before{ content:counter(step); position:absolute; left:0; top:10px; width:22px; height:22px; border-radius:50%; background:var(--navy); color:#fff; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; }
-  .steps-list .stitle{ font-weight:700; color:var(--navy-deep); margin-bottom:3px; font-size:14.5px; }
+  .steps-list li::before{ content:counter(step); position:absolute; left:0; top:10px; width:22px; height:22px; border-radius:50%; background:#1f3a5f; color:#fff; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+  .steps-list .stitle{ font-weight:700; color:#152943; margin-bottom:3px; font-size:14.5px; }
   .steps-list .sdetail{ font-size:13.5px; color:#3a3428; }
   .taglist{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size:13.5px; padding-left:20px; margin:0; color:#3a3428; }
   .taglist li{ margin-bottom:5px; }
-  .flagbox{ background:#f3e9e0; border-left:3px solid var(--red); padding:12px 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size:13.5px; color:#4a2a2a; }
-  .report-disclaimer{ margin-top:24px; padding-top:14px; border-top:1px solid var(--line); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size:12px; color:var(--muted); font-style:italic; }
+  .flagbox{ background:#f3e9e0; border-left:3px solid #a53f3f; padding:12px 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size:13.5px; color:#4a2a2a; }
+  .report-disclaimer{ margin-top:24px; padding-top:14px; border-top:1px solid #e2ddd0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size:12px; color:#6b6458; font-style:italic; }
 </style>
 </head>
 <body>
@@ -639,13 +639,45 @@ function renderPaidReport(r, caseData, paymentId){
 
 function downloadPDF(){
   const el = document.getElementById('report');
-  html2pdf().set({
-    margin: 10,
-    filename: 'pf-rejection-ca-report-salarybit.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, backgroundColor: '#ffffff' },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  }).from(el).save();
+  const btn = document.getElementById('downloadPdfBtn');
+  const originalScrollY = window.scrollY;
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Preparing PDF…';
+
+  // html2canvas (bundled in html2pdf 0.10.1) captures the wrong region of the
+  // page if the browser is scrolled down when it runs — which it always is
+  // here, since the report sits below a long page. Scrolling to the top and
+  // passing scrollX/scrollY:0 forces it to capture the report element itself
+  // instead of a blank slice of the viewport.
+  window.scrollTo(0, 0);
+
+  setTimeout(() => {
+    html2pdf().set({
+      margin: 10,
+      filename: 'pf-rejection-ca-report-salarybit.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        backgroundColor: '#ffffff',
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: document.documentElement.scrollWidth,
+        windowHeight: document.documentElement.scrollHeight,
+        useCORS: true
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).from(el).save().then(() => {
+      btn.disabled = false;
+      btn.textContent = originalText;
+      window.scrollTo(0, originalScrollY);
+    }).catch((e) => {
+      btn.disabled = false;
+      btn.textContent = originalText;
+      window.scrollTo(0, originalScrollY);
+      alert('PDF generation failed: ' + e.message + '. You can still screenshot or print this page (Ctrl/Cmd+P) to save it.');
+    });
+  }, 150);
 }
 </script>
 

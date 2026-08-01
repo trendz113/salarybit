@@ -1736,6 +1736,14 @@ CRITICAL — get this distinction right, it is the main value of this report ove
    - If the duplicate card was never received, is lost, or the client doesn't have it: file a police
      complaint (FIR or a local online police complaint) for the lost PAN card first. That complaint
      record substitutes for the physical card copy when requesting surrender.
+   - Before approaching the AO, the client can and should check the duplicate PAN's own transaction
+     footprint themselves first: log in to the Income Tax e-filing portal (incometax.gov.in) with that
+     PAN, go to Services > Annual Information Statement (AIS), and also check Form 26AS. This shows
+     reported transactions (bank interest, TDS, high-value transactions) linked to that PAN. It is not
+     100% authoritative — the AO's internal view can show more than AIS does — but it tells the client
+     in advance whether the surrender is likely to be quick (nothing shows up) or will need
+     reconciliation first (something shows up), instead of only finding out after visiting the AO.
+     Recommend this as an early, self-serve step before the in-person/written surrender process below.
    - The AO will check the PAN proposed for surrender for any transaction history (bank accounts, ITR
      filings, TDS entries linked to it). It can only be closed if it shows NO transactions. If it does
      show transactions, that history has to be explained/reconciled first, which adds significant time.
@@ -1752,6 +1760,8 @@ CRITICAL — get this distinction right, it is the main value of this report ove
      frustrating follow-on step people don't expect.
 
 Rules:
+- For duplicate PAN cases, the AIS/Form 26AS self-check should normally be resolution_steps[0] — it's
+  free, immediate, and self-serve, so it belongs before the AO/surrender steps, not after them.
 - Do not blend the two paths above. If the client's situation is a duplicate PAN, do not tell them to
   use the NSDL/UTIITSL correction portal for that — direct them to the AO route. If it is a simple
   correction, do not send them down the AO/surrender path.

@@ -107,6 +107,26 @@
     background: var(--bg-card-light); border-radius: 12px; padding: 18px 20px;
     font-size: 15px; line-height: 1.65;
   }
+  .report-meta { font-size: 12px; color: var(--muted); margin-bottom: 16px; letter-spacing: 0.02em; }
+  .headline-summary {
+    background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.4); border-radius: 12px;
+    padding: 16px 20px; font-size: 15.5px; font-weight: 600; line-height: 1.55; margin-bottom: 10px;
+  }
+  .month-table-wrap { overflow-x: auto; }
+  .month-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px; }
+  .month-table th {
+    text-align: left; padding: 10px 12px; background: var(--bg-card-light); color: var(--muted);
+    font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+  .month-table th:first-child { border-radius: 8px 0 0 8px; }
+  .month-table th:last-child { border-radius: 0 8px 8px 0; }
+  .month-table td { padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  .month-table td.hl { color: var(--green); font-weight: 700; }
+  .report-disclaimer {
+    margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--line);
+    font-size: 12px; color: var(--muted); line-height: 1.5;
+  }
   .change-row { border-bottom: 1px solid var(--line); padding: 12px 0; font-size: 14px; }
   .change-row:last-child { border-bottom: none; }
   .change-row .reason { color: var(--muted); margin-top: 4px; }
@@ -179,6 +199,12 @@
       <div class="spinner"></div>
       <div class="loading-text">Generating your report…</div>
       <div class="loading-text" style="color:var(--warn);margin-top:8px;">Please don't refresh or close this page — your payment has already gone through and will not be refunded for closing early.</div>
+    </div>
+
+    <div class="lock-box" id="retryBox" style="display:none;">
+      <p id="retryMessage" style="color:var(--warn);"></p>
+      <p style="font-size:13px;opacity:0.7;">Payment ID: <span id="retryPaymentId"></span> — you will not be charged again.</p>
+      <button class="cta-btn" id="retryBtn">Retry Generating Report</button>
     </div>
 
     <div id="fullReport"></div>
@@ -288,6 +314,50 @@ function renderTeaser(data) {
   }
 }
 
+let lastPaymentPayload = null; // set once Razorpay confirms payment; reused by retry so we never re-charge
+
+async function verifyAndRenderReport(payload) {
+  document.getElementById('lockBox').style.display = 'none';
+  document.getElementById('retryBox').style.display = 'none';
+  document.getElementById('unlockLoading').classList.add('show');
+  try {
+    const verifyRes = await fetch(API_BASE + '/api/verify-payslip-payment', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const verify = await verifyRes.json();
+    document.getElementById('unlockLoading').classList.remove('show');
+    if (verify.success && verify.analysis) {
+      lastAnalysis = verify.analysis;
+      renderFullReport(verify.analysis);
+      document.getElementById('downloadBtn').style.display = 'block';
+    } else if (verify.success) {
+      document.getElementById('retryPaymentId').textContent = verify.payment_id || payload.razorpay_payment_id;
+      document.getElementById('retryMessage').textContent =
+        verify.error || 'Payment succeeded but the report could not be generated. Please retry, or contact support with the payment ID below if this keeps happening.';
+      document.getElementById('retryBox').style.display = 'block';
+    } else {
+      alert('Payment verification failed. If money was deducted, it will be refunded within 24 hours.');
+      document.getElementById('lockBox').style.display = 'block';
+      const btn = document.getElementById('unlockBtn');
+      btn.disabled = false; btn.textContent = 'Unlock Full Report';
+    }
+  } catch (e) {
+    document.getElementById('unlockLoading').classList.remove('show');
+    document.getElementById('retryPaymentId').textContent = payload.razorpay_payment_id;
+    document.getElementById('retryMessage').textContent = 'Network error while loading your report. Please retry — you will not be charged again.';
+    document.getElementById('retryBox').style.display = 'block';
+  }
+}
+
+document.getElementById('retryBtn').addEventListener('click', () => {
+  if (!lastPaymentPayload) {
+    alert('Could not retry automatically — please contact support with your payment ID.');
+    return;
+  }
+  verifyAndRenderReport(lastPaymentPayload);
+});
+
 document.getElementById('unlockBtn').addEventListener('click', async () => {
   const btn = document.getElementById('unlockBtn');
   btn.disabled = true;
@@ -306,38 +376,14 @@ document.getElementById('unlockBtn').addEventListener('click', async () => {
       name: 'SalaryBit',
       description: 'Payslip Comparer — Full Report',
       handler: async function (response) {
-        document.getElementById('lockBox').style.display = 'none';
-        document.getElementById('unlockLoading').classList.add('show');
-        try {
-          const verifyRes = await fetch(API_BASE + '/api/verify-payslip-payment', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              scan_id: scanId
-            })
-          });
-          const verify = await verifyRes.json();
-          document.getElementById('unlockLoading').classList.remove('show');
-          if (verify.success && verify.analysis) {
-            lastAnalysis = verify.analysis;
-            renderFullReport(verify.analysis);
-            document.getElementById('downloadBtn').style.display = 'block';
-          } else if (verify.success) {
-            alert(verify.error || 'Payment succeeded but the report could not be generated. Please contact support.');
-            document.getElementById('lockBox').style.display = 'block';
-          } else {
-            alert('Payment verification failed. If money was deducted, it will be refunded within 24 hours.');
-            document.getElementById('lockBox').style.display = 'block';
-            btn.disabled = false; btn.textContent = 'Unlock Full Report';
-          }
-        } catch (e) {
-          document.getElementById('unlockLoading').classList.remove('show');
-          document.getElementById('lockBox').style.display = 'block';
-          alert('Could not load your report. If money was deducted, it will be refunded within 24 hours.');
-          btn.disabled = false; btn.textContent = 'Unlock Full Report';
-        }
+        lastPaymentPayload = {
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+          scan_id: scanId
+        };
+        await verifyAndRenderReport(lastPaymentPayload);
+        btn.disabled = false; btn.textContent = 'Unlock Full Report';
       },
       modal: { ondismiss: function () { btn.disabled = false; btn.textContent = 'Unlock Full Report'; } },
       theme: { color: '#00e676' }
@@ -357,11 +403,32 @@ function renderFullReport(a) {
   }
 
   let html = '';
+  let n = 0;
+  const sec = (title) => `<div class="section-h">${++n}. ${title}</div>`;
+
+  html += `<div class="report-meta">Report generated ${new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})} · AI-assisted payroll analysis</div>`;
+
+  if (a.headline_summary) {
+    html += `<div class="headline-summary">${a.headline_summary}</div>`;
+  }
   if (a.why_amount_changed) {
-    html += `<div class="section-h">Why Your Take-Home Changed</div><div class="why-box">${a.why_amount_changed}</div>`;
+    html += `${sec('Why Your Take-Home Changed')}<div class="why-box">${a.why_amount_changed}</div>`;
+  }
+  if (a.months && a.months.length) {
+    html += `${sec('Month-by-Month Snapshot')}<div class="month-table-wrap"><table class="month-table"><thead><tr>
+      <th>Month</th><th>Earnings</th><th>Deductions</th><th>Take Home</th><th>Basic</th><th>Basic %</th>
+      </tr></thead><tbody>` +
+      a.months.map(m => `<tr>
+        <td>${m.label || ''}</td>
+        <td>₹${Number(m.total_earnings || 0).toLocaleString('en-IN')}</td>
+        <td>₹${Number(m.total_deductions || 0).toLocaleString('en-IN')}</td>
+        <td class="hl">₹${Number(m.take_home || 0).toLocaleString('en-IN')}</td>
+        <td>₹${Number(m.basic || 0).toLocaleString('en-IN')}</td>
+        <td>${(m.basic_pct_of_earnings || 0).toFixed(1)}%</td>
+      </tr>`).join('') + `</tbody></table></div>`;
   }
   if (a.changes && a.changes.length) {
-    html += `<div class="section-h">Every Change, Explained</div>`;
+    html += sec('Every Change, Explained');
     a.changes.forEach(c => {
       html += `<div class="change-row"><strong>${c.component}</strong> (${c.type}):
         ${c.from_month} ₹${Number(c.from_value).toLocaleString('en-IN')} → ${c.to_month} ₹${Number(c.to_value).toLocaleString('en-IN')}
@@ -370,31 +437,36 @@ function renderFullReport(a) {
     });
   }
   if (a.arrears_detected && a.arrears_detected.length) {
-    html += `<div class="section-h">Backdated Arrears Detected</div>`;
+    html += sec('Backdated Arrears Detected');
     a.arrears_detected.forEach(ar => {
       html += `<div class="change-row"><strong>${ar.line_item}</strong>: ₹${Number(ar.amount).toLocaleString('en-IN')}
         <div class="reason">${ar.explanation}</div></div>`;
     });
   }
   if (a.wage_code_note) {
-    html += `<div class="section-h">New Labour Code Check</div><div class="why-box">${a.wage_code_note}</div>`;
+    html += `${sec('New Labour Code Check')}<div class="why-box">${a.wage_code_note}</div>`;
   }
   if (a.nps_tax_saving_tip) {
-    const n = a.nps_tax_saving_tip;
-    html += `<div class="section-h">NPS Tax-Saving Tip (New Regime)</div><div class="why-box">
-      ${n.estimated_annual_saving ? `<strong>Estimated annual saving: ₹${Number(n.estimated_annual_saving).toLocaleString('en-IN')}</strong><br>` : ''}
-      ${n.explanation || ''}</div>`;
+    const t = a.nps_tax_saving_tip;
+    html += `${sec('NPS Tax-Saving Tip (New Regime)')}<div class="why-box">
+      ${t.estimated_annual_saving ? `<strong>Estimated annual saving: ₹${Number(t.estimated_annual_saving).toLocaleString('en-IN')}</strong><br>` : ''}
+      ${t.explanation || ''}</div>`;
   }
   if (a.flags_for_hr && a.flags_for_hr.length) {
-    html += `<div class="section-h">Worth Raising With HR</div><ul class="flag-list">` +
+    html += sec('Worth Raising With HR') + `<ul class="flag-list">` +
       a.flags_for_hr.map(f => `<li>${f}</li>`).join('') + `</ul>`;
   }
   if (a.next_month_estimate) {
-    const n = a.next_month_estimate;
-    html += `<div class="section-h">Next Month Estimate — ${n.label}</div>
-      <div class="estimate-box"><div class="range">₹${Number(n.estimated_take_home_low).toLocaleString('en-IN')} – ₹${Number(n.estimated_take_home_high).toLocaleString('en-IN')}</div>
-      <div class="reason" style="margin-top:8px;">${n.basis || ''}</div></div>`;
+    const t = a.next_month_estimate;
+    html += `${sec('Next Month Estimate — ' + t.label)}
+      <div class="estimate-box"><div class="range">₹${Number(t.estimated_take_home_low).toLocaleString('en-IN')} – ₹${Number(t.estimated_take_home_high).toLocaleString('en-IN')}</div>
+      <div class="reason" style="margin-top:8px;">${t.basis || ''}</div></div>`;
   }
+
+  html += `<div class="report-disclaimer">This report is an educational, AI-assisted analysis and does not
+    constitute tax, legal, or financial advice. Verify figures with your employer's payroll/HR team or a
+    qualified CA before acting on them.</div>`;
+
   el.innerHTML = html;
 }
 

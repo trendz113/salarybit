@@ -1736,14 +1736,26 @@ CRITICAL — get this distinction right, it is the main value of this report ove
    - If the duplicate card was never received, is lost, or the client doesn't have it: file a police
      complaint (FIR or a local online police complaint) for the lost PAN card first. That complaint
      record substitutes for the physical card copy when requesting surrender.
-   - Before approaching the AO, the client can and should check the duplicate PAN's own transaction
-     footprint themselves first: log in to the Income Tax e-filing portal (incometax.gov.in) with that
-     PAN, go to Services > Annual Information Statement (AIS), and also check Form 26AS. This shows
-     reported transactions (bank interest, TDS, high-value transactions) linked to that PAN. It is not
-     100% authoritative — the AO's internal view can show more than AIS does — but it tells the client
-     in advance whether the surrender is likely to be quick (nothing shows up) or will need
-     reconciliation first (something shows up), instead of only finding out after visiting the AO.
-     Recommend this as an early, self-serve step before the in-person/written surrender process below.
+   - If the client does not know the duplicate PAN's number, or only suspects one exists: self-service
+     discovery is generally NOT possible by logging into the e-filing portal with your own known PAN —
+     it will not surface an undisclosed second PAN, particularly if that second PAN predates Aadhaar-
+     OTP-based e-filing registration (older PANs issued before that often don't show up this way at
+     all). In practice, people usually only discover a duplicate PAN when the department's own internal
+     Aadhaar-linked matching flags it — commonly triggered by filing an unrelated request on the known
+     PAN, such as a name or DOB correction. If the client doesn't know the second PAN number, the
+     practical first move is to proactively file a correction request (even a minor one, or one
+     specifically asking the department to check for a duplicate) on the PAN they DO use — that filing
+     itself is what typically surfaces the duplicate, not a self-service check.
+   - Once the second PAN's number IS known (told to the client by the department, found on an old
+     document, etc.), THEN the client can check that specific PAN's own transaction footprint before
+     approaching the AO: log in to the Income Tax e-filing portal (incometax.gov.in) using that PAN, go
+     to Services > Annual Information Statement (AIS), and also check Form 26AS. This shows reported
+     transactions (bank interest, TDS, high-value transactions) linked to that PAN. It is not 100%
+     authoritative — the AO's internal view can show more than AIS does — but it tells the client in
+     advance whether the surrender is likely to be quick (nothing shows up) or will need reconciliation
+     first (something shows up), instead of only finding out after visiting the AO. This step only
+     applies once the specific PAN number is known — do not suggest it as a way to discover an unknown
+     duplicate.
    - The AO will check the PAN proposed for surrender for any transaction history (bank accounts, ITR
      filings, TDS entries linked to it). It can only be closed if it shows NO transactions. If it does
      show transactions, that history has to be explained/reconciled first, which adds significant time.
@@ -1760,8 +1772,11 @@ CRITICAL — get this distinction right, it is the main value of this report ove
      frustrating follow-on step people don't expect.
 
 Rules:
-- For duplicate PAN cases, the AIS/Form 26AS self-check should normally be resolution_steps[0] — it's
-  free, immediate, and self-serve, so it belongs before the AO/surrender steps, not after them.
+- For duplicate PAN cases: if the client's duplicate_card_status indicates they don't know the second
+  PAN number or how many they have, resolution_steps[0] should be filing a correction/check request on
+  their known PAN to surface the duplicate — NOT the AIS/26AS check, which needs the number first. If
+  the second PAN number is already known, resolution_steps[0] should be the AIS/Form 26AS self-check on
+  that specific PAN, since it's free and self-serve, before the AO/surrender steps.
 - Do not blend the two paths above. If the client's situation is a duplicate PAN, do not tell them to
   use the NSDL/UTIITSL correction portal for that — direct them to the AO route. If it is a simple
   correction, do not send them down the AO/surrender path.

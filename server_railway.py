@@ -2160,9 +2160,9 @@ def payslip_report_pdf():
             rows = [["Month", "Total Earnings", "Total Deductions", "Take Home", "Basic", "Basic % of Earnings"]]
             for m in months:
                 rows.append([
-                    m.get("label", ""), f"Rs {m.get('total_earnings', 0):,.2f}",
-                    f"Rs {m.get('total_deductions', 0):,.2f}", f"Rs {m.get('take_home', 0):,.2f}",
-                    f"Rs {m.get('basic', 0):,.2f}", f"{m.get('basic_pct_of_earnings', 0):.1f}%",
+                    m.get("label", ""), f"Rs {(m.get('total_earnings') or 0):,.2f}",
+                    f"Rs {(m.get('total_deductions') or 0):,.2f}", f"Rs {(m.get('take_home') or 0):,.2f}",
+                    f"Rs {(m.get('basic') or 0):,.2f}", f"{(m.get('basic_pct_of_earnings') or 0):.1f}%",
                 ])
             t = Table(rows, repeatRows=1, hAlign="LEFT")
             t.setStyle(TableStyle([
@@ -2179,8 +2179,8 @@ def payslip_report_pdf():
             story.append(Paragraph("What Changed & Why", h2))
             for c in changes:
                 line = (f"<b>{c.get('component')}</b> ({c.get('type')}): {c.get('from_month','')} "
-                        f"Rs {c.get('from_value',0):,.2f} to {c.get('to_month','')} "
-                        f"Rs {c.get('to_value',0):,.2f} (Delta Rs {c.get('delta',0):,.2f}, {c.get('delta_pct',0):.1f}%)")
+                        f"Rs {(c.get('from_value') or 0):,.2f} to {c.get('to_month','')} "
+                        f"Rs {(c.get('to_value') or 0):,.2f} (Delta Rs {(c.get('delta') or 0):,.2f}, {(c.get('delta_pct') or 0):.1f}%)")
                 story.append(Paragraph(line, body))
                 story.append(Paragraph(c.get("likely_reason", ""), small))
                 story.append(Spacer(1, 3 * mm))
@@ -2189,7 +2189,7 @@ def payslip_report_pdf():
         if arrears:
             story.append(Paragraph("Arrears / Backdated Payments Detected", h2))
             for a in arrears:
-                story.append(Paragraph(f"<b>{a.get('line_item')}</b>: Rs {a.get('amount',0):,.2f}", body))
+                story.append(Paragraph(f"<b>{a.get('line_item')}</b>: Rs {(a.get('amount') or 0):,.2f}", body))
                 story.append(Paragraph(a.get("explanation", ""), small))
                 story.append(Spacer(1, 2 * mm))
 
@@ -2214,8 +2214,8 @@ def payslip_report_pdf():
         if nxt:
             story.append(Paragraph(f"Next Month Estimate — {nxt.get('label','')}", h2))
             story.append(Paragraph(
-                f"Estimated take-home: Rs {nxt.get('estimated_take_home_low',0):,.0f} - "
-                f"Rs {nxt.get('estimated_take_home_high',0):,.0f}", body))
+                f"Estimated take-home: Rs {(nxt.get('estimated_take_home_low') or 0):,.0f} - "
+                f"Rs {(nxt.get('estimated_take_home_high') or 0):,.0f}", body))
             story.append(Paragraph(nxt.get("basis", ""), small))
 
     story.append(Spacer(1, 8 * mm))

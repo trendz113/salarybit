@@ -2084,37 +2084,77 @@ def payslip_report_pdf():
         return jsonify({"error": "PDF generation not available on the server."}), 500
 
     buf = io.BytesIO()
-    doc = SimpleDocTemplate(buf, pagesize=A4, topMargin=20 * mm, bottomMargin=20 * mm,
+    doc = SimpleDocTemplate(buf, pagesize=A4, topMargin=16 * mm, bottomMargin=20 * mm,
                              leftMargin=18 * mm, rightMargin=18 * mm)
     styles = getSampleStyleSheet()
-    title_style = ParagraphStyle("TitleX", parent=styles["Title"], textColor=rl_colors.HexColor("#0b0e14"))
-    h2 = ParagraphStyle("H2X", parent=styles["Heading2"], textColor=rl_colors.HexColor("#00a656"), spaceBefore=14)
+    brand_style = ParagraphStyle("BrandX", parent=styles["Normal"], fontSize=11, fontName="Helvetica-Bold",
+                                  textColor=rl_colors.HexColor("#00a656"), spaceAfter=2)
+    title_style = ParagraphStyle("TitleX", parent=styles["Title"], fontSize=20,
+                                  textColor=rl_colors.HexColor("#0b0e14"), spaceBefore=0, spaceAfter=2)
+    meta_style = ParagraphStyle("MetaX", parent=styles["BodyText"], fontSize=9, textColor=rl_colors.HexColor("#6b7280"))
+    h2 = ParagraphStyle("H2X", parent=styles["Heading2"], fontSize=13, textColor=rl_colors.HexColor("#00a656"),
+                         spaceBefore=16, spaceAfter=4)
     body = styles["BodyText"]
     small = ParagraphStyle("Small", parent=styles["BodyText"], fontSize=8.5, textColor=rl_colors.grey)
+    summary_style = ParagraphStyle("SummaryX", parent=styles["BodyText"], fontSize=12, fontName="Helvetica-Bold",
+                                    textColor=rl_colors.HexColor("#0b0e14"), leading=16)
+    disclaimer_style = ParagraphStyle("DisclaimerX", parent=styles["BodyText"], fontSize=8, textColor=rl_colors.grey,
+                                       leading=11)
 
+    report_id = f"SB-PC-{datetime.now().strftime('%Y%m%d')}-{os.urandom(3).hex().upper()}"
+
+    from reportlab.platypus.flowables import HRFlowable
     story = [
-        Paragraph("SalaryBit — Payslip Comparison Report", title_style),
-        Paragraph(datetime.now().strftime("Generated %d %b %Y"), small),
-        Spacer(1, 8 * mm),
+        Paragraph("SALARYBIT", brand_style),
+        Paragraph("Payslip Comparison Report", title_style),
+        HRFlowable(width="100%", thickness=1.4, color=rl_colors.HexColor("#00a656"), spaceAfter=6),
+        Paragraph(
+            f"Report ID: {report_id} &nbsp;&nbsp;|&nbsp;&nbsp; "
+            f"Generated: {datetime.now().strftime('%d %b %Y, %I:%M %p')} IST &nbsp;&nbsp;|&nbsp;&nbsp; "
+            f"AI-Assisted Payroll Analysis",
+            meta_style
+        ),
+        Spacer(1, 6 * mm),
     ]
 
+    headline = analysis.get("headline_summary")
+    if headline and not analysis.get("single_payslip"):
+        story.append(Table(
+            [[Paragraph(headline, summary_style)]],
+            colWidths=[doc.width],
+            style=TableStyle([
+                ("BACKGROUND", (0, 0), (-1, -1), rl_colors.HexColor("#eafff3")),
+                ("BOX", (0, 0), (-1, -1), 0.75, rl_colors.HexColor("#00a656")),
+                ("LEFTPADDING", (0, 0), (-1, -1), 14),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 14),
+                ("TOPPADDING", (0, 0), (-1, -1), 10),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 10),
+            ])
+        ))
+        story.append(Spacer(1, 6 * mm))
+
+    section_num = [0]
+    def numbered_h2(text):
+        section_num[0] += 1
+        return Paragraph(f"{section_num[0]}. {text}", h2)
+
     if analysis.get("single_payslip"):
-        story.append(Paragraph("Summary", h2))
+        story.append(numbered_h2("Summary"))
         story.append(Paragraph(analysis.get("summary", ""), body))
     else:
         if analysis.get("why_amount_changed"):
-            story.append(Paragraph("Why Your Take-Home Changed", h2))
+            story.append(numbered_h2("Why Your Take-Home Changed"))
             story.append(Paragraph(analysis["why_amount_changed"], body))
 
         months = analysis.get("months", [])
         if months:
-            story.append(Paragraph("Month-by-Month Snapshot", h2))
+            story.append(numbered_h2("Month-by-Month Snapshot"))
             rows = [["Month", "Total Earnings", "Total Deductions", "Take Home", "Basic", "Basic % of Earnings"]]
             for m in months:
                 rows.append([
-                    m.get("label", ""), f"Rs {m.get('total_earnings', 0):,.2f}",
-                    f"Rs {m.get('total_deductions', 0):,.2f}", f"Rs {m.get('take_home', 0):,.2f}",
-                    f"Rs {m.get('basic', 0):,.2f}", f"{m.get('basic_pct_of_earnings', 0):.1f}%",
+                    m.get("label", ""), f"Rs {(m.get('total_earnings') or 0):,.2f}",
+                    f"Rs {(m.get('total_deductions') or 0):,.2f}", f"Rs {(m.get('take_home') or 0):,.2f}",
+                    f"Rs {(m.get('basic') or 0):,.2f}", f"{(m.get('basic_pct_of_earnings') or 0):.1f}%",
                 ])
             t = Table(rows, repeatRows=1, hAlign="LEFT")
             t.setStyle(TableStyle([
@@ -2128,53 +2168,57 @@ def payslip_report_pdf():
 
         changes = analysis.get("changes", [])
         if changes:
-            story.append(Paragraph("What Changed & Why", h2))
+            story.append(numbered_h2("What Changed & Why"))
             for c in changes:
                 line = (f"<b>{c.get('component')}</b> ({c.get('type')}): {c.get('from_month','')} "
-                        f"Rs {c.get('from_value',0):,.2f} to {c.get('to_month','')} "
-                        f"Rs {c.get('to_value',0):,.2f} (Delta Rs {c.get('delta',0):,.2f}, {c.get('delta_pct',0):.1f}%)")
+                        f"Rs {(c.get('from_value') or 0):,.2f} to {c.get('to_month','')} "
+                        f"Rs {(c.get('to_value') or 0):,.2f} (Delta Rs {(c.get('delta') or 0):,.2f}, {(c.get('delta_pct') or 0):.1f}%)")
                 story.append(Paragraph(line, body))
                 story.append(Paragraph(c.get("likely_reason", ""), small))
                 story.append(Spacer(1, 3 * mm))
 
         arrears = analysis.get("arrears_detected", [])
         if arrears:
-            story.append(Paragraph("Arrears / Backdated Payments Detected", h2))
+            story.append(numbered_h2("Arrears / Backdated Payments Detected"))
             for a in arrears:
-                story.append(Paragraph(f"<b>{a.get('line_item')}</b>: Rs {a.get('amount',0):,.2f}", body))
+                story.append(Paragraph(f"<b>{a.get('line_item')}</b>: Rs {(a.get('amount') or 0):,.2f}", body))
                 story.append(Paragraph(a.get("explanation", ""), small))
                 story.append(Spacer(1, 2 * mm))
 
         if analysis.get("wage_code_note"):
-            story.append(Paragraph("New Labour Code / Wage Structure Note", h2))
+            story.append(numbered_h2("New Labour Code / Wage Structure Note"))
             story.append(Paragraph(analysis["wage_code_note"], body))
 
         nps = analysis.get("nps_tax_saving_tip")
         if nps:
-            story.append(Paragraph("NPS Tax-Saving Tip (New Tax Regime)", h2))
+            story.append(numbered_h2("NPS Tax-Saving Tip (New Tax Regime)"))
             if nps.get("estimated_annual_saving"):
                 story.append(Paragraph(f"Estimated annual tax saving: Rs {nps['estimated_annual_saving']:,.0f}", body))
             story.append(Paragraph(nps.get("explanation", ""), small))
 
         flags = analysis.get("flags_for_hr", [])
         if flags:
-            story.append(Paragraph("Worth Raising With HR/Payroll", h2))
+            story.append(numbered_h2("Worth Raising With HR/Payroll"))
             for fl in flags:
                 story.append(Paragraph(f"- {fl}", body))
 
         nxt = analysis.get("next_month_estimate")
         if nxt:
-            story.append(Paragraph(f"Next Month Estimate — {nxt.get('label','')}", h2))
+            story.append(numbered_h2(f"Next Month Estimate — {nxt.get('label','')}"))
             story.append(Paragraph(
-                f"Estimated take-home: Rs {nxt.get('estimated_take_home_low',0):,.0f} - "
-                f"Rs {nxt.get('estimated_take_home_high',0):,.0f}", body))
+                f"Estimated take-home: Rs {(nxt.get('estimated_take_home_low') or 0):,.0f} - "
+                f"Rs {(nxt.get('estimated_take_home_high') or 0):,.0f}", body))
             story.append(Paragraph(nxt.get("basis", ""), small))
 
     story.append(Spacer(1, 8 * mm))
+    story.append(HRFlowable(width="100%", thickness=0.6, color=rl_colors.HexColor("#d1d5db"), spaceAfter=6))
     story.append(Paragraph(
-        "This report is an educational analysis generated with AI assistance and does not "
-        "constitute tax, legal, or financial advice. Verify figures with your employer's "
-        "payroll/HR team or a qualified CA. \u2014 SalaryBit.in", small))
+        "<b>Disclaimer:</b> This report is an educational, AI-assisted analysis of the payslip "
+        "text you uploaded. It is not a substitute for advice from a qualified Chartered "
+        "Accountant, tax advisor, or your employer's HR/payroll team, and figures should be "
+        "verified against your official Form 16 and payroll records before you act on them. "
+        f"Report generated by SalaryBit.in on {datetime.now().strftime('%d %b %Y')}.",
+        disclaimer_style))
 
     doc.build(story)
     buf.seek(0)

@@ -1503,10 +1503,114 @@ def verify_jobswitch_payment():
 
 
 # ── PF CLAIM REJECTION DECODER ───────────────────────────────
-# Pure client-side lookup (a static DATA table keyed by remark). The paid
-# unlock is just the HMAC-verified reveal — same pattern as passbook/
-# jobswitch. Nothing the user selected is ever sent to this server.
+# Upgraded from a pure client-side static lookup to a paid, Claude-generated
+# CA-grade resolution report personalised to the user's specific case
+# details. Payment is verified with the same HMAC pattern used everywhere
+# else on the site; a promo/bypass code is also accepted so the flow can be
+# tested end-to-end without a real charge (see PROMO_BYPASS_CODE below).
 PFDECODER_PRICE_PAISE = 9900  # Rs 99
+
+# Testing bypass: set PROMO_BYPASS_CODE in Railway's env vars to override
+# this default once you're done testing. Any tool using this helper accepts
+# this code in place of real Razorpay payment fields.
+PROMO_BYPASS_CODE = os.environ.get("PROMO_BYPASS_CODE", "SALARYBIT-TEST")
+
+PFDECODER_REMARK_LABELS = {
+    "name_mismatch": "Name/details mismatch across employer, Aadhaar or EPFO records",
+    "inactive_uan": "UAN inactive or not recognised / possible duplicate UAN",
+    "bank_details": "Bank account details could not be verified (penny-drop failure)",
+    "kyc_aadhaar": "Aadhaar not linked / e-KYC pending employer approval",
+    "service_period": "Minimum service period / eligibility window not met (Form 10C / 19 / 31)",
+    "employer_not_verified": "Claim pending the last employer's digital approval",
+    "insufficient_balance": "Claimed amount exceeds the actual EPF passbook balance",
+    "dues_payable": "Outstanding employer dues / contribution gap flagged by EPFO",
+    "signature_mismatch": "Signature on the physical claim form does not match records",
+    "form_not_submitted": "Signed claim printout not submitted within the 15-day window",
+    "certificate_missing": "Required certificate or supporting document not attached",
+    "other": "Remark not in the standard list — see the user's own description",
+}
+
+PFDECODER_SYSTEM_PROMPT = """You are a senior EPFO compliance consultant preparing a formal case
+resolution report for a paying client whose EPF (Employees' Provident Fund) withdrawal, transfer,
+or pension claim was rejected. The client has paid Rs 99 for a CA-grade, personalised report —
+write with the precision, structure and professional tone of a report a chartered accountant or
+compliance consultant would hand a client, not a generic FAQ answer.
+
+You will be given: the claim type, the closest-matching standard rejection category, any exact
+remark text the client pasted from the EPFO portal, the claimed amount if given, the client's name
+if given, and any free-text context they added about their situation.
+
+Ground your analysis in these known EPFO rejection categories and their standard resolution paths
+(use this as your factual base — do not contradict it, but DO personalise the specific steps,
+likely timeline, and framing to what the client actually described):
+""" + json.dumps(PFDECODER_REMARK_LABELS, indent=2) + """
+
+Rules:
+- Do NOT invent specific EPFO circular numbers, section numbers, or statistics you are not certain
+  of. Reference well-known, standard mechanisms plainly (UAN portal KYC, EPFiGMS grievance portal,
+  Form 19/10C/31, regional EPFO office, employer digital approval) rather than fabricating citations.
+- If the client's free-text context reveals something that changes the diagnosis (e.g. they mention
+  multiple employers, a closed company, an amount that looks CTC-based rather than passbook-based),
+  address that directly and adjust the guidance — this personalisation is the entire value of the
+  paid report over the free static explanation.
+- Be direct and specific about what to click, whom to contact, and what to check next — a client
+  paying for this expects an action plan, not general reassurance.
+- This is educational/procedural guidance, not legal advice or a guarantee of outcome — say so once,
+  briefly, in the disclaimer field only; do not hedge throughout the report.
+
+Respond ONLY with a single JSON object (no markdown fences, no preamble), matching this exact shape:
+
+{
+  "case_summary": "2-3 sentence professional restatement of the client's specific case",
+  "root_cause": "1-2 paragraph plain-English explanation of why this was rejected, personalised using whatever the client told you",
+  "resolution_steps": [
+    {"step": "short imperative title", "detail": "1-3 sentences of specific instruction"}
+  ],
+  "documents_required": ["specific document or evidence needed, if any — empty list if none"],
+  "timeline_estimate": "concrete, realistic estimate in days/weeks",
+  "reapply_guidance": "exactly when and how to reapply or follow up",
+  "risk_flags": ["anything about THIS specific case worth flagging — empty list if nothing stands out"],
+  "escalation_path": "where to escalate if the standard steps don't resolve it within the estimated timeline (EPFiGMS, regional PF Commissioner, EPFO helpline 1800-118-005)",
+  "disclaimer": "one sentence noting this is procedural guidance based on standard EPFO practice, not a guarantee, and not a substitute for direct confirmation from EPFO/a CA in unusual cases"
+}"""
+
+
+def _call_claude_pfdecoder_report(case):
+    claude_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not claude_key:
+        raise RuntimeError("Server not configured. Missing ANTHROPIC_API_KEY.")
+
+    user_content = json.dumps(case, indent=2)
+
+    payload = json.dumps({
+        "model": "claude-sonnet-4-6",
+        "max_tokens": 3000,
+        "system": PFDECODER_SYSTEM_PROMPT,
+        "messages": [{"role": "user", "content": user_content}]
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": claude_key,
+            "anthropic-version": "2023-06-01"
+        },
+        method="POST"
+    )
+
+    with urllib.request.urlopen(req, timeout=90) as resp:
+        result = json.loads(resp.read().decode("utf-8"))
+
+    raw = "".join(
+        block.get("text", "") for block in result.get("content", []) if block.get("type") == "text"
+    ).strip()
+    if raw.startswith("```"):
+        raw = raw.strip("`")
+        if raw.lower().startswith("json"):
+            raw = raw[4:]
+    return json.loads(raw)
 
 
 @app.route("/api/create-pfdecoder-order", methods=["POST", "OPTIONS"])
@@ -1532,28 +1636,62 @@ def create_pfdecoder_order():
 
 @app.route("/api/verify-pfdecoder-payment", methods=["POST", "OPTIONS"])
 def verify_pfdecoder_payment():
-    """Matches the existing verify_*_payment() HMAC pattern exactly."""
+    """Verifies payment (or a promo bypass code for testing), then runs the
+    Claude-generated CA-grade report on the client's case details and
+    returns it in the same response — same pattern as verify-payslip-payment."""
     if request.method == "OPTIONS":
         return "", 200
     data = request.get_json(silent=True) or {}
-    order_id = data.get("razorpay_order_id")
-    payment_id = data.get("razorpay_payment_id")
-    signature = data.get("razorpay_signature")
 
-    if not all([order_id, payment_id, signature]):
-        return jsonify({"success": False, "error": "Missing required fields."}), 400
+    promo_code = (data.get("promo_code") or "").strip()
+    payment_id = None
 
-    body = f"{order_id}|{payment_id}"
-    expected = hmac.new(
-        os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
-        body.encode(),
-        hashlib.sha256
-    ).hexdigest()
-    if expected != signature:
-        return jsonify({"success": False, "error": "Payment verification failed."}), 400
+    if promo_code and promo_code == PROMO_BYPASS_CODE:
+        payment_id = f"promo_{os.urandom(4).hex()}"
+        print(f"[pfdecoder] PROMO bypass unlock | code used")
+    else:
+        order_id = data.get("razorpay_order_id")
+        payment_id = data.get("razorpay_payment_id")
+        signature = data.get("razorpay_signature")
 
-    print(f"[pfdecoder] paid unlock | payment_id={payment_id}")
-    return jsonify({"success": True, "payment_id": payment_id})
+        if not all([order_id, payment_id, signature]):
+            return jsonify({"success": False, "error": "Missing required fields."}), 400
+
+        body = f"{order_id}|{payment_id}"
+        expected = hmac.new(
+            os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+            body.encode(),
+            hashlib.sha256
+        ).hexdigest()
+        if expected != signature:
+            return jsonify({"success": False, "error": "Payment verification failed."}), 400
+
+        print(f"[pfdecoder] paid unlock | payment_id={payment_id}")
+
+    case = {
+        "claim_type": data.get("claim_type") or "Not specified",
+        "rejection_category": PFDECODER_REMARK_LABELS.get(
+            data.get("remark_key"), data.get("remark_key") or "Not specified"
+        ),
+        "exact_remark_text": data.get("remark_text") or None,
+        "claimed_amount_inr": data.get("claimed_amount") or None,
+        "client_name": data.get("client_name") or None,
+        "additional_context": data.get("extra_context") or None,
+    }
+
+    try:
+        report = _call_claude_pfdecoder_report(case)
+    except Exception as e:
+        print(f"pfdecoder report generation error: {type(e).__name__}: {e}")
+        return jsonify({
+            "success": True,
+            "payment_id": payment_id,
+            "error": "Payment succeeded, but report generation failed. You will not be "
+                     "charged again — contact support with this payment ID and we'll get "
+                     "your report to you directly."
+        })
+
+    return jsonify({"success": True, "payment_id": payment_id, "report": report})
 
 
 # ── PAN CORRECTION NAVIGATOR ─────────────────────────────────

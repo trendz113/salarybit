@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PF Claim Rejection Decoder — EPFO Rejection Reasons Explained | SalaryBit</title>
-<meta name="description" content="Got your EPF withdrawal or transfer claim rejected? Pick the exact remark shown on the EPFO portal and find out what it means and exactly what to fix — instantly.">
+<title>PF Claim Rejection Decoder — CA-Grade EPFO Resolution Report | SalaryBit</title>
+<meta name="description" content="Got your EPF withdrawal, transfer or pension claim rejected? Get a free instant read, then a personalised CA-grade resolution report for ₹99 — built for your exact case.">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#1f3a5f">
 <link rel="canonical" href="https://salarybit.in/pf-rejection-decoder.html">
-<meta property="og:title" content="PF Claim Rejection Decoder — EPFO Rejection Reasons Explained | SalaryBit">
+<meta property="og:title" content="PF Claim Rejection Decoder — CA-Grade EPFO Resolution Report | SalaryBit">
 <meta property="og:image" content="https://salarybit.in/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://salarybit.in/og-image.png">
-<meta property="og:description" content="Got your EPF withdrawal or transfer claim rejected? Pick the exact remark shown on the EPFO portal and find out what it means and exactly what to fix — instantly.">
+<meta property="og:description" content="Got your EPF withdrawal, transfer or pension claim rejected? Get a free instant read, then a personalised CA-grade resolution report for ₹99 — built for your exact case.">
 <meta property="og:url" content="https://salarybit.in/pf-rejection-decoder.html">
 <script type="application/ld+json">
 {
@@ -22,12 +22,12 @@
   "@type": "WebApplication",
   "name": "PF Claim Rejection Decoder — SalaryBit",
   "url": "https://salarybit.in/pf-rejection-decoder.html",
-  "description": "Got your EPF withdrawal or transfer claim rejected? Pick the exact remark shown on the EPFO portal and find out what it means and exactly what to fix — instantly.",
+  "description": "Got your EPF withdrawal, transfer or pension claim rejected? Get a free instant read, then a personalised CA-grade resolution report built for your exact case.",
   "applicationCategory": "FinanceApplication",
   "operatingSystem": "All",
   "offers": {
     "@type": "Offer",
-    "price": "0",
+    "price": "99",
     "priceCurrency": "INR"
   },
   "creator": {
@@ -40,6 +40,7 @@
 <meta property="og:site_name" content="SalaryBit">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%231f3a5f'/><text y='22' x='5' font-size='18'>📋</text></svg>">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
   :root{
     --ink:#1c2430;
@@ -84,12 +85,12 @@
   header p{
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color:#cfd6de;
-    max-width:520px;
+    max-width:560px;
     margin:0 auto;
     font-size:15px;
   }
   main{
-    max-width:640px;
+    max-width:680px;
     margin:0 auto;
     padding:34px 20px 70px;
   }
@@ -98,6 +99,7 @@
     border:1px solid var(--line);
     border-radius:4px;
     padding:26px 24px;
+    margin-bottom:20px;
   }
   label{
     display:block;
@@ -108,21 +110,30 @@
     text-transform:uppercase;
     letter-spacing:.04em;
     margin-bottom:8px;
+    margin-top:18px;
   }
-  select{
+  label:first-child{ margin-top:0; }
+  label .opt{ text-transform:none; font-weight:400; letter-spacing:0; color:#a39c8c; }
+  select, input[type="text"], input[type="number"], textarea{
     width:100%;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size:16px;
-    padding:12px 14px;
+    font-size:15px;
+    padding:11px 13px;
     border:1px solid #c7c0ae;
     border-radius:3px;
     background:#fff;
     color:var(--ink);
+  }
+  select{
     appearance:none;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%236b6458' stroke-width='2' fill='none'/%3E%3C/svg%3E");
     background-repeat:no-repeat;
     background-position:right 14px center;
   }
+  textarea{ resize:vertical; min-height:70px; font-family:inherit; }
+  .row2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:520px){ .row2{ grid-template-columns:1fr; } }
+
   .result{
     margin-top:22px;
     border-top:2px solid var(--navy);
@@ -140,10 +151,8 @@
     padding:4px 10px;
     border-radius:20px;
     margin-bottom:12px;
+    background:#e6efe9; color:var(--green);
   }
-  .tag.doc{ background:#fbeadb; color:var(--amber); }
-  .tag.employer{ background:#e6efe9; color:var(--green); }
-  .tag.wait{ background:#f3e4e4; color:var(--red); }
   .result h3{ margin:0 0 10px; font-size:20px; font-weight:400; }
   .result p{ margin:0 0 14px; color:#3a3428; }
   .fixbox{
@@ -156,16 +165,6 @@
   .fixbox strong{ display:block; margin-bottom:6px; color:var(--navy-deep); }
   .fixbox ol{ margin:0; padding-left:18px; }
   .fixbox li{ margin-bottom:6px; }
-  .meta{
-    display:flex;
-    gap:18px;
-    margin-top:16px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size:13px;
-    color:var(--muted);
-    flex-wrap:wrap;
-  }
-  .meta span{ display:flex; align-items:center; gap:6px; }
   .disclaimer{
     margin-top:28px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -174,8 +173,53 @@
     text-align:center;
   }
   .btn:disabled{opacity:.6;cursor:not-allowed;}
-  .btn{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--navy);color:#fff;border:none;padding:13px 26px;border-radius:3px;font-size:15px;font-weight:600;cursor:pointer;margin-top:20px;}
+  .btn{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--navy);color:#fff;border:none;padding:13px 26px;border-radius:3px;font-size:15px;font-weight:600;cursor:pointer;margin-top:20px;width:100%;}
   .btn:hover{background:var(--navy-deep);}
+  .btn.secondary{ background:transparent; color:var(--navy); border:1px solid var(--navy); }
+  .btn.secondary:hover{ background:#eef2f6; }
+
+  /* ── Paywall / upsell box ── */
+  .lockbox{
+    margin-top:24px;
+    border:1px dashed #c9b98a;
+    border-radius:6px;
+    background:#fbf9f3;
+    padding:24px 22px;
+    text-align:center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  .lockbox .kicker{ font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--amber); font-weight:700; margin-bottom:8px; }
+  .lockbox h4{ font-family:'Georgia',serif; font-weight:400; font-size:19px; margin:0 0 10px; color:var(--navy-deep); }
+  .lockbox .price{ font-size:30px; font-weight:800; color:var(--ink); margin:6px 0 4px; }
+  .lockbox .price span{ font-size:14px; font-weight:400; color:var(--muted); }
+  .lockbox ul{ text-align:left; max-width:380px; margin:14px auto 4px; padding-left:20px; font-size:13.5px; color:#3a3428; }
+  .lockbox li{ margin-bottom:6px; }
+  .promo-toggle{ font-size:12px; color:var(--muted); text-decoration:underline; cursor:pointer; margin-top:14px; display:inline-block; background:none; border:none; font-family:inherit; }
+  .promo-row{ display:none; margin-top:12px; gap:8px; }
+  .promo-row.show{ display:flex; }
+  .promo-row input{ flex:1; }
+  .promo-row button{ width:auto; margin-top:0; padding:11px 16px; }
+  .err-text{ color:var(--red); font-size:13px; margin-top:10px; font-family:inherit; }
+
+  /* ── CA-grade paid report ── */
+  .report{ display:none; margin-top:24px; border-top:3px double var(--navy); padding-top:22px; }
+  .report.show{ display:block; }
+  .report-head{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin-bottom:20px; }
+  .report-head .rtitle{ font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--amber); font-weight:700; }
+  .report-head h2{ font-family:'Georgia',serif; font-weight:400; font-size:22px; margin:6px 0 10px; color:var(--navy-deep); }
+  .report-meta-line{ font-size:12px; color:var(--muted); border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:8px 0; display:flex; flex-wrap:wrap; gap:4px 16px; }
+  .section-h{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--navy); margin:22px 0 10px; }
+  .prose{ font-size:15px; color:#2c261c; margin:0 0 6px; }
+  .steps-list{ counter-reset:step; list-style:none; padding:0; margin:0; }
+  .steps-list li{ counter-increment:step; position:relative; padding:10px 0 10px 34px; border-bottom:1px solid var(--line); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+  .steps-list li:last-child{ border-bottom:none; }
+  .steps-list li::before{ content:counter(step); position:absolute; left:0; top:10px; width:22px; height:22px; border-radius:50%; background:var(--navy); color:#fff; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+  .steps-list .stitle{ font-weight:700; color:var(--navy-deep); margin-bottom:3px; font-size:14.5px; }
+  .steps-list .sdetail{ font-size:13.5px; color:#3a3428; }
+  .taglist{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size:13.5px; padding-left:20px; margin:0; color:#3a3428; }
+  .taglist li{ margin-bottom:5px; }
+  .flagbox{ background:#f3e9e0; border-left:3px solid var(--red); padding:12px 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size:13.5px; color:#4a2a2a; }
+  .report-disclaimer{ margin-top:24px; padding-top:14px; border-top:1px solid var(--line); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size:12px; color:var(--muted); font-style:italic; }
 </style>
 </head>
 <body>
@@ -183,11 +227,21 @@
 <header>
   <div class="eyebrow">SalaryBit Tools</div>
   <h1>PF Claim Rejection Decoder</h1>
-  <p>Pick the remark shown against your claim on the EPFO portal. We'll tell you what it actually means and exactly what to fix.</p>
+  <p>Tell us what happened to your EPFO claim. Get a free instant read, then a personalised, CA-grade resolution report built for your exact case.</p>
 </header>
 
 <main>
   <div class="panel">
+    <label for="claimType">Claim type</label>
+    <select id="claimType" class="sans">
+      <option value="">Select…</option>
+      <option value="Form 19 — PF final settlement">Form 19 — PF final settlement (withdrawal)</option>
+      <option value="Form 10C — Pension withdrawal benefit">Form 10C — Pension withdrawal benefit</option>
+      <option value="Form 31 — Advance / partial withdrawal">Form 31 — Advance / partial withdrawal</option>
+      <option value="PF transfer (Form 13)">PF transfer (Form 13)</option>
+      <option value="Not sure / other">Not sure / other</option>
+    </select>
+
     <label for="reason">Remark shown under "Track Claim Status"</label>
     <select id="reason" class="sans">
       <option value="">Select the closest match…</option>
@@ -202,212 +256,397 @@
       <option value="signature_mismatch">Signature mismatch on physical claim form</option>
       <option value="form_not_submitted">Signed claim printout not submitted within 15 days</option>
       <option value="certificate_missing">Certificate / document not enclosed</option>
+      <option value="other">None of these / I'll describe it below</option>
     </select>
 
-    <button class="btn sans" id="genBtn" style="display:none;" onclick="renderResult()">See the fix →</button>
+    <button class="btn sans" id="genBtn" style="display:none;" onclick="renderFreePreview()">See the free instant read →</button>
 
+    <!-- Free instant preview -->
     <div class="result sans" id="result">
-      <span class="tag" id="tag"></span>
+      <span class="tag" id="tag">Free instant read</span>
       <h3 id="title"></h3>
       <p id="explain"></p>
       <div class="fixbox">
-        <strong>How to fix it</strong>
+        <strong>The general fix</strong>
         <ol id="steps"></ol>
       </div>
-      <div class="meta">
-        <span>⏱ <span id="timeline"></span></span>
-        <span>🔁 <span id="reapply"></span></span>
+    </div>
+
+    <!-- Case details for the paid, personalised report -->
+    <div id="detailsBlock" style="display:none;">
+      <label for="claimedAmount">Amount claimed (₹) <span class="opt">— optional</span></label>
+      <input type="number" id="claimedAmount" class="sans" placeholder="e.g. 245000">
+
+      <div class="row2">
+        <div>
+          <label for="clientName">Your name <span class="opt">— for the report</span></label>
+          <input type="text" id="clientName" class="sans" placeholder="e.g. Ramesh Kumar">
+        </div>
+        <div>
+          <label for="remarkText">Exact remark text <span class="opt">— optional</span></label>
+          <input type="text" id="remarkText" class="sans" placeholder="Paste from EPFO portal">
+        </div>
+      </div>
+
+      <label for="extraContext">Anything else about your situation? <span class="opt">— this is what makes the report specific to you, not generic</span></label>
+      <textarea id="extraContext" class="sans" placeholder="e.g. I've worked at 2 companies, the first one shut down, my UAN shows two different employers…"></textarea>
+
+      <div class="lockbox">
+        <div class="kicker">CA-Grade Resolution Report</div>
+        <h4>Get the full, personalised report</h4>
+        <div class="price">₹99 <span>one-time, this case</span></div>
+        <ul>
+          <li>Root-cause analysis written for your specific claim, not a generic category</li>
+          <li>Numbered, step-by-step resolution plan</li>
+          <li>Exact documents required, realistic timeline, and reapply guidance</li>
+          <li>Escalation path if standard steps don't resolve it in time</li>
+          <li>Downloadable as a formal PDF report</li>
+        </ul>
+        <button class="btn sans" id="payBtn">Generate my ₹99 report →</button>
+        <div id="payError" class="err-text" style="display:none;"></div>
+        <span class="promo-toggle" id="promoToggle">Have a promo code?</span>
+        <div class="promo-row" id="promoRow">
+          <input type="text" id="promoInput" class="sans" placeholder="Promo code">
+          <button class="btn sans secondary" id="promoBtn">Apply</button>
+        </div>
       </div>
     </div>
-    <button class="btn sans" id="downloadPdfBtn" data-html2canvas-ignore="true" style="display:none;margin-top:14px;background:#2f6f5e;" onclick="downloadPDF()">⬇ Download as PDF</button>
+
+    <!-- Paid CA-grade report -->
+    <div class="report" id="report">
+      <div class="report-head">
+        <div class="rtitle">CA-Grade Resolution Report</div>
+        <h2>PF Claim Rejection — Case Analysis</h2>
+        <div class="report-meta-line">
+          <span id="metaReportId"></span>
+          <span id="metaDate"></span>
+          <span id="metaFor"></span>
+        </div>
+      </div>
+
+      <div class="section-h">1. Case Summary</div>
+      <p class="prose" id="rCaseSummary"></p>
+
+      <div class="section-h">2. Root Cause Analysis</div>
+      <p class="prose" id="rRootCause"></p>
+
+      <div class="section-h">3. Resolution Plan</div>
+      <ol class="steps-list" id="rSteps"></ol>
+
+      <div class="section-h" id="rDocsHead" style="display:none;">4. Documents Required</div>
+      <ul class="taglist" id="rDocs"></ul>
+
+      <div class="section-h">5. Timeline & Reapplication</div>
+      <p class="prose"><strong>Estimated timeline:</strong> <span id="rTimeline"></span></p>
+      <p class="prose"><strong>When to reapply:</strong> <span id="rReapply"></span></p>
+
+      <div id="rFlagsBlock" style="display:none;">
+        <div class="section-h">6. Case-Specific Flags</div>
+        <div class="flagbox"><ul class="taglist" id="rFlags" style="margin:0;"></ul></div>
+      </div>
+
+      <div class="section-h">7. If Unresolved: Escalation Path</div>
+      <p class="prose" id="rEscalation"></p>
+
+      <p class="report-disclaimer" id="rDisclaimer"></p>
+
+      <button class="btn sans" id="downloadPdfBtn" data-html2canvas-ignore="true" style="margin-top:18px;background:#2f6f5e;" onclick="downloadPDF()">⬇ Download as PDF</button>
+    </div>
   </div>
 
-  <p class="disclaimer">This is a general guide based on common EPFO rejection categories, not a substitute for the exact remark on your claim. Portal wording varies by regional office — when in doubt, call the EPFO helpline (1800-118-005) or visit your nearest office.</p>
+  <p class="disclaimer">The free instant read is a general guide based on common EPFO rejection categories. The ₹99 report is generated for your specific case details but remains procedural guidance, not legal advice — when in doubt, confirm with the EPFO helpline (1800-118-005) or your regional office.</p>
 </main>
 
 <script>
+const API_BASE = "https://web-production-456eb.up.railway.app";
+
 const DATA = {
   name_mismatch: {
-    tag: ["Details issue", "doc"],
     title: "Your name/details don't match across records",
-    explain: "EPFO cross-checks the name, date of birth, and gender on your claim against both your Aadhaar and your employer's records. Even a small spelling difference (middle name included on one, missing on another) triggers this.",
+    explain: "EPFO cross-checks the name, date of birth, and gender on your claim against both your Aadhaar and your employer's records. Even a small spelling difference triggers this.",
     steps: [
       "Log into the UAN portal → Manage → KYC, and check exactly how your name appears there.",
       "Compare it letter-for-letter against your Aadhaar and PAN.",
-      "If Aadhaar is the outlier, correct it via UIDAI (faster) rather than changing EPFO records repeatedly.",
-      "If EPFO's record is wrong, raise a joint declaration with your current or last employer to correct it in the EPFO database.",
-      "Only resubmit the withdrawal claim after the KYC status shows 'Approved' again."
-    ],
-    timeline: "Correction typically takes 5–10 working days once submitted",
-    reapply: "Reapply only after KYC shows Approved"
+      "Correct the outlier record (Aadhaar via UIDAI, or EPFO via a joint declaration with your employer).",
+      "Only resubmit the claim once KYC shows 'Approved' again."
+    ]
   },
   inactive_uan: {
-    tag: ["UAN issue", "doc"],
     title: "Your UAN is inactive or not recognised",
     explain: "This usually happens with duplicate UANs — you have more than one UAN and the system can't tell which one to process the claim against.",
     steps: [
-      "Check if you have more than one UAN by searching with your PAN/Aadhaar on the EPFO portal.",
-      "If you find a duplicate, email uanepf@epfindia.gov.in with both UAN numbers.",
-      "EPFO will deactivate the older UAN and link its service history to your active one.",
-      "Activate your UAN via OTP if it shows as inactive, before resubmitting."
-    ],
-    timeline: "UAN merge usually takes 2–3 weeks",
-    reapply: "Reapply only after the merge is confirmed by SMS"
+      "Check for a duplicate UAN by searching with your PAN/Aadhaar on the EPFO portal.",
+      "Email uanepf@epfindia.gov.in with both UAN numbers if you find one.",
+      "EPFO will merge the service history into your active UAN.",
+      "Activate your UAN via OTP before resubmitting."
+    ]
   },
   bank_details: {
-    tag: ["Details issue", "doc"],
     title: "Bank account details couldn't be verified",
-    explain: "EPFO does a penny-drop verification against your linked bank account. It fails if the account number, IFSC, or account holder name doesn't match, or if the account is inactive/closed.",
+    explain: "EPFO does a penny-drop verification against your linked bank account. It fails if the account number, IFSC, or holder name doesn't match, or the account is inactive.",
     steps: [
-      "Go to UAN portal → Manage → KYC, and check your bank details exactly against a recent cheque or passbook.",
-      "Make sure your name in the bank account matches your EPFO name (not a joint account or a different spelling).",
-      "Re-upload a scanned cancelled cheque or bank statement if asked.",
-      "Wait for the employer to digitally approve the updated KYC before resubmitting."
-    ],
-    timeline: "Bank verification usually clears in 3–7 working days",
-    reapply: "Reapply once KYC bank details show verified"
+      "Go to UAN portal → Manage → KYC and check bank details against a recent cheque/passbook.",
+      "Make sure the account holder name matches your EPFO name exactly.",
+      "Re-upload a cancelled cheque or bank statement if asked.",
+      "Wait for employer digital approval before resubmitting."
+    ]
   },
   kyc_aadhaar: {
-    tag: ["KYC pending", "doc"],
     title: "Aadhaar isn't linked, or KYC is pending approval",
-    explain: "Online (auto-mode) claims require your Aadhaar to be seeded and e-KYC verified. If it's only 'pending' and not 'approved' by your employer, the claim gets auto-rejected.",
+    explain: "Online claims require Aadhaar to be seeded and e-KYC verified. If it's only 'pending' and not employer-approved, the claim auto-rejects.",
     steps: [
-      "Check UAN portal → Manage → KYC — Aadhaar should show a green 'Verified' tag, not just 'Pending'.",
-      "If pending, your employer needs to digitally approve it from their portal — follow up with HR/payroll directly.",
-      "If Aadhaar isn't seeded at all, link it via the 'e-KYC' option using Aadhaar OTP.",
-      "Resubmit only after the status changes to Verified/Approved."
-    ],
-    timeline: "Employer approval can take anywhere from a day to a few weeks depending on their payroll team",
-    reapply: "Reapply once Aadhaar shows Verified, not just Linked"
+      "Check UAN portal → Manage → KYC — Aadhaar should show 'Verified', not just 'Pending'.",
+      "If pending, follow up with HR/payroll to approve it from their portal.",
+      "If not seeded, link Aadhaar via e-KYC using OTP.",
+      "Resubmit only once status shows Verified/Approved."
+    ]
   },
   service_period: {
-    tag: ["Eligibility", "wait"],
     title: "You haven't completed the minimum service period for this claim type",
-    explain: "Form 10C (pension withdrawal benefit) needs a minimum service period; some advance/withdrawal categories have their own minimum tenure or 'non-refundable advance' eligibility windows. Claiming before that window rejects the form.",
+    explain: "Form 10C and some withdrawal categories have minimum tenure requirements. Claiming before that window rejects the form.",
     steps: [
-      "Check which form you filed — Form 19 (PF final settlement), Form 10C (pension), or Form 31 (advance) each have different eligibility.",
-      "Confirm your actual date of joining and continuous service length in your EPF passbook.",
-      "If you're short of the threshold, you may need to wait, or file under a different form category that fits your actual eligibility.",
-      "For Form 10C specifically: under 6 months of service usually gets rejected outright — there's no early-withdrawal route for pension contribution below this."
-    ],
-    timeline: "No fix — this depends on actual service tenure",
-    reapply: "Reapply once you cross the eligible tenure, or refile under the correct form"
+      "Confirm which form you filed and its eligibility rule.",
+      "Check your actual continuous service length in your EPF passbook.",
+      "If short of the threshold, wait, or refile under a form that fits your actual eligibility."
+    ]
   },
   employer_not_verified: {
-    tag: ["Employer action needed", "employer"],
     title: "Your claim is stuck waiting on employer approval",
-    explain: "Even 'auto-mode' online claims often still need a digital nod from your last employer's authorised signatory before EPFO processes them, especially if your KYC was recently updated.",
+    explain: "Even online claims often need a digital nod from your last employer's authorised signatory before EPFO processes them.",
     steps: [
-      "Contact your last employer's HR/payroll team directly — this step genuinely needs their action, not yours.",
-      "Ask them to check their EPFO employer portal for a pending 'claim approval' item under your UAN.",
-      "If the employer is unresponsive or the company has shut down, you can request EPFO to process it without employer approval after a set waiting period — ask your regional EPFO office about this route.",
-    ],
-    timeline: "Entirely dependent on employer responsiveness",
-    reapply: "No need to reapply — it's the same claim, just needs employer action"
+      "Contact your last employer's HR/payroll team directly.",
+      "Ask them to check their EPFO employer portal for a pending approval item under your UAN.",
+      "If the employer is unresponsive or shut down, ask your regional EPFO office about processing without employer approval after a waiting period."
+    ]
   },
   insufficient_balance: {
-    tag: ["Amount issue", "doc"],
     title: "You've claimed more than what's actually in your PF account",
-    explain: "This happens if you're going by your CTC-based estimate rather than the actual EPF passbook balance, or if a previous partial withdrawal/advance was already deducted from the visible balance.",
+    explain: "This happens if you go by a CTC-based estimate rather than the actual EPF passbook balance, or a prior partial withdrawal reduced it.",
     steps: [
-      "Check your real-time balance on the UAN portal passbook — not your salary slip or offer letter estimate.",
-      "If you have multiple unmerged PF accounts, your balance may look lower than expected because it's split across accounts.",
-      "Resubmit the claim for an amount at or below your actual passbook balance."
-    ],
-    timeline: "Correction is immediate once you resubmit the right amount",
-    reapply: "Reapply immediately with the corrected amount"
+      "Check your real-time balance on the UAN portal passbook.",
+      "If you have unmerged multiple PF accounts, your visible balance may look lower than expected.",
+      "Resubmit for an amount at or below your actual passbook balance."
+    ]
   },
   dues_payable: {
-    tag: ["Employer action needed", "employer"],
     title: "There are outstanding dues linked to your account",
-    explain: "If your employer hasn't deposited some months' contributions, or there's a discrepancy the EPFO system has flagged, claims get held until it's reconciled.",
+    explain: "If your employer hasn't deposited some months' contributions, claims get held until it's reconciled.",
     steps: [
-      "Check your EPF passbook for any gap in monthly credits during your employment period.",
-      "Flag the gap to your former employer's payroll team — this is a compliance issue on their end, not yours.",
-      "If the employer won't cooperate, you can file a grievance on the EPFiGMS portal (epfigms.gov.in) referencing the missing contribution months."
-    ],
-    timeline: "Depends on employer remittance — can take weeks if they're slow",
-    reapply: "Reapply once the passbook shows the gap resolved"
+      "Check your EPF passbook for any gap in monthly credits.",
+      "Flag the gap to your former employer's payroll team.",
+      "If they won't cooperate, file a grievance on EPFiGMS referencing the missing months."
+    ]
   },
   signature_mismatch: {
-    tag: ["Details issue", "doc"],
     title: "Your signature on the physical form doesn't match records",
-    explain: "This applies mainly to offline/composite claims where a physical signature is compared against the specimen signature EPFO has on file.",
+    explain: "This applies mainly to offline/composite claims compared against the specimen signature EPFO has on file.",
     steps: [
-      "Use the same signature style you used on your original EPF nomination form (Form 2), if you remember it.",
-      "If your signature has genuinely changed, get it attested by your bank or a gazetted officer along with the claim.",
-      "Consider switching to the online auto-mode claim instead, which uses Aadhaar OTP rather than a physical signature."
-    ],
-    timeline: "Resolves immediately with a correctly signed resubmission",
-    reapply: "Reapply with the corrected signature or switch to online mode"
+      "Use the same signature style as your original EPF nomination form (Form 2), if remembered.",
+      "If it's genuinely changed, get it attested by your bank or a gazetted officer.",
+      "Consider switching to the online auto-mode claim, which uses Aadhaar OTP instead."
+    ]
   },
   form_not_submitted: {
-    tag: ["Process issue", "doc"],
     title: "The signed printout wasn't submitted within the 15-day window",
-    explain: "Some claims require you to print, sign, and physically submit or upload the claim form within 15 days of the online submission. Missing this window auto-rejects the claim.",
+    explain: "Some claims require a printed, signed form to be physically submitted or uploaded within 15 days of the online submission.",
     steps: [
-      "This is purely a process miss — there's no discrepancy in your details.",
-      "Simply refile the online claim from scratch.",
-      "This time, download, sign, and upload/submit the printout within 15 days as instructed on the confirmation screen."
-    ],
-    timeline: "Immediate — just needs a clean resubmission",
-    reapply: "Reapply now, and complete the follow-up step within 15 days this time"
+      "This is a process miss, not a details discrepancy.",
+      "Refile the online claim from scratch.",
+      "This time, submit the signed printout within 15 days as instructed."
+    ]
   },
   certificate_missing: {
-    tag: ["Details issue", "doc"],
     title: "A required certificate or supporting document wasn't attached",
-    explain: "Common for Form 10C claims needing a service certificate, or for advance withdrawal claims needing a purpose-specific document (medical, education, marriage, etc).",
+    explain: "Common for Form 10C claims needing a service certificate, or advance withdrawals needing a purpose-specific document.",
     steps: [
-      "Check which form you filed and cross-check the exact document list for that claim type on the EPFO portal.",
-      "For Form 10C: this is often a certificate confirming your total service length across employers.",
-      "For advance withdrawals: match the document to your stated reason (e.g. hospital bill for medical advance, admission letter for education).",
+      "Check the exact document list for your claim type on the EPFO portal.",
+      "Match the document to your stated reason (medical, education, marriage, etc.).",
       "Re-upload the correct document and resubmit."
-    ],
-    timeline: "Resolves immediately with a correct resubmission",
-    reapply: "Reapply now with the missing document attached"
+    ]
+  },
+  other: {
+    title: "Your remark doesn't match a standard category",
+    explain: "Not every EPFO remark fits the common list — this can still be resolved, but needs the specific wording to diagnose accurately.",
+    steps: [
+      "Add the exact remark text and any extra context in the fields below.",
+      "The ₹99 report will read your specific description rather than relying on a generic category."
+    ]
   }
 };
 
+const claimType = document.getElementById('claimType');
 const select = document.getElementById('reason');
 const result = document.getElementById('result');
 const genBtn = document.getElementById('genBtn');
+const detailsBlock = document.getElementById('detailsBlock');
 
 select.addEventListener('change', () => {
   const key = select.value;
   result.classList.remove('show');
-  if(!key){
-    genBtn.style.display = 'none';
-    return;
-  }
+  detailsBlock.style.display = 'none';
+  document.getElementById('report').classList.remove('show');
+  if(!key){ genBtn.style.display = 'none'; return; }
   genBtn.style.display = 'inline-block';
 });
 
-function renderResult(){
+function renderFreePreview(){
   const key = select.value;
   if(!key) return;
   const d = DATA[key];
-  document.getElementById('tag').textContent = d.tag[0];
-  document.getElementById('tag').className = 'tag ' + d.tag[1];
   document.getElementById('title').textContent = d.title;
   document.getElementById('explain').textContent = d.explain;
   document.getElementById('steps').innerHTML = d.steps.map(s => `<li>${s}</li>`).join('');
-  document.getElementById('timeline').textContent = d.timeline;
-  document.getElementById('reapply').textContent = d.reapply;
   result.classList.add('show');
-  document.getElementById('downloadPdfBtn').style.display = 'inline-block';
+  detailsBlock.style.display = 'block';
+}
+
+// ── Promo toggle ──
+document.getElementById('promoToggle').addEventListener('click', () => {
+  document.getElementById('promoRow').classList.toggle('show');
+});
+
+// ── Payment / promo → generate report ──
+let currentOrder = null;
+
+async function collectCase(){
+  return {
+    claim_type: claimType.value,
+    remark_key: select.value,
+    remark_text: document.getElementById('remarkText').value.trim(),
+    claimed_amount: document.getElementById('claimedAmount').value,
+    client_name: document.getElementById('clientName').value.trim(),
+    extra_context: document.getElementById('extraContext').value.trim()
+  };
+}
+
+document.getElementById('payBtn').addEventListener('click', startPayment);
+document.getElementById('promoBtn').addEventListener('click', () => submitWithPromo());
+
+async function startPayment(){
+  const btn = document.getElementById('payBtn');
+  const errBox = document.getElementById('payError');
+  errBox.style.display = 'none';
+  if(!select.value){ errBox.textContent = 'Please select a remark above first.'; errBox.style.display = 'block'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Preparing payment…';
+  try{
+    const orderRes = await fetch(`${API_BASE}/api/create-pfdecoder-order`, {method:"POST"});
+    const order = await orderRes.json();
+    if(!order.order_id) throw new Error(order.error || "Could not start payment");
+    currentOrder = order;
+
+    const rzp = new Razorpay({
+      key: order.razorpay_key,
+      amount: order.amount,
+      currency: order.currency,
+      order_id: order.order_id,
+      name: "SalaryBit — PF Rejection Decoder",
+      description: "CA-Grade PF Claim Resolution Report",
+      handler: async function(response){
+        await verifyAndGenerate({
+          razorpay_order_id: order.order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature
+        });
+      },
+      modal:{ ondismiss: function(){ btn.disabled = false; btn.textContent = 'Generate my ₹99 report →'; } },
+      theme:{ color:"#1f3a5f" }
+    });
+    rzp.open();
+  }catch(e){
+    btn.disabled = false;
+    btn.textContent = 'Generate my ₹99 report →';
+    errBox.textContent = 'Something went wrong starting payment: ' + e.message;
+    errBox.style.display = 'block';
+  }
+}
+
+async function submitWithPromo(){
+  const code = document.getElementById('promoInput').value.trim();
+  const errBox = document.getElementById('payError');
+  errBox.style.display = 'none';
+  if(!code){ return; }
+  if(!select.value){ errBox.textContent = 'Please select a remark above first.'; errBox.style.display = 'block'; return; }
+  const btn = document.getElementById('promoBtn');
+  btn.disabled = true; btn.textContent = 'Checking…';
+  await verifyAndGenerate({ promo_code: code });
+  btn.disabled = false; btn.textContent = 'Apply';
+}
+
+async function verifyAndGenerate(paymentFields){
+  const errBox = document.getElementById('payError');
+  const lockbox = document.querySelector('.lockbox');
+  lockbox.style.opacity = '0.6';
+  try{
+    const caseData = await collectCase();
+    const res = await fetch(`${API_BASE}/api/verify-pfdecoder-payment`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ ...paymentFields, ...caseData })
+    });
+    const data = await res.json();
+    lockbox.style.opacity = '1';
+    if(!data.success){
+      errBox.textContent = data.error || 'Payment verification failed.';
+      errBox.style.display = 'block';
+      return;
+    }
+    if(data.error){
+      errBox.textContent = data.error + (data.payment_id ? ` (Payment ID: ${data.payment_id})` : '');
+      errBox.style.display = 'block';
+      return;
+    }
+    renderPaidReport(data.report, caseData, data.payment_id);
+    detailsBlock.style.display = 'none';
+  }catch(e){
+    lockbox.style.opacity = '1';
+    errBox.textContent = 'Something went wrong generating your report: ' + e.message;
+    errBox.style.display = 'block';
+  }
+}
+
+function renderPaidReport(r, caseData, paymentId){
+  const reportId = 'SB-PFD-' + Date.now().toString(36).toUpperCase();
+  document.getElementById('metaReportId').textContent = 'Report ID: ' + reportId;
+  document.getElementById('metaDate').textContent = 'Generated: ' + new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+  document.getElementById('metaFor').textContent = caseData.client_name ? ('Prepared for: ' + caseData.client_name) : '';
+
+  document.getElementById('rCaseSummary').textContent = r.case_summary || '';
+  document.getElementById('rRootCause').textContent = r.root_cause || '';
+
+  document.getElementById('rSteps').innerHTML = (r.resolution_steps || []).map(s =>
+    `<li><div class="stitle">${s.step || ''}</div><div class="sdetail">${s.detail || ''}</div></li>`
+  ).join('');
+
+  const docs = r.documents_required || [];
+  document.getElementById('rDocsHead').style.display = docs.length ? 'block' : 'none';
+  document.getElementById('rDocs').innerHTML = docs.map(d => `<li>${d}</li>`).join('');
+
+  document.getElementById('rTimeline').textContent = r.timeline_estimate || '';
+  document.getElementById('rReapply').textContent = r.reapply_guidance || '';
+
+  const flags = r.risk_flags || [];
+  document.getElementById('rFlagsBlock').style.display = flags.length ? 'block' : 'none';
+  document.getElementById('rFlags').innerHTML = flags.map(f => `<li>${f}</li>`).join('');
+
+  document.getElementById('rEscalation').textContent = r.escalation_path || '';
+  document.getElementById('rDisclaimer').textContent = r.disclaimer || 'This is procedural guidance based on standard EPFO practice, not a guarantee of outcome, and not a substitute for direct confirmation from EPFO or a CA in unusual cases.';
+
+  document.getElementById('report').classList.add('show');
+  document.getElementById('report').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 function downloadPDF(){
-  const el = document.getElementById('result');
+  const el = document.getElementById('report');
   html2pdf().set({
     margin: 10,
-    filename: 'pf-rejection-fix-salarybit.pdf',
+    filename: 'pf-rejection-ca-report-salarybit.pdf',
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: { scale: 2, backgroundColor: '#ffffff' },
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   }).from(el).save();
 }
-
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>

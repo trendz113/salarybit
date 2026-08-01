@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PAN Correction Navigator — CA-Grade PAN & Duplicate PAN Resolution | SalaryBit</title>
-<meta name="description" content="Name, DOB or address mismatch on your PAN — or worse, a duplicate PAN? Get a free instant read, then a personalised CA-grade resolution report for ₹99.">
+<meta name="description" content="Name, DOB or address mismatch on your PAN — or worse, a duplicate PAN? Get a free instant read, then a personalised CA-grade resolution report for ₹199.">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#1f3a5f">
 <link rel="canonical" href="https://salarybit.in/pan-correction-navigator.html">
@@ -14,7 +14,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://salarybit.in/og-image.png">
-<meta property="og:description" content="Name, DOB or address mismatch on your PAN — or worse, a duplicate PAN? Get a free instant read, then a personalised CA-grade resolution report for ₹99.">
+<meta property="og:description" content="Name, DOB or address mismatch on your PAN — or worse, a duplicate PAN? Get a free instant read, then a personalised CA-grade resolution report for ₹199.">
 <meta property="og:url" content="https://salarybit.in/pan-correction-navigator.html">
 <script type="application/ld+json">
 {
@@ -200,7 +200,7 @@
         <div class="lockbox">
           <div class="kicker">CA-Grade Resolution Report</div>
           <h4>Get the full, personalised report</h4>
-          <div class="price">₹99 <span>one-time, this case</span></div>
+          <div class="price">₹199 <span>one-time, this case</span></div>
           <ul>
             <li>Correctly separates a simple correction from a duplicate-PAN surrender — they need completely different processes</li>
             <li>For duplicate PAN: the real AO-surrender route, zero-transaction check, and what to do if the card is lost</li>
@@ -208,7 +208,7 @@
             <li>Realistic timeline and what to do so the fix actually propagates to your bank/NPS records</li>
             <li>Downloadable as a formal PDF report</li>
           </ul>
-          <button class="btn sans" id="payBtn">Generate my ₹99 report →</button>
+          <button class="btn sans" id="payBtn">Generate my ₹199 report →</button>
           <div id="payError" class="err-text" style="display:none;"></div>
           <span class="promo-toggle" id="promoToggle">Have a promo code?</span>
           <div class="promo-row" id="promoRow">
@@ -263,7 +263,7 @@
     </div>
   </div>
 
-  <p class="disclaimer">The free instant read gives directional guidance based on common PAN/Aadhaar scenarios. The ₹99 report is generated for your specific case but remains procedural guidance, not legal advice — final decisions rest with Protean/UTIITSL and the Income Tax Department.</p>
+  <p class="disclaimer">The free instant read gives directional guidance based on common PAN/Aadhaar scenarios. The ₹199 report is generated for your specific case but remains procedural guidance, not legal advice — final decisions rest with Protean/UTIITSL and the Income Tax Department.</p>
 </main>
 
 <script>
@@ -347,7 +347,7 @@ function showResult(){
         <li>The online "PAN correction" portals only edit details on a single PAN — they don't process surrender of a second one.</li>
         <li>You'll need to find your jurisdictional Assessing Officer via "Know Your AO" on the Income Tax e-filing portal.</li>
         <li>The AO checks the duplicate PAN for any transaction history before allowing surrender — it can only close if there's nothing linked to it.</li>
-        <li>This is usually a slow, offline, follow-up-heavy process — the free read below only scratches the surface. The ₹99 report goes deep into this specific path.</li>
+        <li>This is usually a slow, offline, follow-up-heavy process — the free read below only scratches the surface. The ₹199 report goes deep into this specific path.</li>
       </ol>
     </div>`;
   }
@@ -419,13 +419,13 @@ async function startPayment(){
           razorpay_signature: response.razorpay_signature
         });
       },
-      modal:{ ondismiss: function(){ btn.disabled = false; btn.textContent = 'Generate my ₹99 report →'; } },
+      modal:{ ondismiss: function(){ btn.disabled = false; btn.textContent = 'Generate my ₹199 report →'; } },
       theme:{ color:"#1f3a5f" }
     });
     rzp.open();
   }catch(e){
     btn.disabled = false;
-    btn.textContent = 'Generate my ₹99 report →';
+    btn.textContent = 'Generate my ₹199 report →';
     errBox.textContent = 'Something went wrong starting payment: ' + e.message;
     errBox.style.display = 'block';
   }

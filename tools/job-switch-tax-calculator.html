@@ -252,8 +252,8 @@ select.fld{cursor:pointer}
             <li>Step-by-step Challan 280 self-assessment payment guide, pre-filled with your exact amount</li>
             <li>Ready-to-send email draft to HR/payroll to fix future TDS deduction (Form 12B)</li>
           </ul>
-          <div class="unlock-price">₹49</div>
-          <button class="unlock-cta" id="js-unlock-btn" onclick="startJobswitchPayment()">Unlock Full Report — ₹49</button>
+          <div class="unlock-price">₹99</div>
+          <button class="unlock-cta" id="js-unlock-btn" onclick="startJobswitchPayment()">Unlock Full Report — ₹99</button>
           <div class="unlock-status" id="js-unlock-status"></div>
         </div>
       </div>
@@ -472,12 +472,12 @@ async function startJobswitchPayment(){
           status.textContent = 'Payment succeeded but verification failed to reach the server — contact support with payment ID: ' + (response.razorpay_payment_id || '');
         }
         btn.disabled = false;
-        btn.textContent = 'Unlock Full Report — ₹49';
+        btn.textContent = 'Unlock Full Report — ₹99';
       },
       modal: {
         ondismiss: function(){
           btn.disabled = false;
-          btn.textContent = 'Unlock Full Report — ₹49';
+          btn.textContent = 'Unlock Full Report — ₹99';
           status.textContent = 'Checkout closed — no payment taken.';
         }
       },
@@ -487,7 +487,7 @@ async function startJobswitchPayment(){
   } catch(err){
     status.textContent = 'Could not start payment. Please try again.';
     btn.disabled = false;
-    btn.textContent = 'Unlock Full Report — ₹49';
+    btn.textContent = 'Unlock Full Report — ₹99';
   }
 }
 

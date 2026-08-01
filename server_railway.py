@@ -1695,9 +1695,123 @@ def verify_pfdecoder_payment():
 
 
 # ── PAN CORRECTION NAVIGATOR ─────────────────────────────────
-# Pure client-side wizard. Same paid-unlock pattern — nothing typed is
-# ever sent to this server.
+# Upgraded from a pure client-side wizard to a paid, Claude-generated
+# CA-grade resolution report. The free wizard stays as the instant
+# directional read; the paid report is personalised to the user's exact
+# situation and — critically — correctly separates two very different
+# problems that people conflate: a simple detail correction (fast, online,
+# NSDL/Protean or UTIITSL) versus holding a duplicate PAN (slow, offline,
+# routed through the jurisdictional Assessing Officer, not a correction
+# form at all).
 PANCORRECTION_PRICE_PAISE = 9900  # Rs 99
+
+PANCORRECTION_SYSTEM_PROMPT = """You are a senior tax consultant (CA-level) preparing a formal case
+resolution report for a paying client dealing with a PAN card problem in India. The client has paid
+Rs 99 for a personalised report — write with the precision and structure of a report a chartered
+accountant would hand a client, not a generic FAQ answer.
+
+You will be given: the issue category the free tool diagnosed (name mismatch severity, duplicate PAN
+suspicion, which agency issued the PAN if known), the names as they appear on PAN/Aadhaar/bank
+records, and free-text context the client added about their specific situation. The client has been
+told NOT to share full PAN or Aadhaar numbers — do not ask for them or assume you have been given
+them; work from the situation described.
+
+CRITICAL — get this distinction right, it is the main value of this report over generic advice:
+
+1. SIMPLE DETAIL CORRECTION (name spelling, DOB, address, photo/signature, minor name mismatch that
+   Aadhaar-OTP linking can absorb): this is fast and handled entirely online via the PAN-issuing
+   agency's own correction portal (Protean/NSDL "Changes or Correction in PAN Data", or UTIITSL "PAN
+   Card Change Request"). Typical turnaround is 15–45 days. This is a routine data-correction filing.
+
+2. DUPLICATE / MULTIPLE PAN (holding two PAN numbers, even if one was issued in error and never used):
+   this is NOT a correction-form issue. It is a compliance issue under Section 139A(7) of the Income
+   Tax Act (penalty under Section 272B for holding more than one PAN). It CANNOT be resolved through
+   the NSDL/UTIITSL online correction portal — those portals only edit details on a single PAN, they
+   do not surrender/close a duplicate one. The actual real-world process is:
+   - Identify the client's jurisdictional Assessing Officer (AO) via "Know Your AO" on the Income Tax
+     e-filing portal (incometax.gov.in).
+   - Decide which PAN to KEEP — normally the one with actual transaction/filing/bank-linkage history —
+     and prepare a written surrender request for the OTHER one, addressed to that AO, enclosing copies
+     of both PAN cards.
+   - If the duplicate card was never received, is lost, or the client doesn't have it: file a police
+     complaint (FIR or a local online police complaint) for the lost PAN card first. That complaint
+     record substitutes for the physical card copy when requesting surrender.
+   - The AO will check the PAN proposed for surrender for any transaction history (bank accounts, ITR
+     filings, TDS entries linked to it). It can only be closed if it shows NO transactions. If it does
+     show transactions, that history has to be explained/reconciled first, which adds significant time.
+   - This is a manual, offline, AO-driven process. It commonly takes many months, and in unresponsive
+     jurisdictions has taken multiple years in real cases — set expectations honestly, do not
+     understate this.
+   - Even after the AO confirms surrender/closure (sometimes only as a local printout/letter), this
+     status does NOT automatically propagate to banks, NPS, DigiLocker, or other systems that still
+     have the old PAN or the old name on file. The client must proactively submit the AO's closure
+     confirmation to each of those systems and follow up — nothing updates itself.
+   - A related, separate symptom worth flagging if the client mentions it: even after a corrected PAN
+     is issued, older linked records (e.g. NPS, an old bank KYC entry) can keep showing the pre-
+     correction name until the client manually re-submits KYC/updates there too — this is a common,
+     frustrating follow-on step people don't expect.
+
+Rules:
+- Do not blend the two paths above. If the client's situation is a duplicate PAN, do not tell them to
+  use the NSDL/UTIITSL correction portal for that — direct them to the AO route. If it is a simple
+  correction, do not send them down the AO/surrender path.
+- Do not invent specific processing-time guarantees; give realistic ranges and say they vary by
+  jurisdiction and AO responsiveness.
+- Be direct and specific about what to do next — a client paying for this expects an action plan.
+- This is educational/procedural guidance, not legal advice — say so once, briefly, in the disclaimer
+  field only.
+
+Respond ONLY with a single JSON object (no markdown fences, no preamble), matching this exact shape:
+
+{
+  "case_summary": "2-3 sentence professional restatement of the client's specific case",
+  "root_cause": "1-2 paragraph plain-English explanation of what's actually going on and WHY, personalised using whatever the client told you",
+  "resolution_steps": [
+    {"step": "short imperative title", "detail": "1-3 sentences of specific instruction"}
+  ],
+  "documents_required": ["specific document or evidence needed, if any — empty list if none"],
+  "timeline_estimate": "concrete, realistic estimate — for duplicate PAN cases, be honest that this can take months and set expectations accordingly",
+  "reapply_guidance": "what to do once the correction/surrender is confirmed — including any propagation follow-up needed at banks/NPS/other KYC systems",
+  "risk_flags": ["anything about THIS specific case worth flagging — empty list if nothing stands out"],
+  "escalation_path": "where to escalate if standard steps stall (CPGRAMS grievance portal, Income Tax e-Nivaran, or the AO's superior officer for duplicate-PAN cases stuck beyond a reasonable time)",
+  "disclaimer": "one sentence noting this is procedural guidance based on standard Income Tax Department practice, not a guarantee, and not a substitute for direct confirmation from a CA or the AO in unusual cases"
+}"""
+
+
+def _call_claude_pancorrection_report(case):
+    claude_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not claude_key:
+        raise RuntimeError("Server not configured. Missing ANTHROPIC_API_KEY.")
+
+    payload = json.dumps({
+        "model": "claude-sonnet-4-6",
+        "max_tokens": 3000,
+        "system": PANCORRECTION_SYSTEM_PROMPT,
+        "messages": [{"role": "user", "content": json.dumps(case, indent=2)}]
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": claude_key,
+            "anthropic-version": "2023-06-01"
+        },
+        method="POST"
+    )
+
+    with urllib.request.urlopen(req, timeout=90) as resp:
+        result = json.loads(resp.read().decode("utf-8"))
+
+    raw = "".join(
+        block.get("text", "") for block in result.get("content", []) if block.get("type") == "text"
+    ).strip()
+    if raw.startswith("```"):
+        raw = raw.strip("`")
+        if raw.lower().startswith("json"):
+            raw = raw[4:]
+    return json.loads(raw)
 
 
 @app.route("/api/create-pancorrection-order", methods=["POST", "OPTIONS"])
@@ -1723,28 +1837,62 @@ def create_pancorrection_order():
 
 @app.route("/api/verify-pancorrection-payment", methods=["POST", "OPTIONS"])
 def verify_pancorrection_payment():
-    """Matches the existing verify_*_payment() HMAC pattern exactly."""
+    """Verifies payment (or a promo bypass code), then runs the Claude-
+    generated CA-grade report on the client's case and returns it."""
     if request.method == "OPTIONS":
         return "", 200
     data = request.get_json(silent=True) or {}
-    order_id = data.get("razorpay_order_id")
-    payment_id = data.get("razorpay_payment_id")
-    signature = data.get("razorpay_signature")
 
-    if not all([order_id, payment_id, signature]):
-        return jsonify({"success": False, "error": "Missing required fields."}), 400
+    promo_code = (data.get("promo_code") or "").strip()
+    payment_id = None
 
-    body = f"{order_id}|{payment_id}"
-    expected = hmac.new(
-        os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
-        body.encode(),
-        hashlib.sha256
-    ).hexdigest()
-    if expected != signature:
-        return jsonify({"success": False, "error": "Payment verification failed."}), 400
+    if promo_code and promo_code == PROMO_BYPASS_CODE:
+        payment_id = f"promo_{os.urandom(4).hex()}"
+        print(f"[pancorrection] PROMO bypass unlock | code used")
+    else:
+        order_id = data.get("razorpay_order_id")
+        payment_id = data.get("razorpay_payment_id")
+        signature = data.get("razorpay_signature")
 
-    print(f"[pancorrection] paid unlock | payment_id={payment_id}")
-    return jsonify({"success": True, "payment_id": payment_id})
+        if not all([order_id, payment_id, signature]):
+            return jsonify({"success": False, "error": "Missing required fields."}), 400
+
+        body = f"{order_id}|{payment_id}"
+        expected = hmac.new(
+            os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+            body.encode(),
+            hashlib.sha256
+        ).hexdigest()
+        if expected != signature:
+            return jsonify({"success": False, "error": "Payment verification failed."}), 400
+
+        print(f"[pancorrection] paid unlock | payment_id={payment_id}")
+
+    case = {
+        "issue_category": data.get("issue_category") or "Not specified",
+        "duplicate_pan_suspected": data.get("duplicate_pan_suspected") or "no",
+        "pan_issuer": data.get("pan_issuer") or "Not specified",
+        "name_on_pan": data.get("name_on_pan") or None,
+        "name_on_aadhaar": data.get("name_on_aadhaar") or None,
+        "name_on_bank": data.get("name_on_bank") or None,
+        "duplicate_card_status": data.get("duplicate_card_status") or None,
+        "client_name": data.get("client_name") or None,
+        "additional_context": data.get("extra_context") or None,
+    }
+
+    try:
+        report = _call_claude_pancorrection_report(case)
+    except Exception as e:
+        print(f"pancorrection report generation error: {type(e).__name__}: {e}")
+        return jsonify({
+            "success": True,
+            "payment_id": payment_id,
+            "error": "Payment succeeded, but report generation failed. You will not be "
+                     "charged again — contact support with this payment ID and we'll get "
+                     "your report to you directly."
+        })
+
+    return jsonify({"success": True, "payment_id": payment_id, "report": report})
 
 
 # ── SUPERANNUATION FUND NAVIGATOR ────────────────────────────

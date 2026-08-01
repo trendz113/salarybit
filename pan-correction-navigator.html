@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PAN Correction Navigator — Fix PAN Card Mismatches | SalaryBit</title>
-<meta name="description" content="Name, DOB or address mismatch on your PAN card? Find out exactly what's wrong, whether you need a correction at all, and which portal to use — before you file anything.">
+<title>PAN Correction Navigator — CA-Grade PAN & Duplicate PAN Resolution | SalaryBit</title>
+<meta name="description" content="Name, DOB or address mismatch on your PAN — or worse, a duplicate PAN? Get a free instant read, then a personalised CA-grade resolution report for ₹99.">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#1f3a5f">
 <link rel="canonical" href="https://salarybit.in/pan-correction-navigator.html">
-<meta property="og:title" content="PAN Correction Navigator — Fix PAN Card Mismatches | SalaryBit">
+<meta property="og:title" content="PAN Correction Navigator — CA-Grade PAN & Duplicate PAN Resolution | SalaryBit">
 <meta property="og:image" content="https://salarybit.in/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://salarybit.in/og-image.png">
-<meta property="og:description" content="Name, DOB or address mismatch on your PAN card? Find out exactly what's wrong, whether you need a correction at all, and which portal to use — before you file anything.">
+<meta property="og:description" content="Name, DOB or address mismatch on your PAN — or worse, a duplicate PAN? Get a free instant read, then a personalised CA-grade resolution report for ₹99.">
 <meta property="og:url" content="https://salarybit.in/pan-correction-navigator.html">
 <script type="application/ld+json">
 {
@@ -22,12 +22,12 @@
   "@type": "WebApplication",
   "name": "PAN Correction Navigator — SalaryBit",
   "url": "https://salarybit.in/pan-correction-navigator.html",
-  "description": "Name, DOB or address mismatch on your PAN card? Find out exactly what's wrong, whether you need a correction at all, and which portal to use — before you file anything.",
+  "description": "Name, DOB or address mismatch on your PAN — or a duplicate PAN? Get a free instant read, then a personalised CA-grade resolution report built for your exact case.",
   "applicationCategory": "FinanceApplication",
   "operatingSystem": "All",
   "offers": {
     "@type": "Offer",
-    "price": "0",
+    "price": "99",
     "priceCurrency": "INR"
   },
   "creator": {
@@ -40,58 +40,94 @@
 <meta property="og:site_name" content="SalaryBit">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%231f3a5f'/><text y='22' x='5' font-size='18'>🪪</text></svg>">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
-  :root{
-    --ink:#1c2430; --paper:#faf8f3; --panel:#ffffff; --line:#e2ddd0;
-    --navy:#1f3a5f; --navy-deep:#152943; --amber:#b8752c; --green:#2f6f5e; --red:#a53f3f; --muted:#6b6458;
-  }
   *{box-sizing:border-box;}
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:Georgia,'Iowan Old Style',serif;line-height:1.5;}
+  body{margin:0;background:#faf8f3;color:#1c2430;font-family:Georgia,'Iowan Old Style',serif;line-height:1.5;}
   .sans{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}
-  header{background:var(--navy-deep);color:#f2ede1;padding:36px 20px 30px;text-align:center;}
+  header{background:#152943;color:#f2ede1;padding:36px 20px 30px;text-align:center;}
   header .eyebrow{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;font-size:11px;color:#c9b98a;margin-bottom:10px;}
   header h1{margin:0 0 8px;font-size:clamp(24px,4vw,34px);font-weight:400;}
-  header p{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#cfd6de;max-width:520px;margin:0 auto;font-size:15px;}
-  main{max-width:640px;margin:0 auto;padding:34px 20px 70px;}
-  .panel{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:26px 24px;}
+  header p{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#cfd6de;max-width:540px;margin:0 auto;font-size:15px;}
+  main{max-width:680px;margin:0 auto;padding:34px 20px 70px;}
+  .panel{background:#fff;border:1px solid #e2ddd0;border-radius:4px;padding:26px 24px;}
   .step{display:none;}
   .step.active{display:block;}
-  label{display:block;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;margin-top:18px;}
+  label{display:block;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13px;font-weight:600;color:#6b6458;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;margin-top:18px;}
   label:first-child{margin-top:0;}
-  input[type=text]{
+  label .opt{text-transform:none;font-weight:400;letter-spacing:0;color:#a39c8c;}
+  input[type=text], input[type=number], textarea{
     width:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:16px;
-    padding:12px 14px;border:1px solid #c7c0ae;border-radius:3px;background:#fff;color:var(--ink);
+    padding:12px 14px;border:1px solid #c7c0ae;border-radius:3px;background:#fff;color:#1c2430;
   }
+  textarea{resize:vertical;min-height:70px;font-family:inherit;}
   .radio-row{display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;}
   .radio-opt{
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
     font-size:14px;border:1px solid #c7c0ae;border-radius:20px;padding:8px 16px;cursor:pointer;
     background:#fff;transition:all .15s;
   }
-  .radio-opt.selected{background:var(--navy);color:#fff;border-color:var(--navy);}
+  .radio-opt.selected{background:#1f3a5f;color:#fff;border-color:#1f3a5f;}
   .btn{
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-    background:var(--navy);color:#fff;border:none;padding:13px 26px;border-radius:3px;
-    font-size:15px;font-weight:600;cursor:pointer;margin-top:24px;
+    background:#1f3a5f;color:#fff;border:none;padding:13px 26px;border-radius:3px;
+    font-size:15px;font-weight:600;cursor:pointer;margin-top:24px;width:100%;
   }
-  .btn:hover{background:var(--navy-deep);}
-  .btn.ghost{background:transparent;color:var(--navy);border:1px solid var(--navy);margin-right:10px;}
-  .result{border-top:2px solid var(--navy);padding-top:20px;margin-top:10px;}
+  .btn:hover{background:#152943;}
+  .btn.ghost{background:transparent;color:#1f3a5f;border:1px solid #1f3a5f;margin-right:10px;width:auto;}
+  .btn:disabled{opacity:.6;cursor:not-allowed;}
+  .btn.secondary{background:transparent;color:#1f3a5f;border:1px solid #1f3a5f;}
+  .result{border-top:2px solid #1f3a5f;padding-top:20px;margin-top:10px;}
   .tag{display:inline-block;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:20px;margin-bottom:12px;}
-  .tag.minor{background:#e6efe9;color:var(--green);}
-  .tag.major{background:#fbeadb;color:var(--amber);}
-  .tag.duplicate{background:#f3e4e4;color:var(--red);}
+  .tag.minor{background:#e6efe9;color:#2f6f5e;}
+  .tag.major{background:#fbeadb;color:#b8752c;}
+  .tag.duplicate{background:#f3e4e4;color:#a53f3f;}
   .result h3{margin:0 0 10px;font-size:20px;font-weight:400;}
   .result p{margin:0 0 14px;color:#3a3428;}
-  .fixbox{background:#f4f0e5;border-left:3px solid var(--navy);padding:14px 16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;margin-bottom:14px;}
-  .fixbox strong{display:block;margin-bottom:6px;color:var(--navy-deep);}
+  .fixbox{background:#f4f0e5;border-left:3px solid #1f3a5f;padding:14px 16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;margin-bottom:14px;}
+  .fixbox strong{display:block;margin-bottom:6px;color:#152943;}
   .fixbox ol,.fixbox ul{margin:0;padding-left:18px;}
   .fixbox li{margin-bottom:6px;}
   .progress{display:flex;gap:6px;margin-bottom:24px;}
-  .progress span{height:3px;flex:1;background:var(--line);border-radius:2px;}
-  .progress span.done{background:var(--navy);}
-  .disclaimer{margin-top:28px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:12.5px;color:var(--muted);text-align:center;}
-  .btn:disabled{opacity:.6;cursor:not-allowed;}
+  .progress span{height:3px;flex:1;background:#e2ddd0;border-radius:2px;}
+  .progress span.done{background:#1f3a5f;}
+  .disclaimer{margin-top:28px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:12.5px;color:#6b6458;text-align:center;}
+
+  /* ── Paywall / upsell box ── */
+  .lockbox{margin-top:24px;border:1px dashed #c9b98a;border-radius:6px;background:#fbf9f3;padding:24px 22px;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}
+  .lockbox .kicker{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#b8752c;font-weight:700;margin-bottom:8px;}
+  .lockbox h4{font-family:'Georgia',serif;font-weight:400;font-size:19px;margin:0 0 10px;color:#152943;}
+  .lockbox .price{font-size:30px;font-weight:800;color:#1c2430;margin:6px 0 4px;}
+  .lockbox .price span{font-size:14px;font-weight:400;color:#6b6458;}
+  .lockbox ul{text-align:left;max-width:400px;margin:14px auto 4px;padding-left:20px;font-size:13.5px;color:#3a3428;}
+  .lockbox li{margin-bottom:6px;}
+  .promo-toggle{font-size:12px;color:#6b6458;text-decoration:underline;cursor:pointer;margin-top:14px;display:inline-block;background:none;border:none;font-family:inherit;}
+  .promo-row{display:none;margin-top:12px;gap:8px;}
+  .promo-row.show{display:flex;}
+  .promo-row input{flex:1;}
+  .promo-row button{width:auto;margin-top:0;padding:11px 16px;}
+  .err-text{color:#a53f3f;font-size:13px;margin-top:10px;font-family:inherit;}
+
+  /* ── CA-grade paid report ── */
+  .report{display:none;margin-top:24px;border-top:3px double #1f3a5f;padding-top:22px;background:#ffffff;}
+  .report.show{display:block;}
+  .report-head{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;margin-bottom:20px;}
+  .report-head .rtitle{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#b8752c;font-weight:700;}
+  .report-head h2{font-family:'Georgia',serif;font-weight:400;font-size:22px;margin:6px 0 10px;color:#152943;}
+  .report-meta-line{font-size:12px;color:#6b6458;border-top:1px solid #e2ddd0;border-bottom:1px solid #e2ddd0;padding:8px 0;display:flex;flex-wrap:wrap;gap:4px 16px;}
+  .section-h{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#1f3a5f;margin:22px 0 10px;}
+  .prose{font-size:15px;color:#2c261c;margin:0 0 6px;}
+  .steps-list{counter-reset:step;list-style:none;padding:0;margin:0;}
+  .steps-list li{counter-increment:step;position:relative;padding:10px 0 10px 34px;border-bottom:1px solid #e2ddd0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}
+  .steps-list li:last-child{border-bottom:none;}
+  .steps-list li::before{content:counter(step);position:absolute;left:0;top:10px;width:22px;height:22px;border-radius:50%;background:#1f3a5f;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .steps-list .stitle{font-weight:700;color:#152943;margin-bottom:3px;font-size:14.5px;}
+  .steps-list .sdetail{font-size:13.5px;color:#3a3428;}
+  .taglist{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13.5px;padding-left:20px;margin:0;color:#3a3428;}
+  .taglist li{margin-bottom:5px;}
+  .flagbox{background:#f3e9e0;border-left:3px solid #a53f3f;padding:12px 14px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13.5px;color:#4a2a2a;}
+  .report-disclaimer{margin-top:24px;padding-top:14px;border-top:1px solid #e2ddd0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:12px;color:#6b6458;font-style:italic;}
+  .privacy-note{font-size:12px;color:#8a8272;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;margin-top:6px;}
 </style>
 </head>
 <body>
@@ -99,7 +135,7 @@
 <header>
   <div class="eyebrow">SalaryBit Tools</div>
   <h1>PAN Correction Navigator</h1>
-  <p>Figure out exactly what's mismatched, whether you even need a correction, and which portal to use — before you file anything.</p>
+  <p>Figure out exactly what's mismatched — or whether you're dealing with a duplicate PAN, which is a very different problem — then get a personalised resolution report.</p>
 </header>
 
 <main>
@@ -134,30 +170,113 @@
         <div class="radio-opt" data-val="uti">UTIITSL</div>
         <div class="radio-opt" data-val="unsure">Not sure</div>
       </div>
+
+      <div id="dupDetailBlock" style="display:none;">
+        <label style="margin-top:26px;">What's the status of the extra/duplicate PAN?</label>
+        <div class="radio-row" id="dupStatusGroup">
+          <div class="radio-opt" data-val="have_both">I have both physical cards</div>
+          <div class="radio-opt" data-val="lost_never_used">Never received it / it's lost</div>
+          <div class="radio-opt" data-val="unsure_count">Not sure how many I actually have</div>
+        </div>
+      </div>
+
       <div style="margin-top:26px;">
         <button class="btn ghost" onclick="goStep(1)">← Back</button>
-        <button class="btn" id="genBtn" onclick="showResult()">See my result →</button>
+        <button class="btn" id="genBtn" style="width:auto;display:inline-block;" onclick="showResult()">See my result →</button>
       </div>
     </div>
 
     <div class="step" id="step3">
       <div class="result sans" id="result"></div>
-      <button class="btn" id="downloadPdfBtn" style="display:none;background:#b8752c;margin-right:8px;" onclick="downloadPDF()">⬇ Download as PDF</button>
-      <button class="btn ghost" onclick="goStep(1)">Start over</button>
+
+      <div id="detailsBlock" style="display:none;">
+        <label for="clientName">Your name <span class="opt">— for the report</span></label>
+        <input type="text" id="clientName" placeholder="e.g. Ramesh Kumar">
+
+        <label for="extraContext">Anything else about your situation? <span class="opt">— this is what makes the report specific to you</span></label>
+        <textarea id="extraContext" placeholder="e.g. I've been following up with my jurisdictional AO for 2 years, they're asking for the second PAN card which I never received…"></textarea>
+        <div class="privacy-note">Please don't type your full PAN or Aadhaar number here — describe the situation instead.</div>
+
+        <div class="lockbox">
+          <div class="kicker">CA-Grade Resolution Report</div>
+          <h4>Get the full, personalised report</h4>
+          <div class="price">₹99 <span>one-time, this case</span></div>
+          <ul>
+            <li>Correctly separates a simple correction from a duplicate-PAN surrender — they need completely different processes</li>
+            <li>For duplicate PAN: the real AO-surrender route, zero-transaction check, and what to do if the card is lost</li>
+            <li>Numbered, step-by-step resolution plan and documents required</li>
+            <li>Realistic timeline and what to do so the fix actually propagates to your bank/NPS records</li>
+            <li>Downloadable as a formal PDF report</li>
+          </ul>
+          <button class="btn sans" id="payBtn">Generate my ₹99 report →</button>
+          <div id="payError" class="err-text" style="display:none;"></div>
+          <span class="promo-toggle" id="promoToggle">Have a promo code?</span>
+          <div class="promo-row" id="promoRow">
+            <input type="text" id="promoInput" placeholder="Promo code">
+            <button class="btn secondary" id="promoBtn">Apply</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paid CA-grade report -->
+      <div class="report" id="report">
+        <div class="report-head">
+          <div class="rtitle">CA-Grade Resolution Report</div>
+          <h2>PAN Card — Case Analysis</h2>
+          <div class="report-meta-line">
+            <span id="metaReportId"></span>
+            <span id="metaDate"></span>
+            <span id="metaFor"></span>
+          </div>
+        </div>
+
+        <div class="section-h">1. Case Summary</div>
+        <p class="prose" id="rCaseSummary"></p>
+
+        <div class="section-h">2. Root Cause Analysis</div>
+        <p class="prose" id="rRootCause"></p>
+
+        <div class="section-h">3. Resolution Plan</div>
+        <ol class="steps-list" id="rSteps"></ol>
+
+        <div class="section-h" id="rDocsHead" style="display:none;">4. Documents Required</div>
+        <ul class="taglist" id="rDocs"></ul>
+
+        <div class="section-h">5. Timeline & Next Steps</div>
+        <p class="prose"><strong>Estimated timeline:</strong> <span id="rTimeline"></span></p>
+        <p class="prose"><strong>After it's resolved:</strong> <span id="rReapply"></span></p>
+
+        <div id="rFlagsBlock" style="display:none;">
+          <div class="section-h">6. Case-Specific Flags</div>
+          <div class="flagbox"><ul class="taglist" id="rFlags" style="margin:0;"></ul></div>
+        </div>
+
+        <div class="section-h">7. If Unresolved: Escalation Path</div>
+        <p class="prose" id="rEscalation"></p>
+
+        <p class="report-disclaimer" id="rDisclaimer"></p>
+
+        <button class="btn sans" id="downloadPdfBtn" data-html2canvas-ignore="true" style="margin-top:18px;background:#2f6f5e;" onclick="downloadPDF()">⬇ Download as PDF</button>
+      </div>
+
+      <button class="btn ghost" style="margin-top:16px;" onclick="goStep(1)">Start over</button>
     </div>
   </div>
 
-  <p class="disclaimer">This tool gives directional guidance based on common PAN/Aadhaar correction scenarios. Final decisions on document requirements rest with Protean/UTIITSL and the Income Tax Department.</p>
+  <p class="disclaimer">The free instant read gives directional guidance based on common PAN/Aadhaar scenarios. The ₹99 report is generated for your specific case but remains procedural guidance, not legal advice — final decisions rest with Protean/UTIITSL and the Income Tax Department.</p>
 </main>
 
 <script>
-let state = { duplicate: 'no', issuer: 'unsure' };
+const API_BASE = "https://web-production-456eb.up.railway.app";
+let state = { duplicate: 'no', issuer: 'unsure', dupStatus: 'unsure_count' };
+let lastComparison = 'unknown';
 
 document.querySelectorAll('#dupGroup .radio-opt').forEach(el => {
   el.addEventListener('click', () => {
     document.querySelectorAll('#dupGroup .radio-opt').forEach(x => x.classList.remove('selected'));
     el.classList.add('selected');
     state.duplicate = el.dataset.val;
+    document.getElementById('dupDetailBlock').style.display = (state.duplicate === 'yes') ? 'block' : 'none';
   });
 });
 document.querySelectorAll('#issuerGroup .radio-opt').forEach(el => {
@@ -165,6 +284,13 @@ document.querySelectorAll('#issuerGroup .radio-opt').forEach(el => {
     document.querySelectorAll('#issuerGroup .radio-opt').forEach(x => x.classList.remove('selected'));
     el.classList.add('selected');
     state.issuer = el.dataset.val;
+  });
+});
+document.querySelectorAll('#dupStatusGroup .radio-opt').forEach(el => {
+  el.addEventListener('click', () => {
+    document.querySelectorAll('#dupStatusGroup .radio-opt').forEach(x => x.classList.remove('selected'));
+    el.classList.add('selected');
+    state.dupStatus = el.dataset.val;
   });
 });
 document.querySelector('#dupGroup .radio-opt[data-val="no"]').classList.add('selected');
@@ -176,11 +302,13 @@ function goStep(n){
   document.getElementById('p1').classList.toggle('done', n>=1);
   document.getElementById('p2').classList.toggle('done', n>=2);
   document.getElementById('p3').classList.toggle('done', n>=3);
+  if(n===3){
+    document.getElementById('report').classList.remove('show');
+    document.getElementById('payError').style.display = 'none';
+  }
 }
 
-function normalize(s){
-  return s.trim().toLowerCase().replace(/[.]/g,'').replace(/\s+/g,' ');
-}
+function normalize(s){ return s.trim().toLowerCase().replace(/[.]/g,'').replace(/\s+/g,' '); }
 function tokens(s){ return normalize(s).split(' ').filter(Boolean); }
 
 function compareNames(a, b){
@@ -189,7 +317,6 @@ function compareNames(a, b){
   const na = normalize(a).replace(/\s/g,'');
   const nb = normalize(b).replace(/\s/g,'');
   if(na === nb) return 'identical';
-  // check if one is a subset/reorder of the other (e.g. missing middle name, reordered)
   const setA = new Set(ta), setB = new Set(tb);
   const overlap = [...setA].filter(x => setB.has(x)).length;
   const minLen = Math.min(setA.size, setB.size);
@@ -205,23 +332,22 @@ function showResult(){
   goStep(3);
   const panName = document.getElementById('panName').value;
   const aadhaarName = document.getElementById('aadhaarName').value;
-  const bankName = document.getElementById('bankName').value;
   const cmp = compareNames(panName, aadhaarName);
-  const el = document.getElementById('result');
+  lastComparison = cmp;
 
   let html = '';
 
   if(state.duplicate === 'yes'){
     html += `<span class="tag duplicate">Priority issue</span>
     <h3>Sort out the duplicate PAN first</h3>
-    <p>Holding two PANs is not a correction issue — it's a compliance issue. The law requires you to surrender the extra one, not edit either.</p>
+    <p>Holding two PANs is not a correction issue — it's a compliance issue under Section 139A(7) of the Income Tax Act. The extra one needs to be surrendered through your jurisdictional Assessing Officer, not edited through the usual NSDL/UTIITSL correction form.</p>
     <div class="fixbox">
-      <strong>What to do</strong>
+      <strong>Why this is different from a normal correction</strong>
       <ol>
-        <li>Identify both PAN numbers.</li>
-        <li>File Form 49A "PAN correction" and mention the duplicate PAN for surrender, on the Protean or UTIITSL portal.</li>
-        <li>Keep the PAN that's linked to your bank accounts, ITR history, and Aadhaar.</li>
-        <li>Do this before attempting any name/DOB correction — corrections on a PAN that's about to be surrendered are wasted effort.</li>
+        <li>The online "PAN correction" portals only edit details on a single PAN — they don't process surrender of a second one.</li>
+        <li>You'll need to find your jurisdictional Assessing Officer via "Know Your AO" on the Income Tax e-filing portal.</li>
+        <li>The AO checks the duplicate PAN for any transaction history before allowing surrender — it can only close if there's nothing linked to it.</li>
+        <li>This is usually a slow, offline, follow-up-heavy process — the free read below only scratches the surface. The ₹99 report goes deep into this specific path.</li>
       </ol>
     </div>`;
   }
@@ -229,81 +355,191 @@ function showResult(){
   if(cmp === 'identical'){
     html += `<span class="tag minor">No correction needed</span>
     <h3>Your PAN and Aadhaar names match</h3>
-    <p>Based on what you entered, your PAN and Aadhaar names are effectively identical. If PAN-Aadhaar linking is still failing, the issue is more likely date of birth or a data-entry gap — not the name.</p>
-    <div class="fixbox">
-      <strong>Next step</strong>
-      <ol>
-        <li>Try linking again on the Income Tax e-filing portal using Aadhaar OTP.</li>
-        <li>If it still fails, double check date of birth on both documents next — that's the next most common cause.</li>
-      </ol>
-    </div>`;
+    <p>Based on what you entered, your PAN and Aadhaar names are effectively identical. If PAN-Aadhaar linking is still failing, the issue is more likely date of birth or a data-entry gap — not the name.</p>`;
   } else if(cmp === 'minor'){
     html += `<span class="tag minor">Minor mismatch — likely no correction needed</span>
     <h3>Your names are close enough to link directly</h3>
-    <p>The difference looks like a missing middle name, initial, or word order — the kind of gap that PAN-Aadhaur OTP linking can usually absorb without filing a formal correction on either document.</p>
-    <div class="fixbox">
-      <strong>Try this first</strong>
-      <ol>
-        <li>Go to the Income Tax e-filing portal → Link Aadhaar, and attempt linking via Aadhaar OTP.</li>
-        <li>If it succeeds, you're done — no correction filing needed.</li>
-        <li>If it's rejected as "name mismatch", move to the formal correction path below.</li>
-      </ol>
-    </div>`;
-  } else {
+    <p>The difference looks like a missing middle name, initial, or word order — the kind of gap that PAN-Aadhaar OTP linking can usually absorb without filing a formal correction.</p>`;
+  } else if(cmp === 'major') {
     html += `<span class="tag major">Names differ significantly — correction likely required</span>
     <h3>You'll probably need to file a formal correction</h3>
-    <p>The difference between your PAN and Aadhaar names is large enough that automatic linking will likely fail. You'll need to correct one document to match the other.</p>
-    <div class="fixbox">
-      <strong>Decide which document to fix</strong>
-      <ul>
-        <li>Since more services now key off Aadhaar (banking, KYC, digital verification), most people correct PAN to match Aadhaar rather than the other way round.</li>
-        <li>If your Aadhaar itself has the error (e.g. a typo from your original enrolment), fix that at UIDAI instead — it's usually faster.</li>
-      </ul>
-    </div>`;
+    <p>The difference between your PAN and Aadhaar names is large enough that automatic linking will likely fail. You'll need to correct one document to match the other.</p>`;
   }
 
-  // Issuer-specific guidance
-  let issuerBlock = '';
-  if(state.issuer === 'protean'){
-    issuerBlock = `<div class="fixbox">
-      <strong>Your PAN was issued by Protean (NSDL)</strong>
-      <ol>
-        <li>Go to the Protean eGov Technologies website → Online PAN Services → "Changes or Correction in PAN Data/Reprint".</li>
-        <li>Fill the form, tick only the fields you're correcting (name, DOB, etc).</li>
-        <li>Upload proof: Aadhaar as both identity and address proof usually covers a name correction.</li>
-        <li>Pay the fee and note your acknowledgement number to track status.</li>
-      </ol>
-    </div>`;
-  } else if(state.issuer === 'uti'){
-    issuerBlock = `<div class="fixbox">
-      <strong>Your PAN was issued by UTIITSL</strong>
-      <ol>
-        <li>Go to the UTIITSL PAN services portal and choose "PAN Card Change Request".</li>
-        <li>Enter your existing PAN and tick the fields you're correcting.</li>
-        <li>Upload the same proof documents as above (Aadhaar generally covers both identity and address).</li>
-        <li>Track status using the coupon number generated after payment.</li>
-      </ol>
-    </div>`;
-  } else {
-    issuerBlock = `<div class="fixbox">
-      <strong>Check the back of your physical PAN card</strong>
-      <p style="margin:0;">It will say either "Protean eGov Technologies Limited" (formerly NSDL) or "UTI Infrastructure Technology And Services Limited" (UTIITSL). Use that portal specifically — either can technically process any PAN, but starting with the original issuer avoids delays.</p>
-    </div>`;
-  }
+  document.getElementById('result').innerHTML = html;
+  document.getElementById('detailsBlock').style.display = 'block';
+}
 
-  document.getElementById('result').innerHTML = html + issuerBlock;
-  document.getElementById('downloadPdfBtn').style.display = 'inline-block';
+// ── Promo toggle ──
+document.getElementById('promoToggle').addEventListener('click', () => {
+  document.getElementById('promoRow').classList.toggle('show');
+});
+
+async function collectCase(){
+  let issueCategory = 'name_mismatch_' + lastComparison;
+  if(state.duplicate === 'yes') issueCategory = 'duplicate_pan';
+  return {
+    issue_category: issueCategory,
+    duplicate_pan_suspected: state.duplicate,
+    duplicate_card_status: state.duplicate === 'yes' ? state.dupStatus : null,
+    pan_issuer: state.issuer,
+    name_on_pan: document.getElementById('panName').value.trim(),
+    name_on_aadhaar: document.getElementById('aadhaarName').value.trim(),
+    name_on_bank: document.getElementById('bankName').value.trim(),
+    client_name: document.getElementById('clientName').value.trim(),
+    extra_context: document.getElementById('extraContext').value.trim()
+  };
+}
+
+document.getElementById('payBtn').addEventListener('click', startPayment);
+document.getElementById('promoBtn').addEventListener('click', () => submitWithPromo());
+
+async function startPayment(){
+  const btn = document.getElementById('payBtn');
+  const errBox = document.getElementById('payError');
+  errBox.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Preparing payment…';
+  try{
+    const orderRes = await fetch(`${API_BASE}/api/create-pancorrection-order`, {method:"POST"});
+    const order = await orderRes.json();
+    if(!order.order_id) throw new Error(order.error || "Could not start payment");
+
+    const rzp = new Razorpay({
+      key: order.razorpay_key,
+      amount: order.amount,
+      currency: order.currency,
+      order_id: order.order_id,
+      name: "SalaryBit — PAN Correction Navigator",
+      description: "CA-Grade PAN Resolution Report",
+      handler: async function(response){
+        await verifyAndGenerate({
+          razorpay_order_id: order.order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature
+        });
+      },
+      modal:{ ondismiss: function(){ btn.disabled = false; btn.textContent = 'Generate my ₹99 report →'; } },
+      theme:{ color:"#1f3a5f" }
+    });
+    rzp.open();
+  }catch(e){
+    btn.disabled = false;
+    btn.textContent = 'Generate my ₹99 report →';
+    errBox.textContent = 'Something went wrong starting payment: ' + e.message;
+    errBox.style.display = 'block';
+  }
+}
+
+async function submitWithPromo(){
+  const code = document.getElementById('promoInput').value.trim();
+  const errBox = document.getElementById('payError');
+  errBox.style.display = 'none';
+  if(!code) return;
+  const btn = document.getElementById('promoBtn');
+  btn.disabled = true; btn.textContent = 'Checking…';
+  await verifyAndGenerate({ promo_code: code });
+  btn.disabled = false; btn.textContent = 'Apply';
+}
+
+async function verifyAndGenerate(paymentFields){
+  const errBox = document.getElementById('payError');
+  const lockbox = document.querySelector('.lockbox');
+  lockbox.style.opacity = '0.6';
+  try{
+    const caseData = await collectCase();
+    const res = await fetch(`${API_BASE}/api/verify-pancorrection-payment`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ ...paymentFields, ...caseData })
+    });
+    const data = await res.json();
+    lockbox.style.opacity = '1';
+    if(!data.success){
+      errBox.textContent = data.error || 'Payment verification failed.';
+      errBox.style.display = 'block';
+      return;
+    }
+    if(data.error){
+      errBox.textContent = data.error + (data.payment_id ? ` (Payment ID: ${data.payment_id})` : '');
+      errBox.style.display = 'block';
+      return;
+    }
+    renderPaidReport(data.report, caseData);
+    document.getElementById('detailsBlock').style.display = 'none';
+  }catch(e){
+    lockbox.style.opacity = '1';
+    errBox.textContent = 'Something went wrong generating your report: ' + e.message;
+    errBox.style.display = 'block';
+  }
+}
+
+function renderPaidReport(r, caseData){
+  const reportId = 'SB-PAN-' + Date.now().toString(36).toUpperCase();
+  document.getElementById('metaReportId').textContent = 'Report ID: ' + reportId;
+  document.getElementById('metaDate').textContent = 'Generated: ' + new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+  document.getElementById('metaFor').textContent = caseData.client_name ? ('Prepared for: ' + caseData.client_name) : '';
+
+  document.getElementById('rCaseSummary').textContent = r.case_summary || '';
+  document.getElementById('rRootCause').textContent = r.root_cause || '';
+
+  document.getElementById('rSteps').innerHTML = (r.resolution_steps || []).map(s =>
+    `<li><div class="stitle">${s.step || ''}</div><div class="sdetail">${s.detail || ''}</div></li>`
+  ).join('');
+
+  const docs = r.documents_required || [];
+  document.getElementById('rDocsHead').style.display = docs.length ? 'block' : 'none';
+  document.getElementById('rDocs').innerHTML = docs.map(d => `<li>${d}</li>`).join('');
+
+  document.getElementById('rTimeline').textContent = r.timeline_estimate || '';
+  document.getElementById('rReapply').textContent = r.reapply_guidance || '';
+
+  const flags = r.risk_flags || [];
+  document.getElementById('rFlagsBlock').style.display = flags.length ? 'block' : 'none';
+  document.getElementById('rFlags').innerHTML = flags.map(f => `<li>${f}</li>`).join('');
+
+  document.getElementById('rEscalation').textContent = r.escalation_path || '';
+  document.getElementById('rDisclaimer').textContent = r.disclaimer || 'This is procedural guidance based on standard Income Tax Department practice, not a guarantee of outcome, and not a substitute for direct confirmation from a CA or your Assessing Officer in unusual cases.';
+
+  document.getElementById('report').classList.add('show');
+  document.getElementById('report').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 function downloadPDF(){
-  const el = document.getElementById('result');
-  html2pdf().set({
-    margin: 10,
-    filename: 'pan-correction-navigator-salarybit.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, backgroundColor: '#ffffff' },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  }).from(el).save();
+  const el = document.getElementById('report');
+  const btn = document.getElementById('downloadPdfBtn');
+  const originalScrollY = window.scrollY;
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Preparing PDF…';
+  window.scrollTo(0, 0);
+
+  setTimeout(() => {
+    html2pdf().set({
+      margin: 10,
+      filename: 'pan-correction-ca-report-salarybit.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        backgroundColor: '#ffffff',
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: document.documentElement.scrollWidth,
+        windowHeight: document.documentElement.scrollHeight,
+        useCORS: true
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).from(el).save().then(() => {
+      btn.disabled = false;
+      btn.textContent = originalText;
+      window.scrollTo(0, originalScrollY);
+    }).catch((e) => {
+      btn.disabled = false;
+      btn.textContent = originalText;
+      window.scrollTo(0, originalScrollY);
+      alert('PDF generation failed: ' + e.message + '. You can still screenshot or print this page (Ctrl/Cmd+P) to save it.');
+    });
+  }, 150);
 }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>

@@ -429,7 +429,7 @@
     <div class="lock-overlay" id="lockOverlay">
       <h3>See exactly what each one is</h3>
       <p>Unlock merchant names and how to cancel each, in one tap.</p>
-      <button class="unlock-btn" id="unlockBtn">Unlock full report — ₹49</button>
+      <button class="unlock-btn" id="unlockBtn">Unlock full report — ₹99</button>
       <div class="unlock-price">One-time. Less than what one forgotten subscription costs you this month.</div>
     </div>
 
@@ -721,20 +721,20 @@ unlockBtn.addEventListener('click', async () => {
             alert('Payment verification failed. If money was deducted, it will be refunded within 24 hours.');
             lockOverlay.classList.add('show');
             unlockBtn.disabled = false;
-            unlockBtn.textContent = 'Unlock full report — ₹49';
+            unlockBtn.textContent = 'Unlock full report — ₹99';
           }
         } catch (e) {
           unlockLoading.style.display = 'none';
           lockOverlay.classList.add('show');
           alert('Could not load your report. If money was deducted, it will be refunded within 24 hours.');
           unlockBtn.disabled = false;
-          unlockBtn.textContent = 'Unlock full report — ₹49';
+          unlockBtn.textContent = 'Unlock full report — ₹99';
         }
       },
       modal: {
         ondismiss: function() {
           unlockBtn.disabled = false;
-          unlockBtn.textContent = 'Unlock full report — ₹49';
+          unlockBtn.textContent = 'Unlock full report — ₹99';
         }
       },
       theme: { color: '#00e676' }
@@ -744,7 +744,7 @@ unlockBtn.addEventListener('click', async () => {
   } catch (err) {
     alert('Could not start payment. Please try again.');
     unlockBtn.disabled = false;
-    unlockBtn.textContent = 'Unlock full report — ₹49';
+    unlockBtn.textContent = 'Unlock full report — ₹99';
   }
 });
 

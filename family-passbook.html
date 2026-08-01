@@ -367,7 +367,7 @@
 <body>
 
 <div class="privacy-banner">
-  🔒 <strong>Nothing you type here is ever sent to a server.</strong> Filling in the passbook happens entirely in your browser — no login, no autosave. When you're ready to print or save it as a PDF, a one-time ₹99 unlock opens your browser's print dialog; your entries still never leave this tab.
+  🔒 <strong>Nothing you type here is ever sent to a server.</strong> Filling in the passbook happens entirely in your browser — no login, no autosave. When you're ready to print or save it as a PDF, a one-time ₹19 unlock opens your browser's print dialog; your entries still never leave this tab.
 </div>
 
 <div class="app">
@@ -375,11 +375,11 @@
   <div class="premium-banner">
     <div class="pb-copy">
       <div class="pb-eyebrow">The Family Passbook</div>
-      <div class="pb-title display">Fill it for free. Unlock printing for ₹99.</div>
-      <div class="pb-desc">Take your time filling in every page below — that part costs nothing and nothing is saved or uploaded. When you're ready to print or save the finished passbook as a PDF, a one-time ₹99 payment unlocks your browser's print dialog so you can produce a copy to keep in a folder.</div>
+      <div class="pb-title display">Fill it for free. Unlock printing for ₹19.</div>
+      <div class="pb-desc">Take your time filling in every page below — that part costs nothing and nothing is saved or uploaded. When you're ready to print or save the finished passbook as a PDF, a one-time ₹19 payment unlocks your browser's print dialog so you can produce a copy to keep in a folder.</div>
     </div>
     <button class="btn-premium" id="btnBuyPremium" onclick="unlockAndPrint()">
-      Unlock &amp; Print — ₹99
+      Unlock &amp; Print — ₹19
       <span class="price">One-time · via Razorpay</span>
     </button>
   </div>
@@ -632,7 +632,7 @@
     <span class="msg">Fill every page you can — even half-filled is better than nothing.</span>
     <button class="btn-print" id="btnPrintFooter" onclick="unlockAndPrint()">
       Unlock &amp; Print This Passbook
-      <span class="price">₹99 · one-time · via Razorpay</span>
+      <span class="price">₹19 · one-time · via Razorpay</span>
     </button>
   </div>
 
@@ -685,7 +685,7 @@
 
   // ── PAID PRINT UNLOCK ─────────────────────────────────
   // Filling the form above is completely free and 100% client-side.
-  // Printing/saving-as-PDF is gated behind a one-time ₹99 Razorpay
+  // Printing/saving-as-PDF is gated behind a one-time ₹19 Razorpay
   // payment. Nothing you typed into the passbook is ever sent to the
   // server — only the Razorpay order/payment IDs are exchanged to
   // verify payment. Once verified, we call the browser's own
@@ -707,10 +707,10 @@
     [primary, footer].forEach(b => { if(b) b.disabled = busy; });
     if(primary) primary.innerHTML = busy
       ? label
-      : 'Unlock &amp; Print — ₹99<span class="price">One-time · via Razorpay</span>';
+      : 'Unlock &amp; Print — ₹19<span class="price">One-time · via Razorpay</span>';
     if(footer) footer.innerHTML = busy
       ? label
-      : 'Unlock &amp; Print This Passbook<span class="price">₹99 · one-time · via Razorpay</span>';
+      : 'Unlock &amp; Print This Passbook<span class="price">₹19 · one-time · via Razorpay</span>';
   }
 
   async function unlockAndPrint(){

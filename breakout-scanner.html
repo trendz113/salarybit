@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Breakout Scanner — Binance Spot | SalaryBit</title>
-<meta name="description" content="Scan the top USDT pairs on Binance spot for 20-bar breakouts and volume spikes, with exact buy/sell prices computed for your target profit. 10 scans for ₹99 (or $1 international).">
+<meta name="description" content="Scan the top USDT pairs on Binance spot for 20-bar breakouts and volume spikes, with exact buy/sell prices computed for your target profit. 10 scans for ₹99.">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#12161B">
 <link rel="canonical" href="https://salarybit.in/breakout-scanner.html">
@@ -14,7 +14,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://salarybit.in/og-image.png">
-<meta property="og:description" content="Scan the top USDT pairs on Binance spot for 20-bar breakouts and volume spikes, with exact buy/sell prices computed for your target profit. 10 scans for ₹99 (or $1 international).">
+<meta property="og:description" content="Scan the top USDT pairs on Binance spot for 20-bar breakouts and volume spikes, with exact buy/sell prices computed for your target profit. 10 scans for ₹99.">
 <meta property="og:url" content="https://salarybit.in/breakout-scanner.html">
 <script type="application/ld+json">
 {
@@ -203,12 +203,6 @@
     background:rgba(63,191,127,0.1);border:1px solid rgba(63,191,127,0.3);
     padding:4px 10px;border-radius:20px;margin-bottom:14px;
   }
-  .currency-toggle{display:flex;justify-content:center;gap:8px;margin-bottom:10px;}
-  .curr-opt{
-    font-family:var(--mono);font-size:12px;background:var(--panel-2);color:var(--text-dim);
-    border:1px solid var(--line);border-radius:20px;padding:6px 16px;cursor:pointer;
-  }
-  .curr-opt.selected{background:var(--amber);color:#1A1400;border-color:var(--amber);font-weight:700;}
 </style>
 </head>
 <body>
@@ -296,10 +290,6 @@
   <div class="paywall" id="paywall">
     <div class="kicker">10-scan pack</div>
     <h3>Unlock 10 scans</h3>
-    <div class="currency-toggle" id="currencyToggle">
-      <button class="curr-opt" data-curr="INR">₹ INR</button>
-      <button class="curr-opt" data-curr="USD">$ USD</button>
-    </div>
     <div class="price" id="priceDisplay">₹99 <span>for 10 scans</span></div>
     <button class="paywall-btn" id="payBtn">Unlock 10 scans →</button>
     <div class="paywall-err" id="payError" style="display:none;"></div>
@@ -561,17 +551,6 @@ function renderResults(results){
 
 const API_BASE_BACKEND = 'https://web-production-456eb.up.railway.app';
 const CREDIT_KEY = 'breakoutScannerCredits';
-const PRICES = { INR: { amount: '₹99', currency: 'INR' }, USD: { amount: '$1', currency: 'USD' } };
-
-function detectDefaultCurrency(){
-  try{
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
-    if(tz.includes('Kolkata') || tz.includes('Calcutta')) return 'INR';
-    if((navigator.language || '').toUpperCase().includes('-IN')) return 'INR';
-  }catch(e){}
-  return 'USD';
-}
-let selectedCurrency = detectDefaultCurrency();
 
 function getCredits(){
   try{
@@ -597,21 +576,6 @@ function refreshCreditUI(){
     paywallEl.style.display = 'block';
   }
 }
-
-function renderCurrencyToggle(){
-  document.querySelectorAll('.curr-opt').forEach(btn => {
-    btn.classList.toggle('selected', btn.dataset.curr === selectedCurrency);
-  });
-  document.getElementById('priceDisplay').innerHTML =
-    `${PRICES[selectedCurrency].amount} <span>for 10 scans</span>`;
-}
-document.querySelectorAll('.curr-opt').forEach(btn => {
-  btn.addEventListener('click', () => {
-    selectedCurrency = btn.dataset.curr;
-    renderCurrencyToggle();
-  });
-});
-renderCurrencyToggle();
 refreshCreditUI();
 
 document.getElementById('promoToggle').addEventListener('click', () => {
@@ -631,7 +595,7 @@ async function startScanPayment(){
     const orderRes = await fetch(`${API_BASE_BACKEND}/api/create-breakoutscanner-order`, {
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({ currency: selectedCurrency })
+      body: JSON.stringify({ currency: 'INR' })
     });
     const order = await orderRes.json();
     if(!order.order_id) throw new Error(order.error || "Could not start payment");
@@ -657,8 +621,7 @@ async function startScanPayment(){
   }catch(e){
     btn.disabled = false;
     btn.textContent = 'Unlock 10 scans →';
-    errBox.textContent = 'Something went wrong starting payment: ' + e.message +
-      (selectedCurrency === 'USD' ? ' (USD payments require International Payments to be enabled on the merchant account — try INR if this persists.)' : '');
+    errBox.textContent = 'Something went wrong starting payment: ' + e.message;
     errBox.style.display = 'block';
   }
 }

@@ -3116,30 +3116,19 @@ def health():
 # bypass code), then the frontend runs scans itself and tracks the credit
 # count locally (no login system on this site, so credits live in the
 # browser via localStorage — same "no account needed" pattern as every
-# other tool here).
-#
-# NOTE: the USD price point requires International Payments to be enabled
-# on the Razorpay account (additional KYC/verification on Razorpay's side).
-# Without that, a currency=USD order request will fail at Razorpay's API —
-# that's a Razorpay account setting, not something this code controls.
+# other tool here). INR only for now.
 BREAKOUT_SCANNER_SCANS_PER_PACK = 10
 BREAKOUT_SCANNER_PRICE_INR_PAISE = 9900   # Rs 99 for 10 scans
-BREAKOUT_SCANNER_PRICE_USD_CENTS = 100    # $1 for 10 scans
 
 
 @app.route("/api/create-breakoutscanner-order", methods=["POST", "OPTIONS"])
 def create_breakoutscanner_order():
     if request.method == "OPTIONS":
         return "", 200
-    data = request.get_json(silent=True) or {}
-    currency = (data.get("currency") or "INR").upper()
-    if currency not in ("INR", "USD"):
-        currency = "INR"
-    amount = BREAKOUT_SCANNER_PRICE_USD_CENTS if currency == "USD" else BREAKOUT_SCANNER_PRICE_INR_PAISE
     try:
         order = rzp.order.create({
-            "amount": amount,
-            "currency": currency,
+            "amount": BREAKOUT_SCANNER_PRICE_INR_PAISE,
+            "currency": "INR",
             "receipt": f"breakoutscanner_{os.urandom(4).hex()}",
         })
         return jsonify({

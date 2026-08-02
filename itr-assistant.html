@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ITR Filing Assistant — Beta | SalaryBit</title>
+<meta name="description" content="Upload your Form16, get exact step-by-step instructions to file your ITR under the new tax regime. Currently in private beta.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#152943">
+<link rel="canonical" href="https://salarybit.in/itr-assistant.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23152943'/><text y='22' x='5' font-size='18'>🧾</text></svg>">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;background:#faf8f3;color:#1c2430;font-family:Georgia,'Iowan Old Style',serif;line-height:1.5;}
+  .sans{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}
+  header{background:#152943;color:#f2ede1;padding:36px 20px 30px;text-align:center;}
+  header .eyebrow{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;font-size:11px;color:#c9b98a;margin-bottom:10px;}
+  header h1{margin:0 0 8px;font-size:clamp(24px,4vw,34px);font-weight:400;}
+  header p{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#cfd6de;max-width:540px;margin:0 auto;font-size:15px;}
+  main{max-width:680px;margin:0 auto;padding:34px 20px 70px;}
+  .beta-banner{
+    background:#fff7e6;border:1px solid #e0c583;color:#7a5a12;border-radius:6px;
+    padding:14px 18px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:13.5px;line-height:1.55;margin-bottom:22px;
+  }
+  .panel{background:#fff;border:1px solid #e2ddd0;border-radius:4px;padding:26px 24px;}
+  label{display:block;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13px;font-weight:600;color:#6b6458;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;margin-top:18px;}
+  label:first-child{margin-top:0;}
+  label .opt{text-transform:none;font-weight:400;letter-spacing:0;color:#a39c8c;}
+  input[type=text], input[type=file]{
+    width:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;
+    padding:11px 12px;border:1px solid #d8d2c4;border-radius:4px;background:#fdfcf9;color:#1c2430;
+  }
+  input[type=text]:focus, input[type=file]:focus{outline:none;border-color:#152943;}
+  .checkbox-row{display:flex;align-items:center;gap:8px;margin-top:18px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;color:#4a4438;}
+  .checkbox-row input{width:auto;}
+  .btn{
+    margin-top:24px;width:100%;background:#152943;color:#f2ede1;border:none;border-radius:4px;
+    padding:14px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:15px;font-weight:600;cursor:pointer;
+  }
+  .btn:disabled{opacity:.55;cursor:default;}
+  .error-box{
+    margin-top:18px;background:#fdeceb;border:1px solid #e0a39c;color:#8a2f24;border-radius:4px;
+    padding:12px 14px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13.5px;
+    display:none;
+  }
+  .loading{display:none;text-align:center;padding:30px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#6b6458;font-size:14px;}
+  .spinner{width:28px;height:28px;border:3px solid #e2ddd0;border-top-color:#152943;border-radius:50%;margin:0 auto 12px;animation:spin 0.8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  #result{display:none;margin-top:26px;}
+  .result-summary{background:#f2f6f3;border:1px solid #cfe0d3;border-radius:4px;padding:18px 20px;margin-bottom:20px;}
+  .result-summary .row{display:flex;justify-content:space-between;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;padding:6px 0;border-bottom:1px solid #dde8de;}
+  .result-summary .row:last-child{border-bottom:none;font-weight:700;}
+  .instructions{white-space:pre-wrap;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14.5px;line-height:1.7;color:#2a3038;}
+  .disclaimer{margin-top:24px;padding-top:14px;border-top:1px solid #e2ddd0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:12px;color:#8a8375;line-height:1.5;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">SalaryBit</div>
+  <h1>ITR Filing Assistant</h1>
+  <p>Upload your Form16 — get your exact tax computed and step-by-step instructions to file
+     your return under the new tax regime, AY 2026-27.</p>
+</header>
+
+<main>
+  <div class="beta-banner">
+    <strong>Private beta.</strong> This tool is not open for payment yet — it needs an invite
+    code. We're validating the generated instructions against real Form16s before charging
+    anyone for it. If you don't have a code, this isn't for you just yet.
+  </div>
+
+  <div class="panel" id="formPanel">
+    <label>Your Form16 (PDF)</label>
+    <input type="file" id="form16File" accept="application/pdf">
+
+    <div class="checkbox-row">
+      <input type="checkbox" id="missedDeadline">
+      <label style="margin:0;text-transform:none;font-weight:400;letter-spacing:0;color:#4a4438;" for="missedDeadline">I missed the 31 July 2026 deadline</label>
+    </div>
+
+    <label>Invite Code <span class="opt">(required during beta)</span></label>
+    <input type="text" id="promoCode" placeholder="Enter your invite code">
+
+    <button class="btn" id="submitBtn">Get My Filing Instructions</button>
+    <div class="error-box" id="errorBox"></div>
+  </div>
+
+  <div class="loading" id="loadingBox">
+    <div class="spinner"></div>
+    Reading your Form16 and preparing your instructions…
+  </div>
+
+  <div id="result">
+    <div class="result-summary" id="resultSummary"></div>
+    <div class="instructions" id="instructionsText"></div>
+    <div class="disclaimer">
+      This is automated, AI-assisted guidance based on the Form16 you uploaded — not a signed
+      CA opinion. Verify all figures against your Form 26AS/AIS on the income tax portal before
+      submitting your return.
+    </div>
+  </div>
+</main>
+
+<script>
+const API_BASE = "https://web-production-456eb.up.railway.app";
+
+document.getElementById('submitBtn').addEventListener('click', async () => {
+  const fileInput = document.getElementById('form16File');
+  const promoCode = document.getElementById('promoCode').value.trim();
+  const missedDeadline = document.getElementById('missedDeadline').checked;
+  const errorBox = document.getElementById('errorBox');
+  errorBox.style.display = 'none';
+
+  if (!fileInput.files.length) {
+    errorBox.textContent = 'Please choose your Form16 PDF.';
+    errorBox.style.display = 'block';
+    return;
+  }
+  if (!promoCode) {
+    errorBox.textContent = 'An invite code is required during beta.';
+    errorBox.style.display = 'block';
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  document.getElementById('formPanel').style.display = 'none';
+  document.getElementById('loadingBox').style.display = 'block';
+
+  const formData = new FormData();
+  formData.append('form16', fileInput.files[0]);
+  formData.append('promo_code', promoCode);
+  formData.append('missed_deadline', missedDeadline ? 'yes' : 'no');
+
+  try {
+    const res = await fetch(`${API_BASE}/api/itr-analyze`, { method: 'POST', body: formData });
+    const data = await res.json();
+    document.getElementById('loadingBox').style.display = 'none';
+
+    if (!data.success) {
+      document.getElementById('formPanel').style.display = 'block';
+      errorBox.textContent = data.error || 'Something went wrong. Please try again.';
+      errorBox.style.display = 'block';
+      btn.disabled = false;
+      return;
+    }
+
+    const t = data.tax_result;
+    document.getElementById('resultSummary').innerHTML = `
+      <div class="row"><span>Taxable Income</span><span>₹${Number(t.taxable_income).toLocaleString('en-IN')}</span></div>
+      <div class="row"><span>Tax Before Rebate</span><span>₹${Number(t.tax_before_rebate).toLocaleString('en-IN')}</span></div>
+      <div class="row"><span>Section 87A Rebate</span><span>₹${Number(t.rebate_87a).toLocaleString('en-IN')}</span></div>
+      <div class="row"><span>Health & Education Cess</span><span>₹${Number(t.cess).toLocaleString('en-IN')}</span></div>
+      <div class="row"><span>Total Tax Payable</span><span>₹${Number(t.total_tax_payable).toLocaleString('en-IN')}</span></div>
+    `;
+    document.getElementById('instructionsText').textContent = data.instructions;
+    document.getElementById('result').style.display = 'block';
+  } catch (e) {
+    document.getElementById('loadingBox').style.display = 'none';
+    document.getElementById('formPanel').style.display = 'block';
+    errorBox.textContent = 'Network error — please try again.';
+    errorBox.style.display = 'block';
+    btn.disabled = false;
+  }
+});
+</script>
+
+</body>
+</html>

@@ -1,26 +1,254 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-IN">
 <head>
 <meta charset="UTF-8">
-<title>Redirecting… | SalaryBit</title>
-<link rel="canonical" href="https://salarybit.in/tax-ai.html">
-<meta http-equiv="refresh" content="0; url=https://salarybit.in/tax-ai.html">
-<meta name="robots" content="noindex, follow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ITR Filing Assistant | SalaryBit</title>
+<meta name="description" content="Upload your Form16 and get your exact tax computed with step-by-step ITR filing instructions for the new tax regime, AY 2026-27. Rs 499 per report.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#152943">
+<link rel="canonical" href="https://salarybit.in/itr-assistant.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23152943'/><text y='22' x='5' font-size='18'>🧾</text></svg>">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;background:#faf8f3;color:#1c2430;font-family:Georgia,'Iowan Old Style',serif;line-height:1.5;}
+  .sans{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}
+  header{background:#152943;color:#f2ede1;padding:36px 20px 30px;text-align:center;}
+  header .eyebrow{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;letter-spacing:.14em;text-transform:uppercase;font-size:11px;color:#c9b98a;margin-bottom:10px;}
+  header h1{margin:0 0 8px;font-size:clamp(24px,4vw,34px);font-weight:400;}
+  header p{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#cfd6de;max-width:540px;margin:0 auto;font-size:15px;}
+  main{max-width:680px;margin:0 auto;padding:34px 20px 70px;}
+  .beta-banner{
+    background:#fff7e6;border:1px solid #e0c583;color:#7a5a12;border-radius:6px;
+    padding:14px 18px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:13.5px;line-height:1.55;margin-bottom:22px;
+  }
+  .panel{background:#fff;border:1px solid #e2ddd0;border-radius:4px;padding:26px 24px;}
+  label{display:block;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13px;font-weight:600;color:#6b6458;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;margin-top:18px;}
+  label:first-child{margin-top:0;}
+  label .opt{text-transform:none;font-weight:400;letter-spacing:0;color:#a39c8c;}
+  input[type=text], input[type=file]{
+    width:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:15px;
+    padding:11px 12px;border:1px solid #d8d2c4;border-radius:4px;background:#fdfcf9;color:#1c2430;
+  }
+  input[type=text]:focus, input[type=file]:focus{outline:none;border-color:#152943;}
+  .checkbox-row{display:flex;align-items:center;gap:8px;margin-top:18px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;color:#4a4438;}
+  .checkbox-row input{width:auto;}
+  .btn{
+    margin-top:24px;width:100%;background:#152943;color:#f2ede1;border:none;border-radius:4px;
+    padding:14px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    font-size:15px;font-weight:600;cursor:pointer;
+  }
+  .btn:disabled{opacity:.55;cursor:default;}
+  .error-box{
+    margin-top:18px;background:#fdeceb;border:1px solid #e0a39c;color:#8a2f24;border-radius:4px;
+    padding:12px 14px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13.5px;
+    display:none;
+  }
+  .loading{display:none;text-align:center;padding:30px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#6b6458;font-size:14px;}
+  .spinner{width:28px;height:28px;border:3px solid #e2ddd0;border-top-color:#152943;border-radius:50%;margin:0 auto 12px;animation:spin 0.8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  #result{display:none;margin-top:26px;}
+  .result-summary{background:#f2f6f3;border:1px solid #cfe0d3;border-radius:4px;padding:18px 20px;margin-bottom:20px;}
+  .result-summary .row{display:flex;justify-content:space-between;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;padding:6px 0;border-bottom:1px solid #dde8de;}
+  .result-summary .row:last-child{border-bottom:none;font-weight:700;}
+  .instructions{white-space:pre-wrap;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14.5px;line-height:1.7;color:#2a3038;}
+  .disclaimer{margin-top:24px;padding-top:14px;border-top:1px solid #e2ddd0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:12px;color:#8a8375;line-height:1.5;}
+</style>
 <meta property="og:type" content="website">
-<meta property="og:title" content="Redirecting… | SalaryBit">
-<meta property="og:description" content="Free tool from SalaryBit for Indian salaried professionals. No login, no data stored.">
+<meta property="og:title" content="ITR Filing Assistant | SalaryBit">
+<meta property="og:description" content="Upload your Form16, get exact step-by-step instructions to file your ITR under the new tax regime. Currently in private beta.">
 <meta property="og:url" content="https://salarybit.in/itr-assistant.html">
 <meta property="og:site_name" content="SalaryBit">
 <meta property="og:image" content="https://salarybit.in/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Redirecting… | SalaryBit">
-<meta name="twitter:description" content="Free tool from SalaryBit for Indian salaried professionals. No login, no data stored.">
+<meta name="twitter:title" content="ITR Filing Assistant | SalaryBit">
+<meta name="twitter:description" content="Upload your Form16, get exact step-by-step instructions to file your ITR under the new tax regime. Currently in private beta.">
 <meta name="twitter:image" content="https://salarybit.in/og-image.png">
 </head>
 <body>
-<p>This tool has moved to <a href="/tax-ai.html">Tax AI</a>.</p>
-<script>window.location.replace("/tax-ai.html");</script>
+
+<header>
+  <div class="eyebrow">SalaryBit</div>
+  <h1>ITR Filing Assistant</h1>
+  <p>Upload your Form16 — get your exact tax computed and step-by-step instructions to file
+     your return under the new tax regime, AY 2026-27.</p>
+</header>
+
+<main>
+  <div class="beta-banner">
+    <strong>Beta pricing: ₹499 per report.</strong> Upload your Form16 to get your exact tax
+    computed and step-by-step ITR filing instructions. Have an invite code instead? Enter it
+    below to skip payment while we're still testing.
+  </div>
+
+  <div class="panel" id="formPanel">
+    <label>Your Form16 (PDF)</label>
+    <input type="file" id="form16File" accept="application/pdf">
+
+    <div class="checkbox-row">
+      <input type="checkbox" id="missedDeadline">
+      <label style="margin:0;text-transform:none;font-weight:400;letter-spacing:0;color:#4a4438;" for="missedDeadline">I missed the 31 July 2026 deadline</label>
+    </div>
+
+    <button class="btn" id="payBtn">Pay ₹499 & Get My Filing Instructions</button>
+
+    <details style="margin-top:14px;">
+      <summary class="sans" style="cursor:pointer;font-size:13px;color:#8a8371;">Have an invite code instead?</summary>
+      <div style="margin-top:10px;">
+        <label>Invite Code</label>
+        <input type="text" id="promoCode" placeholder="Enter your invite code">
+        <button class="btn" id="submitBtn" style="margin-top:10px;">Get My Filing Instructions (Invite Code)</button>
+      </div>
+    </details>
+
+    <div class="error-box" id="errorBox"></div>
+  </div>
+
+  <div class="loading" id="loadingBox">
+    <div class="spinner"></div>
+    Reading your Form16 and preparing your instructions…
+  </div>
+
+  <div id="result">
+    <div class="result-summary" id="resultSummary"></div>
+    <div class="instructions" id="instructionsText"></div>
+    <div class="disclaimer">
+      This is automated, AI-assisted guidance based on the Form16 you uploaded — not a signed
+      CA opinion. Verify all figures against your Form 26AS/AIS on the income tax portal before
+      submitting your return.
+    </div>
+  </div>
+</main>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+const API_BASE = "https://web-production-456eb.up.railway.app";
+
+function showError(msg) {
+  const errorBox = document.getElementById('errorBox');
+  errorBox.textContent = msg;
+  errorBox.style.display = 'block';
+}
+
+function resetToForm() {
+  document.getElementById('loadingBox').style.display = 'none';
+  document.getElementById('formPanel').style.display = 'block';
+  document.getElementById('payBtn').disabled = false;
+  document.getElementById('submitBtn').disabled = false;
+}
+
+function renderResult(data) {
+  document.getElementById('loadingBox').style.display = 'none';
+  const t = data.tax_result;
+  document.getElementById('resultSummary').innerHTML = `
+    <div class="row"><span>Taxable Income</span><span>₹${Number(t.taxable_income).toLocaleString('en-IN')}</span></div>
+    <div class="row"><span>Tax Before Rebate</span><span>₹${Number(t.tax_before_rebate).toLocaleString('en-IN')}</span></div>
+    <div class="row"><span>Section 87A Rebate</span><span>₹${Number(t.rebate_87a).toLocaleString('en-IN')}</span></div>
+    <div class="row"><span>Health &amp; Education Cess</span><span>₹${Number(t.cess).toLocaleString('en-IN')}</span></div>
+    <div class="row"><span>Total Tax Payable</span><span>₹${Number(t.total_tax_payable).toLocaleString('en-IN')}</span></div>
+  `;
+  document.getElementById('instructionsText').textContent = data.instructions;
+  document.getElementById('result').style.display = 'block';
+}
+
+async function submitAnalysis(extraFields, triggerBtn) {
+  const fileInput = document.getElementById('form16File');
+  const missedDeadline = document.getElementById('missedDeadline').checked;
+  const errorBox = document.getElementById('errorBox');
+  errorBox.style.display = 'none';
+
+  document.getElementById('formPanel').style.display = 'none';
+  document.getElementById('loadingBox').style.display = 'block';
+
+  const formData = new FormData();
+  formData.append('form16', fileInput.files[0]);
+  formData.append('missed_deadline', missedDeadline ? 'yes' : 'no');
+  Object.entries(extraFields).forEach(([k, v]) => formData.append(k, v));
+
+  try {
+    const res = await fetch(`${API_BASE}/api/itr-analyze`, { method: 'POST', body: formData });
+    const data = await res.json();
+
+    if (!data.success) {
+      resetToForm();
+      showError(data.error || 'Something went wrong. Please try again.');
+      return;
+    }
+    renderResult(data);
+  } catch (e) {
+    resetToForm();
+    showError('Network error — please try again.');
+  }
+}
+
+// ---- Path 1: Invite code (no payment) ----
+document.getElementById('submitBtn').addEventListener('click', async () => {
+  const fileInput = document.getElementById('form16File');
+  const promoCode = document.getElementById('promoCode').value.trim();
+  if (!fileInput.files.length) { showError('Please choose your Form16 PDF.'); return; }
+  if (!promoCode) { showError('Please enter your invite code.'); return; }
+
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('payBtn').disabled = true;
+  await submitAnalysis({ promo_code: promoCode });
+});
+
+// ---- Path 2: Real payment via Razorpay ----
+document.getElementById('payBtn').addEventListener('click', async () => {
+  const fileInput = document.getElementById('form16File');
+  if (!fileInput.files.length) { showError('Please choose your Form16 PDF.'); return; }
+
+  const payBtn = document.getElementById('payBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  payBtn.disabled = true;
+  submitBtn.disabled = true;
+  document.getElementById('errorBox').style.display = 'none';
+
+  try {
+    const orderRes = await fetch(`${API_BASE}/api/create-itr-order`, { method: 'POST' });
+    const order = await orderRes.json();
+    if (!order.order_id) {
+      throw new Error(order.error || 'Could not start payment. Please try again.');
+    }
+
+    const rzp = new Razorpay({
+      key: order.razorpay_key,
+      amount: order.amount,
+      currency: order.currency,
+      order_id: order.order_id,
+      name: 'SalaryBit',
+      description: 'ITR Filing Assistant — Full Report',
+      theme: { color: '#152943' },
+      handler: async function (response) {
+        await submitAnalysis({
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+        });
+      },
+      modal: {
+        ondismiss: function () {
+          payBtn.disabled = false;
+          submitBtn.disabled = false;
+        }
+      }
+    });
+    rzp.on('payment.failed', function () {
+      payBtn.disabled = false;
+      submitBtn.disabled = false;
+      showError('Payment failed. You have not been charged — please try again.');
+    });
+    rzp.open();
+  } catch (e) {
+    payBtn.disabled = false;
+    submitBtn.disabled = false;
+    showError(e.message || 'Could not start payment. Please try again.');
+  }
+});
+</script>
+
 </body>
 </html>

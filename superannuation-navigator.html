@@ -90,6 +90,13 @@
 </header>
 
 <main>
+  <div class="panel" style="background:#f4f0e5;border-left:4px solid var(--amber);margin-bottom:20px;">
+    <p class="sans" style="margin:0 0 10px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);">Most people skip this without realising what it costs them</p>
+    <h2 style="margin:0 0 10px;font-size:19px;font-weight:400;">The part of your CTC that never shows up as taxable salary</h2>
+    <p class="sans" style="margin:0 0 10px;font-size:14px;line-height:1.65;color:#3a3428;">When your employer contributes to superannuation on your behalf, that money is <strong>not added to your taxable salary</strong> the way a cash bonus of the same amount would be — as long as your employer's combined contribution to EPF, NPS and superannuation together stays under <strong>₹7.5 lakh a year</strong> (Section 17(2)). Only the amount above that combined cap becomes taxable.</p>
+    <p class="sans" style="margin:0;font-size:14px;line-height:1.65;color:#3a3428;">In practice: if you opt out of superannuation, that slice of your CTC often just gets redirected elsewhere in your package — sometimes as a fully taxable cash allowance. Opting in quietly moves the same money into a tax-deferred investment instead. It's one of the least-understood benefits on an Indian offer letter, precisely because it's invisible on the payslip.</p>
+  </div>
+
   <div class="panel">
     <label>Why are you accessing the fund?</label>
     <div class="radio-row" id="reasonGroup">
@@ -111,10 +118,36 @@
       <div class="radio-opt" data-val="unsure">Not sure</div>
     </div>
 
+    <div id="resignExtra" style="display:none;">
+      <label>Does your new employer also offer a superannuation scheme?</label>
+      <div class="radio-row" id="newSchemeGroup">
+        <div class="radio-opt" data-val="yes">Yes</div>
+        <div class="radio-opt" data-val="no">No</div>
+        <div class="radio-opt" data-val="unsure">Not sure yet</div>
+      </div>
+
+      <label>Roughly how much is in your superannuation fund? <span class="sans" style="text-transform:none;font-weight:400;">(check your last statement — a rough figure is fine)</span></label>
+      <input type="number" id="corpusEstimate" placeholder="e.g. 400000">
+
+      <label>Your income tax slab</label>
+      <div class="radio-row" id="taxSlabGroup">
+        <div class="radio-opt" data-val="5">5%</div>
+        <div class="radio-opt" data-val="20">20%</div>
+        <div class="radio-opt" data-val="30">30%</div>
+      </div>
+    </div>
+
     <button class="btn" id="genBtn" onclick="showResult()">See my options →</button>
 
     <div class="result sans" id="result"></div>
     <button class="btn" id="downloadPdfBtn" style="display:none;background:#2f6f5e;margin-top:14px;" onclick="downloadPDF()">⬇ Download as PDF</button>
+
+    <div id="paidUpsell" class="sans" style="display:none;margin-top:22px;padding-top:20px;border-top:1px solid var(--line);">
+      <p style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--navy);margin:0 0 8px;">Want it written out for you?</p>
+      <p style="font-size:14px;color:#3a3428;margin:0 0 14px;">Get a personalized action report using your actual numbers — the exact tax cost if you withdraw vs. what you preserve by transferring, a ready-to-send message for HR, and the specific questions to ask your fund's trust — for ₹99.</p>
+      <button class="btn" id="payBtn" style="background:var(--green);margin-top:0;">Get My Personalized Report — ₹99</button>
+      <div id="paidResult" style="margin-top:18px;"></div>
+    </div>
   </div>
 
   <p class="disclaimer">Superannuation schemes are employer- and trust-specific — unlike EPF, there's no single central formula. Treat this as a starting map, and confirm exact figures with your HR team or the fund's insurer (often LIC).</p>
@@ -134,6 +167,16 @@ function bindGroup(id, key){
 bindGroup('reasonGroup','reason');
 bindGroup('gratuityGroup','gratuity');
 bindGroup('approvedGroup','approved');
+bindGroup('newSchemeGroup','newScheme');
+bindGroup('taxSlabGroup','taxSlab');
+
+document.querySelectorAll('#reasonGroup .radio-opt').forEach(el => {
+  el.addEventListener('click', () => {
+    document.getElementById('resignExtra').style.display = (el.dataset.val === 'resignation') ? 'block' : 'none';
+  });
+});
+
+function fmtI(n){ return '₹' + Math.round(n).toLocaleString('en-IN'); }
 
 function showResult(){
   if(!state.reason){ alert("Please select why you're accessing the fund first."); return; }
@@ -159,6 +202,22 @@ function showResult(){
         <li>If a resignation withdrawal is allowed and you're in a high tax bracket, transferring rather than withdrawing usually saves significant tax.</li>
       </ul>
     </div>`;
+
+    const corpus = parseFloat(document.getElementById('corpusEstimate').value) || 0;
+    const slab = parseFloat(state.taxSlab) || 30;
+    if(corpus > 0){
+      const taxHit = Math.round(corpus * slab / 100);
+      const netIfWithdrawn = corpus - taxHit;
+      html += `<div class="fixbox" style="border-left-color:var(--red);">
+        <strong>Rough numbers, based on what you entered</strong>
+        <p style="margin:0 0 8px;">On an estimated corpus of <strong>${fmtI(corpus)}</strong> at your ${slab}% slab:</p>
+        <ul>
+          <li>Withdraw now → roughly <strong>${fmtI(taxHit)}</strong> goes to tax, leaving you <strong>${fmtI(netIfWithdrawn)}</strong>.</li>
+          <li>Transfer or defer instead → the full <strong>${fmtI(corpus)}</strong> stays intact and keeps compounding tax-deferred.</li>
+        </ul>
+        <p style="margin:8px 0 0;font-size:13px;color:var(--muted);">This is a simple estimate, not your exact fund value — your trust/insurer's statement is the real number.</p>
+      </div>`;
+    }
   } else if(state.reason === 'retirement'){
     const gratuityNote = state.gratuity === 'yes'
       ? "Since you're also getting gratuity, many schemes cap your superannuation lump-sum withdrawal — check whether your specific scheme applies this cap before assuming you can take more."
@@ -206,6 +265,7 @@ function showResult(){
   r.innerHTML = html;
   r.classList.add('show');
   document.getElementById('downloadPdfBtn').style.display = 'inline-block';
+  document.getElementById('paidUpsell').style.display = 'block';
 }
 
 function downloadPDF(){
@@ -218,7 +278,83 @@ function downloadPDF(){
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   }).from(el).save();
 }
+
+const API_BASE = 'https://web-production-456eb.up.railway.app';
+
+document.getElementById('payBtn').addEventListener('click', async () => {
+  const payBtn = document.getElementById('payBtn');
+  const paidResult = document.getElementById('paidResult');
+  payBtn.disabled = true;
+  payBtn.textContent = 'Starting payment...';
+  paidResult.innerHTML = '';
+
+  try {
+    const orderRes = await fetch(`${API_BASE}/api/create-superannuation-order`, { method: 'POST' });
+    const order = await orderRes.json();
+    if (!order.order_id) throw new Error(order.error || 'Could not start payment. Please try again.');
+
+    const rzp = new Razorpay({
+      key: order.razorpay_key,
+      amount: order.amount,
+      currency: order.currency,
+      order_id: order.order_id,
+      name: 'SalaryBit',
+      description: 'Superannuation Fund — Personalized Exit Report',
+      theme: { color: '#1f3a5f' },
+      handler: async function (response) {
+        payBtn.textContent = 'Generating your report...';
+        try {
+          const res = await fetch(`${API_BASE}/api/superannuation-report`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              reason: state.reason,
+              gratuity: state.gratuity,
+              approved: state.approved,
+              new_employer_offers_scheme: state.newScheme === 'yes',
+              corpus_estimate: document.getElementById('corpusEstimate').value || 0,
+              tax_slab_percent: state.taxSlab || 30,
+            })
+          });
+          const data = await res.json();
+          if (!data.success) {
+            paidResult.innerHTML = `<p style="color:var(--red);">${data.error || 'Something went wrong.'}</p>`;
+            payBtn.disabled = false;
+            payBtn.textContent = 'Get My Personalized Report — ₹99';
+            return;
+          }
+          paidResult.innerHTML = `<div class="fixbox" style="border-left-color:var(--green);white-space:pre-wrap;">${data.report}</div>`;
+          payBtn.style.display = 'none';
+        } catch (err) {
+          paidResult.innerHTML = `<p style="color:var(--red);">Payment succeeded but the report failed to generate — please contact support with your payment ID.</p>`;
+          payBtn.disabled = false;
+          payBtn.textContent = 'Get My Personalized Report — ₹99';
+        }
+      },
+      modal: {
+        ondismiss: function () {
+          payBtn.disabled = false;
+          payBtn.textContent = 'Get My Personalized Report — ₹99';
+        }
+      }
+    });
+    rzp.on('payment.failed', function () {
+      payBtn.disabled = false;
+      payBtn.textContent = 'Get My Personalized Report — ₹99';
+      paidResult.innerHTML = '<p style="color:var(--red);">Payment failed. You have not been charged — please try again.</p>';
+    });
+    rzp.open();
+  } catch (e) {
+    payBtn.disabled = false;
+    payBtn.textContent = 'Get My Personalized Report — ₹99';
+    paidResult.innerHTML = `<p style="color:var(--red);">${e.message || 'Could not start payment. Please try again.'}</p>`;
+  }
+});
 </script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 </body>

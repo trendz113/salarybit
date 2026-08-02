@@ -3191,6 +3191,169 @@ def verify_breakoutscanner_payment():
     return jsonify({"success": True, "payment_id": payment_id, "scans_granted": BREAKOUT_SCANNER_SCANS_PER_PACK})
 
 
+# =========================================================================
+# Superannuation Fund Exit Report — paid add-on for superannuation-navigator.html
+# =========================================================================
+SUPERANNUATION_REPORT_PRICE_PAISE = 9900  # Rs 99
+
+
+def compute_superannuation_exit_numbers(corpus_estimate, tax_slab_percent, new_employer_offers_scheme):
+    """Pure deterministic math — no AI involved in the numbers themselves,
+    same principle as the rest of the codebase: Claude narrates, it never
+    computes the figures."""
+    corpus_estimate = max(0, corpus_estimate or 0)
+    tax_slab_percent = max(0, min(42, tax_slab_percent or 30))  # sane bounds incl. surcharge+cess bands
+
+    tax_if_withdrawn_now = round(corpus_estimate * (tax_slab_percent / 100))
+    net_if_withdrawn_now = corpus_estimate - tax_if_withdrawn_now
+    value_preserved_if_deferred = corpus_estimate  # stays intact, tax-deferred, continues compounding
+
+    return {
+        "corpus_estimate": corpus_estimate,
+        "tax_slab_percent": tax_slab_percent,
+        "tax_if_withdrawn_now": tax_if_withdrawn_now,
+        "net_if_withdrawn_now": net_if_withdrawn_now,
+        "value_preserved_if_deferred": value_preserved_if_deferred,
+        "immediate_tax_cost_of_withdrawing": tax_if_withdrawn_now,
+        "new_employer_offers_scheme": bool(new_employer_offers_scheme),
+    }
+
+
+SUPERANNUATION_SYSTEM_PROMPT = """You are a calm, precise Indian personal-finance writer for SalaryBit,
+generating a short personalized action report about someone's superannuation fund as they leave a job.
+
+You will be given: their situation (resignation/retirement/death-disability), whether they have gratuity,
+whether their fund is approved, a rough corpus estimate, their tax slab, whether their new employer offers
+a superannuation scheme, and pre-computed numbers (tax cost if withdrawn now vs value preserved if deferred/
+transferred). NEVER recompute or alter the numbers you're given — only narrate and explain them.
+
+Output format (plain text, use clear paragraph breaks and a numbered action list — no markdown headers):
+
+1. One short paragraph stating plainly what their best move is, given their numbers, and why.
+2. A numbered list of concrete next steps (what to ask HR, what documents/forms to request, what to verify
+   about their specific trust/scheme, and — if relevant — a short suggested message they could send to HR
+   or payroll asking for their fund's trust deed / transfer process).
+3. One paragraph on the "hidden benefit" angle: their employer's superannuation contribution was invisible
+   in their taxable salary (up to the combined Rs 7.5 lakh/year cap across EPF+NPS+superannuation under
+   Section 17(2)), unlike an equivalent cash bonus which would be fully taxed — so preserving that value by
+   transferring/deferring rather than cashing out is usually the higher-value move, unless they have an
+   immediate, specific need for the cash.
+4. A one-line disclaimer that this is a general guide, not personalised tax/legal advice, and to confirm
+   exact figures with their HR team, the fund's trust deed, or a CA before acting.
+
+Keep it tight — under 400 words total. Do not invent scheme-specific rules; when uncertain, say to confirm
+with HR/the trust deed rather than asserting a fact you don't have."""
+
+
+def generate_superannuation_report(inputs, numbers):
+    claude_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not claude_key:
+        raise RuntimeError("Server not configured. Missing ANTHROPIC_API_KEY.")
+
+    user_payload = {"inputs": inputs, "computed_numbers": numbers}
+    payload = json.dumps({
+        "model": "claude-sonnet-4-6",
+        "max_tokens": 900,
+        "temperature": 0.3,
+        "system": SUPERANNUATION_SYSTEM_PROMPT,
+        "messages": [{"role": "user", "content": json.dumps(user_payload, ensure_ascii=False)}]
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": claude_key,
+            "anthropic-version": "2023-06-01"
+        },
+        method="POST"
+    )
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        result = json.loads(resp.read().decode("utf-8"))
+
+    return "".join(
+        block.get("text", "") for block in result.get("content", []) if block.get("type") == "text"
+    ).strip()
+
+
+@app.route('/api/create-superannuation-order', methods=['POST', 'OPTIONS'])
+def create_superannuation_order():
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": SUPERANNUATION_REPORT_PRICE_PAISE,
+            "currency": "INR",
+            "receipt": f"super_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
+    except Exception as e:
+        print(f"create-superannuation-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/superannuation-report", methods=["POST", "OPTIONS"])
+def superannuation_report():
+    if request.method == "OPTIONS":
+        return "", 200
+
+    data = request.get_json(silent=True) or {}
+
+    razorpay_order_id = data.get("razorpay_order_id")
+    razorpay_payment_id = data.get("razorpay_payment_id")
+    razorpay_signature = data.get("razorpay_signature")
+
+    if not (razorpay_order_id and razorpay_payment_id and razorpay_signature):
+        return jsonify({"success": False, "error": "Payment required."}), 403
+
+    body = f"{razorpay_order_id}|{razorpay_payment_id}"
+    expected_signature = hmac.new(
+        os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+        body.encode(),
+        hashlib.sha256
+    ).hexdigest()
+    if expected_signature != razorpay_signature:
+        return jsonify({
+            "success": False,
+            "error": "Payment verification failed. If you were charged, please contact "
+                     "support with your payment ID — you have not lost your money."
+        }), 400
+
+    try:
+        corpus_estimate = float(data.get("corpus_estimate") or 0)
+        tax_slab_percent = float(data.get("tax_slab_percent") or 30)
+    except (TypeError, ValueError):
+        return jsonify({"success": False, "error": "Please enter valid numbers."}), 400
+
+    inputs = {
+        "reason": data.get("reason"),
+        "gratuity": data.get("gratuity"),
+        "approved": data.get("approved"),
+        "new_employer_offers_scheme": data.get("new_employer_offers_scheme"),
+    }
+    numbers = compute_superannuation_exit_numbers(
+        corpus_estimate, tax_slab_percent, data.get("new_employer_offers_scheme")
+    )
+
+    try:
+        report_text = generate_superannuation_report(inputs, numbers)
+    except Exception as e:
+        print(f"generate_superannuation_report error: {e}")
+        return jsonify({
+            "success": False,
+            "error": "Could not generate your report right now. Please try again in a moment — "
+                     "you have already been charged, so contact support if this keeps failing."
+        }), 500
+
+    return jsonify({"success": True, "numbers": numbers, "report": report_text}), 200
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)

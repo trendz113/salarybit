@@ -2616,6 +2616,8 @@ ITR_BETA_PROMO_CODES = {
     "ATHARVATEST499": "Founder test access",
     "BETA499FREE": "Beta tester access",
 }
+ITR_PROMO_USAGE_LIMIT = 20  # hard cap per code, so a leaked code can't run up API costs indefinitely
+ITR_PROMO_USAGE_COUNTS = defaultdict(int)  # in-memory; resets on redeploy, which is fine for a beta cost cap
 
 ITR_ASSESSMENT_YEAR = "AY 2026-27"
 ITR_FINANCIAL_YEAR = "FY 2025-26"
@@ -3018,6 +3020,12 @@ def itr_analyze():
     access_granted = False
 
     if promo_code and promo_code in ITR_BETA_PROMO_CODES:
+        if ITR_PROMO_USAGE_COUNTS[promo_code] >= ITR_PROMO_USAGE_LIMIT:
+            return jsonify({
+                "success": False,
+                "error": "This invite code has hit its beta usage limit. Please pay to "
+                         "unlock, or ask for a fresh invite code."
+            }), 403
         access_granted = True
     elif razorpay_order_id and razorpay_payment_id and razorpay_signature:
         body = f"{razorpay_order_id}|{razorpay_payment_id}"
@@ -3088,6 +3096,9 @@ def itr_analyze():
                          "step-by-step instructions could not be generated right now. Please "
                          "try again in a moment."
             }), 200
+
+        if promo_code and promo_code in ITR_BETA_PROMO_CODES:
+            ITR_PROMO_USAGE_COUNTS[promo_code] += 1
 
         return jsonify({
             "success": True,

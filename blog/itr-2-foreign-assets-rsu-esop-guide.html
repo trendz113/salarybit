@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to File ITR-2 with Foreign Assets (RSU/ESOP) — AY 2026-27 Complete Guide</title>
+<meta name="description" content="Step-by-step guide to filing ITR-2 if you hold foreign RSUs or ESOPs. Covers Schedule FA, Schedule CG, foreign tax credit, 112A, and common mistakes. Updated for AY 2026-27.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f1923;
+    --ink-soft: #3d4f5c;
+    --ink-muted: #6b7f8e;
+    --bg: #f7f9fb;
+    --bg-white: #ffffff;
+    --accent: #1a6bff;
+    --accent-light: #e8f0ff;
+    --accent-dark: #0047cc;
+    --green: #00875a;
+    --green-light: #e3f5ee;
+    --amber: #b45309;
+    --amber-light: #fef3c7;
+    --red: #c0392b;
+    --red-light: #fdecea;
+    --border: #dde3ea;
+    --shadow: 0 2px 12px rgba(15,25,35,0.08);
+    --shadow-lg: 0 8px 32px rgba(15,25,35,0.12);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 16px;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0f1923 0%, #1a3a5c 50%, #0047cc 100%);
+    padding: 80px 24px 64px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(26,107,255,0.3) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(0,135,90,0.2) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(26,107,255,0.2);
+    border: 1px solid rgba(26,107,255,0.4);
+    color: #7eb8ff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.15;
+    max-width: 820px;
+    margin: 0 auto 20px;
+    letter-spacing: -0.02em;
+  }
+  .hero h1 span {
+    color: #5ba4ff;
+  }
+  .hero-sub {
+    font-size: 18px;
+    color: rgba(255,255,255,0.7);
+    max-width: 600px;
+    margin: 0 auto 36px;
+  }
+  .hero-meta {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .hero-meta span {
+    color: rgba(255,255,255,0.55);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .hero-meta span::before {
+    content: '•';
+    color: #5ba4ff;
+  }
+
+  /* ALERT BOX */
+  .alert {
+    max-width: 860px;
+    margin: -28px auto 0;
+    position: relative;
+    z-index: 10;
+    padding: 0 24px;
+  }
+  .alert-inner {
+    background: var(--amber-light);
+    border: 1.5px solid #f59e0b;
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    box-shadow: var(--shadow);
+  }
+  .alert-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+  .alert-inner p { font-size: 14px; color: #78350f; line-height: 1.5; }
+  .alert-inner strong { color: #92400e; }
+
+  /* LAYOUT */
+  .page-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* TOC */
+  .toc {
+    background: var(--bg-white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 48px;
+    box-shadow: var(--shadow);
+  }
+  .toc-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .toc ol {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 24px;
+  }
+  @media (max-width: 600px) { .toc ol { grid-template-columns: 1fr; } }
+  .toc li { counter-increment: toc-counter; }
+  .toc a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 14px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    transition: color 0.15s;
+  }
+  .toc a:hover { color: var(--accent); }
+  .toc a::before {
+    content: counter(toc-counter, decimal-leading-zero);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .toc { counter-reset: toc-counter; }
+
+  /* SECTIONS */
+  .section {
+    background: var(--bg-white);
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    padding: 36px 40px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow);
+  }
+  @media (max-width: 600px) { .section { padding: 24px 20px; } }
+
+  .section-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 10px;
+  }
+
+  .section h2 {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+
+  .section h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 28px 0 12px;
+    padding-left: 14px;
+    border-left: 3px solid var(--accent);
+  }
+
+  .section p {
+    color: var(--ink-soft);
+    margin-bottom: 16px;
+    font-size: 15.5px;
+  }
+
+  .section ul, .section ol {
+    padding-left: 20px;
+    color: var(--ink-soft);
+    font-size: 15.5px;
+    margin-bottom: 16px;
+  }
+  .section li { margin-bottom: 8px; }
+
+  /* TABLES */
+  .table-wrap { overflow-x: auto; margin: 20px 0; border-radius: var(--radius-sm); border: 1.5px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead { background: var(--accent); }
+  thead th { color: white; font-weight: 700; padding: 12px 16px; text-align: left; font-size: 13px; letter-spacing: 0.02em; }
+  tbody tr:nth-child(even) { background: var(--bg); }
+  tbody tr:hover { background: var(--accent-light); }
+  tbody td { padding: 11px 16px; color: var(--ink-soft); border-bottom: 1px solid var(--border); }
+  tbody tr:last-child td { border-bottom: none; }
+
+  /* CALLOUT BOXES */
+  .callout {
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    margin: 20px 0;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    font-size: 14.5px;
+  }
+  .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .callout p { margin: 0; line-height: 1.55; }
+  .callout strong { display: block; margin-bottom: 4px; }
+  .callout.tip { background: var(--green-light); border: 1.5px solid #34d399; color: #064e3b; }
+  .callout.warning { background: var(--amber-light); border: 1.5px solid #f59e0b; color: #78350f; }
+  .callout.danger { background: var(--red-light); border: 1.5px solid #f87171; color: #7f1d1d; }
+  .callout.info { background: var(--accent-light); border: 1.5px solid #93c5fd; color: #1e3a8a; }
+
+  /* STEP CARDS */
+  .step-grid { display: grid; gap: 16px; margin: 20px 0; }
+  .step-card {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .step-card:hover { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+  .step-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    background: var(--accent);
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-card h4 { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+  .step-card p { font-size: 13.5px; color: var(--ink-soft); margin: 0; }
+
+  /* MISTAKE CARDS */
+  .mistake {
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-left: 4px solid var(--red);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+    margin-bottom: 16px;
+  }
+  .mistake h4 { font-size: 15px; font-weight: 700; color: var(--red); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .mistake p { font-size: 14px; color: var(--ink-soft); margin: 0; }
+
+  /* FAQ */
+  .faq-item {
+    border-bottom: 1.5px solid var(--border);
+    padding: 20px 0;
+  }
+  .faq-item:last-child { border-bottom: none; }
+  .faq-q {
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 15.5px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .faq-q::before {
+    content: 'Q';
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--accent);
+    color: white;
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .faq-a { font-size: 14.5px; color: var(--ink-soft); padding-left: 32px; }
+
+  /* CHECKLIST */
+  .checklist {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+  }
+  .checklist li::before {
+    content: '☐';
+    font-size: 17px;
+    color: var(--accent);
+    flex-shrink: 0;
+    line-height: 1.2;
+  }
+
+  /* CODE */
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent-dark);
+  }
+
+  /* TAGS */
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .tag-required { background: var(--red-light); color: var(--red); }
+  .tag-optional { background: var(--green-light); color: var(--green); }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 32px 24px 48px;
+    color: var(--ink-muted);
+    font-size: 13px;
+    border-top: 1.5px solid var(--border);
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  .footer a { color: var(--accent); text-decoration: none; }
+
+  /* PROGRESS BAR ACCENT */
+  .progress-bar {
+    height: 4px;
+    background: linear-gradient(90deg, #1a6bff, #00875a);
+    width: 100%;
+    position: fixed;
+    top: 0; left: 0;
+    z-index: 100;
+  }
+</style>
+<meta property="og:type" content="website">
+<meta property="og:title" content="How to File ITR-2 with Foreign Assets (RSU/ESOP) — AY 2026-27 Complete Guide">
+<meta property="og:description" content="Step-by-step guide to filing ITR-2 if you hold foreign RSUs or ESOPs. Covers Schedule FA, Schedule CG, foreign tax credit, 112A, and common mistakes. Updated for AY 2026-27.">
+<meta property="og:url" content="https://salarybit.in/blog/itr-2-foreign-assets-rsu-esop-guide.html">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "My employer deducted full TDS on RSU vesting. Do I still need Schedule CG?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. TDS at vesting covers the perquisite income (salary component). The subsequent sale of those shares creates a separate capital gains event — gain or loss — that must be reported in Schedule CG regardless of the TDS already paid."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I set off my foreign RSU STCG loss against domestic equity LTCG?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. STCG losses can be set off against LTCG gains from any source. The portal's Schedule CG Section E handles this automatically once both entries are made correctly."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "My domestic MF LTCG is below ₹1.25 lakh. Do I still need to report it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. You must report the transactions in Schedule 112A and Schedule CG. The ₹1.25 lakh exemption (Section 112A) means no tax is payable below this threshold, but the transaction must still be disclosed. The portal will automatically compute nil tax on amounts within the limit."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "I have RSUs from two different vesting dates. How do I enter them in Schedule FA?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can enter a single row for all holdings in the same company using the earliest vesting date as the \"date of acquiring.\" The initial, peak, and closing values should reflect your total holding across all tranches combined."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What exchange rate should I use to convert foreign currency for Schedule CG?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use the SBI TTBR (Telegraphic Transfer Buying Rate) for the date of each transaction, as specified under Rule 115A of the Income Tax Rules. For year-end balances in Schedule FA, use the RBI reference rate as of December 31."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "My ESOP platform withheld German tax on my RSU vesting. Can I get credit for it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Only if the same transactions also result in net taxable income in India AND you file Form 67 before the ITR deadline. If your foreign RSU sales are a net loss (which is common for sell-to-cover transactions), there is no Indian tax liability to credit against, so the foreign withholding tax is not claimable."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "The Schedule 112A CSV upload keeps failing. What's wrong?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The column 1a value must exactly match the portal's dropdown text — \"After 31st January 2018\" (full spelling of \"January\", not \"Jan\"). Download the template directly from the portal each year as the format can change. If CSV upload fails for column 1a, enter rows manually using the \"+ Add Another\" button instead."
+      }
+    }
+  ]
+}
+</script>
+<meta property="og:site_name" content="SalaryBit">
+<meta property="og:image" content="https://salarybit.in/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How to File ITR-2 with Foreign Assets (RSU/ESOP) — AY 2026-27 Complete Guide">
+<meta name="twitter:description" content="Step-by-step guide to filing ITR-2 if you hold foreign RSUs or ESOPs. Covers Schedule FA, Schedule CG, foreign tax credit, 112A, and common mistakes. Updated for AY 2026-27.">
+<meta name="twitter:image" content="https://salarybit.in/og-image.png">
+<link rel="canonical" href="https://salarybit.in/blog/itr-2-foreign-assets-rsu-esop-guide.html">
+</head>
+<body>
+
+<div class="progress-bar"></div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">AY 2026-27 • Updated June 2026</div>
+  <h1>How to File <span>ITR-2</span> with Foreign Assets<br>RSU / ESOP Complete Guide</h1>
+  <p class="hero-sub">If you work at an MNC and hold foreign shares, this is the only guide you need. Every screen, every field, no CAs needed.</p>
+  <div class="hero-meta">
+    <span>Schedule FA Explained</span>
+    <span>Schedule CG for Foreign Loss</span>
+    <span>Foreign Tax Credit</span>
+    <span>112A Step-by-Step</span>
+  </div>
+</div>
+
+<!-- ALERT -->
+<div class="alert">
+  <div class="alert-inner">
+    <span class="alert-icon">⚠️</span>
+    <p><strong>Non-disclosure penalty:</strong> Failing to report foreign assets in Schedule FA attracts a penalty of <strong>₹10 lakh per year</strong> under the Black Money Act 2015 — even if the value is small. File ITR-2, not ITR-1, if you hold any foreign shares.</p>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="page-wrap">
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">Table of Contents</div>
+    <ol>
+      <li><a href="#who">Who Must File ITR-2</a></li>
+      <li><a href="#docs">Documents Needed</a></li>
+      <li><a href="#reason">Filing Reason Selection</a></li>
+      <li><a href="#schedules">Selecting Schedules</a></li>
+      <li><a href="#questionnaire">Schedule Questionnaire</a></li>
+      <li><a href="#salary">Schedule Salary</a></li>
+      <li><a href="#cg">Schedule Capital Gains (CG)</a></li>
+      <li><a href="#112a">Schedule 112A — LTCG</a></li>
+      <li><a href="#rsu-loss">Foreign RSU Loss Handling</a></li>
+      <li><a href="#os">Schedule Other Sources</a></li>
+      <li><a href="#via">Schedule VI-A Deductions</a></li>
+      <li><a href="#fa">Schedule FA — Foreign Assets</a></li>
+      <li><a href="#fsi">Schedule FSI & TR</a></li>
+      <li><a href="#tax">Final Tax & Payment</a></li>
+      <li><a href="#mistakes">7 Common Mistakes</a></li>
+      <li><a href="#faq">FAQs</a></li>
+      <li><a href="#troubleshooting">Real Errors We Fixed</a></li>
+    </ol>
+  </div>
+
+  <!-- WHO SHOULD FILE -->
+  <div class="section" id="who">
+    <div class="section-eyebrow">Step 0</div>
+    <h2>Who Must File ITR-2?</h2>
+    <p>ITR-2 is mandatory — not optional — if you are salaried and have any of the following:</p>
+    <div class="step-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div><h4>Foreign Assets or RSUs</h4><p>You hold shares, RSUs, or ESOPs in a company listed outside India (US, Germany, UK etc.)</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div><h4>Capital Gains</h4><p>You sold equity mutual funds, shares, or foreign securities during the year</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div><h4>Multiple Income Sources</h4><p>Income from more than one employer, or house property income/loss</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div><h4>Dividend or Interest Income</h4><p>Interest from FDs, savings accounts, or dividends from stocks/MFs exceeding ₹5,000</p></div>
+      </div>
+    </div>
+    <div class="callout danger">
+      <span class="callout-icon">🚫</span>
+      <p><strong>Do not file ITR-1 if you have foreign RSUs.</strong> ITR-1 has no Schedule FA or Schedule CG for foreign assets. Filing the wrong form is treated as a defective return.</p>
+    </div>
+    <h3>How RSU Taxation Works in India</h3>
+    <p>When your employer grants RSUs in a foreign-listed parent company, two separate tax events occur:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Event</th><th>Tax Treatment</th><th>Reported In</th></tr></thead>
+        <tbody>
+          <tr><td><strong>At Vesting</strong></td><td>FMV of shares = Perquisite under Sec 17(2). Added to salary, TDS deducted by employer.</td><td>Form 16 → Schedule Salary</td></tr>
+          <tr><td><strong>At Sale (within 24 months)</strong></td><td>STCG = Sale price minus FMV at vesting. Taxed at applicable slab rate.</td><td>Schedule CG → A5</td></tr>
+          <tr><td><strong>At Sale (after 24 months)</strong></td><td>LTCG = Sale price minus FMV at vesting. Taxed at 12.5% without indexation.</td><td>Schedule CG → B8</td></tr>
+          <tr><td><strong>Every Year (holding)</strong></td><td>Disclose holding value in Schedule FA. No tax on holding itself.</td><td>Schedule FA → A3</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- DOCUMENTS -->
+  <div class="section" id="docs">
+    <div class="section-eyebrow">Before You Start</div>
+    <h2>Documents to Collect</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Document</th><th>Why Needed</th><th>Where to Get</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Form 16 (Part A + B)</strong></td><td>Salary, TDS, perquisite value</td><td>HR/payroll portal</td></tr>
+          <tr><td><strong>AIS</strong></td><td>Cross-check all income, TDS, dividends</td><td>incometax.gov.in → Services → AIS</td></tr>
+          <tr><td><strong>ESOP Platform Statement</strong></td><td>RSU vesting, sale proceeds, taxes withheld</td><td>equateplus.com / fidelity.com</td></tr>
+          <tr><td><strong>MF Capital Gains Statement</strong></td><td>LTCG/STCG on mutual fund redemptions</td><td>CAMS, KFintech, or AMC website</td></tr>
+          <tr><td><strong>Bank Interest Certificates</strong></td><td>Savings + FD interest breakdown</td><td>Net banking → Statements</td></tr>
+          <tr><td><strong>Previous Year ITR PDF</strong></td><td>Schedule FA closing balance as this year's opening</td><td>incometax.gov.in → e-File → View Filed Returns</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FILING REASON -->
+  <div class="section" id="reason">
+    <div class="section-eyebrow">Step 1</div>
+    <h2>Select the Right Filing Reason</h2>
+    <p>The first portal question asks <em>why</em> you are filing. For most salaried employees:</p>
+    <div class="callout tip">
+      <span class="callout-icon">✅</span>
+      <p><strong>Select: "Taxable income is more than basic exemption limit"</strong><br>This is the correct choice if your gross salary exceeds ₹3 lakh (new regime) or ₹2.5 lakh (old regime).</p>
+    </div>
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <p><strong>Do NOT select "Seventh Proviso to Section 139(1)"</strong> — this is only for people whose income is below the exemption limit but are filing due to high-value transactions (₹1 crore+ in current account, ₹2 lakh+ foreign travel, etc.).</p>
+    </div>
+  </div>
+
+  <!-- SCHEDULES -->
+  <div class="section" id="schedules">
+    <div class="section-eyebrow">Step 2</div>
+    <h2>Select the Right Schedules</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Schedule</th><th>Select?</th><th>Reason</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Part A-Gen</strong></td><td>✅ Always</td><td>Mandatory — auto-selected</td></tr>
+          <tr><td><strong>Schedule Salary</strong></td><td>✅ Always</td><td>Your primary income</td></tr>
+          <tr><td><strong>Schedule CG</strong></td><td>✅ Always for RSU holders</td><td>Foreign RSU gains/losses must be reported</td></tr>
+          <tr><td><strong>Schedule OS</strong></td><td>✅ If interest/dividend income</td><td>Savings interest, FD interest, dividends</td></tr>
+          <tr><td><strong>Schedule FA</strong></td><td>✅ Mandatory if foreign shares held</td><td>Disclosure under Black Money Act</td></tr>
+          <tr><td><strong>Schedule 112A</strong></td><td>✅ If sold domestic equity MF/shares</td><td>Transaction-level LTCG detail</td></tr>
+          <tr><td><strong>Schedule VI-A</strong></td><td>✅ If any deductions (80TTA etc.)</td><td>Savings interest deduction</td></tr>
+          <tr><td><strong>Schedule HP</strong></td><td>Only if house property</td><td>Home loan interest (not claimable in new regime)</td></tr>
+          <tr><td><strong>Schedule FSI/TR</strong></td><td>Only if claiming foreign tax credit</td><td>See Step 13</td></tr>
+          <tr><td><strong>Schedule 5A</strong></td><td>❌ Skip</td><td>Only for Goa/Daman residents (Portuguese Civil Code)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- QUESTIONNAIRE -->
+  <div class="section" id="questionnaire">
+    <div class="section-eyebrow">Step 3</div>
+    <h2>Schedule Questionnaire</h2>
+    <p>The portal asks several yes/no questions. Here are the answers for a typical salaried RSU holder:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Question</th><th>Answer</th></tr></thead>
+        <tbody>
+          <tr><td>Opt out of new tax regime (115BAC)?</td><td><strong>No</strong> — unless old regime saves more tax</td></tr>
+          <tr><td>Rule 2BB allowances (travel/daily allowance)?</td><td><strong>No</strong></td></tr>
+          <tr><td>Transport allowance for handicapped?</td><td><strong>No</strong></td></tr>
+          <tr><td>80CCD(2) employer NPS contribution?</td><td><strong>No</strong> — unless your employer contributes to NPS</td></tr>
+          <tr><td>Residential status condition?</td><td><strong>"In India for 182 days or more [Section 6(1)(a)]"</strong></td></tr>
+          <tr><td>Benefit u/s 115H?</td><td><strong>No</strong> — for NRIs becoming resident only</td></tr>
+          <tr><td>Portuguese Civil Code / Section 5A?</td><td><strong>No</strong></td></tr>
+          <tr><td>FPI (Foreign Portfolio Investor)?</td><td><strong>No</strong></td></tr>
+          <tr><td>Director in a company?</td><td><strong>No</strong> — if you are only an employee</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SALARY -->
+  <div class="section" id="salary">
+    <div class="section-eyebrow">Step 4</div>
+    <h2>Schedule Salary</h2>
+    <p>This is pre-filled from your Form 16. Verify each field carefully:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Field</th><th>What It Should Show</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1a — Salary u/s 17(1)</strong></td><td>Basic salary + allowances from Form 16</td></tr>
+          <tr><td><strong>1b — Perquisites u/s 17(2)</strong></td><td>RSU vesting value — this is the FMV at vesting × number of shares</td></tr>
+          <tr><td><strong>Standard deduction u/s 16</strong></td><td>₹75,000 (auto-filled for FY 2025-26)</td></tr>
+          <tr><td><strong>Net taxable salary</strong></td><td>Gross salary minus standard deduction</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout info">
+      <span class="callout-icon">ℹ️</span>
+      <p>Your RSU vesting value appears under "Stock options (non-qualified options) other than ESOP" in the perquisites breakdown. This is correct — the perquisite is already included in your Form 16 and TDS has been deducted on it.</p>
+    </div>
+  </div>
+
+  <!-- CAPITAL GAINS -->
+  <div class="section" id="cg">
+    <div class="section-eyebrow">Step 5</div>
+    <h2>Schedule Capital Gains (CG)</h2>
+    <p>This is the most important schedule for RSU holders. It has distinct sections for different asset types.</p>
+    <h3>A5 — Short-Term Capital Gains from Foreign RSU Sales</h3>
+    <p>Foreign shares are not listed on Indian exchanges, so they go under <strong>A5 — "From sale of assets other than at A1 or A2 or A3 or A4"</strong>.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Field</th><th>What to Enter</th></tr></thead>
+        <tbody>
+          <tr><td><strong>A5a(ii) — Full value of consideration</strong></td><td>Total sale proceeds in INR (convert using SBI TTBR rate on transaction date)</td></tr>
+          <tr><td><strong>A5b(i) — Cost of acquisition</strong></td><td>FMV at vesting date in INR × number of shares sold (this was taxed as salary — your cost basis)</td></tr>
+          <tr><td><strong>A5b(iii) — Expenditure on transfer</strong></td><td>Brokerage, transaction fees in INR (if any)</td></tr>
+          <tr><td><strong>A5e — STCG amount</strong></td><td>Auto-calculated. Negative = capital loss, positive = capital gain</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <p><strong>Sell-to-cover transactions almost always result in a small loss.</strong> When your employer sells shares to cover tax at vesting, the sale happens on the same day at the same FMV — but brokerage and transaction costs create a small net loss. This loss is valid and should be reported.</p>
+    </div>
+    <h3>B3 — Long-Term Capital Gains from Domestic Equity (Section 112A)</h3>
+    <p>For domestic equity mutual funds and shares sold with STT paid, use B3. This section pulls from Schedule 112A which you fill separately (see next step).</p>
+    <h3>B8 — Long-Term Capital Gains from Foreign Shares (held 24+ months)</h3>
+    <p>If you held foreign RSU shares for more than 24 months from vesting date before selling, use B8 with the same cost basis logic as A5.</p>
+  </div>
+
+  <!-- 112A -->
+  <div class="section" id="112a">
+    <div class="section-eyebrow">Step 6</div>
+    <h2>Schedule 112A — LTCG on Domestic Equity & MF</h2>
+    <p>This schedule requires transaction-level detail for every equity MF or share sold with STT paid during the year.</p>
+    <h3>CSV Upload Option</h3>
+    <p>The portal supports CSV upload — but the column format must match exactly. Always download the template directly from the portal. The key dropdown in column 1a:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Your situation</th><th>Select in Column 1a</th></tr></thead>
+        <tbody>
+          <tr><td>Units/shares purchased after 1 Feb 2018</td><td><strong>"After 31st January 2018"</strong></td></tr>
+          <tr><td>Units/shares purchased on or before 1 Feb 2018</td><td><strong>"On or Before 31st January 2018"</strong> (FMV as on 31 Jan 2018 applies as grandfathered cost)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <p><strong>Consolidation shortcut:</strong> If you have multiple SIP units of the same ISIN redeemed on the same date, you can consolidate them into a single row by summing the quantity, full value, and cost. No need to enter each SIP installment separately.</p>
+    </div>
+    <p>After all rows are entered, the total Balance (column 14) flows automatically into B3a of the main Schedule CG.</p>
+  </div>
+
+  <!-- RSU LOSS -->
+  <div class="section" id="rsu-loss">
+    <div class="section-eyebrow">Step 7</div>
+    <h2>How Foreign RSU Losses Flow Through the Return</h2>
+    <p>If your foreign RSU sales result in a net loss, here is exactly how it flows:</p>
+    <div class="step-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div><h4>Schedule CG → A5e</h4><p>Loss appears as a negative figure (e.g., -₹20,000)</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div><h4>Schedule CG → Section E</h4><p>Portal attempts to set off STCG loss against LTCG gains automatically</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div><h4>Schedule CYLA</h4><p>Any remaining unadjusted loss flows here</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div><h4>Schedule CFL → Row xi</h4><p>Remaining loss carried forward for up to 8 years to offset future capital gains</p></div>
+      </div>
+    </div>
+    <div class="callout info">
+      <span class="callout-icon">ℹ️</span>
+      <p><strong>Set-off rules:</strong> STCG loss can be set off against both STCG and LTCG gains. LTCG loss can only offset LTCG gains. The portal handles this automatically in the Section E set-off table.</p>
+    </div>
+  </div>
+
+  <!-- OTHER SOURCES -->
+  <div class="section" id="os">
+    <div class="section-eyebrow">Step 8</div>
+    <h2>Schedule Other Sources (OS)</h2>
+    <p>Enter all passive income here. The breakdown between sub-fields matters:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Field</th><th>What to Enter</th><th>Why It Matters</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1a(i) — Dividend income</strong></td><td>Total dividends from Indian stocks and MFs</td><td>Reported to AIS by companies — must match</td></tr>
+          <tr><td><strong>1b(i) — Savings bank interest</strong></td><td>Interest from savings accounts only</td><td>Triggers 80TTA deduction in VI-A</td></tr>
+          <tr><td><strong>1b(ii) — Deposit interest</strong></td><td>FD, RD, post office interest</td><td>Not eligible for 80TTA</td></tr>
+          <tr><td><strong>1b(ix) — Others</strong></td><td>Interest from NBFCs, companies</td><td>Not eligible for 80TTA</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <p><strong>Common mistake:</strong> Entering all interest under "Others" (field ix) instead of splitting into savings (bi) vs deposits (bii). If savings interest is in the wrong field, the portal won't auto-populate 80TTA in Schedule VI-A.</p>
+    </div>
+  </div>
+
+  <!-- VI-A -->
+  <div class="section" id="via">
+    <div class="section-eyebrow">Step 9</div>
+    <h2>Schedule VI-A Deductions</h2>
+    <p>Under the new tax regime, most Chapter VI-A deductions are not available. For salaried RSU holders, typically only one applies:</p>
+    <div class="callout tip">
+      <span class="callout-icon">✅</span>
+      <p><strong>80TTA — Savings Bank Interest Deduction</strong><br>Maximum ₹10,000 per year on savings bank interest (not FD). Requires correct entry of savings interest in Schedule OS field 1b(i) first. Not available for senior citizens (80TTB applies instead).</p>
+    </div>
+  </div>
+
+  <!-- SCHEDULE FA -->
+  <div class="section" id="fa">
+    <div class="section-eyebrow">Step 10 — Most Critical</div>
+    <h2>Schedule FA — Foreign Asset Disclosure</h2>
+    <div class="callout danger">
+      <span class="callout-icon">🚨</span>
+      <p><strong>Mandatory every year.</strong> Schedule FA uses the <strong>calendar year (Jan–Dec)</strong>, not the financial year (Apr–Mar). For AY 2026-27, it covers January 1, 2025 to December 31, 2025.</p>
+    </div>
+    <h3>Section A3 — Foreign Equity and Debt Interest</h3>
+    <p>This is where you disclose your foreign company shares (RSUs/ESOPs).</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Field</th><th>What to Enter</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Country Name and Code</strong></td><td>e.g., 49-Germany, 01-USA</td><td>ITR country code list</td></tr>
+          <tr><td><strong>Name of entity</strong></td><td>Company name (e.g., XYZ Corp SE)</td><td>ESOP platform</td></tr>
+          <tr><td><strong>Nature of entity</strong></td><td>ESOP / Equity (RSU + Shares)</td><td>—</td></tr>
+          <tr><td><strong>Date of acquiring (field 7)</strong></td><td>Date of first RSU vesting still held</td><td>ESOP platform</td></tr>
+          <tr><td><strong>Initial value (field 8)</strong></td><td>INR value at Jan 1, 2025 = previous year's closing</td><td>Previous ITR Schedule FA</td></tr>
+          <tr><td><strong>Peak value (field 9)</strong></td><td>Highest INR value during Jan–Dec 2025</td><td>ESOP platform + exchange rate</td></tr>
+          <tr><td><strong>Closing balance (field 10)</strong></td><td>INR value of holding at Dec 31, 2025</td><td>ESOP platform + Dec 31 exchange rate</td></tr>
+          <tr><td><strong>Gross amount paid/credited (field 11)</strong></td><td>Dividends received (in INR) during calendar year</td><td>ESOP platform dividend history</td></tr>
+          <tr><td><strong>Gross proceeds from sale (field 12)</strong></td><td>Total sale proceeds (in INR) during calendar year</td><td>ESOP transaction statement</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <p><strong>Continuity tip:</strong> Always use your previous year ITR's Schedule FA closing balance as this year's opening (field 8). This creates an auditable chain across years and avoids scrutiny notices.</p>
+    </div>
+    <h3>Currency Conversion</h3>
+    <p>Use the <strong>SBI TTBR (Telegraphic Transfer Buying Rate)</strong> as specified under Rule 115A for converting foreign currency to INR on any transaction date. For year-end balances, use the Dec 31 RBI reference rate.</p>
+  </div>
+
+  <!-- FSI TR -->
+  <div class="section" id="fsi">
+    <div class="section-eyebrow">Step 11</div>
+    <h2>Schedule FSI & TR — Foreign Tax Credit</h2>
+    <p>Only fill these if <strong>all three conditions</strong> are met:</p>
+    <div class="step-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div><h4>Foreign tax was withheld</h4><p>Your ESOP platform withheld German/US/UK tax on RSU vesting or sale</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div><h4>Net capital gain (not loss)</h4><p>The same foreign transactions result in a net taxable income in India</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div><h4>Form 67 filed first</h4><p>You must file Form 67 on the portal BEFORE the ITR deadline — it's a separate form</p></div>
+      </div>
+    </div>
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <p><strong>If your RSU transactions resulted in a net loss</strong>, there is no Indian tax liability to offset. Do not fill Schedule FSI/TR. Unutilized foreign tax credit does not carry forward under Rule 128.</p>
+    </div>
+  </div>
+
+  <!-- FINAL TAX -->
+  <div class="section" id="tax">
+    <div class="section-eyebrow">Step 12 & 13</div>
+    <h2>Final Tax Computation & Payment</h2>
+    <h3>Verify Part B-TI Figures</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Line</th><th>What to Check</th></tr></thead>
+        <tbody>
+          <tr><td>Line 1 — Salaries</td><td>Net taxable salary after ₹75,000 standard deduction</td></tr>
+          <tr><td>Line 3 — Capital Gains</td><td>Net taxable CG after set-off (0 if below ₹1.25L exemption or net loss)</td></tr>
+          <tr><td>Line 11 — VI-A Deductions</td><td>80TTA amount if applicable</td></tr>
+          <tr><td>Line 16 — Losses to carry forward</td><td>STCG loss for future years (from Schedule CFL)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>If There's a Small Amount Payable</h3>
+    <p>Pay via <strong>e-Pay Tax → Challan 280 → Self Assessment Tax (300)</strong> using net banking or UPI. The challan auto-attaches to your return. After payment, submit the return.</p>
+    <h3>E-Verify Within 30 Days</h3>
+    <div class="callout danger">
+      <span class="callout-icon">🚨</span>
+      <p>Without e-verification, your return is treated as not filed. Use <strong>Aadhaar OTP</strong> (fastest — instant verification) under e-Verify Return on the portal.</p>
+    </div>
+  </div>
+
+  <!-- MISTAKES -->
+  <div class="section" id="mistakes">
+    <div class="section-eyebrow">Common Errors</div>
+    <h2>7 Mistakes That Attract Scrutiny Notices</h2>
+
+    <div class="mistake">
+      <h4>❌ Mistake 1: Skipping Schedule CG for RSU Losses</h4>
+      <p>Even if your foreign RSU sales net to a loss, you must report them. The loss carries forward 8 years and can offset future gains — skipping it means losing that benefit.</p>
+    </div>
+    <div class="mistake">
+      <h4>❌ Mistake 2: Not Disclosing in Schedule FA</h4>
+      <p>₹10 lakh penalty per year under the Black Money Act. Even a small holding must be disclosed every year without exception.</p>
+    </div>
+    <div class="mistake">
+      <h4>❌ Mistake 3: Filing ITR-1 Instead of ITR-2</h4>
+      <p>ITR-1 has no Schedule FA. If the department's FATCA/CRS data shows foreign holdings but your ITR has no Schedule FA, you will receive a scrutiny notice.</p>
+    </div>
+    <div class="mistake">
+      <h4>❌ Mistake 4: Using Financial Year Dates in Schedule FA</h4>
+      <p>Schedule FA uses calendar year (Jan–Dec). Entering April–March dates makes your return inconsistent with FATCA data the government receives from foreign financial institutions.</p>
+    </div>
+    <div class="mistake">
+      <h4>❌ Mistake 5: Claiming Foreign Tax Credit Without Form 67</h4>
+      <p>Form 67 must be filed before the ITR deadline, not after. If you only fill Schedule FSI/TR without Form 67, the credit claim will be disallowed during processing.</p>
+    </div>
+    <div class="mistake">
+      <h4>❌ Mistake 6: Lumping All Interest Under "Others" in Schedule OS</h4>
+      <p>80TTA only works if savings bank interest is in field 1b(i). If it's in field 1b(ix) "Others", the deduction won't auto-populate in Schedule VI-A.</p>
+    </div>
+    <div class="mistake">
+      <h4>❌ Mistake 7: Using Zero as RSU Cost Basis</h4>
+      <p>The cost of acquisition for capital gains is the FMV at vesting (which was already taxed as salary perquisite). Using zero results in double taxation — you pay tax on the same value twice.</p>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section" id="faq">
+    <div class="section-eyebrow">FAQs</div>
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <div class="faq-q">My employer deducted full TDS on RSU vesting. Do I still need Schedule CG?</div>
+      <div class="faq-a">Yes. TDS at vesting covers the perquisite income (salary component). The subsequent sale of those shares creates a separate capital gains event — gain or loss — that must be reported in Schedule CG regardless of the TDS already paid.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can I set off my foreign RSU STCG loss against domestic equity LTCG?</div>
+      <div class="faq-a">Yes. STCG losses can be set off against LTCG gains from any source. The portal's Schedule CG Section E handles this automatically once both entries are made correctly.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">My domestic MF LTCG is below ₹1.25 lakh. Do I still need to report it?</div>
+      <div class="faq-a">Yes. You must report the transactions in Schedule 112A and Schedule CG. The ₹1.25 lakh exemption (Section 112A) means no tax is payable below this threshold, but the transaction must still be disclosed. The portal will automatically compute nil tax on amounts within the limit.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">I have RSUs from two different vesting dates. How do I enter them in Schedule FA?</div>
+      <div class="faq-a">You can enter a single row for all holdings in the same company using the earliest vesting date as the "date of acquiring." The initial, peak, and closing values should reflect your total holding across all tranches combined.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What exchange rate should I use to convert foreign currency for Schedule CG?</div>
+      <div class="faq-a">Use the SBI TTBR (Telegraphic Transfer Buying Rate) for the date of each transaction, as specified under Rule 115A of the Income Tax Rules. For year-end balances in Schedule FA, use the RBI reference rate as of December 31.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">My ESOP platform withheld German tax on my RSU vesting. Can I get credit for it?</div>
+      <div class="faq-a">Only if the same transactions also result in net taxable income in India AND you file Form 67 before the ITR deadline. If your foreign RSU sales are a net loss (which is common for sell-to-cover transactions), there is no Indian tax liability to credit against, so the foreign withholding tax is not claimable.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">The Schedule 112A CSV upload keeps failing. What's wrong?</div>
+      <div class="faq-a">The column 1a value must exactly match the portal's dropdown text — "After 31st January 2018" (full spelling of "January", not "Jan"). Download the template directly from the portal each year as the format can change. If CSV upload fails for column 1a, enter rows manually using the "+ Add Another" button instead.</div>
+    </div>
+  </div>
+
+  <!-- TROUBLESHOOTING -->
+  <div class="section" id="troubleshooting">
+    <div class="section-eyebrow">Real Errors We Fixed</div>
+    <h2>Portal Validation Errors — What Actually Happened</h2>
+    <p>After completing all schedules, the Internal Validation threw 4 errors before submission. Here's exactly what they were and how to fix them — so you don't waste time:</p>
+
+    <div class="mistake">
+      <h4>🔴 Error 1: Secondary Address Not Selected (Part A-Gen)</h4>
+      <p><strong>Error:</strong> "Kindly select the appropriate option for secondary address in Schedule Part A General"<br>
+      <strong>Fix:</strong> Go to Part A-Gen → scroll to address section → find the question "Is secondary address same as primary address?" → select <strong>Yes</strong>. This field is easy to miss since it's not prominently visible.</p>
+    </div>
+
+    <div class="mistake">
+      <h4>🔴 Error 2: Nature of Employer Not Selected (Schedule Salary)</h4>
+      <p><strong>Error:</strong> "Please Select from the drop down at field Nature of Employer in Schedule Salary"<br>
+      <strong>Fix:</strong> Go to Schedule Salary → Edit employer → find "Nature of Employer" dropdown → select <strong>"Others"</strong> for private sector MNC employees. Do not leave it blank even if pre-filled data exists.</p>
+    </div>
+
+    <div class="mistake">
+      <h4>🔴 Error 3: Perquisite Description Missing (Schedule Salary 17(2))</h4>
+      <p><strong>Error:</strong> "Description is mandatory if Any Other is selected. Please enter Description in Value of perquisites as per section 17(2)"<br>
+      <strong>Fix:</strong> Go to Schedule Salary → perquisites section → change Nature of perquisites from "Other benefits or amenities" to <strong>"Stock options (non-qualified options)"</strong>. This removes the description requirement entirely and is the correct classification for RSUs.</p>
+    </div>
+
+    <div class="mistake">
+      <h4>🔴 Error 4: Profit in Lieu of Salary Dropdown Empty (Schedule Salary 17(3))</h4>
+      <p><strong>Error:</strong> "Please select dropdown in profit in lieu of salary as per section 17(3) in Schedule Salary"<br>
+      <strong>Fix:</strong> Even though the amount is ₹0, the portal requires a dropdown selection. Select <strong>"Any compensation due or received by an assessee from an employer in connection with the termination of his employment"</strong> (first option). Amount stays ₹0. This is a portal quirk — it forces a selection regardless of amount.</p>
+    </div>
+
+    <div class="callout tip">
+      <span class="callout-icon">💡</span>
+      <p><strong>112A CSV Upload Tip:</strong> The portal's CSV upload for Schedule 112A rejects the column 1a value if it doesn't exactly match the dropdown. The correct text is <strong>"After 31st January 2018"</strong> — full spelling of "January", not "Jan". If CSV keeps failing, consolidate all same-ISIN transactions into one row and enter manually using "+ Add Another". Two rows (one per company) is perfectly acceptable.</p>
+    </div>
+
+    <div class="callout info">
+      <span class="callout-icon">ℹ️</span>
+      <p><strong>Schedule CG not in schedule list?</strong> If you don't see Schedule CG in your schedule list, go back to "Select Schedule" page and add it from the Capital Gains section. Without Schedule CG, CYLA/BFLA/CFL will show ₹0 for all CG rows and your RSU loss won't be captured or carried forward.</p>
+    </div>
+  </div>
+
+  <!-- GROWW CTA -->
+  <div class="section" style="background: linear-gradient(135deg, #e8f5e9 0%, #f1f8ff 100%); border-color: #34d399;">
+    <div class="section-eyebrow" style="color: #00875a;">Track Your Investments</div>
+    <h2 style="color: #0f1923;">Simplify Your Capital Gains Next Year</h2>
+    <p>One of the most time-consuming parts of ITR-2 is gathering your MF capital gains data across multiple SIPs. Groww automatically tracks all your mutual fund and stock transactions and generates a ready-to-use capital gains report — making Schedule 112A filing much faster.</p>
+    <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-top:20px;">
+      <a href="https://app.groww.in/v3cO/tpwi2524" target="_blank" rel="nofollow sponsored" style="display:inline-flex; align-items:center; gap:10px; background:#00875a; color:white; font-weight:700; font-size:15px; padding:14px 28px; border-radius:10px; text-decoration:none; box-shadow: 0 4px 14px rgba(0,135,90,0.3); transition: transform 0.15s;">
+        📈 Start Investing on Groww
+      </a>
+      <span style="font-size:13px; color:#6b7f8e;">Free account · Instant MF/stock CG report · Used by 5 crore+ investors</span>
+    </div>
+    <p style="font-size:12px; color:#6b7f8e; margin-top:12px;">*Affiliate link. We may earn a referral fee at no extra cost to you.</p>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div class="section">
+    <div class="section-eyebrow">Final Checklist</div>
+    <h2>Before You Submit — Verify Everything</h2>
+    <ul class="checklist">
+      <li>Collected Form 16, AIS, ESOP statement, MF CG statement, bank interest certificates</li>
+      <li>Selected ITR-2 (not ITR-1) on the portal</li>
+      <li>Filing reason: "Taxable income exceeds basic exemption limit"</li>
+      <li>Schedules selected: Salary, CG, OS, VI-A, FA, 112A (if applicable)</li>
+      <li>Schedule Salary verified against Form 16 — perquisite value matches</li>
+      <li>Nature of Employer set to "Others" in Schedule Salary</li>
+      <li>Perquisite nature set to "Stock options (non-qualified options)" for RSUs</li>
+      <li>17(3) dropdown selected even if amount is ₹0</li>
+      <li>Secondary address question answered in Part A-Gen</li>
+      <li>Schedule CG A5 filled for foreign RSU sale (even if it's a loss)</li>
+      <li>Schedule 112A filled for domestic equity/MF LTCG transactions</li>
+      <li>Interest breakdown in Schedule OS: savings (1b-i) vs deposits (1b-ii) split correctly</li>
+      <li>80TTA claimed in Schedule VI-A (up to ₹10,000 on savings interest)</li>
+      <li>Schedule FA A3 filled with calendar year values for all foreign holdings</li>
+      <li>Schedule FSI/TR skipped if net capital loss on foreign transactions</li>
+      <li>Internal Validation passes with zero errors</li>
+      <li>Self-assessment tax paid (if any amount payable in Line 16)</li>
+      <li>Return submitted and e-verified within 30 days using Aadhaar OTP</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- CHATBOT WIDGET -->
+<div id="chat-bubble" onclick="toggleChat()" style="position:fixed; bottom:24px; right:24px; z-index:300; width:56px; height:56px; background:linear-gradient(135deg,#1a6bff,#0047cc); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 4px 20px rgba(26,107,255,0.5); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+  <span style="font-size:24px;" id="chat-icon">💬</span>
+</div>
+
+<div id="chat-window" style="display:none; position:fixed; bottom:92px; right:24px; z-index:300; width:360px; max-width:calc(100vw - 48px); background:#ffffff; border-radius:16px; box-shadow:0 8px 40px rgba(15,25,35,0.18); overflow:hidden; font-family:'Plus Jakarta Sans',sans-serif;">
+  <!-- Header -->
+  <div style="background:linear-gradient(135deg,#0f1923,#0047cc); padding:16px 20px; display:flex; align-items:center; gap:12px;">
+    <div style="width:36px;height:36px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;">🤖</div>
+    <div>
+      <div style="color:white;font-weight:700;font-size:14px;">ITR-2 Assistant</div>
+      <div style="color:rgba(255,255,255,0.6);font-size:11px;">Answers about this guide · Powered by SalaryBit</div>
+    </div>
+    <button onclick="toggleChat()" style="margin-left:auto;background:none;border:none;color:rgba(255,255,255,0.6);font-size:20px;cursor:pointer;line-height:1;padding:0;">✕</button>
+  </div>
+
+  <!-- Messages -->
+  <div id="chat-messages" style="height:320px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:#f7f9fb;">
+    <div class="bot-msg" style="background:white;border:1.5px solid #dde3ea;border-radius:12px 12px 12px 4px;padding:12px 14px;font-size:13.5px;color:#3d4f5c;max-width:85%;line-height:1.5;">
+      👋 Hi! I can answer your questions about filing ITR-2 with foreign assets (RSU/ESOP).<br><br>Try asking something or pick a topic below:
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+      <button class="chip" onclick="askQ('Which ITR form should I file if I have RSUs?')">RSU & ITR form</button>
+      <button class="chip" onclick="askQ('What is Schedule FA and how to fill it?')">Schedule FA</button>
+      <button class="chip" onclick="askQ('How is RSU taxed in India?')">RSU taxation</button>
+      <button class="chip" onclick="askQ('What is the penalty for not disclosing foreign assets?')">FA penalty</button>
+      <button class="chip" onclick="askQ('How to fill Schedule 112A?')">Schedule 112A</button>
+      <button class="chip" onclick="askQ('Can I set off RSU loss against mutual fund gains?')">Loss set-off</button>
+      <button class="chip" onclick="askQ('What exchange rate to use for foreign shares?')">Exchange rate</button>
+      <button class="chip" onclick="askQ('What is the last date to file ITR-2?')">Filing deadline</button>
+    </div>
+  </div>
+
+  <!-- Input -->
+  <div style="padding:12px 16px;border-top:1.5px solid #dde3ea;background:white;display:flex;gap:8px;">
+    <input id="chat-input" type="text" placeholder="Type your question..." onkeydown="if(event.key==='Enter')sendMsg()" style="flex:1;border:1.5px solid #dde3ea;border-radius:8px;padding:10px 12px;font-size:13px;font-family:inherit;outline:none;color:#0f1923;" onfocus="this.style.borderColor='#1a6bff'" onblur="this.style.borderColor='#dde3ea'">
+    <button onclick="sendMsg()" style="background:#1a6bff;color:white;border:none;border-radius:8px;padding:10px 14px;font-size:16px;cursor:pointer;">➤</button>
+  </div>
+</div>
+
+<style>
+.chip{background:#e8f0ff;color:#0047cc;border:1.5px solid #93c5fd;border-radius:100px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.15s;}
+.chip:hover{background:#1a6bff;color:white;border-color:#1a6bff;}
+.bot-msg{background:white;border:1.5px solid #dde3ea;border-radius:12px 12px 12px 4px;padding:12px 14px;font-size:13.5px;color:#3d4f5c;max-width:85%;line-height:1.5;}
+.user-msg{background:#1a6bff;color:white;border-radius:12px 12px 4px 12px;padding:12px 14px;font-size:13.5px;max-width:85%;line-height:1.5;align-self:flex-end;}
+</style>
+
+<script>
+const QA = [
+  {
+    q: ['which itr','itr form','rsu itr','what form','should i file itr','itr-2 or itr-1'],
+    a: '📋 <strong>You must file ITR-2</strong> if you hold foreign RSUs or ESOPs — even if your only income is salary. ITR-1 has no Schedule FA or Schedule CG for foreign assets. Filing ITR-1 with foreign holdings is treated as a defective return.'
+  },
+  {
+    q: ['schedule fa','foreign asset','fa disclosure','a3','foreign equity'],
+    a: '🌍 <strong>Schedule FA</strong> is mandatory for all residents holding foreign shares. It uses the <strong>calendar year (Jan–Dec)</strong>, not financial year. Fill Section A3 for foreign equity (RSUs/ESOPs). Fields: initial value, peak value, closing balance, gross proceeds from sale. Use previous year\'s ITR closing balance as this year\'s opening value.'
+  },
+  {
+    q: ['rsu tax','how rsu taxed','rsu taxable','rsu income','perquisite'],
+    a: '💰 RSU taxation has two stages:<br><br>1. <strong>At vesting:</strong> FMV of shares = Perquisite under Sec 17(2). Added to salary, TDS deducted by employer, shows in Form 16.<br><br>2. <strong>At sale:</strong> Sale price minus FMV at vesting = Capital Gain/Loss. If held under 24 months → STCG at slab rate. If over 24 months → LTCG at 12.5%.'
+  },
+  {
+    q: ['penalty','black money','not disclose','non disclosure','forget to file fa'],
+    a: '⚠️ <strong>₹10 lakh penalty per year</strong> under the Black Money (Undisclosed Foreign Income and Assets) Act 2015 for non-disclosure of foreign assets in Schedule FA. This applies even if the holding value is small. Disclose every year without exception.'
+  },
+  {
+    q: ['112a','schedule 112a','mutual fund ltcg','equity ltcg','domestic fund'],
+    a: '📊 <strong>Schedule 112A</strong> requires transaction-level detail for domestic equity MF/shares sold with STT paid.<br><br>Tip: You can consolidate same-ISIN, same-date transactions into one row. CSV upload requires exact dropdown text: <strong>"After 31st January 2018"</strong> (full spelling). If CSV fails, enter manually using "+ Add Another".'
+  },
+  {
+    q: ['loss set off','rsu loss','stcg loss','capital loss','set off against','mutual fund gain'],
+    a: '✅ Yes — <strong>STCG loss from foreign RSU sales can be set off against LTCG gains</strong> from domestic equity/MF. The portal handles this automatically in Schedule CG Section E. Any remaining loss after set-off is carried forward for 8 years in Schedule CFL.'
+  },
+  {
+    q: ['exchange rate','conversion rate','inr','sbi ttbr','foreign currency','convert'],
+    a: '💱 Use <strong>SBI TTBR (Telegraphic Transfer Buying Rate)</strong> for the date of each transaction — this is specified under Rule 115A of the Income Tax Rules. For year-end balances in Schedule FA, use the RBI reference rate as of December 31.'
+  },
+  {
+    q: ['deadline','last date','due date','when to file','july 31'],
+    a: '📅 For salaried individuals (no audit), the ITR-2 filing deadline is <strong>July 31, 2026</strong> for AY 2026-27. If you have foreign assets and wish to claim foreign tax credit, also file <strong>Form 67 before the deadline</strong>. Late filing attracts ₹5,000 fee under Section 234F.'
+  },
+  {
+    q: ['foreign tax credit','form 67','fsi','schedule tr','german tax','us tax','double tax'],
+    a: '🌐 You can claim foreign tax credit only if:<br>1. Foreign tax was actually withheld on the same income<br>2. The same transactions result in net taxable income in India (not a loss)<br>3. You file <strong>Form 67 before the ITR deadline</strong><br><br>If your RSU sales are a net loss, skip Schedule FSI/TR — no credit to claim.'
+  },
+  {
+    q: ['validation error','error','nature of employer','17(3)','perquisite description','secondary address'],
+    a: '🔧 Common validation errors when submitting ITR-2:<br><br>1. <strong>Secondary address</strong> → Go to Part A-Gen, select "Yes" for same as primary<br>2. <strong>Nature of employer</strong> → Select "Others" in Schedule Salary<br>3. <strong>Perquisite description</strong> → Change nature to "Stock options (non-qualified options)"<br>4. <strong>17(3) dropdown</strong> → Select first option even if amount is ₹0'
+  },
+  {
+    q: ['80tta','savings interest','interest deduction','deduction','vi-a'],
+    a: '🏦 <strong>80TTA deduction</strong> (up to ₹10,000) applies only to savings bank interest — not FD interest. For it to auto-populate in Schedule VI-A, you must enter savings interest specifically in Schedule OS field <strong>1b(i)</strong>. Entering all interest under "Others" will not trigger 80TTA.'
+  },
+  {
+    q: ['new regime','old regime','115bac','which regime','tax regime'],
+    a: '⚖️ For salaried RSU holders with no major deductions, the <strong>new tax regime is usually better</strong>. The new regime has lower slab rates but disallows most deductions (80C, HRA, etc.). Only 80TTA savings interest deduction remains applicable under new regime. Use the income tax calculator on the portal to compare before deciding.'
+  },
+  {
+    q: ['cost','cost of acquisition','cost basis','fmv','vesting price','zero cost'],
+    a: '📌 <strong>Never use zero as your RSU cost basis.</strong> The cost of acquisition for capital gains is the <strong>FMV at vesting</strong> — the same value that was taxed as your salary perquisite in Form 16. Using zero will double-tax you on the same income. Cost = FMV at vesting × number of shares sold.'
+  },
+  {
+    q: ['e-verify','verify','aadhaar otp','not verified','30 days'],
+    a: '✅ After submitting your ITR, e-verify within <strong>30 days</strong> — otherwise the return is treated as not filed. Fastest method: <strong>Aadhaar OTP</strong> (instant). Go to e-File → Income Tax Returns → e-Verify Return on the portal.'
+  },
+  {
+    q: ['groww','track','mutual fund','investment','portfolio'],
+    a: '📈 Groww automatically tracks all your mutual fund and stock transactions and generates a ready-to-use capital gains report — making Schedule 112A filing much faster next year. <a href="https://app.groww.in/v3cO/tpwi2524" target="_blank" style="color:#1a6bff;font-weight:700;">Start investing on Groww →</a>'
+  },
+  {
+    q: ['salarybit','tax ai','analyze','report','help','ca','chartered accountant'],
+    a: '🤖 <strong>SalaryBit Tax AI</strong> at <a href="https://salarybit.in" target="_blank" style="color:#1a6bff;font-weight:700;">salarybit.in</a> provides CA-level tax analysis for Indian salaried employees. Tools include ITR calculator, MF analyser, gold/silver tracker, and more — all free. For complex cases involving large foreign holdings or DTAA, consult a qualified CA.'
+  }
+];
+
+function toggleChat(){
+  const w = document.getElementById('chat-window');
+  const icon = document.getElementById('chat-icon');
+  if(w.style.display==='none'){
+    w.style.display='block';
+    icon.textContent='✕';
+  } else {
+    w.style.display='none';
+    icon.textContent='💬';
+  }
+}
+
+function getAnswer(q){
+  const ql = q.toLowerCase();
+  for(const item of QA){
+    if(item.q.some(k => ql.includes(k))) return item.a;
+  }
+  return "I don't have a specific answer for that in this guide. For complex tax situations, visit <a href='https://salarybit.in' target='_blank' style='color:#1a6bff;font-weight:700;'>SalaryBit.in</a> or consult a CA. You can also try rephrasing your question — e.g. 'RSU tax', 'Schedule FA', 'validation error'.";
+}
+
+function addMsg(text, type){
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = type === 'user' ? 'user-msg' : 'bot-msg';
+  div.innerHTML = text;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function askQ(q){
+  addMsg(q, 'user');
+  setTimeout(() => addMsg(getAnswer(q), 'bot'), 400);
+}
+
+function sendMsg(){
+  const input = document.getElementById('chat-input');
+  const q = input.value.trim();
+  if(!q) return;
+  input.value = '';
+  askQ(q);
+}
+</script>
+
+<!-- FOOTER -->
+<div class="footer" style="margin-bottom:80px;">
+  <p>This guide is for informational purposes only and does not constitute tax advice. Consult a qualified CA for complex situations involving large foreign holdings, multiple RSU grants, or DTAA treaty positions.</p>
+  <p style="margin-top:8px;">Last updated: June 2026 &nbsp;|&nbsp; Applicable for AY 2026-27 (FY 2025-26) &nbsp;|&nbsp; <a href="https://salarybit.in">SalaryBit.in</a></p>
+</div>
+
+<script>
+  // Reading progress bar
+  window.addEventListener('scroll', () => {
+    const bar = document.querySelector('.progress-bar');
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    bar.style.width = (scrollTop / scrollHeight * 100) + '%';
+  });
+</script>
+
+</body>
+</html>

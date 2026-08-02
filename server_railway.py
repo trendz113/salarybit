@@ -2683,50 +2683,227 @@ Output format (plain text, not JSON):
 Be precise and concrete. Never state a figure that wasn't provided or computed for you."""
 
 ITR_FIELD_PATTERNS = {
-    "employee_name": r"(?:Name and address of the Employee|Employee Name)[:\s]*([A-Za-z .]{3,60})",
-    "pan": r"PAN\s*(?:of the Employee)?[:\s]*([A-Z]{5}[0-9]{4}[A-Z])",
-    "employer_name": r"(?:Name and address of the Employer|Employer Name)[:\s]*([A-Za-z0-9 .,&]{3,80})",
-    "tan": r"TAN\s*(?:of the Employer|of the Deductor|Deductor)?[:\s]*([A-Z]{4}[0-9]{5}[A-Z])",
-    "gross_salary": r"Gross [Ss]alary[^\d]{0,40}([\d,]+)",
-    "hra_received": r"House Rent Allowance[^\d]{0,40}([\d,]+)",
-    "standard_deduction": r"Standard [Dd]eduction[^\d]{0,40}([\d,]+)",
-    "section_80c": r"(?:80C|Section 80C)[^\d]{0,40}([\d,]+)",
-    "section_80ccd2": r"80CCD\(2\)[^\d]{0,40}([\d,]+)",
-    "tds_deducted": r"(?:Total [Tt]ax [Dd]educted|Total Amount of Tax Deducted)[^\d]{0,40}([\d,]+)",
-    "assessment_year": r"Assessment Year[:\s]*([0-9]{4}-[0-9]{2})",
+    "employee_name": [
+        r"Name and address of the Employee[:\s]*([A-Za-z .]{3,60})",
+        r"Employee Name[:\s]*([A-Za-z .]{3,60})",
+        r"Name of the Employee[:\s]*([A-Za-z .]{3,60})",
+    ],
+    "pan": [
+        r"PAN\s+of\s+the\s+Employee\s*[:\-]?\s*([A-Z]{5}[0-9]{4}[A-Z])",
+        r"PAN\s+of\s+Employee\s*[:\-]?\s*([A-Z]{5}[0-9]{4}[A-Z])",
+        r"Permanent\s+Account\s+Number\s*(?:of\s+the\s+)?Employee[^A-Z0-9\n]{0,20}([A-Z]{5}[0-9]{4}[A-Z])",
+        # Last resort: a PAN-shaped string appearing shortly after the word "Employee"
+        r"Employee[^\n]{0,60}?([A-Z]{5}[0-9]{4}[A-Z])",
+    ],
+    "employer_name": [
+        r"Name and address of the Employer[:\s]*([A-Za-z0-9 .,&]{3,80})",
+        r"Employer Name[:\s]*([A-Za-z0-9 .,&]{3,80})",
+        r"Name of the Employer[:\s]*([A-Za-z0-9 .,&]{3,80})",
+    ],
+    "tan": [
+        r"TAN\s*(?:of the Employer|of the Deductor|Deductor)?[:\s]*([A-Z]{4}[0-9]{5}[A-Z])",
+    ],
+    "gross_salary": [
+        # Most reliable: the "(d) Total" row that sums up all of Gross Salary's sub-items
+        r"\(d\)\s*Total\s*[:\-]?\s*(?:Rs\.?|₹)?\s*([\d,]+)",
+        # Next best: the primary salary figure under section 17(1), a good proxy when (d) isn't found
+        r"[Ss]alary\s+as\s+per\s+provisions\s+contained\s+in\s+[Ss]ection\s*17\(1\)[^\d]{0,80}([\d,]+)",
+        r"[Ss]ection\s*17\(1\)[^\d]{0,80}([\d,]+)",
+        # Wider generic fallback, in case a simpler/summary-style Form16 does put the figure nearby
+        r"Gross [Ss]alary[^\d]{0,150}([\d,]+)",
+        r"Total Gross Salary[^\d]{0,60}([\d,]+)",
+        r"Gross Total Income[^\d]{0,80}([\d,]+)",
+    ],
+    "hra_received": [
+        r"House Rent Allowance[^\d]{0,60}([\d,]+)",
+        r"HRA[^\d]{0,60}([\d,]+)",
+    ],
+    "standard_deduction": [
+        r"Standard [Dd]eduction[^\d]{0,60}([\d,]+)",
+    ],
+    "section_80c": [
+        r"(?:80C|Section 80C)[^\d]{0,60}([\d,]+)",
+    ],
+    "section_80ccd2": [
+        r"80CCD\(2\)[^\d]{0,80}([\d,]+)",
+    ],
+    "tds_deducted": [
+        r"Total [Tt]ax [Dd]educted[^\d]{0,80}([\d,]+)",
+        r"Total Amount of Tax Deducted[^\d]{0,80}([\d,]+)",
+        r"Total\s*[Tt]ax\s*[Dd]educted\s*at\s*[Ss]ource[^\d]{0,80}([\d,]+)",
+        r"Total\s*[Tt]ax\s*[Dd]eposited[^\d]{0,80}([\d,]+)",
+    ],
+    "assessment_year": [
+        r"Assessment Year[:\s]*([0-9]{4}-[0-9]{2})",
+    ],
 }
 ITR_REQUIRED_FOR_FILING = ["pan", "gross_salary", "tds_deducted"]
+# Below this many characters of extracted text, the PDF is almost certainly a scanned
+# image (or otherwise has no real text layer) rather than a real-format issue.
+ITR_SCANNED_PDF_TEXT_THRESHOLD = 200
 
 
 def _itr_clean_number(raw):
     if raw is None:
         return None
     try:
-        return int(raw.replace(",", "").strip())
-    except ValueError:
+        return int(str(raw).replace(",", "").strip())
+    except (ValueError, TypeError):
         return None
 
 
-def parse_form16(pdf_path):
-    """Returns (extracted: dict, missing: list[str]). Anything not confidently
-    matched is left as None and reported in `missing` rather than guessed."""
+def _itr_first_match(patterns, text):
+    for pattern in patterns:
+        match = re.search(pattern, text, re.IGNORECASE)
+        if match:
+            return match.group(1).strip()
+    return None
+
+
+def parse_form16_regex(pdf_path):
+    """Fallback path: regex over flattened text. Kept as a backup for when the
+    Claude extraction call fails (e.g. API outage) — used ONLY as a fallback,
+    because pdfplumber's text flattening can scramble table column order
+    (e.g. Employee PAN vs Deductor PAN sitting side by side in a table),
+    which regex has no way to tell apart. See parse_form16() for the primary,
+    much more reliable path."""
     text_parts = []
     with pdfplumber.open(pdf_path) as pdf:
         for page in pdf.pages:
             text_parts.append(page.extract_text() or "")
     text = "\n".join(text_parts)
 
+    likely_scanned = len(text.strip()) < ITR_SCANNED_PDF_TEXT_THRESHOLD
+
     extracted = {}
-    for field, pattern in ITR_FIELD_PATTERNS.items():
-        match = re.search(pattern, text, re.IGNORECASE)
-        value = match.group(1).strip() if match else None
+    for field, patterns in ITR_FIELD_PATTERNS.items():
+        value = _itr_first_match(patterns, text)
         if field in ("gross_salary", "hra_received", "standard_deduction",
                      "section_80c", "section_80ccd2", "tds_deducted"):
             value = _itr_clean_number(value)
         extracted[field] = value
 
     missing = [f for f in ITR_REQUIRED_FOR_FILING if not extracted.get(f)]
-    return extracted, missing
+    return extracted, missing, likely_scanned
+
+
+ITR_EXTRACTION_PROMPT = """This PDF is an Indian Form 16 (TDS certificate on salary), Part A and/or Part B.
+Read the actual table structure carefully — do NOT confuse the Deductor's (employer's) PAN
+with the Employee's PAN, they are usually shown side by side in a table and are easy to
+mix up if you don't look at which column/row each one is actually in.
+
+Extract exactly these fields and output ONLY valid JSON, no markdown, no preamble:
+{
+  "employee_name": string or null,
+  "pan": string or null,           // the EMPLOYEE's PAN specifically, format AAAAA9999A
+  "employer_name": string or null,
+  "tan": string or null,           // the Deductor's/Employer's TAN, format AAAA99999A
+  "gross_salary": number or null,  // the Gross Salary total — usually row "(d) Total" under
+                                    // "1. Gross Salary" in Part B, i.e. sum of 17(1)+17(2)+17(3).
+                                    // If only "Salary as per section 17(1)" is present with no
+                                    // separate (d) Total row, use that figure.
+  "hra_received": number or null,  // House Rent Allowance amount, if shown
+  "standard_deduction": number or null,
+  "section_80c": number or null,
+  "section_80ccd2": number or null,
+  "tds_deducted": number or null,  // Total tax deducted at source (the final total, not a
+                                    // single quarter's figure)
+  "assessment_year": string or null  // format "2026-27"
+}
+
+Rules:
+- All money fields must be plain numbers (no commas, no Rs./₹ symbol, no decimals unless present).
+- If a field is genuinely not present or you are not confident, output null for it — never guess
+  or estimate a value.
+- Output ONLY the JSON object, nothing else."""
+
+
+def parse_form16_claude(pdf_path):
+    """Primary extraction path: sends the actual PDF to Claude and lets it read
+    the real table structure, rather than flattening to text and regexing it
+    (which loses column alignment and can e.g. return the Deductor's PAN
+    instead of the Employee's PAN). Falls back to parse_form16_regex() if the
+    API call itself fails for any reason (e.g. outage) — but a successful
+    Claude call is always preferred as the more reliable read.
+
+    Returns (extracted: dict, missing: list[str], likely_scanned: bool).
+    """
+    claude_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not claude_key:
+        raise RuntimeError("Server not configured. Missing ANTHROPIC_API_KEY.")
+
+    with open(pdf_path, "rb") as fh:
+        pdf_b64 = base64.b64encode(fh.read()).decode("utf-8")
+
+    payload = json.dumps({
+        "model": "claude-sonnet-4-6",
+        "max_tokens": 1024,
+        "temperature": 0,
+        "messages": [{
+            "role": "user",
+            "content": [
+                {"type": "document", "source": {"type": "base64", "media_type": "application/pdf", "data": pdf_b64}},
+                {"type": "text", "text": ITR_EXTRACTION_PROMPT}
+            ]
+        }]
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": claude_key,
+            "anthropic-version": "2023-06-01"
+        },
+        method="POST"
+    )
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        result = json.loads(resp.read().decode("utf-8"))
+
+    raw_text = "".join(
+        block.get("text", "") for block in result.get("content", []) if block.get("type") == "text"
+    ).strip()
+
+    # Strip accidental markdown fences, just in case
+    if raw_text.startswith("```"):
+        raw_text = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw_text.strip())
+
+    parsed = json.loads(raw_text)
+
+    extracted = {
+        "employee_name": parsed.get("employee_name"),
+        "pan": (parsed.get("pan") or "").strip().upper() or None,
+        "employer_name": parsed.get("employer_name"),
+        "tan": (parsed.get("tan") or "").strip().upper() or None,
+        "gross_salary": _itr_clean_number(parsed.get("gross_salary")),
+        "hra_received": _itr_clean_number(parsed.get("hra_received")),
+        "standard_deduction": _itr_clean_number(parsed.get("standard_deduction")),
+        "section_80c": _itr_clean_number(parsed.get("section_80c")),
+        "section_80ccd2": _itr_clean_number(parsed.get("section_80ccd2")),
+        "tds_deducted": _itr_clean_number(parsed.get("tds_deducted")),
+        "assessment_year": parsed.get("assessment_year"),
+    }
+    # Validate PAN actually looks like a PAN — if the model returned something
+    # malformed, treat it as not found rather than passing garbage downstream.
+    if extracted["pan"] and not re.match(r"^[A-Z]{5}[0-9]{4}[A-Z]$", extracted["pan"]):
+        extracted["pan"] = None
+
+    missing = [f for f in ITR_REQUIRED_FOR_FILING if not extracted.get(f)]
+    return extracted, missing, False  # Claude read real text, so "likely_scanned" doesn't apply
+
+
+def parse_form16(pdf_path):
+    """Returns (extracted: dict, missing: list[str], likely_scanned: bool).
+    Tries the Claude-based extraction first (reads the actual PDF/table
+    structure, most reliable). Falls back to the regex-over-text method only
+    if the Claude call itself errors out (e.g. API outage) — a successful
+    Claude read is always preferred."""
+    try:
+        return parse_form16_claude(pdf_path)
+    except Exception as e:
+        print(f"parse_form16_claude failed, falling back to regex: {type(e).__name__}: {e}")
+        return parse_form16_regex(pdf_path)
 
 
 def _itr_slab_tax(taxable_income):
@@ -2877,14 +3054,24 @@ def itr_analyze():
             form16.save(tmp.name)
             tmp_path = tmp.name
 
-        extracted, missing = parse_form16(tmp_path)
+        extracted, missing, likely_scanned = parse_form16(tmp_path)
         if missing:
-            return jsonify({
-                "success": False,
-                "error": f"Couldn't confidently read these required fields from your Form16: "
-                         f"{', '.join(missing)}. Please check the PDF is text-based (not a "
-                         f"scanned image) and try again."
-            }), 200
+            if likely_scanned:
+                error_msg = (
+                    "We couldn't read any text from this PDF at all — it looks like a "
+                    "scanned copy or photo saved as a PDF rather than a text-based PDF. "
+                    "Please re-download your Form16 directly from your employer's payroll "
+                    "portal or TRACES as a PDF (not a scan/photo) and try again."
+                )
+            else:
+                error_msg = (
+                    f"We could read your Form16, but couldn't confidently find these "
+                    f"required fields: {', '.join(missing)}. Your Form16's layout may "
+                    f"differ from what we recognise. Please double check the PDF isn't "
+                    f"password-protected or a scanned copy, and try again — if it still "
+                    f"fails, contact support and we'll take a look at this specific format."
+                )
+            return jsonify({"success": False, "error": error_msg}), 200
 
         tax_result = compute_new_regime_tax(
             gross_salary=extracted.get("gross_salary"),

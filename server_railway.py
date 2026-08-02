@@ -2600,6 +2600,276 @@ def capture_lead():
     return jsonify({"status": "ok"}), 200
 
 
+# ═══════════════════════════════════════════════════════════
+# ITR FILING ASSISTANT — BETA (promo-code gated, no real charge yet)
+# Deterministic tax math (never left to the model) + Claude-generated
+# step-by-step filing instructions. Single-request flow (upload → parse →
+# compute → generate → respond) — no server-side scan cache, so this
+# doesn't share the multi-worker cache-loss risk other tools had.
+# ═══════════════════════════════════════════════════════════
+
+ITR_ASSISTANT_PRICE_PAISE = 49900  # Rs 499 — NOT charged yet during beta; promo code required
+
+# Beta testers only. Swap for real Razorpay once a handful of real Form16s
+# have been run through generate_itr_instructions() and manually reviewed.
+ITR_BETA_PROMO_CODES = {
+    "ATHARVATEST499": "Founder test access",
+    "BETA499FREE": "Beta tester access",
+}
+
+ITR_ASSESSMENT_YEAR = "AY 2026-27"
+ITR_FINANCIAL_YEAR = "FY 2025-26"
+
+ITR_NEW_REGIME_SLABS = [
+    (0, 400000, 0.00),
+    (400001, 800000, 0.05),
+    (800001, 1200000, 0.10),
+    (1200001, 1600000, 0.15),
+    (1600001, 2000000, 0.20),
+    (2000001, 2400000, 0.25),
+    (2400001, None, 0.30),
+]
+ITR_STANDARD_DEDUCTION_SALARIED = 75000
+ITR_SECTION_87A_REBATE_LIMIT_INCOME = 1200000
+ITR_SECTION_87A_REBATE_MAX = 60000
+ITR_CESS_RATE = 0.04
+ITR_BELATED_RETURN_DEADLINE = "31 December 2026"
+
+ITR_NOTES_FOR_MODEL = """
+Ground rules the assistant must follow when generating instructions:
+- New regime is the DEFAULT regime for AY 2026-27; most deductions (80C, 80D, HRA exemption,
+  home loan interest on self-occupied property) are NOT available under the new regime.
+  Only a few are: employer's NPS contribution u/s 80CCD(2), standard deduction of Rs 75,000
+  for salaried/pensioners.
+- Do not invent deduction sections that don't apply to the new regime.
+- Compute tax using the provided slabs on (Gross Salary - Standard Deduction - any employer NPS
+  contribution under 80CCD(2)), then apply Section 87A rebate if taxable income <= 12,00,000
+  (rebate capped at tax payable or Rs 60,000, whichever is lower), then add 4% cess.
+- If the person missed the 31 July 2026 due date, this is now a BELATED RETURN under
+  Section 139(4), filable until 31 December 2026, with Section 234F late fee and Section 234A
+  monthly interest on any unpaid tax from 1 August 2026.
+- Always state which ITR form applies (ITR-1 for salary + one house property + other income
+  under Rs 50 lakh with no capital gains; ITR-2 if capital gains/foreign assets/multiple
+  properties are involved) and flag if the case looks like it needs ITR-2 instead of ITR-1.
+- Give portal navigation as literal steps a first-time filer can follow
+  (e.g. "Log in at incometax.gov.in -> e-File -> Income Tax Returns -> File Income Tax Return").
+- Never state a number you were not given or computed from given inputs. If a required field
+  is missing from the extracted Form16 data, say exactly what's missing and stop rather than
+  guessing.
+"""
+
+ITR_SYSTEM_PROMPT = f"""You are a senior Chartered Accountant preparing exact, step-by-step
+filing instructions for a salaried individual filing under the NEW tax regime for
+{ITR_ASSESSMENT_YEAR} ({ITR_FINANCIAL_YEAR}) on the Indian income tax e-filing portal
+(incometax.gov.in). The person has already decided to use the new regime — do not
+discuss or compare the old regime.
+
+{ITR_NOTES_FOR_MODEL}
+
+Today's date context: the original due date (31 July 2026) may have already passed for
+this filer. If so, treat this as a belated return under Section 139(4), filable until
+{ITR_BELATED_RETURN_DEADLINE}, and say so plainly with the applicable late fee and interest —
+computed from the numbers given, never invented.
+
+Output format (plain text, not JSON):
+1. One-paragraph summary: taxable income, tax payable, which ITR form applies, and whether
+   this is a belated return.
+2. Numbered step-by-step portal instructions, referencing the filer's actual extracted
+   numbers at each relevant step (not placeholders).
+3. A short "double-check before you submit" checklist.
+4. A one-line disclaimer that this is automated guidance, not a signed CA opinion, and the
+   filer should verify figures against Form 26AS/AIS on the portal before submission.
+
+Be precise and concrete. Never state a figure that wasn't provided or computed for you."""
+
+ITR_FIELD_PATTERNS = {
+    "employee_name": r"(?:Name and address of the Employee|Employee Name)[:\s]*([A-Za-z .]{3,60})",
+    "pan": r"PAN\s*(?:of the Employee)?[:\s]*([A-Z]{5}[0-9]{4}[A-Z])",
+    "employer_name": r"(?:Name and address of the Employer|Employer Name)[:\s]*([A-Za-z0-9 .,&]{3,80})",
+    "tan": r"TAN\s*(?:of the Employer|of the Deductor|Deductor)?[:\s]*([A-Z]{4}[0-9]{5}[A-Z])",
+    "gross_salary": r"Gross [Ss]alary[^\d]{0,40}([\d,]+)",
+    "hra_received": r"House Rent Allowance[^\d]{0,40}([\d,]+)",
+    "standard_deduction": r"Standard [Dd]eduction[^\d]{0,40}([\d,]+)",
+    "section_80c": r"(?:80C|Section 80C)[^\d]{0,40}([\d,]+)",
+    "section_80ccd2": r"80CCD\(2\)[^\d]{0,40}([\d,]+)",
+    "tds_deducted": r"(?:Total [Tt]ax [Dd]educted|Total Amount of Tax Deducted)[^\d]{0,40}([\d,]+)",
+    "assessment_year": r"Assessment Year[:\s]*([0-9]{4}-[0-9]{2})",
+}
+ITR_REQUIRED_FOR_FILING = ["pan", "gross_salary", "tds_deducted"]
+
+
+def _itr_clean_number(raw):
+    if raw is None:
+        return None
+    try:
+        return int(raw.replace(",", "").strip())
+    except ValueError:
+        return None
+
+
+def parse_form16(pdf_path):
+    """Returns (extracted: dict, missing: list[str]). Anything not confidently
+    matched is left as None and reported in `missing` rather than guessed."""
+    text_parts = []
+    with pdfplumber.open(pdf_path) as pdf:
+        for page in pdf.pages:
+            text_parts.append(page.extract_text() or "")
+    text = "\n".join(text_parts)
+
+    extracted = {}
+    for field, pattern in ITR_FIELD_PATTERNS.items():
+        match = re.search(pattern, text, re.IGNORECASE)
+        value = match.group(1).strip() if match else None
+        if field in ("gross_salary", "hra_received", "standard_deduction",
+                     "section_80c", "section_80ccd2", "tds_deducted"):
+            value = _itr_clean_number(value)
+        extracted[field] = value
+
+    missing = [f for f in ITR_REQUIRED_FOR_FILING if not extracted.get(f)]
+    return extracted, missing
+
+
+def _itr_slab_tax(taxable_income):
+    tax = 0
+    for lower, upper, rate in ITR_NEW_REGIME_SLABS:
+        if taxable_income <= lower:
+            break
+        top = upper if upper is not None else taxable_income
+        span = min(taxable_income, top) - lower + (1 if lower > 0 else 0)
+        if span > 0:
+            tax += span * rate
+    return round(tax)
+
+
+def compute_new_regime_tax(gross_salary, section_80ccd2=0):
+    """Deterministic computation — this number is never left to the model."""
+    gross_salary = gross_salary or 0
+    section_80ccd2 = section_80ccd2 or 0
+
+    taxable_income = max(0, gross_salary - ITR_STANDARD_DEDUCTION_SALARIED - section_80ccd2)
+    tax_before_rebate = _itr_slab_tax(taxable_income)
+
+    rebate = 0
+    if taxable_income <= ITR_SECTION_87A_REBATE_LIMIT_INCOME:
+        rebate = min(tax_before_rebate, ITR_SECTION_87A_REBATE_MAX)
+
+    tax_after_rebate = max(0, tax_before_rebate - rebate)
+    cess = round(tax_after_rebate * ITR_CESS_RATE)
+    total_tax = tax_after_rebate + cess
+
+    return {
+        "taxable_income": taxable_income,
+        "tax_before_rebate": tax_before_rebate,
+        "rebate_87a": rebate,
+        "tax_after_rebate": tax_after_rebate,
+        "cess": cess,
+        "total_tax_payable": total_tax,
+    }
+
+
+def generate_itr_instructions(extracted, tax_result, missed_deadline):
+    claude_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not claude_key:
+        raise RuntimeError("Server not configured. Missing ANTHROPIC_API_KEY.")
+
+    user_payload = {
+        "form16_extracted": extracted,
+        "computed_tax": tax_result,
+        "missed_july_31_deadline": missed_deadline,
+    }
+    user_content = ("Here is the filer's extracted Form16 data and pre-computed tax figures. "
+                    "Generate the filing instructions per the system prompt.\n\n" +
+                    json.dumps(user_payload, indent=2))
+
+    payload = json.dumps({
+        "model": "claude-sonnet-4-6",
+        "max_tokens": 3000,
+        "system": ITR_SYSTEM_PROMPT,
+        "messages": [{"role": "user", "content": user_content}]
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": claude_key,
+            "anthropic-version": "2023-06-01"
+        },
+        method="POST"
+    )
+    with urllib.request.urlopen(req, timeout=90) as resp:
+        result = json.loads(resp.read().decode("utf-8"))
+
+    return "".join(
+        block.get("text", "") for block in result.get("content", []) if block.get("type") == "text"
+    ).strip()
+
+
+@app.route("/api/itr-analyze", methods=["POST", "OPTIONS"])
+def itr_analyze():
+    if request.method == "OPTIONS":
+        return "", 200
+
+    promo_code = (request.form.get("promo_code") or "").strip().upper()
+    if promo_code not in ITR_BETA_PROMO_CODES:
+        return jsonify({
+            "success": False,
+            "error": "ITR Assistant is in beta and requires an invite code right now. "
+                     "It isn't open for payment yet."
+        }), 403
+
+    missed_deadline = request.form.get("missed_deadline") == "yes"
+    form16 = request.files.get("form16")
+    if not form16 or form16.filename == "":
+        return jsonify({"success": False, "error": "Please upload your Form16 PDF."}), 400
+
+    tmp_path = None
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
+            form16.save(tmp.name)
+            tmp_path = tmp.name
+
+        extracted, missing = parse_form16(tmp_path)
+        if missing:
+            return jsonify({
+                "success": False,
+                "error": f"Couldn't confidently read these required fields from your Form16: "
+                         f"{', '.join(missing)}. Please check the PDF is text-based (not a "
+                         f"scanned image) and try again."
+            }), 200
+
+        tax_result = compute_new_regime_tax(
+            gross_salary=extracted.get("gross_salary"),
+            section_80ccd2=extracted.get("section_80ccd2") or 0,
+        )
+
+        try:
+            instructions = generate_itr_instructions(extracted, tax_result, missed_deadline)
+        except Exception as e:
+            print(f"itr-analyze instruction generation error: {type(e).__name__}: {e}")
+            return jsonify({
+                "success": False,
+                "error": "Your Form16 was read and your tax was computed correctly, but the "
+                         "step-by-step instructions could not be generated right now. Please "
+                         "try again in a moment."
+            }), 200
+
+        return jsonify({
+            "success": True,
+            "extracted": extracted,
+            "tax_result": tax_result,
+            "instructions": instructions,
+        })
+    except Exception as e:
+        print(f"itr-analyze error: {type(e).__name__}: {e}")
+        return jsonify({"success": False, "error": "Could not process this Form16. Please try again."}), 200
+    finally:
+        # Never retain uploaded PAN/salary data on disk
+        if tmp_path and os.path.exists(tmp_path):
+            os.remove(tmp_path)
+
+
 @app.route("/", methods=["GET"])
 def health():
     return jsonify({"status": "ok", "service": "SalaryBit API"})

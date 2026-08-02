@@ -3112,26 +3112,42 @@ def health():
 # ── BREAKOUT SCANNER (Binance spot) ──────────────────────────
 # Pure client-side tool — it calls Binance's public market-data API directly
 # from the browser, no server-side computation or Claude call involved.
-# This route only gates access: pay Rs 9 (or use the promo bypass code),
-# then the frontend runs the scan itself.
-BREAKOUT_SCANNER_PRICE_PAISE = 900  # Rs 9
+# This route only gates access: pay for a 10-scan pack (or use the promo
+# bypass code), then the frontend runs scans itself and tracks the credit
+# count locally (no login system on this site, so credits live in the
+# browser via localStorage — same "no account needed" pattern as every
+# other tool here).
+#
+# NOTE: the USD price point requires International Payments to be enabled
+# on the Razorpay account (additional KYC/verification on Razorpay's side).
+# Without that, a currency=USD order request will fail at Razorpay's API —
+# that's a Razorpay account setting, not something this code controls.
+BREAKOUT_SCANNER_SCANS_PER_PACK = 10
+BREAKOUT_SCANNER_PRICE_INR_PAISE = 9900   # Rs 99 for 10 scans
+BREAKOUT_SCANNER_PRICE_USD_CENTS = 100    # $1 for 10 scans
 
 
 @app.route("/api/create-breakoutscanner-order", methods=["POST", "OPTIONS"])
 def create_breakoutscanner_order():
     if request.method == "OPTIONS":
         return "", 200
+    data = request.get_json(silent=True) or {}
+    currency = (data.get("currency") or "INR").upper()
+    if currency not in ("INR", "USD"):
+        currency = "INR"
+    amount = BREAKOUT_SCANNER_PRICE_USD_CENTS if currency == "USD" else BREAKOUT_SCANNER_PRICE_INR_PAISE
     try:
         order = rzp.order.create({
-            "amount": BREAKOUT_SCANNER_PRICE_PAISE,
-            "currency": "INR",
+            "amount": amount,
+            "currency": currency,
             "receipt": f"breakoutscanner_{os.urandom(4).hex()}",
         })
         return jsonify({
             "order_id": order["id"],
             "amount": order["amount"],
             "currency": order["currency"],
-            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID"),
+            "scans_granted": BREAKOUT_SCANNER_SCANS_PER_PACK
         })
     except Exception as e:
         print(f"create-breakoutscanner-order error: {e}")
@@ -3142,7 +3158,8 @@ def create_breakoutscanner_order():
 def verify_breakoutscanner_payment():
     """Verifies payment (or a promo bypass code), then just returns success —
     the actual scan runs entirely client-side against Binance, nothing to
-    generate server-side."""
+    generate server-side. Credit tracking (10 scans per pack) happens in
+    the browser, not here."""
     if request.method == "OPTIONS":
         return "", 200
     data = request.get_json(silent=True) or {}
@@ -3152,7 +3169,7 @@ def verify_breakoutscanner_payment():
     if promo_code and promo_code == PROMO_BYPASS_CODE:
         payment_id = f"promo_{os.urandom(4).hex()}"
         print(f"[breakoutscanner] PROMO bypass unlock | code used")
-        return jsonify({"success": True, "payment_id": payment_id})
+        return jsonify({"success": True, "payment_id": payment_id, "scans_granted": BREAKOUT_SCANNER_SCANS_PER_PACK})
 
     order_id = data.get("razorpay_order_id")
     payment_id = data.get("razorpay_payment_id")
@@ -3171,7 +3188,7 @@ def verify_breakoutscanner_payment():
         return jsonify({"success": False, "error": "Payment verification failed."}), 400
 
     print(f"[breakoutscanner] paid unlock | payment_id={payment_id}")
-    return jsonify({"success": True, "payment_id": payment_id})
+    return jsonify({"success": True, "payment_id": payment_id, "scans_granted": BREAKOUT_SCANNER_SCANS_PER_PACK})
 
 
 if __name__ == "__main__":

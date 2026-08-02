@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Breakout Scanner — Binance Spot | SalaryBit</title>
-<meta name="description" content="Scan the top USDT pairs on Binance spot for 20-bar breakouts and volume spikes, with exact buy/sell prices computed for your target profit. ₹9 per scan.">
+<meta name="description" content="Scan the top USDT pairs on Binance spot for 20-bar breakouts and volume spikes, with exact buy/sell prices computed for your target profit. 10 scans for ₹99 (or $1 international).">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#12161B">
 <link rel="canonical" href="https://salarybit.in/breakout-scanner.html">
@@ -14,7 +14,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://salarybit.in/og-image.png">
-<meta property="og:description" content="Scan the top USDT pairs on Binance spot for 20-bar breakouts and volume spikes, with exact buy/sell prices computed for your target profit. ₹9 per scan.">
+<meta property="og:description" content="Scan the top USDT pairs on Binance spot for 20-bar breakouts and volume spikes, with exact buy/sell prices computed for your target profit. 10 scans for ₹99 (or $1 international).">
 <meta property="og:url" content="https://salarybit.in/breakout-scanner.html">
 <script type="application/ld+json">
 {
@@ -203,6 +203,12 @@
     background:rgba(63,191,127,0.1);border:1px solid rgba(63,191,127,0.3);
     padding:4px 10px;border-radius:20px;margin-bottom:14px;
   }
+  .currency-toggle{display:flex;justify-content:center;gap:8px;margin-bottom:10px;}
+  .curr-opt{
+    font-family:var(--mono);font-size:12px;background:var(--panel-2);color:var(--text-dim);
+    border:1px solid var(--line);border-radius:20px;padding:6px 16px;cursor:pointer;
+  }
+  .curr-opt.selected{background:var(--amber);color:#1A1400;border-color:var(--amber);font-weight:700;}
 </style>
 </head>
 <body>
@@ -285,11 +291,17 @@
     </div>
   </div>
 
+  <div class="credit-pill" id="creditPill" style="display:none;"></div>
+
   <div class="paywall" id="paywall">
-    <div class="kicker">Pay per scan</div>
-    <h3>Run this scan</h3>
-    <div class="price">₹9 <span>this scan only</span></div>
-    <button class="paywall-btn" id="payBtn">Unlock this scan →</button>
+    <div class="kicker">10-scan pack</div>
+    <h3>Unlock 10 scans</h3>
+    <div class="currency-toggle" id="currencyToggle">
+      <button class="curr-opt" data-curr="INR">₹ INR</button>
+      <button class="curr-opt" data-curr="USD">$ USD</button>
+    </div>
+    <div class="price" id="priceDisplay">₹99 <span>for 10 scans</span></div>
+    <button class="paywall-btn" id="payBtn">Unlock 10 scans →</button>
     <div class="paywall-err" id="payError" style="display:none;"></div>
     <span class="promo-toggle" id="promoToggle">Have a promo code?</span>
     <div class="promo-row" id="promoRow">
@@ -548,6 +560,59 @@ function renderResults(results){
 }
 
 const API_BASE_BACKEND = 'https://web-production-456eb.up.railway.app';
+const CREDIT_KEY = 'breakoutScannerCredits';
+const PRICES = { INR: { amount: '₹99', currency: 'INR' }, USD: { amount: '$1', currency: 'USD' } };
+
+function detectDefaultCurrency(){
+  try{
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    if(tz.includes('Kolkata') || tz.includes('Calcutta')) return 'INR';
+    if((navigator.language || '').toUpperCase().includes('-IN')) return 'INR';
+  }catch(e){}
+  return 'USD';
+}
+let selectedCurrency = detectDefaultCurrency();
+
+function getCredits(){
+  try{
+    const raw = localStorage.getItem(CREDIT_KEY);
+    if(!raw) return 0;
+    return JSON.parse(raw).remaining || 0;
+  }catch(e){ return 0; }
+}
+function setCredits(n){
+  localStorage.setItem(CREDIT_KEY, JSON.stringify({ remaining: n, updatedAt: Date.now() }));
+  refreshCreditUI();
+}
+function refreshCreditUI(){
+  const n = getCredits();
+  const pill = document.getElementById('creditPill');
+  const paywallEl = document.getElementById('paywall');
+  if(n > 0){
+    pill.style.display = 'inline-block';
+    pill.textContent = `${n} scan${n === 1 ? '' : 's'} remaining`;
+    paywallEl.style.display = 'none';
+  } else {
+    pill.style.display = 'none';
+    paywallEl.style.display = 'block';
+  }
+}
+
+function renderCurrencyToggle(){
+  document.querySelectorAll('.curr-opt').forEach(btn => {
+    btn.classList.toggle('selected', btn.dataset.curr === selectedCurrency);
+  });
+  document.getElementById('priceDisplay').innerHTML =
+    `${PRICES[selectedCurrency].amount} <span>for 10 scans</span>`;
+}
+document.querySelectorAll('.curr-opt').forEach(btn => {
+  btn.addEventListener('click', () => {
+    selectedCurrency = btn.dataset.curr;
+    renderCurrencyToggle();
+  });
+});
+renderCurrencyToggle();
+refreshCreditUI();
 
 document.getElementById('promoToggle').addEventListener('click', () => {
   document.getElementById('promoRow').classList.toggle('show');
@@ -563,7 +628,11 @@ async function startScanPayment(){
   btn.disabled = true;
   btn.textContent = 'Preparing payment…';
   try{
-    const orderRes = await fetch(`${API_BASE_BACKEND}/api/create-breakoutscanner-order`, {method:"POST"});
+    const orderRes = await fetch(`${API_BASE_BACKEND}/api/create-breakoutscanner-order`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ currency: selectedCurrency })
+    });
     const order = await orderRes.json();
     if(!order.order_id) throw new Error(order.error || "Could not start payment");
 
@@ -573,7 +642,7 @@ async function startScanPayment(){
       currency: order.currency,
       order_id: order.order_id,
       name: "SalaryBit — Breakout Scanner",
-      description: "Single scan unlock",
+      description: "10-scan pack",
       handler: async function(response){
         await verifyScanUnlock({
           razorpay_order_id: order.order_id,
@@ -581,14 +650,15 @@ async function startScanPayment(){
           razorpay_signature: response.razorpay_signature
         });
       },
-      modal:{ ondismiss: function(){ btn.disabled = false; btn.textContent = 'Unlock this scan →'; } },
+      modal:{ ondismiss: function(){ btn.disabled = false; btn.textContent = 'Unlock 10 scans →'; } },
       theme:{ color:"#F0B429" }
     });
     rzp.open();
   }catch(e){
     btn.disabled = false;
-    btn.textContent = 'Unlock this scan →';
-    errBox.textContent = 'Something went wrong starting payment: ' + e.message;
+    btn.textContent = 'Unlock 10 scans →';
+    errBox.textContent = 'Something went wrong starting payment: ' + e.message +
+      (selectedCurrency === 'USD' ? ' (USD payments require International Payments to be enabled on the merchant account — try INR if this persists.)' : '');
     errBox.style.display = 'block';
   }
 }
@@ -621,8 +691,9 @@ async function verifyScanUnlock(paymentFields){
       errBox.style.display = 'block';
       return;
     }
-    paywallEl.style.display = 'none';
-    runScan();
+    const granted = data.scans_granted || 10;
+    setCredits(getCredits() + granted);
+    consumeCreditAndScan();
   }catch(e){
     paywallEl.style.opacity = '1';
     errBox.textContent = 'Something went wrong verifying payment: ' + e.message;
@@ -630,9 +701,20 @@ async function verifyScanUnlock(paymentFields){
   }
 }
 
+function consumeCreditAndScan(){
+  const n = getCredits();
+  if(n <= 0){ refreshCreditUI(); return; }
+  setCredits(n - 1);
+  runScan();
+}
+
 scanBtn.addEventListener('click', () => {
-  document.getElementById('paywall').style.display = 'block';
-  document.getElementById('paywall').scrollIntoView({behavior:'smooth', block:'center'});
+  if(getCredits() > 0){
+    consumeCreditAndScan();
+  } else {
+    document.getElementById('paywall').style.display = 'block';
+    document.getElementById('paywall').scrollIntoView({behavior:'smooth', block:'center'});
+  }
 });
 </script>
 </body>

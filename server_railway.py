@@ -1920,59 +1920,6 @@ def verify_pancorrection_payment():
     return jsonify({"success": True, "payment_id": payment_id, "report": report})
 
 
-# ── SUPERANNUATION FUND NAVIGATOR ────────────────────────────
-# Pure client-side decision tree. Same paid-unlock pattern — nothing
-# selected is ever sent to this server.
-SUPERANNUATION_PRICE_PAISE = 9900  # Rs 99
-
-
-@app.route("/api/create-superannuation-order", methods=["POST", "OPTIONS"])
-def create_superannuation_order():
-    if request.method == "OPTIONS":
-        return "", 200
-    try:
-        order = rzp.order.create({
-            "amount": SUPERANNUATION_PRICE_PAISE,
-            "currency": "INR",
-            "receipt": f"superann_{os.urandom(4).hex()}",
-        })
-        return jsonify({
-            "order_id": order["id"],
-            "amount": order["amount"],
-            "currency": order["currency"],
-            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
-        })
-    except Exception as e:
-        print(f"create-superannuation-order error: {e}")
-        return jsonify({"error": str(e)}), 500
-
-
-@app.route("/api/verify-superannuation-payment", methods=["POST", "OPTIONS"])
-def verify_superannuation_payment():
-    """Matches the existing verify_*_payment() HMAC pattern exactly."""
-    if request.method == "OPTIONS":
-        return "", 200
-    data = request.get_json(silent=True) or {}
-    order_id = data.get("razorpay_order_id")
-    payment_id = data.get("razorpay_payment_id")
-    signature = data.get("razorpay_signature")
-
-    if not all([order_id, payment_id, signature]):
-        return jsonify({"success": False, "error": "Missing required fields."}), 400
-
-    body = f"{order_id}|{payment_id}"
-    expected = hmac.new(
-        os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
-        body.encode(),
-        hashlib.sha256
-    ).hexdigest()
-    if expected != signature:
-        return jsonify({"success": False, "error": "Payment verification failed."}), 400
-
-    print(f"[superannuation] paid unlock | payment_id={payment_id}")
-    return jsonify({"success": True, "payment_id": payment_id})
-
-
 # ── RELIEVING LETTER ESCALATION KIT ──────────────────────────
 # Pure client-side letter generator. Same paid-unlock pattern — nothing
 # typed (name, company, days) is ever sent to this server.
@@ -2302,8 +2249,16 @@ def _call_claude_payslip_analysis(payslip_texts):
     # timeout (Procfile) and getting SIGKILLed instead of failing cleanly.
     # NOTE: bump gunicorn's --timeout in the Procfile to stay comfortably
     # above this value (see accompanying Procfile change).
-    with urllib.request.urlopen(req, timeout=170) as resp:
-        result = json.loads(resp.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(req, timeout=170) as resp:
+            result = json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", errors="replace")
+        print(f"[payslip-comparer] Claude API HTTPError {e.code}: {body[:500]}")
+        raise
+
+    if result.get("stop_reason") == "max_tokens":
+        print("[payslip-comparer] WARNING: response hit max_tokens and was truncated")
 
     raw = "".join(
         block.get("text", "") for block in result.get("content", []) if block.get("type") == "text"
@@ -2312,7 +2267,11 @@ def _call_claude_payslip_analysis(payslip_texts):
         raw = raw.strip("`")
         if raw.lower().startswith("json"):
             raw = raw[4:]
-    return json.loads(raw)
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError as e:
+        print(f"[payslip-comparer] JSON parse failed: {e}. Raw response (first 1000 chars): {raw[:1000]}")
+        raise
 
 
 @app.route('/api/verify-payslip-payment', methods=['POST', 'OPTIONS'])

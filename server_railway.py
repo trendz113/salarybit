@@ -3305,25 +3305,36 @@ def superannuation_report():
 
     data = request.get_json(silent=True) or {}
 
+    promo_code = (data.get("promo_code") or "").strip().upper()
     razorpay_order_id = data.get("razorpay_order_id")
     razorpay_payment_id = data.get("razorpay_payment_id")
     razorpay_signature = data.get("razorpay_signature")
 
-    if not (razorpay_order_id and razorpay_payment_id and razorpay_signature):
-        return jsonify({"success": False, "error": "Payment required."}), 403
+    access_granted = False
 
-    body = f"{razorpay_order_id}|{razorpay_payment_id}"
-    expected_signature = hmac.new(
-        os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
-        body.encode(),
-        hashlib.sha256
-    ).hexdigest()
-    if expected_signature != razorpay_signature:
-        return jsonify({
-            "success": False,
-            "error": "Payment verification failed. If you were charged, please contact "
-                     "support with your payment ID — you have not lost your money."
-        }), 400
+    if promo_code and promo_code in ITR_BETA_PROMO_CODES:
+        if ITR_PROMO_USAGE_COUNTS[promo_code] >= ITR_PROMO_USAGE_LIMIT:
+            return jsonify({"success": False, "error": "This promo code has hit its testing usage cap."}), 403
+        ITR_PROMO_USAGE_COUNTS[promo_code] += 1
+        access_granted = True
+    elif razorpay_order_id and razorpay_payment_id and razorpay_signature:
+        body = f"{razorpay_order_id}|{razorpay_payment_id}"
+        expected_signature = hmac.new(
+            os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+            body.encode(),
+            hashlib.sha256
+        ).hexdigest()
+        if expected_signature == razorpay_signature:
+            access_granted = True
+        else:
+            return jsonify({
+                "success": False,
+                "error": "Payment verification failed. If you were charged, please contact "
+                         "support with your payment ID — you have not lost your money."
+            }), 400
+
+    if not access_granted:
+        return jsonify({"success": False, "error": "Payment or a valid promo code is required."}), 403
 
     try:
         corpus_estimate = float(data.get("corpus_estimate") or 0)

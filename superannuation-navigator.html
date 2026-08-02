@@ -146,6 +146,13 @@
       <p style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--navy);margin:0 0 8px;">Want it written out for you?</p>
       <p style="font-size:14px;color:#3a3428;margin:0 0 14px;">Get a personalized action report using your actual numbers — the exact tax cost if you withdraw vs. what you preserve by transferring, a ready-to-send message for HR, and the specific questions to ask your fund's trust — for ₹99.</p>
       <button class="btn" id="payBtn" style="background:var(--green);margin-top:0;">Get My Personalized Report — ₹99</button>
+      <details style="margin-top:10px;">
+        <summary style="cursor:pointer;font-size:12px;color:var(--muted);">Have a promo code?</summary>
+        <div style="margin-top:8px;display:flex;gap:8px;">
+          <input type="text" id="promoCodeInput" placeholder="Promo code" style="flex:1;">
+          <button class="btn" id="promoBtn" style="margin-top:0;background:var(--navy);">Use code</button>
+        </div>
+      </details>
       <div id="paidResult" style="margin-top:18px;"></div>
     </div>
   </div>
@@ -280,6 +287,48 @@ function downloadPDF(){
 }
 
 const API_BASE = 'https://web-production-456eb.up.railway.app';
+
+document.getElementById('promoBtn').addEventListener('click', async () => {
+  const promoCode = document.getElementById('promoCodeInput').value.trim();
+  const paidResult = document.getElementById('paidResult');
+  const payBtn = document.getElementById('payBtn');
+  if (!promoCode) { paidResult.innerHTML = '<p style="color:var(--red);">Enter a promo code first.</p>'; return; }
+
+  const promoBtn = document.getElementById('promoBtn');
+  promoBtn.disabled = true;
+  promoBtn.textContent = 'Generating your report...';
+  paidResult.innerHTML = '';
+
+  try {
+    const res = await fetch(`${API_BASE}/api/superannuation-report`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        promo_code: promoCode,
+        reason: state.reason,
+        gratuity: state.gratuity,
+        approved: state.approved,
+        new_employer_offers_scheme: state.newScheme === 'yes',
+        corpus_estimate: document.getElementById('corpusEstimate').value || 0,
+        tax_slab_percent: state.taxSlab || 30,
+      })
+    });
+    const data = await res.json();
+    if (!data.success) {
+      paidResult.innerHTML = `<p style="color:var(--red);">${data.error || 'Something went wrong.'}</p>`;
+      promoBtn.disabled = false;
+      promoBtn.textContent = 'Use code';
+      return;
+    }
+    paidResult.innerHTML = `<div class="fixbox" style="border-left-color:var(--green);white-space:pre-wrap;">${data.report}</div>`;
+    payBtn.style.display = 'none';
+    promoBtn.parentElement.parentElement.style.display = 'none';
+  } catch (err) {
+    paidResult.innerHTML = '<p style="color:var(--red);">Network error — please try again.</p>';
+    promoBtn.disabled = false;
+    promoBtn.textContent = 'Use code';
+  }
+});
 
 document.getElementById('payBtn').addEventListener('click', async () => {
   const payBtn = document.getElementById('payBtn');

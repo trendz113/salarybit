@@ -2806,23 +2806,70 @@ def generate_itr_instructions(extracted, tax_result, missed_deadline):
     ).strip()
 
 
+@app.route('/api/create-itr-order', methods=['POST', 'OPTIONS'])
+def create_itr_order():
+    """Matches the existing create_subscription_scan_order() pattern exactly."""
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": ITR_ASSISTANT_PRICE_PAISE,
+            "currency": "INR",
+            "receipt": f"itr_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
+    except Exception as e:
+        print(f"create-itr-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route("/api/itr-analyze", methods=["POST", "OPTIONS"])
 def itr_analyze():
     if request.method == "OPTIONS":
         return "", 200
 
     promo_code = (request.form.get("promo_code") or "").strip().upper()
-    if promo_code not in ITR_BETA_PROMO_CODES:
+    razorpay_order_id = request.form.get("razorpay_order_id")
+    razorpay_payment_id = request.form.get("razorpay_payment_id")
+    razorpay_signature = request.form.get("razorpay_signature")
+
+    access_granted = False
+
+    if promo_code and promo_code in ITR_BETA_PROMO_CODES:
+        access_granted = True
+    elif razorpay_order_id and razorpay_payment_id and razorpay_signature:
+        body = f"{razorpay_order_id}|{razorpay_payment_id}"
+        expected_signature = hmac.new(
+            os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+            body.encode(),
+            hashlib.sha256
+        ).hexdigest()
+        if expected_signature == razorpay_signature:
+            access_granted = True
+        else:
+            return jsonify({
+                "success": False,
+                "error": "Payment verification failed. If you were charged, please contact "
+                         "support with your payment ID — you have not lost your money."
+            }), 400
+
+    if not access_granted:
         return jsonify({
             "success": False,
-            "error": "ITR Assistant is in beta and requires an invite code right now. "
-                     "It isn't open for payment yet."
+            "error": "Please pay to unlock your ITR filing instructions, or enter a valid "
+                     "invite code."
         }), 403
 
     missed_deadline = request.form.get("missed_deadline") == "yes"
     form16 = request.files.get("form16")
     if not form16 or form16.filename == "":
         return jsonify({"success": False, "error": "Please upload your Form16 PDF."}), 400
+
 
     tmp_path = None
     try:

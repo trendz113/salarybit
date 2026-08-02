@@ -79,9 +79,9 @@
 
 <main>
   <div class="beta-banner">
-    <strong>Private beta.</strong> This tool is not open for payment yet — it needs an invite
-    code. We're validating the generated instructions against real Form16s before charging
-    anyone for it. If you don't have a code, this isn't for you just yet.
+    <strong>Beta pricing: ₹499 per report.</strong> Upload your Form16 to get your exact tax
+    computed and step-by-step ITR filing instructions. Have an invite code instead? Enter it
+    below to skip payment while we're still testing.
   </div>
 
   <div class="panel" id="formPanel">
@@ -93,10 +93,17 @@
       <label style="margin:0;text-transform:none;font-weight:400;letter-spacing:0;color:#4a4438;" for="missedDeadline">I missed the 31 July 2026 deadline</label>
     </div>
 
-    <label>Invite Code <span class="opt">(required during beta)</span></label>
-    <input type="text" id="promoCode" placeholder="Enter your invite code">
+    <button class="btn" id="payBtn">Pay ₹499 & Get My Filing Instructions</button>
 
-    <button class="btn" id="submitBtn">Get My Filing Instructions</button>
+    <details style="margin-top:14px;">
+      <summary class="sans" style="cursor:pointer;font-size:13px;color:#8a8371;">Have an invite code instead?</summary>
+      <div style="margin-top:10px;">
+        <label>Invite Code</label>
+        <input type="text" id="promoCode" placeholder="Enter your invite code">
+        <button class="btn" id="submitBtn" style="margin-top:10px;">Get My Filing Instructions (Invite Code)</button>
+      </div>
+    </details>
+
     <div class="error-box" id="errorBox"></div>
   </div>
 
@@ -116,66 +123,129 @@
   </div>
 </main>
 
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 const API_BASE = "https://web-production-456eb.up.railway.app";
 
-document.getElementById('submitBtn').addEventListener('click', async () => {
+function showError(msg) {
+  const errorBox = document.getElementById('errorBox');
+  errorBox.textContent = msg;
+  errorBox.style.display = 'block';
+}
+
+function resetToForm() {
+  document.getElementById('loadingBox').style.display = 'none';
+  document.getElementById('formPanel').style.display = 'block';
+  document.getElementById('payBtn').disabled = false;
+  document.getElementById('submitBtn').disabled = false;
+}
+
+function renderResult(data) {
+  document.getElementById('loadingBox').style.display = 'none';
+  const t = data.tax_result;
+  document.getElementById('resultSummary').innerHTML = `
+    <div class="row"><span>Taxable Income</span><span>₹${Number(t.taxable_income).toLocaleString('en-IN')}</span></div>
+    <div class="row"><span>Tax Before Rebate</span><span>₹${Number(t.tax_before_rebate).toLocaleString('en-IN')}</span></div>
+    <div class="row"><span>Section 87A Rebate</span><span>₹${Number(t.rebate_87a).toLocaleString('en-IN')}</span></div>
+    <div class="row"><span>Health &amp; Education Cess</span><span>₹${Number(t.cess).toLocaleString('en-IN')}</span></div>
+    <div class="row"><span>Total Tax Payable</span><span>₹${Number(t.total_tax_payable).toLocaleString('en-IN')}</span></div>
+  `;
+  document.getElementById('instructionsText').textContent = data.instructions;
+  document.getElementById('result').style.display = 'block';
+}
+
+async function submitAnalysis(extraFields, triggerBtn) {
   const fileInput = document.getElementById('form16File');
-  const promoCode = document.getElementById('promoCode').value.trim();
   const missedDeadline = document.getElementById('missedDeadline').checked;
   const errorBox = document.getElementById('errorBox');
   errorBox.style.display = 'none';
 
-  if (!fileInput.files.length) {
-    errorBox.textContent = 'Please choose your Form16 PDF.';
-    errorBox.style.display = 'block';
-    return;
-  }
-  if (!promoCode) {
-    errorBox.textContent = 'An invite code is required during beta.';
-    errorBox.style.display = 'block';
-    return;
-  }
-
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
   document.getElementById('formPanel').style.display = 'none';
   document.getElementById('loadingBox').style.display = 'block';
 
   const formData = new FormData();
   formData.append('form16', fileInput.files[0]);
-  formData.append('promo_code', promoCode);
   formData.append('missed_deadline', missedDeadline ? 'yes' : 'no');
+  Object.entries(extraFields).forEach(([k, v]) => formData.append(k, v));
 
   try {
     const res = await fetch(`${API_BASE}/api/itr-analyze`, { method: 'POST', body: formData });
     const data = await res.json();
-    document.getElementById('loadingBox').style.display = 'none';
 
     if (!data.success) {
-      document.getElementById('formPanel').style.display = 'block';
-      errorBox.textContent = data.error || 'Something went wrong. Please try again.';
-      errorBox.style.display = 'block';
-      btn.disabled = false;
+      resetToForm();
+      showError(data.error || 'Something went wrong. Please try again.');
       return;
     }
-
-    const t = data.tax_result;
-    document.getElementById('resultSummary').innerHTML = `
-      <div class="row"><span>Taxable Income</span><span>₹${Number(t.taxable_income).toLocaleString('en-IN')}</span></div>
-      <div class="row"><span>Tax Before Rebate</span><span>₹${Number(t.tax_before_rebate).toLocaleString('en-IN')}</span></div>
-      <div class="row"><span>Section 87A Rebate</span><span>₹${Number(t.rebate_87a).toLocaleString('en-IN')}</span></div>
-      <div class="row"><span>Health & Education Cess</span><span>₹${Number(t.cess).toLocaleString('en-IN')}</span></div>
-      <div class="row"><span>Total Tax Payable</span><span>₹${Number(t.total_tax_payable).toLocaleString('en-IN')}</span></div>
-    `;
-    document.getElementById('instructionsText').textContent = data.instructions;
-    document.getElementById('result').style.display = 'block';
+    renderResult(data);
   } catch (e) {
-    document.getElementById('loadingBox').style.display = 'none';
-    document.getElementById('formPanel').style.display = 'block';
-    errorBox.textContent = 'Network error — please try again.';
-    errorBox.style.display = 'block';
-    btn.disabled = false;
+    resetToForm();
+    showError('Network error — please try again.');
+  }
+}
+
+// ---- Path 1: Invite code (no payment) ----
+document.getElementById('submitBtn').addEventListener('click', async () => {
+  const fileInput = document.getElementById('form16File');
+  const promoCode = document.getElementById('promoCode').value.trim();
+  if (!fileInput.files.length) { showError('Please choose your Form16 PDF.'); return; }
+  if (!promoCode) { showError('Please enter your invite code.'); return; }
+
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('payBtn').disabled = true;
+  await submitAnalysis({ promo_code: promoCode });
+});
+
+// ---- Path 2: Real payment via Razorpay ----
+document.getElementById('payBtn').addEventListener('click', async () => {
+  const fileInput = document.getElementById('form16File');
+  if (!fileInput.files.length) { showError('Please choose your Form16 PDF.'); return; }
+
+  const payBtn = document.getElementById('payBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  payBtn.disabled = true;
+  submitBtn.disabled = true;
+  document.getElementById('errorBox').style.display = 'none';
+
+  try {
+    const orderRes = await fetch(`${API_BASE}/api/create-itr-order`, { method: 'POST' });
+    const order = await orderRes.json();
+    if (!order.order_id) {
+      throw new Error(order.error || 'Could not start payment. Please try again.');
+    }
+
+    const rzp = new Razorpay({
+      key: order.razorpay_key,
+      amount: order.amount,
+      currency: order.currency,
+      order_id: order.order_id,
+      name: 'SalaryBit',
+      description: 'ITR Filing Assistant — Full Report',
+      theme: { color: '#152943' },
+      handler: async function (response) {
+        await submitAnalysis({
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+        });
+      },
+      modal: {
+        ondismiss: function () {
+          payBtn.disabled = false;
+          submitBtn.disabled = false;
+        }
+      }
+    });
+    rzp.on('payment.failed', function () {
+      payBtn.disabled = false;
+      submitBtn.disabled = false;
+      showError('Payment failed. You have not been charged — please try again.');
+    });
+    rzp.open();
+  } catch (e) {
+    payBtn.disabled = false;
+    submitBtn.disabled = false;
+    showError(e.message || 'Could not start payment. Please try again.');
   }
 });
 </script>

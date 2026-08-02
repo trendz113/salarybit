@@ -3109,6 +3109,71 @@ def health():
     return jsonify({"status": "ok", "service": "SalaryBit API"})
 
 
+# ── BREAKOUT SCANNER (Binance spot) ──────────────────────────
+# Pure client-side tool — it calls Binance's public market-data API directly
+# from the browser, no server-side computation or Claude call involved.
+# This route only gates access: pay Rs 9 (or use the promo bypass code),
+# then the frontend runs the scan itself.
+BREAKOUT_SCANNER_PRICE_PAISE = 900  # Rs 9
+
+
+@app.route("/api/create-breakoutscanner-order", methods=["POST", "OPTIONS"])
+def create_breakoutscanner_order():
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": BREAKOUT_SCANNER_PRICE_PAISE,
+            "currency": "INR",
+            "receipt": f"breakoutscanner_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
+    except Exception as e:
+        print(f"create-breakoutscanner-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/verify-breakoutscanner-payment", methods=["POST", "OPTIONS"])
+def verify_breakoutscanner_payment():
+    """Verifies payment (or a promo bypass code), then just returns success —
+    the actual scan runs entirely client-side against Binance, nothing to
+    generate server-side."""
+    if request.method == "OPTIONS":
+        return "", 200
+    data = request.get_json(silent=True) or {}
+
+    promo_code = (data.get("promo_code") or "").strip()
+
+    if promo_code and promo_code == PROMO_BYPASS_CODE:
+        payment_id = f"promo_{os.urandom(4).hex()}"
+        print(f"[breakoutscanner] PROMO bypass unlock | code used")
+        return jsonify({"success": True, "payment_id": payment_id})
+
+    order_id = data.get("razorpay_order_id")
+    payment_id = data.get("razorpay_payment_id")
+    signature = data.get("razorpay_signature")
+
+    if not all([order_id, payment_id, signature]):
+        return jsonify({"success": False, "error": "Missing required fields."}), 400
+
+    body = f"{order_id}|{payment_id}"
+    expected = hmac.new(
+        os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+        body.encode(),
+        hashlib.sha256
+    ).hexdigest()
+    if expected != signature:
+        return jsonify({"success": False, "error": "Payment verification failed."}), 400
+
+    print(f"[breakoutscanner] paid unlock | payment_id={payment_id}")
+    return jsonify({"success": True, "payment_id": payment_id})
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)

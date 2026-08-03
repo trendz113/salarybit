@@ -217,17 +217,34 @@ function renderPaidReport(report){
   `;
 }
 
-function bindPaidPdfButton(){
+function bindPaidPdfButton(report, numbers){
   const btn = document.getElementById('downloadPaidPdfBtn');
   if (!btn) return;
-  btn.addEventListener('click', () => {
-    html2pdf().set({
-      margin: 10,
-      filename: 'superannuation-personalized-report-salarybit.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, backgroundColor: '#ffffff' },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    }).from(document.getElementById('paidReportContent')).save();
+  btn.addEventListener('click', async () => {
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Preparing PDF...';
+    try {
+      const res = await fetch(`${API_BASE}/api/superannuation-report-pdf`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ report: report, numbers: numbers })
+      });
+      if (!res.ok) throw new Error('PDF generation failed');
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'salarybit-superannuation-report.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      alert("Could not generate the PDF right now — please try again in a moment.");
+    }
+    btn.disabled = false;
+    btn.textContent = originalText;
   });
 }
 
@@ -368,7 +385,7 @@ document.getElementById('promoBtn').addEventListener('click', async () => {
       return;
     }
     paidResult.innerHTML = renderPaidReport(data.report);
-    bindPaidPdfButton();
+    bindPaidPdfButton(data.report, data.numbers);
     payBtn.style.display = 'none';
     promoBtn.parentElement.parentElement.style.display = 'none';
   } catch (err) {
@@ -424,7 +441,7 @@ document.getElementById('payBtn').addEventListener('click', async () => {
             return;
           }
           paidResult.innerHTML = renderPaidReport(data.report);
-    bindPaidPdfButton();
+    bindPaidPdfButton(data.report, data.numbers);
           payBtn.style.display = 'none';
         } catch (err) {
           paidResult.innerHTML = `<p style="color:var(--red);">Payment succeeded but the report failed to generate — please contact support with your payment ID.</p>`;

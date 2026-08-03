@@ -3353,6 +3353,170 @@ def superannuation_report():
     return jsonify({"success": True, "numbers": numbers, "report": report_text}), 200
 
 
+@app.route('/api/superannuation-report-pdf', methods=['POST', 'OPTIONS'])
+def superannuation_report_pdf():
+    """Regenerates the paid Superannuation report as a downloadable, branded PDF.
+    Requires the already-generated report + numbers JSON to be POSTed back —
+    no server-side payment re-check here, same trust boundary as
+    payslip_report_pdf() (this only runs after superannuation_report() has
+    already handed the report to the browser)."""
+    if request.method == "OPTIONS":
+        return "", 200
+    data = request.get_json(silent=True) or {}
+    report = data.get("report")
+    numbers = data.get("numbers") or {}
+    if not report:
+        return jsonify({"error": "No report data provided."}), 400
+
+    try:
+        from reportlab.lib.pagesizes import A4
+        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib.units import mm
+        from reportlab.lib import colors as rl_colors
+        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+        from reportlab.platypus.flowables import HRFlowable
+    except ImportError:
+        return jsonify({"error": "PDF generation not available on the server."}), 500
+
+    # Matches this tool's own on-page palette (--navy, --green, --amber)
+    NAVY = rl_colors.HexColor("#1f3a5f")
+    GREEN = rl_colors.HexColor("#2f6f5e")
+    AMBER = rl_colors.HexColor("#b8752c")
+    INK = rl_colors.HexColor("#1c2430")
+    MUTED = rl_colors.HexColor("#6b6458")
+    LINE = rl_colors.HexColor("#e2ddd0")
+
+    buf = io.BytesIO()
+    doc = SimpleDocTemplate(buf, pagesize=A4, topMargin=16 * mm, bottomMargin=20 * mm,
+                             leftMargin=18 * mm, rightMargin=18 * mm)
+    styles = getSampleStyleSheet()
+    brand_style = ParagraphStyle("BrandX", parent=styles["Normal"], fontSize=11, fontName="Helvetica-Bold",
+                                  textColor=NAVY, spaceAfter=2)
+    title_style = ParagraphStyle("TitleX", parent=styles["Title"], fontSize=19,
+                                  textColor=INK, spaceBefore=0, spaceAfter=2)
+    meta_style = ParagraphStyle("MetaX", parent=styles["BodyText"], fontSize=9, textColor=MUTED)
+    h2 = ParagraphStyle("H2X", parent=styles["Heading2"], fontSize=13, textColor=NAVY,
+                         spaceBefore=16, spaceAfter=4)
+    body = ParagraphStyle("BodyX", parent=styles["BodyText"], fontSize=10.5, leading=15)
+    small = ParagraphStyle("Small", parent=styles["BodyText"], fontSize=8.5, textColor=MUTED)
+    headline_style = ParagraphStyle("HeadlineX", parent=styles["BodyText"], fontSize=13, fontName="Helvetica-Bold",
+                                     textColor=INK, leading=17)
+    disclaimer_style = ParagraphStyle("DisclaimerX", parent=styles["BodyText"], fontSize=8, textColor=MUTED, leading=11)
+
+    report_id = f"SB-SUP-{datetime.now().strftime('%Y%m%d')}-{os.urandom(3).hex().upper()}"
+
+    story = [
+        Paragraph("SALARYBIT", brand_style),
+        Paragraph("Superannuation Fund — Personalized Exit Report", title_style),
+        HRFlowable(width="100%", thickness=1.4, color=NAVY, spaceAfter=6),
+        Paragraph(
+            f"Report ID: {report_id} &nbsp;&nbsp;|&nbsp;&nbsp; "
+            f"Generated: {datetime.now().strftime('%d %b %Y, %I:%M %p')} IST &nbsp;&nbsp;|&nbsp;&nbsp; "
+            f"AI-Assisted Personal Finance Guidance",
+            meta_style
+        ),
+        Spacer(1, 6 * mm),
+    ]
+
+    headline = report.get("headline")
+    if headline:
+        story.append(Table(
+            [[Paragraph(headline, headline_style)]],
+            colWidths=[doc.width],
+            style=TableStyle([
+                ("BACKGROUND", (0, 0), (-1, -1), rl_colors.HexColor("#eaf2ee")),
+                ("BOX", (0, 0), (-1, -1), 0.75, GREEN),
+                ("LEFTPADDING", (0, 0), (-1, -1), 14),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 14),
+                ("TOPPADDING", (0, 0), (-1, -1), 10),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 10),
+            ])
+        ))
+        story.append(Spacer(1, 6 * mm))
+
+    section_num = [0]
+    def numbered_h2(text):
+        section_num[0] += 1
+        return Paragraph(f"{section_num[0]}. {text}", h2)
+
+    if report.get("verdict_paragraph"):
+        story.append(numbered_h2("What You Should Do"))
+        story.append(Paragraph(report["verdict_paragraph"], body))
+
+    if numbers:
+        story.append(numbered_h2("Your Numbers"))
+        rows = [["", "Amount"]]
+        if numbers.get("corpus_estimate") is not None:
+            rows.append(["Estimated Corpus", f"Rs {numbers['corpus_estimate']:,.0f}"])
+        if numbers.get("tax_slab_percent") is not None:
+            rows.append(["Your Tax Slab", f"{numbers['tax_slab_percent']:.0f}%"])
+        if numbers.get("tax_if_withdrawn_now") is not None:
+            rows.append(["Tax Cost If Withdrawn Now", f"Rs {numbers['tax_if_withdrawn_now']:,.0f}"])
+        if numbers.get("net_if_withdrawn_now") is not None:
+            rows.append(["Net In Hand If Withdrawn", f"Rs {numbers['net_if_withdrawn_now']:,.0f}"])
+        if numbers.get("value_preserved_if_deferred") is not None:
+            rows.append(["Value Preserved If Transferred", f"Rs {numbers['value_preserved_if_deferred']:,.0f}"])
+        if len(rows) > 1:
+            t = Table(rows, colWidths=[doc.width * 0.6, doc.width * 0.4], hAlign="LEFT")
+            t.setStyle(TableStyle([
+                ("BACKGROUND", (0, 0), (-1, 0), NAVY),
+                ("TEXTCOLOR", (0, 0), (-1, 0), rl_colors.white),
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("FONTSIZE", (0, 0), (-1, -1), 9.5),
+                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [rl_colors.white, rl_colors.HexColor("#f7f5f0")]),
+                ("GRID", (0, 0), (-1, -1), 0.5, LINE),
+                ("TOPPADDING", (0, 0), (-1, -1), 6),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+                ("LEFTPADDING", (0, 0), (-1, -1), 8),
+            ]))
+            story.append(t)
+
+    next_steps = report.get("next_steps") or []
+    if next_steps:
+        story.append(numbered_h2("Concrete Next Steps"))
+        for i, step in enumerate(next_steps, 1):
+            story.append(Paragraph(f"{i}. {step}", body))
+
+    if report.get("hr_message"):
+        story.append(numbered_h2("Ready-to-Send Message for HR"))
+        story.append(Table(
+            [[Paragraph(f'"{report["hr_message"]}"', ParagraphStyle(
+                "HRMsg", parent=body, fontName="Helvetica-Oblique"))]],
+            colWidths=[doc.width],
+            style=TableStyle([
+                ("BACKGROUND", (0, 0), (-1, -1), rl_colors.HexColor("#f7f5f0")),
+                ("BOX", (0, 0), (-1, -1), 0.5, LINE),
+                ("LEFTPADDING", (0, 0), (-1, -1), 12),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 12),
+                ("TOPPADDING", (0, 0), (-1, -1), 8),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+            ])
+        ))
+
+    if report.get("hidden_benefit_paragraph"):
+        story.append(numbered_h2("Why This Matters — The Hidden Benefit"))
+        story.append(Paragraph(report["hidden_benefit_paragraph"], body))
+
+    story.append(Spacer(1, 8 * mm))
+    story.append(HRFlowable(width="100%", thickness=0.6, color=LINE, spaceAfter=6))
+    disclaimer_text = report.get("disclaimer") or (
+        "This is a general guide, not personalised tax or legal advice — confirm exact figures "
+        "with your HR team, the fund's trust deed, or a CA before acting."
+    )
+    story.append(Paragraph(
+        f"<b>Disclaimer:</b> {disclaimer_text} Report generated by SalaryBit.in on "
+        f"{datetime.now().strftime('%d %b %Y')}.",
+        disclaimer_style))
+
+    doc.build(story)
+    buf.seek(0)
+    filename = f"salarybit-superannuation-report-{datetime.now().strftime('%Y%m%d')}.pdf"
+    return Response(
+        buf.read(), mimetype="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

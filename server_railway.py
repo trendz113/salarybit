@@ -3186,22 +3186,23 @@ whether their fund is approved, a rough corpus estimate, their tax slab, whether
 a superannuation scheme, and pre-computed numbers (tax cost if withdrawn now vs value preserved if deferred/
 transferred). NEVER recompute or alter the numbers you're given — only narrate and explain them.
 
-Output format (plain text, use clear paragraph breaks and a numbered action list — no markdown headers):
+Output ONLY valid JSON, no markdown fences, no preamble, in exactly this shape:
+{
+  "headline": "A short, specific 6-10 word verdict, e.g. 'Transfer beats withdrawing by Rs 1,80,000'",
+  "verdict_paragraph": "One tight paragraph (3-4 sentences) stating plainly what their best move is and why, using their actual numbers.",
+  "next_steps": [
+    "Concrete step 1 — what to ask HR, a specific document/form to request, etc.",
+    "Concrete step 2",
+    "... 4-6 steps total, each one specific and actionable"
+  ],
+  "hr_message": "A ready-to-send message they could copy and send to HR/payroll, in quotes, professional tone, referencing their specific situation.",
+  "hidden_benefit_paragraph": "One paragraph on how their employer's superannuation contribution was invisible in their taxable salary (up to the combined Rs 7.5 lakh/year cap across EPF+NPS+superannuation under Section 17(2)), unlike an equivalent cash bonus which would be fully taxed — framed around their specific numbers.",
+  "disclaimer": "One line: this is a general guide, not personalised tax/legal advice, confirm with HR/trust deed/CA before acting."
+}
 
-1. One short paragraph stating plainly what their best move is, given their numbers, and why.
-2. A numbered list of concrete next steps (what to ask HR, what documents/forms to request, what to verify
-   about their specific trust/scheme, and — if relevant — a short suggested message they could send to HR
-   or payroll asking for their fund's trust deed / transfer process).
-3. One paragraph on the "hidden benefit" angle: their employer's superannuation contribution was invisible
-   in their taxable salary (up to the combined Rs 7.5 lakh/year cap across EPF+NPS+superannuation under
-   Section 17(2)), unlike an equivalent cash bonus which would be fully taxed — so preserving that value by
-   transferring/deferring rather than cashing out is usually the higher-value move, unless they have an
-   immediate, specific need for the cash.
-4. A one-line disclaimer that this is a general guide, not personalised tax/legal advice, and to confirm
-   exact figures with their HR team, the fund's trust deed, or a CA before acting.
-
-Keep it tight — under 400 words total. Do not invent scheme-specific rules; when uncertain, say to confirm
-with HR/the trust deed rather than asserting a fact you don't have."""
+Do not invent scheme-specific rules; when uncertain, say to confirm with HR/the trust deed rather than
+asserting a fact you don't have. Keep total content tight — this is a report someone paid for and will
+read in under two minutes."""
 
 
 def generate_superannuation_report(inputs, numbers):
@@ -3231,9 +3232,37 @@ def generate_superannuation_report(inputs, numbers):
     with urllib.request.urlopen(req, timeout=60) as resp:
         result = json.loads(resp.read().decode("utf-8"))
 
-    return "".join(
+    raw_text = "".join(
         block.get("text", "") for block in result.get("content", []) if block.get("type") == "text"
     ).strip()
+
+    if raw_text.startswith("```"):
+        raw_text = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw_text.strip())
+
+    try:
+        parsed = json.loads(raw_text)
+        return {
+            "headline": parsed.get("headline") or "Your Personalized Action Plan",
+            "verdict_paragraph": parsed.get("verdict_paragraph") or "",
+            "next_steps": parsed.get("next_steps") or [],
+            "hr_message": parsed.get("hr_message") or "",
+            "hidden_benefit_paragraph": parsed.get("hidden_benefit_paragraph") or "",
+            "disclaimer": parsed.get("disclaimer") or
+                "This is a general guide, not personalised tax or legal advice — confirm exact "
+                "figures with your HR team, the fund's trust deed, or a CA before acting.",
+        }
+    except (json.JSONDecodeError, AttributeError):
+        # Fallback: Claude didn't return clean JSON. Don't fail the paid request —
+        # show the raw text in a single block rather than losing the report entirely.
+        return {
+            "headline": "Your Personalized Action Plan",
+            "verdict_paragraph": raw_text,
+            "next_steps": [],
+            "hr_message": "",
+            "hidden_benefit_paragraph": "",
+            "disclaimer": "This is a general guide, not personalised tax or legal advice — confirm "
+                          "exact figures with your HR team, the fund's trust deed, or a CA before acting.",
+        }
 
 
 @app.route('/api/create-superannuation-order', methods=['POST', 'OPTIONS'])
@@ -3322,6 +3351,7 @@ def superannuation_report():
         }), 500
 
     return jsonify({"success": True, "numbers": numbers, "report": report_text}), 200
+
 
 
 if __name__ == "__main__":

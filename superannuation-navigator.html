@@ -185,6 +185,53 @@ document.querySelectorAll('#reasonGroup .radio-opt').forEach(el => {
 
 function fmtI(n){ return '₹' + Math.round(n).toLocaleString('en-IN'); }
 
+function renderPaidReport(report){
+  const steps = (report.next_steps || []).map(s => `<li>${s}</li>`).join('');
+  const hrMsgBlock = report.hr_message ? `
+    <div class="fixbox" style="border-left-color:var(--navy);margin-top:14px;">
+      <strong>Ready-to-send message for HR</strong>
+      <p style="margin:8px 0 0;font-style:italic;">"${report.hr_message}"</p>
+    </div>` : '';
+
+  return `
+    <div id="paidReportContent" style="background:#fff;border:1px solid var(--line);border-radius:8px;padding:20px;">
+      <p class="sans" style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--green);margin:0 0 6px;">Your Personalized Report</p>
+      <h3 style="margin:0 0 14px;font-size:19px;">${report.headline}</h3>
+      <p style="margin:0 0 16px;line-height:1.65;">${report.verdict_paragraph}</p>
+
+      ${steps ? `<div class="fixbox">
+        <strong>Concrete next steps</strong>
+        <ol style="margin:8px 0 0;padding-left:20px;">${steps}</ol>
+      </div>` : ''}
+
+      ${hrMsgBlock}
+
+      ${report.hidden_benefit_paragraph ? `<div class="fixbox" style="border-left-color:var(--amber);margin-top:14px;">
+        <strong>Why this matters — the hidden benefit</strong>
+        <p style="margin:8px 0 0;line-height:1.6;">${report.hidden_benefit_paragraph}</p>
+      </div>` : ''}
+
+      <p class="disclaimer" style="margin-top:16px;">${report.disclaimer}</p>
+    </div>
+    <button class="btn" id="downloadPaidPdfBtn" style="background:#2f6f5e;margin-top:14px;">⬇ Download as PDF</button>
+  `;
+}
+
+function bindPaidPdfButton(){
+  const btn = document.getElementById('downloadPaidPdfBtn');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    html2pdf().set({
+      margin: 10,
+      filename: 'superannuation-personalized-report-salarybit.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, backgroundColor: '#ffffff' },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).from(document.getElementById('paidReportContent')).save();
+  });
+}
+
+
 function showResult(){
   if(!state.reason){ alert("Please select why you're accessing the fund first."); return; }
   const r = document.getElementById('result');
@@ -320,7 +367,8 @@ document.getElementById('promoBtn').addEventListener('click', async () => {
       promoBtn.textContent = 'Use code';
       return;
     }
-    paidResult.innerHTML = `<div class="fixbox" style="border-left-color:var(--green);white-space:pre-wrap;">${data.report}</div>`;
+    paidResult.innerHTML = renderPaidReport(data.report);
+    bindPaidPdfButton();
     payBtn.style.display = 'none';
     promoBtn.parentElement.parentElement.style.display = 'none';
   } catch (err) {
@@ -375,7 +423,8 @@ document.getElementById('payBtn').addEventListener('click', async () => {
             payBtn.textContent = 'Get My Personalized Report — ₹99';
             return;
           }
-          paidResult.innerHTML = `<div class="fixbox" style="border-left-color:var(--green);white-space:pre-wrap;">${data.report}</div>`;
+          paidResult.innerHTML = renderPaidReport(data.report);
+    bindPaidPdfButton();
           payBtn.style.display = 'none';
         } catch (err) {
           paidResult.innerHTML = `<p style="color:var(--red);">Payment succeeded but the report failed to generate — please contact support with your payment ID.</p>`;

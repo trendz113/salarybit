@@ -32,6 +32,12 @@
  * IP (if provided)" without a 5th column, just type "PDF Sent" into E1
  * yourself — the header-creation code below only runs on a brand new
  * empty sheet, it won't touch an existing header row.
+ *
+ * It also adds two more columns for the site-wide feedback widget:
+ * F "Message" and G "Page URL" — used when source is "site-feedback"
+ * (issue reports / suggestions from the floating feedback button on
+ * every tool page). If upgrading an existing sheet, type "Message" into
+ * F1 and "Page URL" into G1 yourself.
  */
 
 function doPost(e) {
@@ -40,12 +46,14 @@ function doPost(e) {
 
     // Add header row once, if the sheet is empty
     if (sheet.getLastRow() === 0) {
-      sheet.appendRow(["Timestamp", "Email", "Source", "IP (if provided)", "PDF Sent"]);
+      sheet.appendRow(["Timestamp", "Email", "Source", "IP (if provided)", "PDF Sent", "Message", "Page URL"]);
     }
 
     var data = JSON.parse(e.postData.contents);
     var email = (data.email || "").toString().trim().toLowerCase();
     var source = (data.source || "unknown").toString().trim();
+    var message = (data.message || "").toString().trim();
+    var pageUrl = (data.page_url || "").toString().trim();
 
     if (!email || email.indexOf("@") === -1) {
       return ContentService.createTextOutput(
@@ -53,7 +61,7 @@ function doPost(e) {
       ).setMimeType(ContentService.MimeType.JSON);
     }
 
-    sheet.appendRow([new Date(), email, source, "", ""]);
+    sheet.appendRow([new Date(), email, source, "", "", message, pageUrl]);
 
     return ContentService.createTextOutput(
       JSON.stringify({ status: "ok" })

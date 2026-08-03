@@ -2559,6 +2559,69 @@ def capture_lead():
     return jsonify({"status": "ok"}), 200
 
 
+@app.route('/api/site-feedback', methods=['POST', 'OPTIONS'])
+def site_feedback():
+    """
+    Stores issue reports / suggestions submitted from the floating feedback
+    widget injected on every tool page (see assets/js/site-widgets.js).
+
+    Same store pattern as capture_lead(): primary copy goes to the Google
+    Sheet via GOOGLE_SHEET_WEBHOOK_URL (requires the Apps Script to have
+    the 'message' and 'page_url' columns — see the updated .gs file),
+    falls back to a local feedback.jsonl file (ephemeral on Railway) if
+    the Sheet webhook is unreachable.
+    """
+    if request.method == "OPTIONS":
+        return "", 200
+
+    data = request.get_json(silent=True) or {}
+    email = (data.get("email") or "").strip().lower()
+    message = (data.get("message") or "").strip()[:2000]
+    page_url = (data.get("page_url") or "").strip()[:300]
+
+    if not email or "@" not in email or "." not in email.split("@")[-1]:
+        return jsonify({"error": "Please enter a valid email address."}), 400
+    if not message:
+        return jsonify({"error": "Please enter your issue or suggestion."}), 400
+
+    entry = {
+        "email": email,
+        "source": "site-feedback",
+        "message": message,
+        "page_url": page_url,
+        "ts": datetime.utcnow().isoformat() + "Z",
+    }
+
+    sheet_webhook_url = os.environ.get("GOOGLE_SHEET_WEBHOOK_URL", "").strip()
+    sheet_ok = False
+    if sheet_webhook_url:
+        try:
+            req = urllib.request.Request(
+                sheet_webhook_url,
+                data=json.dumps({
+                    "email": email, "source": "site-feedback",
+                    "message": message, "page_url": page_url,
+                }).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            with urllib.request.urlopen(req, timeout=8) as resp:
+                resp.read()
+            sheet_ok = True
+        except Exception:
+            sheet_ok = False  # fall through to local file below
+
+    FEEDBACK_FILE = os.path.join(os.path.dirname(__file__), "feedback.jsonl")
+    try:
+        with open(FEEDBACK_FILE, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    except Exception:
+        if not sheet_ok:
+            return jsonify({"error": "Could not save right now, please try again."}), 500
+
+    return jsonify({"status": "ok"}), 200
+
+
 # ═══════════════════════════════════════════════════════════
 # ITR FILING ASSISTANT — BETA (promo-code gated, no real charge yet)
 # Deterministic tax math (never left to the model) + Claude-generated

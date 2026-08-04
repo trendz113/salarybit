@@ -149,12 +149,18 @@ function sendPendingLeadEmails() {
 
   var pdfBlob = null; // fetch lazily, only if there's at least one email to send
 
+  var TARGET_SOURCE = "old-vs-new-tax-regime-pdf-waitlist";
+
   for (var i = 0; i < values.length; i++) {
     var row = values[i];
     var email = row[1];
+    var source = row[2];
     var sentFlag = row[4];
 
-    if (!email || sentFlag) continue; // skip blank or already-sent rows
+    // Only send to rows that actually signed up for THIS PDF — not every
+    // row with a blank "PDF Sent" column (e.g. site-feedback rows also
+    // have that column blank, since it was never meant for them).
+    if (!email || sentFlag || source !== TARGET_SOURCE) continue;
 
     if (!pdfBlob) {
       var resp = UrlFetchApp.fetch(PDF_URL, { muteHttpExceptions: true });

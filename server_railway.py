@@ -2206,7 +2206,11 @@ Rules:
   factoring in filed_status (skip steps they say they've already done; if filed_status is
   noc_bank_pending, focus the checklist on chasing the bank to actually act on the NOC, not on re-doing the
   representation) and duration (if over90, checklist should open with escalating the delay, not starting
-  from scratch).
+  from scratch). If who_froze is "cyber_cell" or "unclear" (i.e. the specific officer/authority isn't
+  named yet), the checklist's final step should tell the client that once the bank discloses that name,
+  they should return to this same page's "Already got a name?" section to generate a ₹49 direct letter to
+  that authority — do not write the direct letter itself here, only point them to it. Skip this final step
+  if who_froze is "tax_gst" or "court_order", since those already name a known authority type.
 - legal_leverage_points: 2-4 sentences on what in the current rules/recent rulings works in this specific
   person's favour given freeze_scope and who_froze — be concrete, not a generic list of every rule that
   exists regardless of relevance.
@@ -2343,6 +2347,169 @@ def verify_unfreeze_payment():
             "error": "Payment succeeded, but report generation failed. You will not be "
                      "charged again — contact support with this payment ID and we'll get "
                      "your report to you directly."
+        })
+
+    return jsonify({"success": True, "payment_id": payment_id, "report": report})
+
+
+# ── UNFREEZE STAGE 2: direct letter to the named authority ──
+# Once the bank discloses who actually froze the account (the IO's name,
+# a tax department reference, etc — which is what the Stage 1 report asks
+# for), the customer comes back here for a short, targeted follow-up: a
+# letter addressed directly to that named authority. Priced far below the
+# Stage 1 report since it's a single artifact, not a full diagnosis.
+UNFREEZE_STAGE2_PRICE_PAISE = 4900  # Rs 49
+
+UNFREEZE_STAGE2_SYSTEM_PROMPT = """You are a senior Indian consumer-rights advisor writing a single,
+ready-to-send formal letter for a client whose bank account was frozen or lien-marked, and who has now
+been told by their bank exactly who is responsible for the freeze (an Investigating Officer / cyber cell,
+a tax/GST department, or another named authority). This is a Stage 2 follow-up to an earlier diagnosis
+report — the client already knows the general situation; your only job now is to write one precise,
+direct letter to the specific named authority they identify.
+
+You will be given: client_name, bank_name, lien_amount if known, authority_type (io / tax_gst / other),
+authority_name (the actual name/designation they were given), reference_number if known, and free-text
+context (which may mention they already sent an earlier letter to the bank's nodal officer, and when).
+
+Rules:
+- If authority_type is "io": write a formal letter addressed directly to that named Investigating
+  Officer/cyber cell, referencing the reference/complaint/FIR number if given, stating the client's
+  position that they have no connection to any fraud, offering to provide KYC/transaction proof, and
+  formally requesting a No Objection Certificate (NOC) for release of the account/lien. If the context
+  mentions an earlier nodal officer letter, reference it briefly as prior correspondence.
+- If authority_type is "tax_gst": write a letter/response addressed to the named tax or GST authority,
+  requesting clarification of the specific notice or demand behind the attachment and setting out the
+  client's intent to respond to it, recommending in the disclaimer that a CA or tax lawyer review the
+  actual notice, since exact numbers require it.
+- If authority_type is "other": write a general but firm formal letter to the named authority requesting
+  written disclosure of the legal basis for the freeze and a clear release process, adaptable to an
+  authority you don't have specific rules for.
+- Keep the letter complete and properly formatted (to/from/date/subject/body/closing), but do not pad it
+  with information already covered in an earlier letter — this should read as a focused follow-up, not a
+  repeat of a full diagnosis.
+- Do not invent facts you weren't given (do not assume specific dates, addresses, or case details beyond
+  what's in the case data — use placeholders like [Insert Date] where needed, matching the style of a
+  professional template).
+- This is procedural/consumer-rights guidance, not legal advice — say so once, briefly, in the disclaimer.
+
+Respond ONLY with a single JSON object (no markdown fences, no preamble), matching this exact shape:
+
+{
+  "direct_letter": "full formatted letter text addressed to the named authority",
+  "disclaimer": "one sentence noting this is procedural/consumer-rights guidance, not legal advice, and not a guarantee of any outcome"
+}"""
+
+
+def _call_claude_unfreeze_stage2_letter(case):
+    claude_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not claude_key:
+        raise RuntimeError("Server not configured. Missing ANTHROPIC_API_KEY.")
+
+    payload = json.dumps({
+        "model": "claude-sonnet-4-6",
+        "max_tokens": 2000,
+        "system": UNFREEZE_STAGE2_SYSTEM_PROMPT,
+        "messages": [{"role": "user", "content": json.dumps(case, indent=2)}]
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": claude_key,
+            "anthropic-version": "2023-06-01"
+        },
+        method="POST"
+    )
+
+    with urllib.request.urlopen(req, timeout=90) as resp:
+        result = json.loads(resp.read().decode("utf-8"))
+
+    raw = "".join(
+        block.get("text", "") for block in result.get("content", []) if block.get("type") == "text"
+    ).strip()
+    if raw.startswith("```"):
+        raw = raw.strip("`")
+        if raw.lower().startswith("json"):
+            raw = raw[4:]
+    return json.loads(raw)
+
+
+@app.route("/api/create-unfreeze-stage2-order", methods=["POST", "OPTIONS"])
+def create_unfreeze_stage2_order():
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": UNFREEZE_STAGE2_PRICE_PAISE,
+            "currency": "INR",
+            "receipt": f"unfreeze2_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
+    except Exception as e:
+        print(f"create-unfreeze-stage2-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/verify-unfreeze-stage2-payment", methods=["POST", "OPTIONS"])
+def verify_unfreeze_stage2_payment():
+    """Verifies payment (or a promo bypass code), then runs the Claude-
+    generated Stage 2 direct letter and returns it."""
+    if request.method == "OPTIONS":
+        return "", 200
+    data = request.get_json(silent=True) or {}
+
+    promo_code = (data.get("promo_code") or "").strip()
+    payment_id = None
+
+    if promo_code and promo_code == PROMO_BYPASS_CODE:
+        payment_id = f"promo_{os.urandom(4).hex()}"
+        print(f"[unfreeze-stage2] PROMO bypass unlock | code used")
+    else:
+        order_id = data.get("razorpay_order_id")
+        payment_id = data.get("razorpay_payment_id")
+        signature = data.get("razorpay_signature")
+
+        if not all([order_id, payment_id, signature]):
+            return jsonify({"success": False, "error": "Missing required fields."}), 400
+
+        body = f"{order_id}|{payment_id}"
+        expected = hmac.new(
+            os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+            body.encode(),
+            hashlib.sha256
+        ).hexdigest()
+        if expected != signature:
+            return jsonify({"success": False, "error": "Payment verification failed."}), 400
+
+        print(f"[unfreeze-stage2] paid unlock | payment_id={payment_id}")
+
+    case = {
+        "client_name": data.get("client_name") or None,
+        "bank_name": data.get("bank_name") or None,
+        "lien_amount_inr": data.get("lien_amount") or None,
+        "authority_type": data.get("authority_type") or "other",
+        "authority_name": data.get("authority_name") or None,
+        "reference_number": data.get("reference_number") or None,
+        "additional_context": data.get("extra_context") or None,
+    }
+
+    try:
+        report = _call_claude_unfreeze_stage2_letter(case)
+    except Exception as e:
+        print(f"unfreeze-stage2 letter generation error: {type(e).__name__}: {e}")
+        return jsonify({
+            "success": True,
+            "payment_id": payment_id,
+            "error": "Payment succeeded, but letter generation failed. You will not be "
+                     "charged again — contact support with this payment ID and we'll get "
+                     "your letter to you directly."
         })
 
     return jsonify({"success": True, "payment_id": payment_id, "report": report})

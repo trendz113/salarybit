@@ -245,20 +245,88 @@
   </div>
 
   <p class="disclaimer">The free instant read and the ₹199 report are general procedural guidance based on standard practice for cyber-fraud-related account freezes in India, not legal advice, and not a guarantee of any outcome. For large amounts or a genuinely stuck case, consult a lawyer.</p>
+
+  <div class="panel" id="stage2Panel" style="border-color:#c9b98a;">
+    <h2>Already got a name? <span style="font-weight:400;color:var(--muted);font-size:14px;">— Stage 2</span></h2>
+    <p class="sub">If your bank has now told you the name of the Investigating Officer, cyber cell, or authority handling your case, generate a direct letter to them — no need to redo the diagnosis above.</p>
+
+    <label for="s2Name">Your name</label>
+    <input type="text" id="s2Name" class="sans" placeholder="e.g. Deepak Kumar">
+
+    <div class="row2">
+      <div>
+        <label for="s2BankName">Bank name</label>
+        <input type="text" id="s2BankName" class="sans" placeholder="e.g. ICICI Bank">
+      </div>
+      <div>
+        <label for="s2LienAmount">Amount involved (₹) <span class="opt">— optional</span></label>
+        <input type="number" id="s2LienAmount" class="sans" placeholder="e.g. 20000">
+      </div>
+    </div>
+
+    <label for="s2AuthorityType">Who did the bank say is responsible?</label>
+    <select id="s2AuthorityType" class="sans">
+      <option value="">Select…</option>
+      <option value="io">A named Investigating Officer / cyber cell</option>
+      <option value="tax_gst">Income Tax or GST department</option>
+      <option value="other">Someone else / a specific department</option>
+    </select>
+
+    <label for="s2AuthorityName">Name of the officer / authority</label>
+    <input type="text" id="s2AuthorityName" class="sans" placeholder="e.g. Inspector R. Kumar, Cyber Cell, Bengaluru East">
+
+    <label for="s2RefNumber">Reference / complaint / FIR number <span class="opt">— if given</span></label>
+    <input type="text" id="s2RefNumber" class="sans" placeholder="e.g. NCRP acknowledgment or FIR number">
+
+    <label for="s2Context">Anything else worth including? <span class="opt">— optional</span></label>
+    <textarea id="s2Context" class="sans" placeholder="e.g. bank confirmed this in writing on [date], already submitted my Stage 1 letter on [date]…"></textarea>
+
+    <div class="lockbox">
+      <div class="kicker">Stage 2 · Direct Letter</div>
+      <h4>Get your letter to the named authority</h4>
+      <div class="price">₹49 <span>one-time</span></div>
+      <ul>
+        <li>A ready-to-send letter addressed directly to the officer/authority named, requesting release or an NOC</li>
+        <li>Downloadable as a PDF</li>
+      </ul>
+      <button class="btn sans" id="s2PayBtn">Generate my ₹49 letter →</button>
+      <div id="s2PayError" class="err-text" style="display:none;"></div>
+      <span class="promo-toggle" id="s2PromoToggle">Have a promo code?</span>
+      <div class="promo-row" id="s2PromoRow">
+        <input type="text" id="s2PromoInput" class="sans" placeholder="Promo code">
+        <button class="btn sans secondary" id="s2PromoBtn">Apply</button>
+      </div>
+    </div>
+
+    <div class="report" id="s2Report">
+      <div class="report-head">
+        <div class="rtitle">Stage 2 — Direct Letter</div>
+        <h2 id="s2ReportTitle">Your Letter</h2>
+        <div class="report-meta-line">
+          <span id="s2MetaReportId"></span>
+          <span id="s2MetaDate"></span>
+        </div>
+      </div>
+      <div class="letterbox" id="s2Letter"></div>
+      <p class="report-disclaimer" id="s2Disclaimer"></p>
+      <button class="btn sans" id="s2DownloadPdfBtn" data-html2canvas-ignore="true" style="margin-top:18px;background:#2f6f5e;" onclick="downloadStage2PDF()">⬇ Download as PDF</button>
+    </div>
+  </div>
 </main>
 
 <script>
+
 const API_BASE = "https://web-production-456eb.up.railway.app";
 
 const WHO_DATA = {
   cyber_cell: {
     tag: "Cyber fraud freeze", warn: true,
     title: "The bank can't fix this — the investigating officer can",
-    explain: "This is the most common freeze type: your account showed up somewhere in a fraud money trail, even innocently, and a cyber cell or police station directed the bank to freeze it. Banks are legally required to comply immediately, with no court order needed at that stage — which is exactly why they can't reverse it either. Only the investigating officer (IO) handling that specific complaint can request a release.",
+    explain: "This is the most common freeze type: your account showed up somewhere in a fraud money trail, even innocently, and a cyber cell or police station directed the bank to freeze it. Banks are legally required to comply immediately, with no court order needed at that stage — which is exactly why they can't reverse it either. Only the Investigating Officer (IO) — the specific person assigned to that complaint's case file, not \"the police\" in general — can request a release. If you don't know their name yet, that's normal at this stage; getting it is your first goal.",
     steps: [
       "Ask your bank branch (in writing, not just a phone call) for the exact complaint reference number, police station/cyber cell name, and IO contact — you're entitled to this information.",
       "Gather your complete transaction history and ID proof for the disputed period.",
-      "Submit a written representation to that specific IO explaining you have no connection to the fraud, with your transaction proof attached, requesting a No Objection Certificate (NOC).",
+      "Once you have the IO's name and reference number, come back to \"Already got a name?\" below to generate a direct letter to them for ₹49 — that's the letter that actually requests a No Objection Certificate (NOC) for release.",
       "If the complaint hasn't already become an FIR, ask that it be converted — this is what actually moves the case forward.",
       "Follow up with the IO roughly every 15 days until resolved."
     ]
@@ -287,11 +355,11 @@ const WHO_DATA = {
   unclear: {
     tag: "Needs clarification first", warn: true,
     title: "Start by forcing clarity on who actually froze it",
-    explain: "You have a right to know exactly who directed this freeze and why. Vague answers from branch staff are common because front-line staff often don't have the details themselves — you need to go up a level.",
+    explain: "You have a right to know exactly who directed this freeze and why. Vague answers from branch staff are common because front-line staff often don't have the details themselves — you need to go up a level. Your letter below is addressed to the bank's Nodal Officer, demanding they disclose the freezing authority and, if it's a cyber fraud case, the name and contact of the Investigating Officer (IO) — the specific person assigned to that case, not \"the police\" in general.",
     steps: [
       "Submit a written request to your bank's nodal officer (not just the branch) asking for the exact authority, reference number, and reason for the freeze — banks are required to disclose this.",
       "Check your registered email/SMS for any freeze notification you may have missed.",
-      "Once you know who froze it, the correct next step depends on that — cyber cell, tax department, or court."
+      "Once the bank tells you who froze it — especially the Investigating Officer's name — come back to this page and scroll to \"Already got a name?\" below to generate your direct letter to them for ₹49."
     ]
   }
 };
@@ -477,6 +545,151 @@ function downloadPDF(){
     html2pdf().set({
       margin: 10,
       filename: 'bank-account-unfreeze-report-salarybit.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, backgroundColor: '#ffffff', scrollX: 0, scrollY: 0, windowWidth: document.documentElement.scrollWidth, windowHeight: document.documentElement.scrollHeight, useCORS: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).from(el).save().then(() => {
+      btn.disabled = false; btn.textContent = originalText; window.scrollTo(0, originalScrollY);
+    }).catch((e) => {
+      btn.disabled = false; btn.textContent = originalText; window.scrollTo(0, originalScrollY);
+      alert('PDF generation failed: ' + e.message + '. You can still screenshot or print this page (Ctrl/Cmd+P) to save it.');
+    });
+  }, 150);
+}
+
+// ── STAGE 2: direct letter to the named authority ──
+document.getElementById('s2PromoToggle').addEventListener('click', () => {
+  document.getElementById('s2PromoRow').classList.toggle('show');
+});
+
+function collectStage2Case(){
+  return {
+    client_name: document.getElementById('s2Name').value.trim(),
+    bank_name: document.getElementById('s2BankName').value.trim(),
+    lien_amount: document.getElementById('s2LienAmount').value,
+    authority_type: document.getElementById('s2AuthorityType').value,
+    authority_name: document.getElementById('s2AuthorityName').value.trim(),
+    reference_number: document.getElementById('s2RefNumber').value.trim(),
+    extra_context: document.getElementById('s2Context').value.trim()
+  };
+}
+
+document.getElementById('s2PayBtn').addEventListener('click', startStage2Payment);
+document.getElementById('s2PromoBtn').addEventListener('click', () => submitStage2WithPromo());
+
+function validateStage2(errBox){
+  if(!document.getElementById('s2AuthorityName').value.trim() || !document.getElementById('s2AuthorityType').value){
+    errBox.textContent = 'Please enter who the authority is, and their name, before generating the letter.';
+    errBox.style.display = 'block';
+    return false;
+  }
+  return true;
+}
+
+async function startStage2Payment(){
+  const btn = document.getElementById('s2PayBtn');
+  const errBox = document.getElementById('s2PayError');
+  errBox.style.display = 'none';
+  if(!validateStage2(errBox)) return;
+
+  btn.disabled = true;
+  btn.textContent = 'Preparing payment…';
+  try{
+    const orderRes = await fetch(`${API_BASE}/api/create-unfreeze-stage2-order`, {method:"POST"});
+    const order = await orderRes.json();
+    if(!order.order_id) throw new Error(order.error || "Could not start payment");
+
+    const rzp = new Razorpay({
+      key: order.razorpay_key,
+      amount: order.amount,
+      currency: order.currency,
+      order_id: order.order_id,
+      name: "SalaryBit — Stage 2 Direct Letter",
+      description: "Direct Letter to Investigating Officer / Authority",
+      handler: async function(response){
+        await verifyStage2AndGenerate({
+          razorpay_order_id: order.order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature
+        });
+      },
+      modal:{ ondismiss: function(){ btn.disabled = false; btn.textContent = 'Generate my ₹49 letter →'; } },
+      theme:{ color:"#1f3a5f" }
+    });
+    rzp.open();
+  }catch(e){
+    btn.disabled = false;
+    btn.textContent = 'Generate my ₹49 letter →';
+    errBox.textContent = 'Something went wrong starting payment: ' + e.message;
+    errBox.style.display = 'block';
+  }
+}
+
+async function submitStage2WithPromo(){
+  const code = document.getElementById('s2PromoInput').value.trim();
+  const errBox = document.getElementById('s2PayError');
+  errBox.style.display = 'none';
+  if(!code){ return; }
+  if(!validateStage2(errBox)) return;
+  const btn = document.getElementById('s2PromoBtn');
+  btn.disabled = true; btn.textContent = 'Checking…';
+  await verifyStage2AndGenerate({ promo_code: code });
+  btn.disabled = false; btn.textContent = 'Apply';
+}
+
+async function verifyStage2AndGenerate(paymentFields){
+  const errBox = document.getElementById('s2PayError');
+  const lockbox = document.querySelectorAll('.lockbox')[1];
+  lockbox.style.opacity = '0.6';
+  try{
+    const caseData = collectStage2Case();
+    const res = await fetch(`${API_BASE}/api/verify-unfreeze-stage2-payment`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ ...paymentFields, ...caseData })
+    });
+    const data = await res.json();
+    lockbox.style.opacity = '1';
+    if(!data.success){
+      errBox.textContent = data.error || 'Payment verification failed.';
+      errBox.style.display = 'block';
+      return;
+    }
+    if(data.error){
+      errBox.textContent = data.error + (data.payment_id ? ` (Payment ID: ${data.payment_id})` : '');
+      errBox.style.display = 'block';
+      return;
+    }
+    renderStage2Report(data.report, caseData);
+  }catch(e){
+    lockbox.style.opacity = '1';
+    errBox.textContent = 'Something went wrong generating your letter: ' + e.message;
+    errBox.style.display = 'block';
+  }
+}
+
+function renderStage2Report(r, caseData){
+  const reportId = 'SB-UNFRZ2-' + Date.now().toString(36).toUpperCase();
+  document.getElementById('s2MetaReportId').textContent = 'Report ID: ' + reportId;
+  document.getElementById('s2MetaDate').textContent = 'Generated: ' + new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+  document.getElementById('s2Letter').textContent = r.direct_letter || '';
+  document.getElementById('s2Disclaimer').textContent = r.disclaimer || 'This is general procedural guidance, not legal advice, and not a guarantee of any outcome.';
+  document.getElementById('s2Report').classList.add('show');
+  document.getElementById('s2Report').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function downloadStage2PDF(){
+  const el = document.getElementById('s2Report');
+  const btn = document.getElementById('s2DownloadPdfBtn');
+  const originalScrollY = window.scrollY;
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Preparing PDF…';
+  window.scrollTo(0, 0);
+  setTimeout(() => {
+    html2pdf().set({
+      margin: 10,
+      filename: 'stage2-direct-letter-salarybit.pdf',
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2, backgroundColor: '#ffffff', scrollX: 0, scrollY: 0, windowWidth: document.documentElement.scrollWidth, windowHeight: document.documentElement.scrollHeight, useCORS: true },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }

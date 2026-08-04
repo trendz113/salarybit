@@ -39,7 +39,7 @@
  * every tool page). If upgrading an existing sheet, type "Message" into
  * F1 and "Page URL" into G1 yourself.
  *
- * FEEDBACK EMAIL NOTIFICATIONS:
+ * FEEDBACK EMAIL NOTIFICATIONS:  
  * Whenever a "site-feedback" submission comes in, this also immediately
  * emails you (in addition to logging the row in the Sheet) — using
  * MailApp, same as the daily PDF sender. The email lands in YOUR inbox,

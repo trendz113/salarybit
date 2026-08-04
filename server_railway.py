@@ -2132,6 +2132,222 @@ def verify_insurancecheck_payment():
     return jsonify({"success": True, "payment_id": payment_id, "report": report})
 
 
+# ── BANK ACCOUNT UNFREEZE RESOLVER ───────────────────────────
+# Addresses the "police says talk to the bank, bank says talk to police"
+# loop that traps people whose account gets frozen/lien-marked after a
+# cyber fraud complaint (very common "money mule chain" pass-through
+# freeze, per India's 2026 MHA/I4C SOP). Diagnoses which authority
+# actually controls the release (cyber cell IO / tax dept / court) and
+# generates a personalised representation letter + escalation checklist.
+UNFREEZE_PRICE_PAISE = 19900  # Rs 199
+
+UNFREEZE_SYSTEM_PROMPT = """You are a senior Indian consumer-rights advisor preparing a personalised
+"Bank Account Unfreeze Report" for a paying client whose bank account has been frozen or lien-marked,
+most commonly after a cyber fraud complaint traced their account as part of a money trail (a "mule
+chain" pass-through), even when they are completely innocent. The client paid Rs 199 for a report
+personalised to their exact situation — write with the precision of an advisor who has actually reviewed
+their case, not a generic FAQ. This person is likely stressed and their money may be genuinely needed
+(salary, rent, EMI) — be clear, calm, and practically useful, not alarmist and not falsely reassuring.
+
+You will be given: freeze_scope (whole account vs partial lien amount vs unclear), who_froze (cyber
+cell/police, tax/GST dept, court order, or unclear), duration frozen, bank name, lien amount if known,
+any reference/complaint/FIR number, what they've already submitted, client name, and free-text context.
+
+GROUNDING FACTS — use these, do not invent different rules or numbers:
+- When who_froze is cyber_cell: the freeze happens because a cyber fraud complaint (via cybercrime.gov.in,
+  the 1930 helpline, or a local FIR) traced money through a chain of accounts, and the cyber cell/police
+  station sent a written direction to the bank. Banks are legally required to comply immediately, with
+  NO court order needed at that stage — this is exactly why the bank cannot reverse it either; only the
+  investigating officer (IO) handling that specific complaint can authorise a release (via a No Objection
+  Certificate / NOC). The client has a right to know the exact complaint reference, police station/cyber
+  cell name, and IO contact from their bank in writing.
+- Since a January 2026 MHA/I4C Standard Operating Procedure, only the disputed/reported amount is
+  supposed to be held as a lien, not the entire account — if freeze_scope is "full" but the underlying
+  dispute is a much smaller sum, this is a legitimate point to raise explicitly in the representation, and
+  is a recent, real change (previously a Rs 500 disputed transfer could freeze an account holding lakhs).
+- Multiple Indian High Courts (Kerala — Headstar Global v. State of Kerala, 2025; Bombay, December 2025;
+  Delhi — Malabar Gold and Diamond Ltd. v. Union of India, January 2026) have held that freezing the
+  account of someone who is neither an accused nor a suspect, without a Magistrate's order, is illegal and
+  violates the right to livelihood/carry on trade. Cite this as real legal leverage available to an
+  innocent account holder, not as a guaranteed outcome — most cases resolve via the IO/NOC route long
+  before anyone needs to invoke this.
+- There is an expectation under the current SOP framework that stuck cases get reviewed around the
+  90-day mark; a freeze unresolved well past 90 days is unusually long and worth escalating more firmly,
+  explicitly citing the delay.
+- The standard escalation rhythm: written representation to the specific IO with transaction proof and ID
+  → request NOC → if the matter is still a preliminary complaint (not yet an FIR), request it be converted
+  to an FIR, since that is what actually moves an investigation forward → follow up with the IO roughly
+  every 15 days → if no movement, escalate to the bank's nodal officer / grievance redressal officer and
+  the NCRP/CFCFRMS online grievance tracking for the original complaint → if still stuck after sustained
+  follow-up, especially for the whole-account-frozen-over-a-small-sum scenario, a writ petition under
+  Article 226 in the jurisdictional High Court is the real remedy, and needs a lawyer.
+- When who_froze is tax_gst: this is a different legal track entirely — an attachment under tax law (e.g.
+  Section 226(3) of the Income Tax Act), not a cyber cell matter. The client should check their income tax
+  or GST portal for a pending notice/demand and respond to that specific notice; a CA or tax lawyer is
+  usually the right next step, especially if there's a genuine demand behind it, not a representation
+  letter to a police officer.
+- When who_froze is court_order: only the same court (or a higher court on appeal) can vary or lift this
+  — a bank branch or police station has no authority here. The client needs a lawyer to file the
+  appropriate application before that court; do NOT write a representation-letter-to-an-IO in this case,
+  set representation_letter to null and say so plainly.
+- When who_froze is unclear: the first real step is forcing the bank to disclose who froze it and why (in
+  writing, via the nodal officer, not just branch staff) — you cannot write a targeted representation
+  letter without knowing the authority, so representation_letter should be a letter addressed to the
+  bank's nodal officer demanding this disclosure, not a letter to an unknown IO.
+
+Rules:
+- representation_letter: write a complete, ready-to-send formal letter appropriate to who_froze (to the
+  IO for cyber_cell cases referencing their reference/FIR number if given and their case for innocence
+  using bank name and lien amount from the case data; to the bank's nodal officer demanding disclosure for
+  "unclear" cases; null for court_order cases). Use the client's name if given, otherwise "[Your Name]".
+  Weave in any extra_context they gave (e.g. "money was from an old loan repayment") as their stated
+  explanation of the transaction, phrased as their own account, not as a verified fact.
+- escalation_checklist: 4-7 concrete, ordered action items reflecting the correct track for who_froze, and
+  factoring in filed_status (skip steps they say they've already done; if filed_status is
+  noc_bank_pending, focus the checklist on chasing the bank to actually act on the NOC, not on re-doing the
+  representation) and duration (if over90, checklist should open with escalating the delay, not starting
+  from scratch).
+- legal_leverage_points: 2-4 sentences on what in the current rules/recent rulings works in this specific
+  person's favour given freeze_scope and who_froze — be concrete, not a generic list of every rule that
+  exists regardless of relevance.
+- when_to_consult_a_lawyer: 2-3 sentences, specific to this case (e.g. large lien_amount, court_order type,
+  over90 duration with no movement, or filed_status already stuck at noc_bank_pending) — don't default to
+  vague "if things get complicated."
+- Do not invent facts you weren't given (do not assume a specific IO name, specific court, or specific
+  demand amount beyond what's in the case data).
+- This is procedural/consumer-rights guidance, not legal advice — say so once, briefly, in the disclaimer
+  field only.
+
+Respond ONLY with a single JSON object (no markdown fences, no preamble), matching this exact shape:
+
+{
+  "diagnosis_summary": "2-3 sentences on what's actually happening in this specific case",
+  "who_actually_has_authority": "1-2 sentences naming the actual authority that must act, and why the bank/generic police contact hasn't worked",
+  "representation_letter": "full formatted letter text, or null if not applicable (court_order cases)",
+  "escalation_checklist": ["step 1", "step 2", "step 3"],
+  "legal_leverage_points": "2-4 sentences specific to this case",
+  "when_to_consult_a_lawyer": "2-3 sentences specific to this case",
+  "disclaimer": "one sentence noting this is procedural/consumer-rights guidance, not legal advice, and not a guarantee of any outcome"
+}"""
+
+
+def _call_claude_unfreeze_report(case):
+    claude_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not claude_key:
+        raise RuntimeError("Server not configured. Missing ANTHROPIC_API_KEY.")
+
+    payload = json.dumps({
+        "model": "claude-sonnet-4-6",
+        "max_tokens": 3500,
+        "system": UNFREEZE_SYSTEM_PROMPT,
+        "messages": [{"role": "user", "content": json.dumps(case, indent=2)}]
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": claude_key,
+            "anthropic-version": "2023-06-01"
+        },
+        method="POST"
+    )
+
+    with urllib.request.urlopen(req, timeout=90) as resp:
+        result = json.loads(resp.read().decode("utf-8"))
+
+    raw = "".join(
+        block.get("text", "") for block in result.get("content", []) if block.get("type") == "text"
+    ).strip()
+    if raw.startswith("```"):
+        raw = raw.strip("`")
+        if raw.lower().startswith("json"):
+            raw = raw[4:]
+    return json.loads(raw)
+
+
+@app.route("/api/create-unfreeze-order", methods=["POST", "OPTIONS"])
+def create_unfreeze_order():
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": UNFREEZE_PRICE_PAISE,
+            "currency": "INR",
+            "receipt": f"unfreeze_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
+    except Exception as e:
+        print(f"create-unfreeze-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/verify-unfreeze-payment", methods=["POST", "OPTIONS"])
+def verify_unfreeze_payment():
+    """Verifies payment (or a promo bypass code), then runs the Claude-
+    generated personalised Bank Account Unfreeze report and returns it."""
+    if request.method == "OPTIONS":
+        return "", 200
+    data = request.get_json(silent=True) or {}
+
+    promo_code = (data.get("promo_code") or "").strip()
+    payment_id = None
+
+    if promo_code and promo_code == PROMO_BYPASS_CODE:
+        payment_id = f"promo_{os.urandom(4).hex()}"
+        print(f"[unfreeze] PROMO bypass unlock | code used")
+    else:
+        order_id = data.get("razorpay_order_id")
+        payment_id = data.get("razorpay_payment_id")
+        signature = data.get("razorpay_signature")
+
+        if not all([order_id, payment_id, signature]):
+            return jsonify({"success": False, "error": "Missing required fields."}), 400
+
+        body = f"{order_id}|{payment_id}"
+        expected = hmac.new(
+            os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+            body.encode(),
+            hashlib.sha256
+        ).hexdigest()
+        if expected != signature:
+            return jsonify({"success": False, "error": "Payment verification failed."}), 400
+
+        print(f"[unfreeze] paid unlock | payment_id={payment_id}")
+
+    case = {
+        "freeze_scope": data.get("freeze_scope") or "not_sure",
+        "who_froze": data.get("who_froze") or "unclear",
+        "duration": data.get("duration") or "under15",
+        "client_name": data.get("client_name") or None,
+        "bank_name": data.get("bank_name") or None,
+        "lien_amount_inr": data.get("lien_amount") or None,
+        "reference_number": data.get("reference_number") or None,
+        "filed_status": data.get("filed_status") or "not_yet",
+        "additional_context": data.get("extra_context") or None,
+    }
+
+    try:
+        report = _call_claude_unfreeze_report(case)
+    except Exception as e:
+        print(f"unfreeze report generation error: {type(e).__name__}: {e}")
+        return jsonify({
+            "success": True,
+            "payment_id": payment_id,
+            "error": "Payment succeeded, but report generation failed. You will not be "
+                     "charged again — contact support with this payment ID and we'll get "
+                     "your report to you directly."
+        })
+
+    return jsonify({"success": True, "payment_id": payment_id, "report": report})
+
+
 # ── RELIEVING LETTER ESCALATION KIT ──────────────────────────
 # Pure client-side letter generator. Same paid-unlock pattern — nothing
 # typed (name, company, days) is ever sent to this server.

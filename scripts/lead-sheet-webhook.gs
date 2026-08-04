@@ -38,7 +38,22 @@
  * (issue reports / suggestions from the floating feedback button on
  * every tool page). If upgrading an existing sheet, type "Message" into
  * F1 and "Page URL" into G1 yourself.
+ *
+ * FEEDBACK EMAIL NOTIFICATIONS:
+ * Whenever a "site-feedback" submission comes in, this also immediately
+ * emails you (in addition to logging the row in the Sheet) — using
+ * MailApp, same as the daily PDF sender. The email lands in YOUR inbox,
+ * but has the submitter's address set as "Reply-To" — so hitting Reply
+ * in your email client goes straight to them. (You can't literally send
+ * "from" their address — email providers block that as spoofing — this
+ * Reply-To approach is the standard, correct way every contact form on
+ * the internet does this.)
+ *
+ * Set FEEDBACK_NOTIFY_EMAIL below if the auto-detected owner email is
+ * ever blank (rare, but possible depending on how the script executes).
  */
+
+var FEEDBACK_NOTIFY_EMAIL = Session.getEffectiveUser().getEmail(); // or hardcode your email here, e.g. "you@example.com"
 
 function doPost(e) {
   try {
@@ -62,6 +77,26 @@ function doPost(e) {
     }
 
     sheet.appendRow([new Date(), email, source, "", "", message, pageUrl]);
+
+    if (source === "site-feedback" && message && FEEDBACK_NOTIFY_EMAIL) {
+      try {
+        MailApp.sendEmail({
+          to: FEEDBACK_NOTIFY_EMAIL,
+          replyTo: email,
+          subject: "New SalaryBit feedback from " + email,
+          htmlBody:
+            "<p><b>From:</b> " + email + "</p>" +
+            "<p><b>Page:</b> <a href='" + pageUrl + "'>" + pageUrl + "</a></p>" +
+            "<p><b>Message:</b></p>" +
+            "<p style='white-space:pre-wrap;background:#f7f5f0;padding:12px;border-radius:6px;'>" + message + "</p>" +
+            "<p style='color:#888;font-size:12px;'>Hit Reply on this email to write straight back to " + email + ".</p>",
+        });
+      } catch (mailErr) {
+        // Don't fail the whole request if the email notification fails —
+        // the row is already safely in the Sheet either way.
+        Logger.log("Feedback email notification failed: " + mailErr.toString());
+      }
+    }
 
     return ContentService.createTextOutput(
       JSON.stringify({ status: "ok" })

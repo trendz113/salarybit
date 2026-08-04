@@ -53,7 +53,7 @@
  * ever blank (rare, but possible depending on how the script executes).
  */
 
-var FEEDBACK_NOTIFY_EMAIL = Session.getEffectiveUser().getEmail(); // or hardcode your email here, e.g. "you@example.com"
+var FEEDBACK_NOTIFY_EMAIL = "tremendouscollections@gmail.com";
 
 function doPost(e) {
   try {

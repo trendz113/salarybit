@@ -1920,6 +1920,218 @@ def verify_pancorrection_payment():
     return jsonify({"success": True, "payment_id": payment_id, "report": report})
 
 
+# ── INSURANCE REALITY CHECK ──────────────────────────────────
+# Two problems bundled into one tool: (1) drivers get charged for the
+# mandatory ₹15L Personal Accident (CPA) cover on every vehicle even when
+# they already hold a qualifying PA cover elsewhere — IRDAI unbundled this
+# in 2019 but insurers don't auto-detect it, the customer has to declare it;
+# (2) "zero depreciation"/"bumper to bumper" add-ons are marketed as full
+# coverage but exclude exactly the parts that fail most (clutch, battery,
+# tyres, consumables, mechanical/electrical breakdown). This report gives a
+# ready-to-send CPA exemption declaration letter plus a per-add-on
+# not-covered breakdown for the client's specific vehicle.
+INSURANCECHECK_PRICE_PAISE = 9900  # Rs 99
+
+INSURANCECHECK_SYSTEM_PROMPT = """You are a senior Indian motor insurance advisor preparing a
+personalised "Insurance Reality Check" report for a paying client who is about to renew or buy
+vehicle insurance. The client has paid Rs 99 for a report personalised to their exact situation —
+write with the precision of an advisor who has actually read their policy, not a generic FAQ.
+
+You will be given: whether the client already holds a qualifying Personal Accident (PA) cover
+elsewhere, which optional add-ons their insurer is quoting, their vehicle type/age/IDV, and any
+free-text context.
+
+GROUNDING FACTS — use these, do not invent different numbers:
+- IRDAI mandates a Compulsory Personal Accident (CPA) cover of Rs 15 lakh for the owner-driver on
+  every motor policy. Standard premium for this is around Rs 750/year (plus tax); some insurers bundle
+  it at a higher price, don't correct the client's stated figure if they mention one, just use it in
+  context.
+- Since a 2019 IRDAI circular unbundling CPA, if the client already holds a personal accident cover
+  (from another vehicle's motor policy, or a standalone PA policy) with sum insured of at least Rs 15
+  lakh covering death and permanent disability (total and partial) 24x7, they are NOT required to buy
+  it again on this policy — they can submit a written declaration with their existing policy number to
+  claim exemption. Insurers do not check this automatically; the customer must proactively declare it,
+  usually before the policy is issued (retroactive exemption is often not possible — note this if
+  relevant).
+- Standard exclusions across "Zero Depreciation" / "Bumper-to-Bumper" add-ons (use these, adapt to the
+  client's vehicle age/type, don't invent different exclusions): batteries and tyres/tubes (excluded or
+  covered only partially, commonly ~50%), clutch plates/bearings/general wear-and-tear parts, engine
+  damage from water ingression or oil leakage (needs a separate Engine Protector add-on), consumables
+  (engine oil, coolant, nuts/bolts), mechanical or electrical breakdown, and claims are typically capped
+  at 2 per policy year. A compulsory deductible (Rs 1000 for <1.5L engine, Rs 2000 for >1.5L) applies
+  regardless. Salvage value of replaced parts is usually deducted from the claim.
+- Zero-dep / bumper-to-bumper is usually only offered for vehicles up to 5 years old (some insurers
+  extend to 10) — flag this if the client's vehicle age makes it unavailable or a poor use of money.
+- Engine Protector is really only worth it in flood-prone/waterlogging-prone areas — since you don't
+  know the client's location, phrase the verdict conditionally ("worth it if you're in a flood-prone
+  area", not a flat yes/no) unless vehicle age/type makes it clearly not worth it (e.g. a 9-year-old car
+  where the base zero-dep add-on itself may not even be offered).
+- RTI (Return to Invoice) only pays out on total loss/theft, and is only worth it in the first 2-3 years
+  when the on-road-price-vs-IDV gap is largest — for a vehicle older than 3 years, verdict should
+  generally be "skip it".
+- NCB Protect only protects the No Claim Bonus discount tier, has zero effect on repair payouts —
+  worth it only if the client likely has an accumulated NCB percentage worth protecting (longer-owned,
+  low-claims vehicles).
+- Consumables Cover and Tyre Secure only cover accident-related replacement, not routine wear — flag if
+  the client's chosen zero-dep add-on with the SAME insurer already covers tyres, since Tyre Secure can
+  be a redundant duplicate purchase in that case (say so as a possibility, don't assert it as fact since
+  you don't have their exact zero-dep terms).
+
+Rules:
+- If pa_status is "yes_other_vehicle" or "yes_standalone": write pa_exemption_verdict as a clear
+  statement that they likely qualify for exemption, and DO write pa_opt_out_letter — a complete,
+  ready-to-send formal declaration letter addressed to their insurer (use insurer_name if given,
+  otherwise "The Claims/Underwriting Department"), referencing their existing PA policy number if
+  given, requesting CPA exemption under IRDAI's 2019 unbundling circular, in the client's name.
+- If pa_status is "not_sure": write pa_exemption_verdict explaining what to check first, and do NOT
+  write a pa_opt_out_letter (set it to null) — they need to confirm eligibility first.
+- If pa_status is "no": write pa_exemption_verdict confirming this charge is legitimate for them, and
+  do NOT write a pa_opt_out_letter (set it to null).
+- For addon_reality: include one entry per add-on in selected_addons (skip ones not selected). For
+  each, give not_covered as 3-5 bullet points specific to that add-on (from the grounding facts above,
+  phrased naturally, not copy-pasted), a worth_it boolean, and verdict_for_your_vehicle as 1-2 sentences
+  that explicitly reference their vehicle age/type/IDV where it changes the verdict.
+- total_estimated_savings_inr: a realistic INR estimate/range combining (a) the PA cover saving if
+  exemption applies, and (b) any add-on premiums worth dropping based on your worth_it verdicts. Give a
+  range, not false precision, and briefly say what it's based on.
+- recommended_action_this_renewal: 2-4 concrete sentences on what to actually do at this renewal,
+  ordered by priority.
+- Do not invent numbers you were not given (vehicle IDV, exact add-on premiums) — reason qualitatively
+  where a number wasn't provided.
+- This is educational/procedural guidance, not insurance or legal advice — say so once, briefly, in the
+  disclaimer field only.
+
+Respond ONLY with a single JSON object (no markdown fences, no preamble), matching this exact shape:
+
+{
+  "pa_exemption_verdict": "2-4 sentences, personalised",
+  "pa_opt_out_letter": "full formatted letter text, or null if not applicable",
+  "addon_reality": [
+    {"addon": "display name of the add-on", "not_covered": ["point", "point", "point"], "worth_it": true, "verdict_for_your_vehicle": "1-2 sentences referencing their vehicle specifics"}
+  ],
+  "total_estimated_savings_inr": "e.g. 'Roughly ₹1,500–3,200 this renewal, from PA exemption plus dropping RTI on a 5-year-old car.'",
+  "recommended_action_this_renewal": "2-4 concrete sentences, priority order",
+  "disclaimer": "one sentence noting this is procedural/educational guidance, not insurance or legal advice, and policy wording should be confirmed with the insurer"
+}"""
+
+
+def _call_claude_insurancecheck_report(case):
+    claude_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not claude_key:
+        raise RuntimeError("Server not configured. Missing ANTHROPIC_API_KEY.")
+
+    payload = json.dumps({
+        "model": "claude-sonnet-4-6",
+        "max_tokens": 3500,
+        "system": INSURANCECHECK_SYSTEM_PROMPT,
+        "messages": [{"role": "user", "content": json.dumps(case, indent=2)}]
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": claude_key,
+            "anthropic-version": "2023-06-01"
+        },
+        method="POST"
+    )
+
+    with urllib.request.urlopen(req, timeout=90) as resp:
+        result = json.loads(resp.read().decode("utf-8"))
+
+    raw = "".join(
+        block.get("text", "") for block in result.get("content", []) if block.get("type") == "text"
+    ).strip()
+    if raw.startswith("```"):
+        raw = raw.strip("`")
+        if raw.lower().startswith("json"):
+            raw = raw[4:]
+    return json.loads(raw)
+
+
+@app.route("/api/create-insurancecheck-order", methods=["POST", "OPTIONS"])
+def create_insurancecheck_order():
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": INSURANCECHECK_PRICE_PAISE,
+            "currency": "INR",
+            "receipt": f"insurancecheck_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
+    except Exception as e:
+        print(f"create-insurancecheck-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/verify-insurancecheck-payment", methods=["POST", "OPTIONS"])
+def verify_insurancecheck_payment():
+    """Verifies payment (or a promo bypass code), then runs the Claude-
+    generated personalised Insurance Reality Check report and returns it."""
+    if request.method == "OPTIONS":
+        return "", 200
+    data = request.get_json(silent=True) or {}
+
+    promo_code = (data.get("promo_code") or "").strip()
+    payment_id = None
+
+    if promo_code and promo_code == PROMO_BYPASS_CODE:
+        payment_id = f"promo_{os.urandom(4).hex()}"
+        print(f"[insurancecheck] PROMO bypass unlock | code used")
+    else:
+        order_id = data.get("razorpay_order_id")
+        payment_id = data.get("razorpay_payment_id")
+        signature = data.get("razorpay_signature")
+
+        if not all([order_id, payment_id, signature]):
+            return jsonify({"success": False, "error": "Missing required fields."}), 400
+
+        body = f"{order_id}|{payment_id}"
+        expected = hmac.new(
+            os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+            body.encode(),
+            hashlib.sha256
+        ).hexdigest()
+        if expected != signature:
+            return jsonify({"success": False, "error": "Payment verification failed."}), 400
+
+        print(f"[insurancecheck] paid unlock | payment_id={payment_id}")
+
+    case = {
+        "pa_status": data.get("pa_status") or "not_sure",
+        "selected_addons": data.get("selected_addons") or [],
+        "vehicle_type": data.get("vehicle_type") or "Car",
+        "vehicle_age": data.get("vehicle_age") or "Not specified",
+        "vehicle_value_inr": data.get("vehicle_value") or None,
+        "client_name": data.get("client_name") or None,
+        "insurer_name": data.get("insurer_name") or None,
+        "existing_pa_policy_number": data.get("existing_pa_policy") or None,
+        "additional_context": data.get("extra_context") or None,
+    }
+
+    try:
+        report = _call_claude_insurancecheck_report(case)
+    except Exception as e:
+        print(f"insurancecheck report generation error: {type(e).__name__}: {e}")
+        return jsonify({
+            "success": True,
+            "payment_id": payment_id,
+            "error": "Payment succeeded, but report generation failed. You will not be "
+                     "charged again — contact support with this payment ID and we'll get "
+                     "your report to you directly."
+        })
+
+    return jsonify({"success": True, "payment_id": payment_id, "report": report})
+
+
 # ── RELIEVING LETTER ESCALATION KIT ──────────────────────────
 # Pure client-side letter generator. Same paid-unlock pattern — nothing
 # typed (name, company, days) is ever sent to this server.

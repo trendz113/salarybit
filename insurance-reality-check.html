@@ -327,6 +327,10 @@
         </div>
       </div>
 
+      <label for="policyPdfUpload">Upload your policy PDF <span class="opt">— optional, but gets you exact numbers instead of estimates</span></label>
+      <input type="file" id="policyPdfUpload" class="sans" accept="application/pdf" style="padding:9px;">
+      <div id="pdfFileNote" class="sans" style="font-size:12.5px;color:var(--muted);margin-top:6px;"></div>
+
       <label for="existingPaPolicy">Existing PA policy number <span class="opt">— if you have one, for the opt-out letter</span></label>
       <input type="text" id="existingPaPolicy" class="sans" placeholder="e.g. from your other vehicle's policy">
 
@@ -387,6 +391,81 @@
   </div>
 
   <p class="disclaimer">The free instant read is general guidance based on standard IRDAI motor insurance rules and common insurer exclusion practice. The ₹99 report is generated for your specific case but remains procedural guidance, not legal or insurance advice — always confirm the exact policy wording with your insurer before renewing.</p>
+
+  <div class="panel">
+    <h2>3. Estimate My Premium <span style="font-weight:400;color:var(--muted);font-size:14px;">— Free</span></h2>
+    <p class="sub">Third Party premium is fixed by IRDAI and identical at every insurer, so that part is exact. Own Damage premium is NOT regulated — every insurer prices it differently — so we show that as a range, not a fake-precise number.</p>
+
+    <label for="calcVehicleType">Vehicle type</label>
+    <select id="calcVehicleType" class="sans">
+      <option value="car">Car</option>
+      <option value="bike_petrol">Two-wheeler (petrol)</option>
+      <option value="bike_electric">Two-wheeler (electric)</option>
+    </select>
+
+    <div class="row2">
+      <div>
+        <label for="calcCC" id="calcCCLabel">Engine capacity (cc)</label>
+        <input type="number" id="calcCC" class="sans" placeholder="e.g. 1197">
+      </div>
+      <div>
+        <label for="calcAge">Vehicle age</label>
+        <select id="calcAge" class="sans">
+          <option value="0.25">Less than 6 months</option>
+          <option value="0.75">6 months – 1 year</option>
+          <option value="1.5">1–2 years</option>
+          <option value="2.5">2–3 years</option>
+          <option value="3.5">3–4 years</option>
+          <option value="4.5">4–5 years</option>
+          <option value="6">More than 5 years</option>
+        </select>
+      </div>
+    </div>
+
+    <label for="calcKnowIdv">Do you know your current IDV?</label>
+    <select id="calcKnowIdv" class="sans">
+      <option value="yes">Yes — I'll enter it directly</option>
+      <option value="no">No — calculate it from ex-showroom price</option>
+    </select>
+
+    <div id="calcIdvDirect">
+      <label for="calcIdv">Current IDV (₹)</label>
+      <input type="number" id="calcIdv" class="sans" placeholder="e.g. 563749">
+    </div>
+    <div id="calcIdvFromPrice" style="display:none;">
+      <label for="calcExShowroom">Ex-showroom price (₹)</label>
+      <input type="number" id="calcExShowroom" class="sans" placeholder="e.g. 700000">
+    </div>
+
+    <label for="calcNcb">No Claim Bonus (NCB)</label>
+    <select id="calcNcb" class="sans">
+      <option value="0">0% (first policy or claimed last year)</option>
+      <option value="20">20% (1 claim-free year)</option>
+      <option value="25">25% (2 claim-free years)</option>
+      <option value="35">35% (3 claim-free years)</option>
+      <option value="45">45% (4 claim-free years)</option>
+      <option value="50">50% (5+ claim-free years)</option>
+    </select>
+
+    <label>Add-ons to include in the estimate <span class="opt">— optional</span></label>
+    <div class="chiprow" id="calcAddonChips">
+      <div class="chip" data-key="zero_dep">Zero Depreciation</div>
+      <div class="chip" data-key="engine_protect">Engine Protector</div>
+      <div class="chip" data-key="consumables">Consumables</div>
+      <div class="chip" data-key="tyre_secure">Tyre Secure</div>
+      <div class="chip" data-key="rti">RTI</div>
+      <div class="chip" data-key="ncb_protect">NCB Protect</div>
+      <div class="chip" data-key="roadside">Roadside Assistance</div>
+    </div>
+
+    <button class="btn sans" onclick="calculatePremium()">Calculate my premium →</button>
+
+    <div class="result sans" id="calcResult">
+      <span class="tag">Free instant estimate</span>
+      <h3>Your estimated 1-year premium</h3>
+      <div id="calcBreakdown"></div>
+    </div>
+  </div>
 </main>
 
 <script>
@@ -538,8 +617,39 @@ document.getElementById('promoToggle').addEventListener('click', () => {
   document.getElementById('promoRow').classList.toggle('show');
 });
 
+function fileToBase64(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = () => reject(new Error('Could not read the file'));
+    reader.readAsDataURL(file);
+  });
+}
+
+document.getElementById('policyPdfUpload').addEventListener('change', function(){
+  const note = document.getElementById('pdfFileNote');
+  const file = this.files[0];
+  if(!file){ note.textContent = ''; return; }
+  if(file.type !== 'application/pdf'){
+    note.textContent = 'Please upload a PDF file.';
+    note.style.color = 'var(--red)';
+    this.value = '';
+    return;
+  }
+  if(file.size > 15 * 1024 * 1024){
+    note.textContent = 'That file is a bit large (max 15MB) — try a smaller export of your policy PDF.';
+    note.style.color = 'var(--red)';
+    this.value = '';
+    return;
+  }
+  note.textContent = `✓ ${file.name} — we'll pull the exact numbers from this instead of the estimates above.`;
+  note.style.color = 'var(--green)';
+});
+
 async function collectCase(){
-  return {
+  const pdfInput = document.getElementById('policyPdfUpload');
+  const pdfFile = pdfInput.files[0];
+  const base = {
     pa_status: paSelect.value,
     selected_addons: Array.from(selectedAddons),
     vehicle_type: document.getElementById('vehicleType').value,
@@ -550,6 +660,15 @@ async function collectCase(){
     existing_pa_policy: document.getElementById('existingPaPolicy').value.trim(),
     extra_context: document.getElementById('extraContext').value.trim()
   };
+  if(pdfFile){
+    try{
+      base.policy_pdf_base64 = await fileToBase64(pdfFile);
+      base.policy_pdf_filename = pdfFile.name;
+    }catch(e){
+      console.error('PDF read failed:', e);
+    }
+  }
+  return base;
 }
 
 document.getElementById('payBtn').addEventListener('click', startPayment);
@@ -707,6 +826,146 @@ function downloadPDF(){
       alert('PDF generation failed: ' + e.message + '. You can still screenshot or print this page (Ctrl/Cmd+P) to save it.');
     });
   }, 150);
+}
+
+// ── PREMIUM ESTIMATOR (free, deterministic, no server call) ──
+// TP rates are exact — IRDAI-notified, identical at every insurer.
+const TP_TABLE = {
+  car: [ [1000, 2094], [1500, 3416], [Infinity, 7897] ],
+  bike_petrol: [ [75, 538], [150, 714], [350, 1366], [Infinity, 2804] ],
+  bike_electric: [ [3, 457], [7, 607], [16, 1161], [Infinity, 2383] ]
+};
+
+// OD is NOT regulated — every insurer prices it differently. These are wide
+// planning ranges, not quotes. Your own uploaded ACKO policy showed an OD
+// rate well under 1% of IDV, well below what many generic calculators
+// assume — so we deliberately keep this range wide rather than fake-precise.
+const OD_RATE_RANGE = { car: [0.8, 4.0], bike_petrol: [1.0, 2.5], bike_electric: [1.0, 2.5] };
+
+const IDV_DEPRECIATION = [
+  [0.5, 0.05], [1, 0.15], [2, 0.20], [3, 0.30], [4, 0.40], [5, 0.50], [Infinity, 0.55]
+];
+
+const CALC_ADDON_RANGES = {
+  zero_dep: { label: 'Zero Depreciation', pct: [0.15, 0.30], of: 'od' },
+  engine_protect: { label: 'Engine Protector', flat: [400, 1500] },
+  consumables: { label: 'Consumables', flat: [75, 400] },
+  tyre_secure: { label: 'Tyre Secure', flat: [300, 900] },
+  rti: { label: 'Return to Invoice', pct: [0.06, 0.10], of: 'od' },
+  ncb_protect: { label: 'NCB Protect', flat: [60, 400] },
+  roadside: { label: 'Roadside Assistance', flat: [200, 500] }
+};
+
+let calcSelectedAddons = new Set();
+document.querySelectorAll('#calcAddonChips .chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const key = chip.dataset.key;
+    if(calcSelectedAddons.has(key)){ calcSelectedAddons.delete(key); chip.classList.remove('on'); }
+    else{ calcSelectedAddons.add(key); chip.classList.add('on'); }
+  });
+});
+
+document.getElementById('calcVehicleType').addEventListener('change', function(){
+  const label = document.getElementById('calcCCLabel');
+  label.textContent = this.value === 'bike_electric' ? 'Motor output (kW)' : 'Engine capacity (cc)';
+});
+document.getElementById('calcKnowIdv').addEventListener('change', function(){
+  document.getElementById('calcIdvDirect').style.display = this.value === 'yes' ? 'block' : 'none';
+  document.getElementById('calcIdvFromPrice').style.display = this.value === 'no' ? 'block' : 'none';
+});
+
+function lookupTP(vehicleType, ccOrKw){
+  const table = TP_TABLE[vehicleType];
+  for(const [limit, rate] of table){
+    if(ccOrKw <= limit) return rate;
+  }
+  return table[table.length - 1][1];
+}
+
+function lookupDepreciation(ageYears){
+  for(const [limit, rate] of IDV_DEPRECIATION){
+    if(ageYears <= limit) return rate;
+  }
+  return 0.55;
+}
+
+function fmtINR(n){
+  return '₹' + Math.round(n).toLocaleString('en-IN');
+}
+
+function calculatePremium(){
+  const vehicleType = document.getElementById('calcVehicleType').value;
+  const cc = parseFloat(document.getElementById('calcCC').value);
+  const ageYears = parseFloat(document.getElementById('calcAge').value);
+  const ncb = parseFloat(document.getElementById('calcNcb').value) / 100;
+  const knowIdv = document.getElementById('calcKnowIdv').value;
+
+  if(!cc || cc <= 0){
+    alert('Please enter engine capacity (or motor output for an EV two-wheeler).');
+    return;
+  }
+
+  let idv;
+  if(knowIdv === 'yes'){
+    idv = parseFloat(document.getElementById('calcIdv').value);
+    if(!idv || idv <= 0){ alert('Please enter your IDV.'); return; }
+  }else{
+    const exShowroom = parseFloat(document.getElementById('calcExShowroom').value);
+    if(!exShowroom || exShowroom <= 0){ alert('Please enter the ex-showroom price.'); return; }
+    const depRate = lookupDepreciation(ageYears);
+    idv = exShowroom * (1 - depRate);
+  }
+
+  const tp = lookupTP(vehicleType, cc);
+  const [odLowPct, odHighPct] = OD_RATE_RANGE[vehicleType];
+  let odLow = idv * (odLowPct / 100) * (1 - ncb);
+  let odHigh = idv * (odHighPct / 100) * (1 - ncb);
+  const odMid = (odLow + odHigh) / 2;
+
+  let addonLow = 0, addonHigh = 0;
+  const addonLines = [];
+  calcSelectedAddons.forEach(key => {
+    const a = CALC_ADDON_RANGES[key];
+    let lo, hi;
+    if(a.of === 'od'){
+      lo = odMid * a.pct[0];
+      hi = odMid * a.pct[1];
+    }else{
+      lo = a.flat[0];
+      hi = a.flat[1];
+    }
+    addonLow += lo; addonHigh += hi;
+    addonLines.push(`<li>${a.label}: ${fmtINR(lo)} – ${fmtINR(hi)}</li>`);
+  });
+
+  const subtotalLow = tp + odLow + addonLow;
+  const subtotalHigh = tp + odHigh + addonHigh;
+  const totalLow = subtotalLow * 1.18;
+  const totalHigh = subtotalHigh * 1.18;
+
+  const idvNote = knowIdv === 'no'
+    ? `<p style="font-size:13px;color:var(--muted);margin:6px 0 0;">Estimated IDV: ${fmtINR(idv)} (ex-showroom price minus standard depreciation for a ${ageYears >= 5 ? '5+ year old' : ageYears + '-year-old'} vehicle — insurers may adjust this slightly at inspection.)</p>`
+    : '';
+
+  document.getElementById('calcBreakdown').innerHTML = `
+    <div class="fixbox">
+      <strong>Third Party premium — exact</strong>
+      This is fixed by IRDAI and identical at every insurer for your vehicle category: <b>${fmtINR(tp)}</b>
+    </div>
+    <div class="fixbox">
+      <strong>Own Damage premium — estimated range</strong>
+      Insurers price this independently, so this is a planning range, not a quote: <b>${fmtINR(odLow)} – ${fmtINR(odHigh)}</b> (after your ${(ncb*100).toFixed(0)}% NCB discount)
+      ${idvNote}
+    </div>
+    ${addonLines.length ? `<div class="fixbox"><strong>Add-ons selected — estimated</strong><ul>${addonLines.join('')}</ul></div>` : ''}
+    <div class="fixbox" style="border-left-color:var(--green);">
+      <strong>Estimated total (incl. 18% GST)</strong>
+      <div style="font-size:22px;font-weight:700;color:var(--navy-deep);margin-top:4px;">${fmtINR(totalLow)} – ${fmtINR(totalHigh)}</div>
+    </div>
+    <p style="font-size:12.5px;color:var(--muted);">This is a planning estimate built on IRDAI's public Third Party rates and standard IDV depreciation — it is not a quote from any specific insurer. Own Damage pricing varies significantly by insurer (your own uploaded policy above may show a rate outside this range), so always compare actual quotes before buying.</p>
+  `;
+  document.getElementById('calcResult').classList.add('show');
+  document.getElementById('calcResult').scrollIntoView({behavior:'smooth', block:'start'});
 }
 </script>
 

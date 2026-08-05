@@ -1939,9 +1939,36 @@ write with the precision of an advisor who has actually read their policy, not a
 
 You will be given: whether the client already holds a qualifying Personal Accident (PA) cover
 elsewhere, which optional add-ons their insurer is quoting, their vehicle type/age/IDV, and any
-free-text context.
+free-text context. The case data includes a "policy_pdf_attached" flag; when true, an actual policy PDF
+document is attached to this message — read it directly and treat it as ground truth.
 
-GROUNDING FACTS — use these, do not invent different numbers:
+HANDLING AN ATTACHED POLICY PDF (when policy_pdf_attached is true):
+- Extract and use the EXACT figures from the PDF wherever they exist, instead of the standard/assumed
+  figures in the grounding facts below: the actual CPA/PA premium charged (insurers vary — do not assume
+  Rs 750 if the PDF shows a different figure), the actual IDV, the actual add-ons already selected on the
+  policy (list only the ones genuinely present, not ones the client separately typed into the form if
+  they conflict — prefer the PDF), the insurer's name, and the policy start and expiry dates.
+- Determine whether this PDF represents a policy that has ALREADY BEEN ISSUED (has a past or current
+  start date and an active policy number) versus a fresh quote/proposal not yet purchased. This changes
+  the entire framing:
+  - If already issued and currently active: do NOT tell the client to act "before you pay" or "before the
+    policy is issued" — that window is closed for this term. Instead, compute their renewal date from the
+    policy expiry date shown in the PDF, state it explicitly, and frame the CPA exemption action around
+    preparing the declaration ahead of that specific renewal date.
+  - If it's a fresh quote/proposal not yet issued: the standard "declare before you pay" urgency applies
+    as normal.
+- If the PDF shows an "Unnamed PA Cover" or similar passenger-cover add-on separate from the Compulsory
+  Personal Accident (owner-driver) cover, do NOT include it in the CPA opt-out letter or exemption
+  calculation — passenger PA covers are a different risk category and are not eligible for the 2019
+  unbundling exemption, which applies only to the owner-driver CPA cover.
+- Recompute total_estimated_savings_inr using the PDF's actual CPA premium figure (plus applicable GST),
+  not the generic Rs 750 estimate, whenever the PDF provides it.
+- If the PDF conflicts with something the client typed in the form (e.g. a different IDV), trust the PDF
+  and note the correction briefly and neutrally in pa_exemption_verdict or the relevant addon verdict,
+  rather than silently picking one.
+
+GROUNDING FACTS — use these as defaults ONLY when no PDF is attached or a figure isn't in the PDF, do not
+invent different numbers:
 - IRDAI mandates a Compulsory Personal Accident (CPA) cover of Rs 15 lakh for the owner-driver on
   every motor policy. Standard premium for this is around Rs 750/year (plus tax); some insurers bundle
   it at a higher price, don't correct the client's stated figure if they mention one, just use it in
@@ -2015,16 +2042,24 @@ Respond ONLY with a single JSON object (no markdown fences, no preamble), matchi
 }"""
 
 
-def _call_claude_insurancecheck_report(case):
+def _call_claude_insurancecheck_report(case, pdf_base64=None):
     claude_key = os.environ.get("ANTHROPIC_API_KEY")
     if not claude_key:
         raise RuntimeError("Server not configured. Missing ANTHROPIC_API_KEY.")
+
+    content_blocks = []
+    if pdf_base64:
+        content_blocks.append({
+            "type": "document",
+            "source": {"type": "base64", "media_type": "application/pdf", "data": pdf_base64}
+        })
+    content_blocks.append({"type": "text", "text": json.dumps(case, indent=2)})
 
     payload = json.dumps({
         "model": "claude-sonnet-4-6",
         "max_tokens": 3500,
         "system": INSURANCECHECK_SYSTEM_PROMPT,
-        "messages": [{"role": "user", "content": json.dumps(case, indent=2)}]
+        "messages": [{"role": "user", "content": content_blocks}]
     }).encode("utf-8")
 
     req = urllib.request.Request(
@@ -2115,10 +2150,16 @@ def verify_insurancecheck_payment():
         "insurer_name": data.get("insurer_name") or None,
         "existing_pa_policy_number": data.get("existing_pa_policy") or None,
         "additional_context": data.get("extra_context") or None,
+        "policy_pdf_attached": bool(data.get("policy_pdf_base64")),
     }
+    pdf_base64 = data.get("policy_pdf_base64") or None
+    # Basic guard against absurdly large payloads (~15MB PDF -> ~20MB base64)
+    if pdf_base64 and len(pdf_base64) > 22_000_000:
+        pdf_base64 = None
+        case["policy_pdf_attached"] = False
 
     try:
-        report = _call_claude_insurancecheck_report(case)
+        report = _call_claude_insurancecheck_report(case, pdf_base64=pdf_base64)
     except Exception as e:
         print(f"insurancecheck report generation error: {type(e).__name__}: {e}")
         return jsonify({

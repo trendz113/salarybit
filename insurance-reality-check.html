@@ -289,6 +289,8 @@
       </div>
 
       <div id="exclusionsWrap"></div>
+
+      <a href="#lockboxAnchor" class="sans" onclick="document.getElementById('lockboxAnchor').scrollIntoView({behavior:'smooth', block:'center'}); return false;" style="display:inline-block;margin-top:16px;font-size:13.5px;font-weight:700;color:var(--navy);text-decoration:underline;">↓ Get your personalised ₹99 report</a>
     </div>
 
     <!-- Case details for the paid, personalised report -->
@@ -337,7 +339,7 @@
       <label for="extraContext">Anything else about your situation? <span class="opt">— makes the report specific to you</span></label>
       <textarea id="extraContext" class="sans" placeholder="e.g. I have two cars, already paid CPA on the first one this year…"></textarea>
 
-      <div class="lockbox">
+      <div class="lockbox" id="lockboxAnchor">
         <div class="kicker">Personalised Report</div>
         <h4>Get your full Reality Check report</h4>
         <div class="price">₹99 <span>one-time, this renewal</span></div>
@@ -610,6 +612,7 @@ function renderFreePreview(){
   result.classList.add('show');
   detailsBlock.style.display = 'block';
   document.getElementById('report').classList.remove('show');
+  result.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 // ── Promo toggle ──

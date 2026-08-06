@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HUF Tax Savings Calculator — How Much Can You Save? | SalaryBit</title>
+<meta name="description" content="See exactly how much tax a Hindu Undivided Family (HUF) can save you, based on your real income. Free calculator — includes the Section 87A rebate rule most people miss.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://salarybit.in/tools/huf-tax-calculator.html">
+<meta property="og:title" content="HUF Tax Savings Calculator | SalaryBit">
+<meta property="og:description" content="See exactly how much tax a Hindu Undivided Family (HUF) can save you, based on your real income. Free, instant.">
+<meta property="og:url" content="https://salarybit.in/tools/huf-tax-calculator.html">
+<meta property="og:image" content="https://salarybit.in/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://salarybit.in/og-image.png">
+<script type="application/ld+json">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "HUF Tax Savings Calculator — SalaryBit",
+    "url": "https://salarybit.in/tools/huf-tax-calculator.html",
+    "description": "Calculate exactly how much tax a Hindu Undivided Family (HUF) can save you, using FY 2026-27 slabs.",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" },
+    "creator": { "@type": "Organization", "name": "SalaryBit", "url": "https://salarybit.in/" }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does an HUF get the Section 87A tax rebate?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Section 87A rebate — which makes income up to Rs 12 lakh effectively tax-free for individuals under the new regime — is only available to resident individuals. HUFs, along with firms, LLPs, NRIs and companies, are explicitly excluded, regardless of how small the HUF's income is."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Who can create an HUF in India?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Only Hindu, Sikh, Jain, and Buddhist families can form an HUF under Indian tax law. It is not available to Muslim, Christian, or Parsi families, since the concept originates from Hindu personal law, not the Income Tax Act itself."
+        }
+      }
+    ]
+  }
+]
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1a2e;--ink2:#2d2d4a;--ink3:#4a4a6a;--mist:#7b7b9d;
+  --fog:#a8a8c0;--cloud:#d4d4e8;--pale:#eeeef6;--snow:#f7f7fc;
+  --accent:#5b6af0;--teal:#0ea5a0;--amber:#d97706;--rose:#e05c5c;--green:#16a34a;
+  --border:#e2e2f0;--shadow:0 2px 12px rgba(26,26,46,.08);
+  --accent-bg:rgba(91,106,240,.08);--accent-border:rgba(91,106,240,.2);
+  --amber-bg:rgba(217,119,6,.08);--rose-bg:rgba(224,92,92,.08);--green-bg:rgba(22,163,74,.08);
+  --r:14px;--r-sm:8px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--snow);color:var(--ink);line-height:1.6;padding-bottom:72px}
+.nav{position:sticky;top:0;z-index:100;background:rgba(247,247,252,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:900px;margin:0 auto;padding:0 1rem;height:52px;display:flex;align-items:center;gap:.75rem}
+.brand{display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0}
+.brand-mark{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,#5b6af0,#0ea5a0);display:flex;align-items:center;justify-content:center;font-size:13px}
+.brand-name{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--ink)}
+.nav-back{margin-left:auto;font-size:12px;font-weight:600;color:var(--mist);background:var(--pale);padding:5px 12px;border-radius:6px;text-decoration:none}
+.nav-fy{font-size:10px;font-weight:700;background:linear-gradient(135deg,#5b6af0,#0ea5a0);color:#fff;padding:3px 10px;border-radius:20px;flex-shrink:0}
+.hero{background:linear-gradient(135deg,#1a1a2e,#2d2d4a);padding:1.5rem 1rem 1.25rem}
+.hero-inner{max-width:900px;margin:0 auto}
+.hero-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:9px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.625rem}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(20px,4vw,28px);font-weight:800;color:#fff;line-height:1.2;margin-bottom:.375rem}
+.hero p{font-size:13px;color:rgba(255,255,255,.55);max-width:600px}
+.wrap{max-width:900px;margin:0 auto;padding:1.25rem 1rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start}
+@media(max-width:580px){.grid2{grid-template-columns:1fr}}
+.panel{background:#fff;border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow)}
+.panel-head{padding:.875rem 1rem;border-bottom:1px solid var(--border)}
+.panel-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--ink)}
+.panel-body{padding:1rem}
+.field{margin-bottom:.75rem}
+.field label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--mist);margin-bottom:3px}
+.fld-wrap{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:var(--r-sm);background:#fff;overflow:hidden;transition:.15s}
+.fld-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg)}
+.fld-pre{font-size:12px;font-weight:600;color:var(--mist);padding:0 8px;background:var(--pale);border-right:1px solid var(--border);height:38px;display:flex;align-items:center;white-space:nowrap}
+.fld-inp{border:none;outline:none;background:transparent;font-family:inherit;font-size:13px;color:var(--ink);padding:0 10px;height:38px;width:100%}
+.fld-hint{font-size:10px;color:var(--mist);margin-top:2px}
+.cta{width:100%;height:42px;background:linear-gradient(135deg,#5b6af0,#0ea5a0);color:#fff;border:none;border-radius:var(--r-sm);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;margin-top:.75rem;transition:.2s}
+.cta:hover{opacity:.9;box-shadow:0 4px 16px rgba(91,106,240,.3)}
+.r-hero{border-radius:var(--r-sm);padding:1.125rem;color:#fff;text-align:center;margin-bottom:.625rem}
+.r-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.5);margin-bottom:.25rem}
+.r-val{font-family:'Syne',sans-serif;font-size:clamp(24px,4vw,32px);font-weight:800;color:#fff;line-height:1}
+.r-sub{font-size:11px;color:rgba(255,255,255,.5);margin-top:.25rem}
+.rcard{background:var(--pale);border:1px solid var(--border);border-radius:var(--r-sm);padding:.875rem;margin-bottom:.5rem}
+.rrow{display:flex;justify-content:space-between;align-items:center;padding:.3rem 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--mist)}
+.rrow:last-child{border-bottom:none}
+.rrow b{color:var(--ink);font-weight:700}
+.rrow.g b{color:var(--green)}
+.insight{display:flex;gap:.625rem;padding:.75rem .875rem;border-radius:var(--r-sm);font-size:12px;line-height:1.55;margin-top:.625rem}
+.ii{font-size:16px;flex-shrink:0;margin-top:1px}
+.insight.green{background:var(--green-bg);border:1px solid rgba(22,163,74,.2);color:var(--green)}
+.insight.gold{background:var(--amber-bg);border:1px solid rgba(217,119,6,.2);color:var(--amber)}
+.insight.red{background:var(--rose-bg);border:1px solid rgba(224,92,92,.2);color:var(--rose)}
+.ph{text-align:center;padding:2rem 1rem;color:var(--mist);font-size:13px}
+.seo{max-width:900px;margin:0 auto;padding:1.5rem 1rem 2rem}
+.seo h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--ink);margin-bottom:.625rem;margin-top:1.5rem}
+.seo h2:first-child{margin-top:0}
+.seo h3{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--ink);margin:.875rem 0 .375rem}
+.seo p{font-size:13px;color:var(--ink3);line-height:1.75;margin-bottom:.625rem}
+.seo ul,.seo ol{font-size:13px;color:var(--ink3);padding-left:1.25rem;margin-bottom:.625rem;line-height:1.7}
+.seo li{margin-bottom:.3rem}
+.faq{background:#fff;border:1px solid var(--border);border-radius:var(--r-sm);padding:.875rem;margin-bottom:.5rem}
+.faq-q{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:.375rem}
+.faq-a{font-size:12px;color:var(--ink3);line-height:1.65}
+.guide-link{display:inline-block;background:var(--accent-bg);border:1px solid var(--accent-border);color:var(--accent);padding:.625rem 1rem;border-radius:var(--r-sm);font-size:13px;font-weight:700;text-decoration:none;margin-top:.5rem}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><div class="brand-mark">👪</div><span class="brand-name">SalaryBit</span></a>
+    <a class="nav-back" href="/">← All Tools</a>
+    <span class="nav-fy">FY 2026-27</span>
+  </div>
+</nav>
+
+<section class="hero"><div class="hero-inner">
+  <div class="hero-pill">👪 Free · Instant · No Login</div>
+  <h1>HUF Tax Savings Calculator</h1>
+  <p>A Hindu Undivided Family is taxed as a completely separate "person" under the Income Tax Act — with its own slabs, its own 80C, its own basic exemption. See exactly what that's worth for your income. One important catch most calculators skip: HUFs don't get the Section 87A rebate that makes individual income tax-free up to ₹12L — this one accounts for it.</p>
+</div></section>
+
+<div class="wrap"><div class="grid2">
+  <div class="panel">
+    <div class="panel-head"><div class="panel-title">💰 Your Income Details</div></div>
+    <div class="panel-body">
+      <div class="field"><label>Your Current Taxable Income</label><div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="huf-income" placeholder="e.g. 18,00,000" oninput="calcHUF()"></div><div class="fld-hint">After standard deduction, before 80C etc. — your total income as it stands today, without an HUF.</div></div>
+      <div class="field"><label>Income You Could Realistically Shift to an HUF</label><div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="huf-shift" placeholder="e.g. 6,00,000" oninput="calcHUF()"></div><div class="fld-hint">e.g. rental income from ancestral property, income from a gift/inheritance invested by the HUF — not your salary, which can't be shifted.</div></div>
+      <button class="cta" onclick="calcHUF()">Calculate My Savings →</button>
+      <div class="insight gold" style="margin-top:12px;"><span class="ii">⚠️</span><div>This assumes the shifted income is genuinely HUF income (ancestral property, gifts to the HUF, HUF-run business) — not your own salary or self-earned income routed through the HUF to dodge tax. That specifically invites <a href="#clubbing" style="color:inherit;font-weight:700;">clubbing provisions</a> and can backfire. See the guide below.</div></div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><div class="panel-title">📊 Your Result</div></div>
+    <div class="panel-body"><div id="huf-result"><div class="ph">Enter your income details to see your potential HUF savings</div></div></div>
+  </div>
+</div>
+
+<div class="seo">
+  <h2>What Is an HUF, and Who Can Create One?</h2>
+  <p>A Hindu Undivided Family (HUF) is a separate legal and tax entity recognised under Indian law — distinct from you as an individual. It gets its own PAN, files its own income tax return, and is taxed using the exact same slab structure as an individual, but completely independently of your personal income. This means income earned by the HUF (rental income from ancestral property, business income, or returns on gifted/inherited assets) is taxed in the HUF's hands, at the HUF's own slab rates — effectively giving your family a second set of tax brackets to work with.</p>
+  <p><strong>Eligibility is specific:</strong> only Hindu, Sikh, Jain, and Buddhist families can form an HUF. It doesn't exist as a concept for Muslim, Christian, or Parsi families, since it originates from Hindu personal law rather than the Income Tax Act itself. An HUF is automatically created the moment a Hindu male has a wife and child (the "coparcenary"), but it only becomes a usable tax entity once it's formally registered with its own PAN and bank account.</p>
+
+  <h2>Step-by-Step: How to Create an HUF</h2>
+  <ol>
+    <li><strong>Draft an HUF deed.</strong> A simple declaration on stamp paper stating who the Karta (head of the family, usually the senior-most male member) is, who the coparceners/members are, and the initial corpus (starting capital) of the HUF.</li>
+    <li><strong>Apply for a separate PAN card</strong> in the name of the HUF (e.g. "Deepak Kumar HUF") — done via the same NSDL/UTIITSL process as an individual PAN, just selecting "HUF" as the status.</li>
+    <li><strong>Open a bank account</strong> in the HUF's name, using the HUF PAN and the deed as supporting documents.</li>
+    <li><strong>Fund the HUF properly.</strong> The corpus should come from a genuine source — ancestral property, an inheritance, or a gift from a relative who is not the Karta (gifts from the Karta's own funds into the HUF can trigger clubbing, see below). This step is where most DIY attempts go wrong.</li>
+    <li><strong>File a separate ITR for the HUF every year</strong>, exactly like an individual return, declaring the HUF's own income.</li>
+  </ol>
+
+  <h2 id="clubbing">The Clubbing Provisions — Why This Isn't a Free Loophole</h2>
+  <p>Under Section 64(2) of the Income Tax Act, if the Karta transfers their own self-acquired property or money into the HUF without adequate consideration, the income from that transferred asset continues to be taxed in the Karta's individual hands, not the HUF's — completely defeating the purpose. This is the single most common mistake: people try to "gift" their own salary savings into an HUF to save tax, and the tax department simply attributes that income straight back to them under clubbing rules. Genuine ancestral property, inheritances, and gifts from relatives other than the Karta are the safe, legitimate ways to fund an HUF.</p>
+
+  <h2>How Income Tax Treats an HUF — The Rules People Get Wrong</h2>
+  <ul>
+    <li><strong>No Section 87A rebate.</strong> This is the big one. Individuals get a rebate that zeroes out tax on income up to ₹12 lakh (new regime) or ₹5 lakh (old regime). HUFs are explicitly excluded from this rebate — so an HUF starts paying real tax at a much lower income level than an individual does.</li>
+    <li><strong>Same slabs as an individual otherwise.</strong> ₹4L basic exemption under the new regime, ₹2.5L under the old regime, same tax brackets.</li>
+    <li><strong>80C, 80D and most other deductions are available</strong> to an HUF under the old regime, same limits as an individual.</li>
+    <li><strong>No standard deduction</strong>, since an HUF doesn't earn "salary" income.</li>
+    <li><strong>Capital gains, business income, and rental income</strong> earned by the HUF are all taxed at the HUF's own rates, separately from the Karta's personal return.</li>
+  </ul>
+
+  <div class="faq"><div class="faq-q">Does an HUF get the Section 87A tax rebate?</div><div class="faq-a">No. Section 87A rebate — which makes income up to ₹12 lakh effectively tax-free for individuals under the new regime — is only available to resident individuals. HUFs, along with firms, LLPs, NRIs and companies, are explicitly excluded, regardless of how small the HUF's income is.</div></div>
+  <div class="faq"><div class="faq-q">Who can create an HUF in India?</div><div class="faq-a">Only Hindu, Sikh, Jain, and Buddhist families can form an HUF under Indian tax law. It is not available to Muslim, Christian, or Parsi families, since the concept originates from Hindu personal law, not the Income Tax Act itself.</div></div>
+
+  <p style="font-size:11px;color:var(--mist);margin-top:1.5rem;">For informational purposes only — this is not personalised tax or legal advice. HUF formation has real legal and family-law implications (coparcenary rights, succession) beyond tax. Consult a Chartered Accountant before creating one.</p>
+</div>
+</div>
+
+<script>
+function fmtI(n){ return '₹' + Math.round(n).toLocaleString('en-IN'); }
+
+// FY 2026-27 new regime slabs — same brackets apply to individuals and HUFs
+const SLABS = [
+  [0, 400000, 0], [400000, 800000, 0.05], [800000, 1200000, 0.10],
+  [1200000, 1600000, 0.15], [1600000, 2000000, 0.20], [2000000, 2400000, 0.25],
+  [2400000, Infinity, 0.30]
+];
+
+function slabTax(income){
+  let tax = 0;
+  for (const [lo, hi, rate] of SLABS){
+    if (income > lo) tax += (Math.min(income, hi) - lo) * rate;
+  }
+  return tax;
+}
+
+function individualTax(income){
+  let tax = slabTax(income);
+  // Section 87A rebate — individuals only, up to Rs 12L taxable income, capped at Rs 60,000
+  if (income <= 1200000) tax = Math.max(0, tax - Math.min(tax, 60000));
+  return tax * 1.04; // + 4% cess
+}
+
+function hufTax(income){
+  // No Section 87A rebate for HUF — ever, regardless of income level
+  const tax = slabTax(income);
+  return tax * 1.04; // + 4% cess
+}
+
+function calcHUF(){
+  const income = parseFloat(document.getElementById('huf-income').value) || 0;
+  const shift = parseFloat(document.getElementById('huf-shift').value) || 0;
+  const r = document.getElementById('huf-result');
+
+  if (!income){
+    r.innerHTML = '<div class="ph">Enter your income details to see your potential HUF savings</div>';
+    return;
+  }
+
+  const taxWithoutHUF = individualTax(income);
+  const remainingIndividualIncome = Math.max(0, income - shift);
+  const taxIndividualWithHUF = individualTax(remainingIndividualIncome);
+  const taxHUFPortion = shift > 0 ? hufTax(shift) : 0;
+  const totalWithHUF = taxIndividualWithHUF + taxHUFPortion;
+  const savings = taxWithoutHUF - totalWithHUF;
+
+  let html = '';
+
+  if (shift <= 0){
+    html = `<div class="r-hero" style="background:linear-gradient(135deg,#5b6af0,#0ea5a0);">
+      <div class="r-label">Your Current Tax (No HUF)</div>
+      <div class="r-val">${fmtI(taxWithoutHUF)}</div>
+      <div class="r-sub">Add an income amount above to see the HUF comparison</div>
+    </div>`;
+  } else if (savings <= 0){
+    html = `<div class="r-hero" style="background:linear-gradient(135deg,#e05c5c,#d97706);">
+      <div class="r-label">Estimated Impact</div>
+      <div class="r-val">${fmtI(Math.abs(savings))}</div>
+      <div class="r-sub">${savings < 0 ? 'MORE tax, not less, at this amount' : 'No real benefit at this amount'}</div>
+    </div>
+    <div class="insight red"><span class="ii">⚠️</span><div>At this shift amount, the HUF's own tax on ₹${shift.toLocaleString('en-IN')} (with no 87A rebate available) outweighs what you save on your individual side. HUFs tend to help most when the shifted amount is large enough to matter, and your own income is already well past the exemption-heavy zone. Try a different amount.</div></div>`;
+  } else {
+    html = `<div class="r-hero" style="background:linear-gradient(135deg,#16a34a,#0ea5a0);">
+      <div class="r-label">Estimated Annual Tax Saved</div>
+      <div class="r-val">${fmtI(savings)}</div>
+      <div class="r-sub">by routing ₹${shift.toLocaleString('en-IN')} through a properly-funded HUF</div>
+    </div>
+    <div class="rcard">
+      <div class="rrow"><span>Your Tax Today (no HUF)</span><b>${fmtI(taxWithoutHUF)}</b></div>
+      <div class="rrow"><span>Your Tax With HUF (remaining income)</span><b>${fmtI(taxIndividualWithHUF)}</b></div>
+      <div class="rrow"><span>HUF's Own Tax (no 87A rebate)</span><b>${fmtI(taxHUFPortion)}</b></div>
+      <div class="rrow g"><span>Combined Tax With HUF</span><b>${fmtI(totalWithHUF)}</b></div>
+      <div class="rrow g"><span>Net Annual Saving</span><b>${fmtI(savings)}</b></div>
+    </div>
+    <div class="insight green"><span class="ii">✅</span><div>This only works if the ₹${shift.toLocaleString('en-IN')} is genuine HUF income — ancestral property, inheritance, or gifts from relatives other than yourself as Karta. Moving your own salary/self-earned money into the HUF triggers clubbing provisions and this saving disappears.</div></div>`;
+  }
+
+  r.innerHTML = html;
+}
+</script>
+<script src="/assets/js/site-widgets.js"></script>
+</body>
+</html>

@@ -4220,7 +4220,7 @@ def superannuation_report_pdf():
 
 # =========================================================================
 # Debit Card Accident Claim Kit — paid add-on for
-# tools/debit-card-accident-cover-checker.html
+# tools/accident-cover-checker.html
 # =========================================================================
 CLAIM_KIT_PRICE_PAISE = 9900  # Rs 99
 

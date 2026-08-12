@@ -6,7 +6,7 @@
 <title>Accident Cover Checker — Debit Card, Credit Card, Bank Account & PMSBY | SalaryBit</title>
 <meta name="description" content="Free personal accident cover is hiding in your debit card, credit card, savings/salary account, and a ₹20/year government scheme — most people know about none of them. Check your exact cover amount, eligibility condition, and claim checklist — free, instant.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://salarybit.in/tools/debit-card-accident-cover-checker.html">
+<link rel="canonical" href="https://salarybit.in/tools/accident-cover-checker.html">
 <meta property="og:title" content="Accident Cover Checker — Debit Card, Credit Card, Bank Account & PMSBY | SalaryBit">
 <meta property="og:image" content="https://salarybit.in/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -14,14 +14,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://salarybit.in/og-image.png">
 <meta property="og:description" content="Free personal accident cover is hiding in your debit card, credit card, savings/salary account, and a ₹20/year government scheme — most people know about none of them. Check your exact cover amount, eligibility condition, and claim checklist — free, instant.">
-<meta property="og:url" content="https://salarybit.in/tools/debit-card-accident-cover-checker.html">
+<meta property="og:url" content="https://salarybit.in/tools/accident-cover-checker.html">
 <script type="application/ld+json">
 [
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Debit Card Accident Cover Checker — SalaryBit",
-    "url": "https://salarybit.in/tools/debit-card-accident-cover-checker.html",
+    "url": "https://salarybit.in/tools/accident-cover-checker.html",
     "description": "Check your debit card, credit card, savings/salary account, or PMSBY government scheme for free personal accident insurance cover amount, eligibility window, and claim document checklist.",
     "applicationCategory": "FinanceApplication",
     "operatingSystem": "All",
@@ -832,7 +832,7 @@ async function submitClaimWaitlist(e){
     const res = await fetch(API_BASE + '/api/capture-lead', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({email: email, source: 'debit-card-accident-cover-checker-waitlist'})
+      body: JSON.stringify({email: email, source: 'accident-cover-checker-waitlist'})
     });
     const data = await res.json();
     if(res.ok){

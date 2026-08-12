@@ -2,6 +2,13 @@
   "version": 2,
   "buildCommand": "npm install",
   "outputDirectory": ".",
+  "redirects": [
+    {
+      "source": "/tools/debit-card-accident-cover-checker.html",
+      "destination": "/tools/accident-cover-checker.html",
+      "permanent": true
+    }
+  ],
   "functions": {
     "api/create-order.js": {
       "memory": 256,

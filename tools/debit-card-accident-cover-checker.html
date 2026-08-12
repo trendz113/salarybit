@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Debit Card Accident Cover Checker — Find Your Hidden Insurance | SalaryBit</title>
-<meta name="description" content="Most Indian debit cards carry free personal accident cover of ₹1 lakh to ₹10 lakh+ that almost nobody claims. Check your card's cover amount, eligibility condition, and exact claim checklist — free, instant.">
+<title>Accident Cover Checker — Debit Card, Credit Card, Bank Account & PMSBY | SalaryBit</title>
+<meta name="description" content="Free personal accident cover is hiding in your debit card, credit card, savings/salary account, and a ₹20/year government scheme — most people know about none of them. Check your exact cover amount, eligibility condition, and claim checklist — free, instant.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://salarybit.in/tools/debit-card-accident-cover-checker.html">
-<meta property="og:title" content="Debit Card Accident Cover Checker — Find Your Hidden Insurance | SalaryBit">
+<meta property="og:title" content="Accident Cover Checker — Debit Card, Credit Card, Bank Account & PMSBY | SalaryBit">
 <meta property="og:image" content="https://salarybit.in/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://salarybit.in/og-image.png">
-<meta property="og:description" content="Most Indian debit cards carry free personal accident cover of ₹1 lakh to ₹10 lakh+ that almost nobody claims. Check your card's cover amount, eligibility condition, and exact claim checklist — free, instant.">
+<meta property="og:description" content="Free personal accident cover is hiding in your debit card, credit card, savings/salary account, and a ₹20/year government scheme — most people know about none of them. Check your exact cover amount, eligibility condition, and claim checklist — free, instant.">
 <meta property="og:url" content="https://salarybit.in/tools/debit-card-accident-cover-checker.html">
 <script type="application/ld+json">
 [
@@ -22,7 +22,7 @@
     "@type": "WebApplication",
     "name": "Debit Card Accident Cover Checker — SalaryBit",
     "url": "https://salarybit.in/tools/debit-card-accident-cover-checker.html",
-    "description": "Check your debit card's free personal accident insurance cover amount, eligibility window, and claim document checklist.",
+    "description": "Check your debit card, credit card, savings/salary account, or PMSBY government scheme for free personal accident insurance cover amount, eligibility window, and claim document checklist.",
     "applicationCategory": "FinanceApplication",
     "operatingSystem": "All",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" },
@@ -206,35 +206,38 @@ body{font-family:'DM Sans',sans-serif;background:var(--snow);color:var(--ink);li
 
 <section class="hero"><div class="hero-inner">
   <div class="hero-pill">💳 Free · Instant · No Login</div>
-  <h1>Debit Card Accident Cover Checker</h1>
-  <p>Most Indian debit cards carry free personal accident insurance — ₹1 lakh to ₹10 lakh+ — that almost nobody knows about or claims. Pick your bank and card type to see your exact cover amount, the eligibility condition that trips up most claims, and what documents you'll need.</p>
+  <h1>Accident Cover Checker — Cards, Accounts &amp; Govt Schemes</h1>
+  <p>Free personal accident cover is hiding in more places than just your debit card — credit cards, your savings/salary account, and a ₹20/year government scheme all carry it too, and most people know about none of them. Pick what you want to check.</p>
 </div></section>
 
 <div class="wrap"><div class="grid2">
   <div class="panel">
-    <div class="panel-head"><div class="panel-title">🏦 Your Debit Card</div></div>
+    <div class="panel-head"><div class="panel-title">🏦 What Do You Want to Check?</div></div>
     <div class="panel-body">
-      <div class="field"><label>Bank</label>
-        <select class="fld-bare" id="dc-bank" onchange="renderCardOptions()">
-          <option value="">Select your bank</option>
-          <option value="sbi">State Bank of India (SBI)</option>
-          <option value="hdfc">HDFC Bank</option>
-          <option value="icici">ICICI Bank</option>
-          <option value="axis">Axis Bank</option>
-          <option value="other_rupay">Other bank — RuPay debit card</option>
+      <div class="field"><label>Product Type</label>
+        <select class="fld-bare" id="dc-product" onchange="renderBankOptions()">
+          <option value="">Select a product</option>
+          <option value="debit">💳 Debit Card</option>
+          <option value="credit">💳 Credit Card</option>
+          <option value="account">🏦 Savings / Salary Account</option>
+          <option value="govt">🇮🇳 Government Scheme (PMSBY)</option>
         </select>
       </div>
+      <div class="field" id="dc-bank-field" style="display:none">
+        <label>Bank</label>
+        <select class="fld-bare" id="dc-bank" onchange="renderCardOptions()"></select>
+      </div>
       <div class="field" id="dc-card-field" style="display:none">
-        <label>Card Variant</label>
+        <label id="dc-card-label">Card Variant</label>
         <select class="fld-bare" id="dc-card" onchange="calcCover()"></select>
       </div>
-      <button class="cta" onclick="calcCover()">Check My Cover →</button>
-      <div class="fld-hint" style="margin-top:8px;">Figures are based on published bank/NPCI circulars as of FY 2026-27 and are indicative — banks revise these periodically, so always confirm the exact amount and terms with your bank before relying on it.</div>
+      <button class="cta" id="dc-cta" onclick="calcCover()" style="display:none">Check My Cover →</button>
+      <div class="fld-hint" style="margin-top:8px;">Figures are based on published bank/NPCI/government circulars as of FY 2026-27 and are indicative — banks and schemes revise these periodically, so always confirm the exact amount and terms with your bank before relying on it.</div>
     </div>
   </div>
   <div class="panel">
     <div class="panel-head"><div class="panel-title">📋 Your Cover Details</div></div>
-    <div class="panel-body"><div id="dc-result"><div class="ph">Select your bank and card to see your accident cover</div></div></div>
+    <div class="panel-body"><div id="dc-result"><div class="ph">Select a product above to see your accident cover</div></div></div>
   </div>
 </div>
 
@@ -422,24 +425,34 @@ I had submitted a personal accident insurance claim on [Date] at [Branch Name] r
     <div class="ladder-step"><div class="ladder-num">5</div><div class="ladder-body"><b>Consumer Disputes Redressal Commission</b><span>As the real case above shows, a district consumer commission can still order payment even years later if the bank failed to disclose the cover properly. This route is slower but can also award compensation for mental agony and litigation costs, which the RBI Ombudsman route may not.</span></div></div>
   </div>
 
-  <h2>Illustrative Cover Amounts by Bank &amp; Card (FY 2026-27)</h2>
+  <h2>Illustrative Cover Amounts Across Products (FY 2026-27)</h2>
   <table>
-    <tr><th>Bank</th><th>Card Variant</th><th>Accident Cover</th><th>Activity Window</th></tr>
-    <tr><td>SBI</td><td>Classic / Silver</td><td>Nil (no cover)</td><td>—</td></tr>
-    <tr><td>SBI</td><td>Gold</td><td>₹2 lakh (₹4 lakh air)</td><td>90 days</td></tr>
-    <tr><td>SBI</td><td>Platinum / RuPay Platinum</td><td>₹2–5 lakh</td><td>30–90 days</td></tr>
-    <tr><td>SBI</td><td>Signature</td><td>₹10 lakh (₹20 lakh air)</td><td>90 days</td></tr>
-    <tr><td>HDFC</td><td>Standard/Gold/Rewards</td><td>₹5 lakh base</td><td>90 days</td></tr>
-    <tr><td>HDFC</td><td>Millennia / Platinum / Business</td><td>₹5–10 lakh (accelerated)</td><td>30 days</td></tr>
-    <tr><td>ICICI</td><td>Coral / Expressions</td><td>₹10 lakh</td><td>30 days</td></tr>
-    <tr><td>ICICI</td><td>Base savings account card</td><td>₹50,000</td><td>30 days</td></tr>
-    <tr><td>Axis</td><td>Standard cards</td><td>₹50,000–₹10 lakh</td><td>180 days</td></tr>
-    <tr><td>Any bank</td><td>RuPay Classic</td><td>₹1 lakh</td><td>90 days</td></tr>
-    <tr><td>Any bank</td><td>RuPay Platinum</td><td>₹2 lakh</td><td>30–90 days</td></tr>
-    <tr><td>Any bank</td><td>RuPay Select</td><td>₹10 lakh</td><td>30 days</td></tr>
-    <tr><td>Any bank</td><td>PMJDY (Jan Dhan) RuPay</td><td>₹2 lakh</td><td>90 days</td></tr>
+    <tr><th>Product</th><th>Bank / Scheme</th><th>Variant</th><th>Accident Cover</th></tr>
+    <tr><td>Debit Card</td><td>SBI</td><td>Classic / Silver</td><td>Nil (no cover)</td></tr>
+    <tr><td>Debit Card</td><td>SBI</td><td>Gold</td><td>₹2 lakh (₹4 lakh air)</td></tr>
+    <tr><td>Debit Card</td><td>SBI</td><td>Signature</td><td>₹10 lakh (₹20 lakh air)</td></tr>
+    <tr><td>Debit Card</td><td>HDFC</td><td>Millennia / Platinum</td><td>₹5–10 lakh</td></tr>
+    <tr><td>Debit Card</td><td>ICICI</td><td>Coral / Expressions</td><td>₹10 lakh</td></tr>
+    <tr><td>Debit Card</td><td>Any bank</td><td>RuPay Select</td><td>₹10 lakh</td></tr>
+    <tr><td>Debit Card</td><td>Any bank</td><td>PMJDY (Jan Dhan) RuPay</td><td>₹2 lakh</td></tr>
+    <tr><td>Credit Card</td><td>SBI Card</td><td>Elite / Prime</td><td>₹30 lakh (air only, ticket on card)</td></tr>
+    <tr><td>Credit Card</td><td>HDFC</td><td>Infinia / Diners Black</td><td>Up to ₹3 crore (air, ticket on card)</td></tr>
+    <tr><td>Credit Card</td><td>ICICI</td><td>Emeralde Private Metal</td><td>Up to ₹3 crore (air, ticket on card)</td></tr>
+    <tr><td>Credit Card</td><td>Axis</td><td>Magnus / Atlas</td><td>Up to ₹2.5 crore (air, ticket on card)</td></tr>
+    <tr><td>Savings Account</td><td>ICICI</td><td>Gold Savings Account</td><td>₹5 lakh (non-air) + ₹5 lakh (air)</td></tr>
+    <tr><td>Salary Account</td><td>Employer-arranged</td><td>Corporate group cover</td><td>₹5 lakh–₹50 lakh+ (varies by employer)</td></tr>
+    <tr><td>Government Scheme</td><td>PMSBY (any bank)</td><td>Opt-in, ₹20/year</td><td>₹2 lakh death/full disability, ₹1 lakh partial</td></tr>
   </table>
-  <p style="font-size:11px;color:var(--mist)">These are indicative figures compiled from published bank and NPCI documentation and change periodically — always verify the current amount and conditions directly with your bank before relying on this for a claim.</p>
+  <p style="font-size:11px;color:var(--mist)">These are indicative figures compiled from published bank, NPCI and government documentation and change periodically — always verify the current amount and conditions directly with your bank or the PMSBY portal before relying on this for a claim.</p>
+
+  <h2>Debit Card vs Credit Card vs Account vs PMSBY — Key Differences</h2>
+  <ul>
+    <li><strong>Debit and credit card cover</strong> is bundled automatically with eligible cards — no application needed, but requires recent card activity to stay valid.</li>
+    <li><strong>Credit card cover</strong> skews toward high-value <em>air accident</em> cover on premium/super-premium cards (₹1–3 crore), often with little or no non-air cover on entry-level cards — the opposite pattern from debit cards, which tend to have more non-air cover.</li>
+    <li><strong>Savings/salary account cover</strong> is tied to your account tier, separate from any card — a Gold savings account can carry cover even if you never use the debit card attached to it.</li>
+    <li><strong>Corporate salary account group cover</strong>, arranged by your employer, is often the largest and least-known of all — check your HR policy or payroll team, since it's not standardised or published the way card/NPCI schemes are.</li>
+    <li><strong>PMSBY is the only one requiring active enrolment.</strong> Every other cover on this page is automatic once you hold the qualifying product. PMSBY requires you to opt in and give auto-debit consent — having a bank account alone does not cover you.</li>
+  </ul>
 
   <h2>Claim Document Checklist</h2>
   <p>If a claim ever needs to be filed, the nominee or legal heir typically needs to gather:</p>
@@ -472,87 +485,169 @@ I had submitted a personal accident insurance claim on [Date] at [Branch Name] r
 <script>
 const API_BASE = 'https://web-production-456eb.up.railway.app';
 
-// Indicative data compiled from published bank/NPCI circulars, FY 2026-27.
+// Indicative data compiled from published bank/NPCI/government circulars, FY 2026-27.
 // Always advise users to confirm exact figures with their bank.
-const BANK_DATA = {
-  sbi: {
-    label: 'SBI',
-    cards: {
-      classic: { name: 'Classic / Silver / YUVA', nonAir: 0, air: 0, window: 90, note: 'Base Classic variants generally carry no personal accident cover. Check if you were issued an RuPay Classic card instead — that carries ₹1 lakh separately via NPCI.' },
-      gold: { name: 'Gold', nonAir: 200000, air: 400000, window: 90, note: 'Cover applies to non-air and air accidental death separately. Air cover requires the flight ticket to have been bought on this card.' },
-      platinum: { name: 'Platinum / RuPay Platinum', nonAir: 200000, air: 500000, window: 90, note: 'RuPay Platinum variant is separately eligible for an additional ₹2 lakh under the NPCI RuPay program, subject to a 30-day transaction window — check whether your Platinum card is RuPay or Visa/Mastercard branded.' },
-      signature: { name: 'Signature / Premium / Pride', nonAir: 1000000, air: 2000000, window: 90, note: 'Highest SBI debit card tier cover. Pride and Premium business variants carry somewhat lower amounts — verify your exact card name.' },
+const PRODUCT_DATA = {
+  debit: {
+    productLabel: 'Debit Card',
+    cardLabel: 'Card Variant',
+    banks: {
+      sbi: { label: 'SBI', cards: {
+        classic: { name: 'Classic / Silver / YUVA', nonAir: 0, air: 0, window: 90, note: 'Base Classic variants generally carry no personal accident cover. Check if you were issued an RuPay Classic card instead — that carries ₹1 lakh separately via NPCI.' },
+        gold: { name: 'Gold', nonAir: 200000, air: 400000, window: 90, note: 'Cover applies to non-air and air accidental death separately. Air cover requires the flight ticket to have been bought on this card.' },
+        platinum: { name: 'Platinum / RuPay Platinum', nonAir: 200000, air: 500000, window: 90, note: 'RuPay Platinum variant is separately eligible for an additional ₹2 lakh under the NPCI RuPay program, subject to a 30-day transaction window.' },
+        signature: { name: 'Signature / Premium / Pride', nonAir: 1000000, air: 2000000, window: 90, note: 'Highest SBI debit card tier cover. Pride and Premium business variants carry somewhat lower amounts — verify your exact card name.' },
+      }},
+      hdfc: { label: 'HDFC Bank', cards: {
+        standard: { name: 'EasyShop / Gold / Rewards / Women\'s', nonAir: 500000, air: 0, window: 90, note: 'This is the "Free Accidental Base Cover" applicable across most HDFC debit card types.' },
+        millennia: { name: 'Millennia / Platinum / Times Points / Business', nonAir: 1000000, air: 10000000, window: 30, note: 'Base ₹5 lakh cover plus an "accelerated" cover of up to ₹5 lakh more depending on your spending pattern. International air cover requires the ticket to be bought on this card.' },
+      }},
+      icici: { label: 'ICICI Bank', cards: {
+        base: { name: 'Base savings account debit card', nonAir: 0, air: 50000, window: 30, note: 'Silver/base variants are typically excluded from non-air cover. Cover amount depends on your savings account type, not just card design.' },
+        coral: { name: 'Coral / Expressions / mid-tier', nonAir: 1000000, air: 1000000, window: 30, note: 'Requires a non-ATM transaction of at least ₹499 within 30 days before the accident.' },
+        premium: { name: 'Wealth / Sapphiro / high-tier', nonAir: 1400000, air: 10000000, window: 30, note: 'Top-tier ICICI accounts carry the highest cover — confirm with your relationship manager as amounts vary by exact account tier.' },
+      }},
+      axis: { label: 'Axis Bank', cards: {
+        standard: { name: 'Standard / Select debit cards', nonAir: 500000, air: 0, window: 180, note: 'Axis cover ranges widely — from ₹50,000 to ₹10 lakh depending on the exact card. This is a mid-range estimate; check your card\'s specific terms.' },
+        rupay: { name: 'Axis RuPay debit card', nonAir: 200000, air: 0, window: 90, note: 'Follows the standard NPCI RuPay insurance program terms rather than an Axis-specific scheme.' },
+      }},
+      other_rupay: { label: 'RuPay (any bank)', cards: {
+        pmjdy: { name: 'PMJDY (Jan Dhan) RuPay card', nonAir: 200000, air: 0, window: 90, note: 'Standard NPCI scheme for Jan Dhan RuPay cards, uniform across all banks.' },
+        classic: { name: 'RuPay Classic', nonAir: 100000, air: 0, window: 90, note: 'Standard NPCI scheme, uniform across all banks issuing RuPay Classic cards.' },
+        platinum: { name: 'RuPay Platinum', nonAir: 200000, air: 0, window: 30, note: 'Standard NPCI scheme. Some banks additionally offer their own top-up cover on top of this.' },
+        select: { name: 'RuPay Select / Premium', nonAir: 1000000, air: 0, window: 30, note: 'Highest standard RuPay tier — up to ₹10 lakh, subject to a RuPay transaction within 30 days before the accident.' },
+      }},
     }
   },
-  hdfc: {
-    label: 'HDFC Bank',
-    cards: {
-      standard: { name: 'EasyShop / Gold / Rewards / Women\'s', nonAir: 500000, air: 0, note: 'This is the "Free Accidental Base Cover" applicable across most HDFC debit card types.', window: 90 },
-      millennia: { name: 'Millennia / Platinum / Times Points / Business', nonAir: 1000000, air: 10000000, window: 30, note: 'Base ₹5 lakh cover plus an "accelerated" cover of up to ₹5 lakh more depending on your spending pattern over the last 12 months. International air cover requires the ticket to be bought on this card.' },
+  credit: {
+    productLabel: 'Credit Card',
+    cardLabel: 'Card Variant',
+    banks: {
+      sbi: { label: 'SBI Card', cards: {
+        entry: { name: 'SimplySave / Entry-level (no annual fee)', nonAir: 0, air: 0, window: 0, note: 'Most no-fee entry-level SBI cards carry no personal accident cover. Cards with an annual fee of ₹1,000+ are far more likely to include it.' },
+        midtier: { name: 'Elite / Prime / mid-tier', nonAir: 0, air: 3000000, window: 0, note: 'Air accident cover on mid-tier cards typically requires the flight ticket to have been purchased using this card — cover does not apply if a different payment method was used, even on the same booking.' },
+      }},
+      hdfc: { label: 'HDFC Bank', cards: {
+        standard: { name: 'Standard / Regalia / Millennia', nonAir: 0, air: 0, window: 0, note: 'Most standard-tier HDFC credit cards focus on lounge/travel perks rather than accident cover — check your specific card\'s insurance certificate (usually a linked PDF on your statement page).' },
+        infinia: { name: 'Infinia / Diners Black / super-premium', nonAir: 0, air: 30000000, window: 0, note: 'Super-premium cards can carry air accident cover up to ₹3 crore, underwritten by a separate insurer (e.g. HDFC Ergo) — you claim directly with the insurer, not the bank. Terrorism is typically excluded.' },
+      }},
+      icici: { label: 'ICICI Bank', cards: {
+        standard: { name: 'Standard / Rewards / Coral', nonAir: 0, air: 0, window: 0, note: 'Entry and mid-tier ICICI credit cards generally don\'t carry accident cover by default — this is more common on debit cards from the same bank.' },
+        emeralde: { name: 'Emeralde / Emeralde Private Metal', nonAir: 0, air: 30000000, window: 0, note: 'Top-tier metal cards carry up to ₹3 crore air accidental death cover, plus overseas medical cover — requires the ticket to be booked on this card.' },
+      }},
+      axis: { label: 'Axis Bank', cards: {
+        standard: { name: 'Standard / Select / Ace', nonAir: 0, air: 0, window: 0, note: 'Standard Axis credit cards typically don\'t carry base accident cover — check the card\'s specific benefits guide on the Axis Bank website.' },
+        magnus_atlas: { name: 'Magnus / Atlas / super-premium', nonAir: 0, air: 25000000, window: 0, note: 'Magnus and Atlas carry up to ₹2.5 crore air accident cover for tickets booked on the card, alongside emergency overseas medical cover — administered by a separate insurance partner.' },
+      }},
     }
   },
-  icici: {
-    label: 'ICICI Bank',
-    cards: {
-      base: { name: 'Base savings account debit card', nonAir: 0, air: 50000, window: 30, note: 'Silver/base variants are typically excluded from non-air cover. Cover amount depends on your savings account type, not just card design.' },
-      coral: { name: 'Coral / Expressions / mid-tier', nonAir: 1000000, air: 1000000, window: 30, note: 'Requires a non-ATM transaction of at least ₹499 within 30 days before the accident.' },
-      premium: { name: 'Wealth / Sapphiro / high-tier', nonAir: 1400000, air: 10000000, window: 30, note: 'Top-tier ICICI accounts carry the highest cover — confirm with your relationship manager as amounts vary by exact account tier.' },
-    }
-  },
-  axis: {
-    label: 'Axis Bank',
-    cards: {
-      standard: { name: 'Standard / Select debit cards', nonAir: 500000, air: 0, window: 180, note: 'Axis cover ranges widely — from ₹50,000 to ₹10 lakh depending on the exact card. This is a mid-range estimate; check your card\'s specific terms.' },
-      rupay: { name: 'Axis RuPay debit card', nonAir: 200000, air: 0, window: 90, note: 'Follows the standard NPCI RuPay insurance program terms (see "Other bank — RuPay" below) rather than an Axis-specific scheme.' },
-    }
-  },
-  other_rupay: {
-    label: 'RuPay (any bank)',
-    cards: {
-      pmjdy: { name: 'PMJDY (Jan Dhan) RuPay card', nonAir: 200000, air: 0, window: 90, note: 'Standard NPCI scheme for Jan Dhan RuPay cards, uniform across all banks.' },
-      classic: { name: 'RuPay Classic', nonAir: 100000, air: 0, window: 90, note: 'Standard NPCI scheme, uniform across all banks issuing RuPay Classic cards.' },
-      platinum: { name: 'RuPay Platinum', nonAir: 200000, air: 0, window: 30, note: 'Standard NPCI scheme. Some banks additionally offer their own top-up cover on top of this — check your bank\'s specific circular.' },
-      select: { name: 'RuPay Select / Premium', nonAir: 1000000, air: 0, window: 30, note: 'Highest standard RuPay tier — up to ₹10 lakh, uniform across all banks issuing RuPay Select cards, subject to a RuPay transaction within 30 days before the accident.' },
+  account: {
+    productLabel: 'Savings / Salary Account',
+    cardLabel: 'Account Type',
+    banks: {
+      icici: { label: 'ICICI Bank', cards: {
+        regular: { name: 'Regular / Silver Savings Account', nonAir: 0, air: 50000, window: 30, note: 'Entry-level ICICI savings accounts carry a small air-only accident cover, separate from any debit card benefit on the same account.' },
+        gold: { name: 'Gold Savings Account', nonAir: 500000, air: 500000, window: 30, note: 'Higher-tier savings accounts unlock a larger non-air cover on top of the air cover — this is tied to the account tier itself, not just the debit card design.' },
+      }},
+      generic: { label: 'Any bank — general savings account', cards: {
+        basic: { name: 'Basic Savings Bank Deposit Account (BSBDA)', nonAir: 0, air: 0, window: 0, note: 'Basic/zero-balance savings accounts (BSBDA) are usually explicitly excluded from account-linked personal accident cover across most banks — check your specific bank\'s policy.' },
+        regular: { name: 'Regular savings account (non-BSBDA)', nonAir: 0, air: 0, window: 0, note: 'Coverage on a plain savings account, separate from any debit card, varies a lot by bank — this is usually smaller or non-existent compared to card-linked cover. Check your bank\'s savings account insurance page directly.' },
+      }},
+      corporate: { label: 'Corporate Salary Account (via employer)', cards: {
+        group: { name: 'Employer group personal accident cover', nonAir: 0, air: 0, window: 0, note: 'Many companies arrange group personal accident cover for employees through their corporate salary account tie-up with the bank — amounts commonly range from ₹5 lakh to ₹50 lakh+ depending on your employer\'s specific arrangement. This isn\'t standardised like card schemes, so check your salary account welcome kit, HR policy, or payroll/HR team directly — this is one of the most commonly missed covers because it\'s arranged silently between your employer and the bank.' },
+      }},
     }
   }
 };
 
 function fmtI(n){ if(!n) return '₹0'; return '₹' + n.toLocaleString('en-IN'); }
 
+function renderBankOptions(){
+  const productKey = document.getElementById('dc-product').value;
+  const bankField = document.getElementById('dc-bank-field');
+  const bankSelect = document.getElementById('dc-bank');
+  const cardField = document.getElementById('dc-card-field');
+  const cta = document.getElementById('dc-cta');
+  const r = document.getElementById('dc-result');
+
+  if (!productKey){
+    bankField.style.display = 'none'; cardField.style.display = 'none'; cta.style.display = 'none';
+    r.innerHTML = '<div class="ph">Select a product above to see your accident cover</div>';
+    return;
+  }
+
+  if (productKey === 'govt'){
+    bankField.style.display = 'none'; cardField.style.display = 'none'; cta.style.display = 'none';
+    renderPMSBY();
+    return;
+  }
+
+  const product = PRODUCT_DATA[productKey];
+  document.getElementById('dc-card-label').textContent = product.cardLabel;
+  bankSelect.innerHTML = '<option value="">Select your bank</option>' +
+    Object.keys(product.banks).map(k => `<option value="${k}">${product.banks[k].label}</option>`).join('');
+  bankField.style.display = 'block';
+  cardField.style.display = 'none';
+  cta.style.display = 'none';
+  r.innerHTML = `<div class="ph">Now select your bank</div>`;
+}
+
 function renderCardOptions(){
+  const productKey = document.getElementById('dc-product').value;
   const bankKey = document.getElementById('dc-bank').value;
   const cardField = document.getElementById('dc-card-field');
   const cardSelect = document.getElementById('dc-card');
+  const cta = document.getElementById('dc-cta');
   const r = document.getElementById('dc-result');
   if (!bankKey){
-    cardField.style.display = 'none';
-    r.innerHTML = '<div class="ph">Select your bank and card to see your accident cover</div>';
+    cardField.style.display = 'none'; cta.style.display = 'none';
+    r.innerHTML = '<div class="ph">Select your bank to continue</div>';
     return;
   }
-  const bank = BANK_DATA[bankKey];
-  cardSelect.innerHTML = '<option value="">Select card variant</option>' +
+  const bank = PRODUCT_DATA[productKey].banks[bankKey];
+  cardSelect.innerHTML = `<option value="">Select ${PRODUCT_DATA[productKey].cardLabel.toLowerCase()}</option>` +
     Object.keys(bank.cards).map(k => `<option value="${k}">${bank.cards[k].name}</option>`).join('');
   cardField.style.display = 'block';
-  r.innerHTML = '<div class="ph">Now select your card variant</div>';
+  cta.style.display = 'block';
+  r.innerHTML = `<div class="ph">Now select your ${PRODUCT_DATA[productKey].cardLabel.toLowerCase()}</div>`;
+}
+
+function renderPMSBY(){
+  const r = document.getElementById('dc-result');
+  r.innerHTML = `<div class="r-hero" style="background:linear-gradient(135deg,#16a34a,#0ea5a0);">
+    <div class="r-label">Government Scheme — PMSBY</div>
+    <div class="r-val">₹2 Lakh</div>
+    <div class="r-sub">Accidental death or total disability · ₹1 lakh for partial disability</div>
+  </div>
+  <div class="rcard">
+    <div class="rrow g"><span>Annual Premium</span><b>₹20/year</b></div>
+    <div class="rrow a"><span>Eligibility</span><b>Any bank account holder, age 18–70</b></div>
+    <div class="rrow r"><span>Auto-Renews</span><b>Only if account has ₹20+ by June 1</b></div>
+  </div>
+  <div class="insight red"><span class="ii">⚠️</span><div><strong>This one is NOT automatic.</strong> Unlike debit/credit card cover, PMSBY (Pradhan Mantri Suraksha Bima Yojana) only applies if you actively enrolled and gave auto-debit consent — through your bank's net banking, mobile app, or a branch form. Simply having a bank account does not enrol you.</div></div>
+  <div class="insight blue"><span class="ii">💡</span><div>Check if you're enrolled via your bank's net banking/app under "Insurance" or "PMSBY", or ask your branch. If you're not enrolled, it takes minutes and costs ₹20/year for ₹2 lakh of accident cover — one of the cheapest financial protections available in India.</div></div>
+  <div class="insight gold"><span class="ii">📅</span><div><strong>Renewal window:</strong> Coverage runs June 1 to May 31 each year. The ₹20 is auto-debited around May 25–June 1 — if your account doesn't have the balance on that date, the policy lapses silently and won't auto-restart until you re-enrol.</div></div>`;
 }
 
 function calcCover(){
+  const productKey = document.getElementById('dc-product').value;
   const bankKey = document.getElementById('dc-bank').value;
   const cardKey = document.getElementById('dc-card') ? document.getElementById('dc-card').value : '';
   const r = document.getElementById('dc-result');
-  if (!bankKey || !cardKey){
-    r.innerHTML = '<div class="ph">Select your bank and card to see your accident cover</div>';
+  if (!productKey || !bankKey || !cardKey){
+    r.innerHTML = '<div class="ph">Complete the selections above to see your accident cover</div>';
     return;
   }
-  const bank = BANK_DATA[bankKey];
+  const product = PRODUCT_DATA[productKey];
+  const bank = product.banks[bankKey];
   const card = bank.cards[cardKey];
   let html = '';
 
   if (card.nonAir === 0 && card.air === 0){
     html += `<div class="r-hero" style="background:linear-gradient(135deg,#7b7b9d,#4a4a6a);">
-      <div class="r-label">No Base Accident Cover Found</div>
+      <div class="r-label">No Standard Cover Found</div>
       <div class="r-val">₹0</div>
-      <div class="r-sub">for ${bank.label} ${card.name}</div>
+      <div class="r-sub">for ${bank.label} — ${card.name}</div>
     </div>
     <div class="insight gold"><span class="ii">⚠️</span><div>${card.note}</div></div>`;
   } else {
@@ -560,15 +655,15 @@ function calcCover(){
     html += `<div class="r-hero" style="background:linear-gradient(135deg,#5b6af0,#0ea5a0);">
       <div class="r-label">Your Estimated Accident Cover</div>
       <div class="r-val">${fmtI(headline)}</div>
-      <div class="r-sub">${bank.label} — ${card.name}</div>
+      <div class="r-sub">${product.productLabel} — ${bank.label} — ${card.name}</div>
     </div>
     <div class="rcard">
       <div class="rrow g"><span>Non-Air Accidental Death Cover</span><b>${fmtI(card.nonAir)}</b></div>
       <div class="rrow g"><span>Air Accidental Death Cover</span><b>${card.air ? fmtI(card.air) : 'Not specified'}</b></div>
-      <div class="rrow a"><span>Card Activity Window Needed</span><b>${card.window} days before accident</b></div>
+      ${card.window ? `<div class="rrow a"><span>Activity Window Needed</span><b>${card.window} days before accident</b></div>` : ''}
     </div>
     <div class="insight blue"><span class="ii">💡</span><div>${card.note}</div></div>
-    <div class="insight red"><span class="ii">🔒</span><div><strong>To keep this cover live</strong>, make sure this card has at least one ATM, POS or online transaction within the last ${card.window} days. An unused card is the #1 reason these claims get rejected.</div></div>`;
+    ${card.window ? `<div class="insight red"><span class="ii">🔒</span><div><strong>To keep this cover live</strong>, make sure this card/account has at least one transaction within the last ${card.window} days. An unused card is the #1 reason these claims get rejected.</div></div>` : ''}`;
   }
 
   r.innerHTML = html;

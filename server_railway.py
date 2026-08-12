@@ -4417,20 +4417,35 @@ def claim_kit_pdf():
     MUTED = rl_colors.HexColor("#7b7b9d")
     LINE = rl_colors.HexColor("#e2e2f0")
 
+    # Register a proper serif family (Lora) for a readable, letter-quality look
+    # instead of the default bare-bones Helvetica. Guarded so repeated calls
+    # within the same worker process don't re-read the files each time.
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    if "Lora" not in pdfmetrics.getRegisteredFontNames():
+        font_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fonts")
+        pdfmetrics.registerFont(TTFont("Lora", os.path.join(font_dir, "Lora-Regular.ttf")))
+        pdfmetrics.registerFont(TTFont("Lora-Bold", os.path.join(font_dir, "Lora-Bold.ttf")))
+        pdfmetrics.registerFont(TTFont("Lora-Italic", os.path.join(font_dir, "Lora-Italic.ttf")))
+        pdfmetrics.registerFont(TTFont("Lora-BoldItalic", os.path.join(font_dir, "Lora-BoldItalic.ttf")))
+        pdfmetrics.registerFontFamily("Lora", normal="Lora", bold="Lora-Bold",
+                                       italic="Lora-Italic", boldItalic="Lora-BoldItalic")
+
     buf = io.BytesIO()
     doc = SimpleDocTemplate(buf, pagesize=A4, topMargin=16 * mm, bottomMargin=20 * mm,
                              leftMargin=18 * mm, rightMargin=18 * mm)
     styles = getSampleStyleSheet()
-    brand_style = ParagraphStyle("BrandX", parent=styles["Normal"], fontSize=11, fontName="Helvetica-Bold",
+    brand_style = ParagraphStyle("BrandX", parent=styles["Normal"], fontSize=11, fontName="Lora-Bold",
                                   textColor=NAVY, spaceAfter=2)
-    title_style = ParagraphStyle("TitleX", parent=styles["Title"], fontSize=17,
+    title_style = ParagraphStyle("TitleX", parent=styles["Title"], fontSize=17, fontName="Lora-Bold",
                                   textColor=INK, spaceBefore=0, spaceAfter=2)
-    meta_style = ParagraphStyle("MetaX", parent=styles["BodyText"], fontSize=9, textColor=MUTED)
-    h2 = ParagraphStyle("H2X", parent=styles["Heading2"], fontSize=13, textColor=ACCENT,
+    meta_style = ParagraphStyle("MetaX", parent=styles["BodyText"], fontSize=9, fontName="Lora", textColor=MUTED)
+    h2 = ParagraphStyle("H2X", parent=styles["Heading2"], fontSize=13, fontName="Lora-Bold", textColor=ACCENT,
                          spaceBefore=10, spaceAfter=6)
-    body = ParagraphStyle("BodyX", parent=styles["BodyText"], fontSize=10, leading=15)
-    small = ParagraphStyle("Small", parent=styles["BodyText"], fontSize=8.5, textColor=MUTED)
-    disclaimer_style = ParagraphStyle("DisclaimerX", parent=styles["BodyText"], fontSize=8, textColor=MUTED, leading=11)
+    body = ParagraphStyle("BodyX", parent=styles["BodyText"], fontSize=10.5, fontName="Lora", leading=16.5)
+    small = ParagraphStyle("Small", parent=styles["BodyText"], fontSize=8.5, fontName="Lora", textColor=MUTED)
+    disclaimer_style = ParagraphStyle("DisclaimerX", parent=styles["BodyText"], fontSize=8, fontName="Lora-Italic",
+                                       textColor=MUTED, leading=11)
 
     report_id = f"SB-CLM-{datetime.now().strftime('%Y%m%d')}-{os.urandom(3).hex().upper()}"
 
@@ -4440,7 +4455,7 @@ def claim_kit_pdf():
 
     story = [
         Paragraph("SALARYBIT", brand_style),
-        Paragraph("Debit Card Accident Claim Kit — Personalized Letters", title_style),
+        Paragraph("Accident Claim Kit — Personalized Letters", title_style),
         HRFlowable(width="100%", thickness=1.4, color=NAVY, spaceAfter=6),
         Paragraph(
             f"Report ID: {report_id} &nbsp;&nbsp;|&nbsp;&nbsp; "
@@ -4468,7 +4483,8 @@ def claim_kit_pdf():
             t.setStyle(TableStyle([
                 ("BACKGROUND", (0, 0), (-1, 0), NAVY),
                 ("TEXTCOLOR", (0, 0), (-1, 0), rl_colors.white),
-                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("FONTNAME", (0, 0), (-1, 0), "Lora-Bold"),
+                ("FONTNAME", (0, 1), (-1, -1), "Lora"),
                 ("FONTSIZE", (0, 0), (-1, -1), 9),
                 ("ROWBACKGROUNDS", (0, 1), (-1, -1), [rl_colors.white, rl_colors.HexColor("#f7f7fc")]),
                 ("GRID", (0, 0), (-1, -1), 0.5, LINE),

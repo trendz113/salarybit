@@ -4217,6 +4217,319 @@ def superannuation_report_pdf():
 
 
 
+
+# =========================================================================
+# Debit Card Accident Claim Kit — paid add-on for
+# tools/debit-card-accident-cover-checker.html
+# =========================================================================
+CLAIM_KIT_PRICE_PAISE = 9900  # Rs 99
+
+CLAIM_KIT_SYSTEM_PROMPT = """You are a calm, precise Indian consumer-rights writer for SalaryBit,
+drafting a set of personalized letters for someone claiming personal accident insurance cover
+bundled with a debit card, usually after the death or disabling injury of a family member.
+
+The person filling this in may be in emotional distress. Keep every letter formal, factual, and
+free of legal jargon they'd have to decode. NEVER invent facts you weren't given — leave a bracketed
+placeholder like [Reference Number] if information wasn't supplied, rather than guessing.
+
+You will be given: bank name, card variant, cardholder's full name, claimant's full name and their
+relationship to the cardholder, date of the accident, nature of the incident (death or permanent
+disability), branch/city, and optionally a claim reference number and what the bank's response was
+(no response yet / rejected / partial rejection).
+
+Output ONLY valid JSON, no markdown fences, no preamble, in exactly this shape:
+{
+  "claim_intimation_letter": "Full formal letter text, ready to send as-is, using the actual details given. Include a subject line, salutation, body, and a closing with placeholder lines for [Your Contact Number] and [Date] since those aren't provided.",
+  "rejection_challenge_letter": "Full formal letter text challenging a rejection or a 'this card is not covered' response, referencing the actual bank/card/claim details given. If no rejection was mentioned, still generate this letter as a template to use if needed, phrased conditionally.",
+  "escalation_letter": "Full formal letter text escalating to the bank's Principal Nodal Officer, referencing the actual claim reference number and dates given, and mentioning intent to approach the RBI Banking Ombudsman via cms.rbi.org.in if unresolved within 7 working days.",
+  "summary_note": "A short (2-3 sentence) plain-language note to the claimant on what to do next given their specific situation — e.g. if they said the bank already rejected the claim, prioritize the rejection_challenge_letter; if no response yet, prioritize the intimation letter.",
+  "disclaimer": "One line: these are drafting aids based on general banking practice, not legal advice — confirm specific requirements with the bank or a consumer rights advisor."
+}
+
+Keep tone dignified and firm, never aggressive. This is being generated for someone who may be
+grieving — precision and calm authority matter more than length."""
+
+
+def generate_claim_kit_letters(inputs):
+    claude_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not claude_key:
+        raise RuntimeError("Server not configured. Missing ANTHROPIC_API_KEY.")
+
+    payload = json.dumps({
+        "model": "claude-sonnet-4-6",
+        "max_tokens": 2200,
+        "temperature": 0.3,
+        "system": CLAIM_KIT_SYSTEM_PROMPT,
+        "messages": [{"role": "user", "content": json.dumps(inputs, ensure_ascii=False)}]
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": claude_key,
+            "anthropic-version": "2023-06-01"
+        },
+        method="POST"
+    )
+    with urllib.request.urlopen(req, timeout=90) as resp:
+        result = json.loads(resp.read().decode("utf-8"))
+
+    raw_text = "".join(
+        block.get("text", "") for block in result.get("content", []) if block.get("type") == "text"
+    ).strip()
+
+    if raw_text.startswith("```"):
+        raw_text = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw_text.strip())
+
+    try:
+        parsed = json.loads(raw_text)
+        return {
+            "claim_intimation_letter": parsed.get("claim_intimation_letter") or "",
+            "rejection_challenge_letter": parsed.get("rejection_challenge_letter") or "",
+            "escalation_letter": parsed.get("escalation_letter") or "",
+            "summary_note": parsed.get("summary_note") or "",
+            "disclaimer": parsed.get("disclaimer") or
+                "These are drafting aids based on general banking practice, not legal advice — "
+                "confirm specific requirements with the bank or a consumer rights advisor.",
+        }
+    except (json.JSONDecodeError, AttributeError):
+        return {
+            "claim_intimation_letter": raw_text,
+            "rejection_challenge_letter": "",
+            "escalation_letter": "",
+            "summary_note": "",
+            "disclaimer": "These are drafting aids based on general banking practice, not legal "
+                          "advice — confirm specific requirements with the bank or a consumer "
+                          "rights advisor.",
+        }
+
+
+@app.route('/api/create-claim-kit-order', methods=['POST', 'OPTIONS'])
+def create_claim_kit_order():
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": CLAIM_KIT_PRICE_PAISE,
+            "currency": "INR",
+            "receipt": f"claimkit_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
+    except Exception as e:
+        print(f"create-claim-kit-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/claim-kit-generate", methods=["POST", "OPTIONS"])
+def claim_kit_generate():
+    if request.method == "OPTIONS":
+        return "", 200
+
+    data = request.get_json(silent=True) or {}
+
+    razorpay_order_id = data.get("razorpay_order_id")
+    razorpay_payment_id = data.get("razorpay_payment_id")
+    razorpay_signature = data.get("razorpay_signature")
+
+    if not (razorpay_order_id and razorpay_payment_id and razorpay_signature):
+        return jsonify({"success": False, "error": "Payment is required."}), 403
+
+    body = f"{razorpay_order_id}|{razorpay_payment_id}"
+    expected_signature = hmac.new(
+        os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+        body.encode(),
+        hashlib.sha256
+    ).hexdigest()
+    if expected_signature != razorpay_signature:
+        return jsonify({
+            "success": False,
+            "error": "Payment verification failed. If you were charged, please contact "
+                     "support with your payment ID — you have not lost your money."
+        }), 400
+
+    inputs = {
+        "bank_name": (data.get("bank_name") or "").strip(),
+        "card_variant": (data.get("card_variant") or "").strip(),
+        "cardholder_name": (data.get("cardholder_name") or "").strip(),
+        "claimant_name": (data.get("claimant_name") or "").strip(),
+        "relationship_to_cardholder": (data.get("relationship_to_cardholder") or "").strip(),
+        "accident_date": (data.get("accident_date") or "").strip(),
+        "incident_nature": (data.get("incident_nature") or "").strip(),  # death / permanent disability
+        "branch_or_city": (data.get("branch_or_city") or "").strip(),
+        "claim_reference_number": (data.get("claim_reference_number") or "").strip(),
+        "bank_response_so_far": (data.get("bank_response_so_far") or "").strip(),  # no response / rejected / partial
+    }
+
+    if not inputs["cardholder_name"] or not inputs["claimant_name"] or not inputs["bank_name"]:
+        return jsonify({
+            "success": False,
+            "error": "Please fill in at least the bank name, cardholder name, and claimant name."
+        }), 400
+
+    try:
+        letters = generate_claim_kit_letters(inputs)
+    except Exception as e:
+        print(f"generate_claim_kit_letters error: {e}")
+        return jsonify({
+            "success": False,
+            "error": "Could not generate your letters right now. Please try again in a moment — "
+                     "you have already been charged, so contact support if this keeps failing."
+        }), 500
+
+    return jsonify({"success": True, "inputs": inputs, "letters": letters}), 200
+
+
+@app.route('/api/claim-kit-pdf', methods=['POST', 'OPTIONS'])
+def claim_kit_pdf():
+    """Regenerates the paid Debit Card Accident Claim Kit letters as a downloadable,
+    branded PDF. Requires the already-generated letters + inputs JSON to be POSTed
+    back — no server-side payment re-check here, same trust boundary as
+    superannuation_report_pdf() (this only runs after claim_kit_generate() has
+    already handed the letters to the browser)."""
+    if request.method == "OPTIONS":
+        return "", 200
+    data = request.get_json(silent=True) or {}
+    letters = data.get("letters") or {}
+    inputs = data.get("inputs") or {}
+    if not letters:
+        return jsonify({"error": "No letter data provided."}), 400
+
+    try:
+        from reportlab.lib.pagesizes import A4
+        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib.units import mm
+        from reportlab.lib import colors as rl_colors
+        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
+        from reportlab.platypus.flowables import HRFlowable
+    except ImportError:
+        return jsonify({"error": "PDF generation not available on the server."}), 500
+
+    NAVY = rl_colors.HexColor("#1a1a2e")
+    ACCENT = rl_colors.HexColor("#5b6af0")
+    INK = rl_colors.HexColor("#1a1a2e")
+    MUTED = rl_colors.HexColor("#7b7b9d")
+    LINE = rl_colors.HexColor("#e2e2f0")
+
+    buf = io.BytesIO()
+    doc = SimpleDocTemplate(buf, pagesize=A4, topMargin=16 * mm, bottomMargin=20 * mm,
+                             leftMargin=18 * mm, rightMargin=18 * mm)
+    styles = getSampleStyleSheet()
+    brand_style = ParagraphStyle("BrandX", parent=styles["Normal"], fontSize=11, fontName="Helvetica-Bold",
+                                  textColor=NAVY, spaceAfter=2)
+    title_style = ParagraphStyle("TitleX", parent=styles["Title"], fontSize=17,
+                                  textColor=INK, spaceBefore=0, spaceAfter=2)
+    meta_style = ParagraphStyle("MetaX", parent=styles["BodyText"], fontSize=9, textColor=MUTED)
+    h2 = ParagraphStyle("H2X", parent=styles["Heading2"], fontSize=13, textColor=ACCENT,
+                         spaceBefore=10, spaceAfter=6)
+    body = ParagraphStyle("BodyX", parent=styles["BodyText"], fontSize=10, leading=15)
+    small = ParagraphStyle("Small", parent=styles["BodyText"], fontSize=8.5, textColor=MUTED)
+    disclaimer_style = ParagraphStyle("DisclaimerX", parent=styles["BodyText"], fontSize=8, textColor=MUTED, leading=11)
+
+    report_id = f"SB-CLM-{datetime.now().strftime('%Y%m%d')}-{os.urandom(3).hex().upper()}"
+
+    def letter_paragraphs(text):
+        """Preserve blank-line breaks between paragraphs/salutation/signoff."""
+        return [Paragraph(p.replace("\n", "<br/>"), body) for p in text.split("\n\n") if p.strip()]
+
+    story = [
+        Paragraph("SALARYBIT", brand_style),
+        Paragraph("Debit Card Accident Claim Kit — Personalized Letters", title_style),
+        HRFlowable(width="100%", thickness=1.4, color=NAVY, spaceAfter=6),
+        Paragraph(
+            f"Report ID: {report_id} &nbsp;&nbsp;|&nbsp;&nbsp; "
+            f"Generated: {datetime.now().strftime('%d %b %Y, %I:%M %p')} IST &nbsp;&nbsp;|&nbsp;&nbsp; "
+            f"AI-Drafted, Not Legal Advice",
+            meta_style
+        ),
+        Spacer(1, 4 * mm),
+    ]
+
+    if inputs:
+        rows = [["Field", "Detail"]]
+        field_labels = [
+            ("bank_name", "Bank"), ("card_variant", "Card Variant"),
+            ("cardholder_name", "Cardholder"), ("claimant_name", "Claimant"),
+            ("relationship_to_cardholder", "Relationship"), ("accident_date", "Accident Date"),
+            ("incident_nature", "Nature"), ("branch_or_city", "Branch/City"),
+            ("claim_reference_number", "Claim Ref No."), ("bank_response_so_far", "Bank's Response So Far"),
+        ]
+        for key, label in field_labels:
+            if inputs.get(key):
+                rows.append([label, inputs[key]])
+        if len(rows) > 1:
+            t = Table(rows, colWidths=[doc.width * 0.35, doc.width * 0.65], hAlign="LEFT")
+            t.setStyle(TableStyle([
+                ("BACKGROUND", (0, 0), (-1, 0), NAVY),
+                ("TEXTCOLOR", (0, 0), (-1, 0), rl_colors.white),
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("FONTSIZE", (0, 0), (-1, -1), 9),
+                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [rl_colors.white, rl_colors.HexColor("#f7f7fc")]),
+                ("GRID", (0, 0), (-1, -1), 0.5, LINE),
+                ("TOPPADDING", (0, 0), (-1, -1), 5),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+                ("LEFTPADDING", (0, 0), (-1, -1), 8),
+            ]))
+            story.append(t)
+            story.append(Spacer(1, 6 * mm))
+
+    if letters.get("summary_note"):
+        story.append(Table(
+            [[Paragraph(letters["summary_note"], body)]],
+            colWidths=[doc.width],
+            style=TableStyle([
+                ("BACKGROUND", (0, 0), (-1, -1), rl_colors.HexColor("#eeeef6")),
+                ("BOX", (0, 0), (-1, -1), 0.75, ACCENT),
+                ("LEFTPADDING", (0, 0), (-1, -1), 12),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 12),
+                ("TOPPADDING", (0, 0), (-1, -1), 8),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+            ])
+        ))
+        story.append(Spacer(1, 6 * mm))
+
+    letter_sections = [
+        ("claim_intimation_letter", "1. Claim Intimation Letter — Send This First"),
+        ("rejection_challenge_letter", "2. If the Bank Rejects or Denies Coverage"),
+        ("escalation_letter", "3. Escalation to Principal Nodal Officer"),
+    ]
+    for i, (key, heading) in enumerate(letter_sections):
+        if letters.get(key):
+            if i > 0:
+                story.append(PageBreak())
+            story.append(Paragraph(heading, h2))
+            story.extend(letter_paragraphs(letters[key]))
+
+    story.append(Spacer(1, 8 * mm))
+    story.append(HRFlowable(width="100%", thickness=0.6, color=LINE, spaceAfter=6))
+    disclaimer_text = letters.get("disclaimer") or (
+        "These are drafting aids based on general banking practice, not legal advice — "
+        "confirm specific requirements with the bank or a consumer rights advisor."
+    )
+    story.append(Paragraph(
+        f"<b>Disclaimer:</b> {disclaimer_text} Generated by SalaryBit.in on "
+        f"{datetime.now().strftime('%d %b %Y')}.",
+        disclaimer_style))
+    story.append(Paragraph(
+        "If you need to escalate beyond these letters: file a free complaint at cms.rbi.org.in "
+        "under the RBI Integrated Ombudsman Scheme, or call the RBI helpline 14448.",
+        small))
+
+    doc.build(story)
+    buf.seek(0)
+    filename = f"salarybit-accident-claim-kit-{datetime.now().strftime('%Y%m%d')}.pdf"
+    return Response(
+        buf.read(), mimetype="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)

@@ -169,6 +169,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--snow);color:var(--ink);li
 .ladder-body b{display:block;font-size:13px;color:var(--ink);margin-bottom:2px}
 .ladder-body span{font-size:12px;color:var(--ink3);line-height:1.6}
 .ladder-body a{color:var(--accent);font-weight:600}
+.kit-panel{background:linear-gradient(135deg,#1a1a2e,#2d2d4a);border-radius:var(--r);padding:1.25rem;margin:1.5rem 0;color:#fff}
+.kit-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:3px 10px;font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.625rem}
+.kit-panel h3{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:.375rem}
+.kit-panel p{font-size:13px;color:rgba(255,255,255,.65);margin-bottom:.875rem;line-height:1.6}
+.kit-form{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:var(--r-sm);padding:1rem}
+.kit-grid{display:grid;grid-template-columns:1fr 1fr;gap:.625rem}
+@media(max-width:580px){.kit-grid{grid-template-columns:1fr}}
+.kit-field label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:rgba(255,255,255,.5);margin-bottom:3px}
+.kit-field input,.kit-field select{width:100%;height:36px;border-radius:6px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;padding:0 10px;font-size:12px;font-family:'DM Sans',sans-serif;outline:none}
+.kit-field input::placeholder{color:rgba(255,255,255,.35)}
+.kit-field{margin-bottom:.625rem}
+.kit-pay-btn{width:100%;height:44px;background:linear-gradient(135deg,#5b6af0,#0ea5a0);color:#fff;border:none;border-radius:var(--r-sm);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:.5rem}
+.kit-pay-btn:disabled{opacity:.6;cursor:not-allowed}
+.kit-result{background:#fff;color:var(--ink);border-radius:var(--r-sm);padding:1.125rem;margin-top:1rem}
+.kit-letter{background:var(--pale);border:1px solid var(--border);border-radius:8px;padding:.875rem;margin-top:.75rem;white-space:pre-wrap;font-size:12px;line-height:1.7;font-family:'DM Sans',monospace;color:var(--ink3)}
+.kit-letter-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--ink);margin-top:1rem;margin-bottom:.25rem}
 .waitlist{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:1.125rem;margin-top:1.25rem}
 .waitlist input[type=email]{flex:1;min-width:180px;padding:.625rem .75rem;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:13px;font-family:'DM Sans',sans-serif}
 </style>
@@ -383,6 +399,39 @@ Thank you.
 [Date]</div>
   </div>
 
+  <div class="kit-panel">
+    <div class="kit-badge">✨ Paid · Personalized · Instant PDF</div>
+    <h3>Get These 3 Letters Personalized to Your Case — ₹99</h3>
+    <p>Fill in your details once. We'll generate all three letters above — pre-filled with your bank, card, dates and names — as a ready-to-send PDF. No more finding-and-replacing brackets while you're already stressed.</p>
+    <div class="kit-form" id="kitForm">
+      <div class="kit-grid">
+        <div class="kit-field"><label>Bank Name</label><input type="text" id="kit-bank" placeholder="e.g. State Bank of India"></div>
+        <div class="kit-field"><label>Card Variant</label><input type="text" id="kit-card" placeholder="e.g. RuPay Platinum"></div>
+        <div class="kit-field"><label>Cardholder's Full Name</label><input type="text" id="kit-cardholder" placeholder="e.g. Ramesh Kumar"></div>
+        <div class="kit-field"><label>Your Full Name (Claimant)</label><input type="text" id="kit-claimant" placeholder="e.g. Sunita Kumar"></div>
+        <div class="kit-field"><label>Your Relationship to Cardholder</label><input type="text" id="kit-relationship" placeholder="e.g. Spouse / Son / Daughter"></div>
+        <div class="kit-field"><label>Date of Accident</label><input type="date" id="kit-date"></div>
+        <div class="kit-field"><label>Nature of Incident</label>
+          <select id="kit-nature">
+            <option value="death">Accidental Death</option>
+            <option value="permanent disability">Permanent Disability</option>
+          </select>
+        </div>
+        <div class="kit-field"><label>Branch / City</label><input type="text" id="kit-branch" placeholder="e.g. Tri Junction Branch, Nagpur"></div>
+        <div class="kit-field"><label>Claim Reference No. (if any)</label><input type="text" id="kit-ref" placeholder="Leave blank if not yet filed"></div>
+        <div class="kit-field"><label>Bank's Response So Far</label>
+          <select id="kit-response">
+            <option value="no response yet">No response yet</option>
+            <option value="rejected">Rejected the claim</option>
+            <option value="partial rejection">Partially rejected / disputed</option>
+          </select>
+        </div>
+      </div>
+      <button class="kit-pay-btn" id="kitPayBtn">Get My Personalized Letters — ₹99</button>
+      <div id="kitResult"></div>
+    </div>
+  </div>
+
   <h2>Step-by-Step: If the Bank Says No, Here's Who to Contact Next</h2>
   <p>Banks are required to follow a defined grievance ladder. Don't skip levels — each step gives the bank a documented chance to fix it, which strengthens your case if you eventually need to go to the RBI.</p>
   <div class="ladder">
@@ -439,6 +488,7 @@ Thank you.
   <div class="faq"><div class="faq-q">Can I challenge a wrongly rejected debit card accident claim?</div><div class="faq-a">Yes. Many rejections happen due to misinterpretation of the usage-window condition rather than a genuine ineligibility, and these can be challenged with proper documentation through the bank's grievance channel or the insurance ombudsman. Keep all correspondence and claim reference numbers to support an appeal.</div></div>
 </div>
 
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 const API_BASE = 'https://web-production-456eb.up.railway.app';
 
@@ -543,6 +593,149 @@ function calcCover(){
 
   r.innerHTML = html;
 }
+
+function collectKitInputs(){
+  return {
+    bank_name: document.getElementById('kit-bank').value.trim(),
+    card_variant: document.getElementById('kit-card').value.trim(),
+    cardholder_name: document.getElementById('kit-cardholder').value.trim(),
+    claimant_name: document.getElementById('kit-claimant').value.trim(),
+    relationship_to_cardholder: document.getElementById('kit-relationship').value.trim(),
+    accident_date: document.getElementById('kit-date').value,
+    incident_nature: document.getElementById('kit-nature').value,
+    branch_or_city: document.getElementById('kit-branch').value.trim(),
+    claim_reference_number: document.getElementById('kit-ref').value.trim(),
+    bank_response_so_far: document.getElementById('kit-response').value,
+  };
+}
+
+function renderKitLetters(letters){
+  const sections = [
+    ['claim_intimation_letter', '1. Claim Intimation Letter — Send This First'],
+    ['rejection_challenge_letter', '2. If the Bank Rejects or Denies Coverage'],
+    ['escalation_letter', '3. Escalation to Principal Nodal Officer'],
+  ];
+  let html = `<div class="kit-result">`;
+  if (letters.summary_note){
+    html += `<div class="insight blue"><span class="ii">💡</span><div>${letters.summary_note}</div></div>`;
+  }
+  sections.forEach(([key, title]) => {
+    if (letters[key]){
+      html += `<div class="kit-letter-title">${title}</div><div class="kit-letter">${letters[key]}</div>`;
+    }
+  });
+  html += `<p style="font-size:11px;color:var(--mist);margin-top:.75rem;">${letters.disclaimer || ''}</p>`;
+  html += `<button class="cta" id="kitDownloadBtn" style="margin-top:.75rem;">⬇ Download as PDF</button>`;
+  html += `</div>`;
+  return html;
+}
+
+function bindKitDownload(letters, inputs){
+  const btn = document.getElementById('kitDownloadBtn');
+  if (!btn) return;
+  btn.addEventListener('click', async () => {
+    const old = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Preparing PDF...';
+    try {
+      const res = await fetch(API_BASE + '/api/claim-kit-pdf', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ letters: letters, inputs: inputs })
+      });
+      if (!res.ok) throw new Error('PDF generation failed');
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'salarybit-accident-claim-kit.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+      btn.textContent = 'Downloaded ✓';
+    } catch (err) {
+      alert('Could not generate the PDF right now — please try again in a moment.');
+      btn.disabled = false; btn.textContent = old;
+    }
+  });
+}
+
+document.getElementById('kitPayBtn').addEventListener('click', async () => {
+  const payBtn = document.getElementById('kitPayBtn');
+  const kitResult = document.getElementById('kitResult');
+  const inputs = collectKitInputs();
+
+  if (!inputs.bank_name || !inputs.cardholder_name || !inputs.claimant_name){
+    kitResult.innerHTML = '<p style="color:#ffb4b4;font-size:12px;margin-top:.5rem;">Please fill in at least the bank name, cardholder\'s name, and your name before proceeding.</p>';
+    return;
+  }
+
+  payBtn.disabled = true;
+  payBtn.textContent = 'Starting payment...';
+  kitResult.innerHTML = '';
+
+  try {
+    const orderRes = await fetch(API_BASE + '/api/create-claim-kit-order', { method: 'POST' });
+    const order = await orderRes.json();
+    if (!order.order_id) throw new Error(order.error || 'Could not start payment. Please try again.');
+
+    const rzp = new Razorpay({
+      key: order.razorpay_key,
+      amount: order.amount,
+      currency: order.currency,
+      order_id: order.order_id,
+      name: 'SalaryBit',
+      description: 'Debit Card Accident Claim Kit — Personalized Letters',
+      theme: { color: '#5b6af0' },
+      handler: async function (response) {
+        payBtn.textContent = 'Generating your letters...';
+        try {
+          const res = await fetch(API_BASE + '/api/claim-kit-generate', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              ...inputs
+            })
+          });
+          const data = await res.json();
+          if (!data.success){
+            kitResult.innerHTML = `<p style="color:#ffb4b4;font-size:12px;margin-top:.5rem;">${data.error || 'Something went wrong.'}</p>`;
+            payBtn.disabled = false;
+            payBtn.textContent = 'Get My Personalized Letters — ₹99';
+            return;
+          }
+          kitResult.innerHTML = renderKitLetters(data.letters);
+          bindKitDownload(data.letters, data.inputs);
+          payBtn.style.display = 'none';
+          document.getElementById('kitForm').querySelectorAll('input,select').forEach(el => el.disabled = true);
+        } catch (err) {
+          kitResult.innerHTML = '<p style="color:#ffb4b4;font-size:12px;margin-top:.5rem;">Payment succeeded but letter generation failed — please contact support with your payment ID, you have not lost your money.</p>';
+          payBtn.disabled = false;
+          payBtn.textContent = 'Get My Personalized Letters — ₹99';
+        }
+      },
+      modal: {
+        ondismiss: function () {
+          payBtn.disabled = false;
+          payBtn.textContent = 'Get My Personalized Letters — ₹99';
+        }
+      }
+    });
+    rzp.on('payment.failed', function () {
+      kitResult.innerHTML = '<p style="color:#ffb4b4;font-size:12px;margin-top:.5rem;">Payment failed. Please try again.</p>';
+      payBtn.disabled = false;
+      payBtn.textContent = 'Get My Personalized Letters — ₹99';
+    });
+    rzp.open();
+  } catch (err) {
+    kitResult.innerHTML = `<p style="color:#ffb4b4;font-size:12px;margin-top:.5rem;">${err.message}</p>`;
+    payBtn.disabled = false;
+    payBtn.textContent = 'Get My Personalized Letters — ₹99';
+  }
+});
 
 function copyTmpl(id, event){
   const el = document.getElementById(id);

@@ -169,6 +169,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--snow);color:var(--ink);li
 .ladder-body b{display:block;font-size:13px;color:var(--ink);margin-bottom:2px}
 .ladder-body span{font-size:12px;color:var(--ink3);line-height:1.6}
 .ladder-body a{color:var(--accent);font-weight:600}
+.tmpl-locked{position:relative;overflow:hidden}
+.tmpl-locked .tmpl-text{max-height:92px;overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,#000 20%,transparent 95%);mask-image:linear-gradient(to bottom,#000 20%,transparent 95%)}
+.tmpl-unlock{display:flex;align-items:center;justify-content:space-between;gap:.75rem;background:linear-gradient(135deg,rgba(91,106,240,.1),rgba(14,165,160,.08));border:1px solid var(--accent-border);border-radius:8px;padding:.75rem .875rem;margin-top:.5rem}
+.tmpl-unlock span{font-size:12px;color:var(--ink3);line-height:1.5}
+.tmpl-unlock b{color:var(--ink)}
+.tmpl-unlock-btn{background:linear-gradient(135deg,#5b6af0,#0ea5a0);color:#fff;border:none;border-radius:6px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0}
 .kit-panel{background:linear-gradient(135deg,#1a1a2e,#2d2d4a);border-radius:var(--r);padding:1.25rem;margin:1.5rem 0;color:#fff}
 .kit-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:3px 10px;font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.625rem}
 .kit-panel h3{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:.375rem}
@@ -300,7 +306,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--snow);color:var(--ink);li
   <p style="font-size:11px;color:var(--mist)">Some banks additionally offer optional, paid top-up personal accident covers with higher sums insured — these are separate purchased policies, not the free card-linked benefit this page covers, and would involve an annual premium and a proposal form through the bank or its insurance partner.</p>
 
   <h2>Ready-to-Send Templates (Copy &amp; Paste)</h2>
-  <p>These are written to be filled in and sent as-is — by email, or printed and handed in at the branch. Replace anything in [brackets] with your details.</p>
+  <p>Template 1 is free and complete — for most people, that's the only letter they'll ever need. Templates 2 and 3, for when the bank pushes back or goes silent, are unlocked with the paid Claim Kit below along with a version pre-filled with your actual details.</p>
 
   <div class="tmpl-box">
     <div class="tmpl-head"><span class="tmpl-title">📧 Template 1 — Claim Intimation Letter (send first)</span><button class="tmpl-copy" onclick="copyTmpl('tmpl1', event)">Copy</button></div>
@@ -339,9 +345,9 @@ Thank you.
 [Date]</div>
   </div>
 
-  <div class="tmpl-box">
-    <div class="tmpl-head"><span class="tmpl-title">📧 Template 2 — If the Bank Says "This Card Isn't Covered"</span><button class="tmpl-copy" onclick="copyTmpl('tmpl2', event)">Copy</button></div>
-    <div class="tmpl-text" id="tmpl2">To,
+  <div class="tmpl-box tmpl-locked">
+    <div class="tmpl-head"><span class="tmpl-title">📧 Template 2 — If the Bank Says "This Card Isn't Covered"</span></div>
+    <div class="tmpl-text">To,
 The Branch Manager / Nodal Officer,
 [Bank Name], [Branch/City]
 
@@ -349,29 +355,16 @@ Subject: Request for Written Clarification — Rejection of Personal Accident In
 
 Respected Sir/Madam,
 
-With reference to my claim intimation dated [Date], I have been informed that the debit card variant [Card Variant Name] held by [Cardholder Name] is not eligible for personal accident insurance cover.
-
-I request the following in writing, as I am entitled to a clear explanation before this claim is closed:
-
-1. A copy of the specific policy document or circular that excludes this card variant from the personal accident insurance scheme.
-2. Written confirmation of the exact terms and conditions applicable to this card at the time it was issued.
-3. Confirmation of whether this exclusion was communicated to the cardholder at the time of card issuance, and if so, how.
-
-If the bank is unable to provide clear documentary evidence of this exclusion, I request that the claim be reconsidered and processed as per the standard applicable cover for this card category.
-
-I look forward to your written response within 30 days, failing which I will be constrained to escalate this matter to the Principal Nodal Officer and, if required, to the RBI Banking Ombudsman under the Reserve Bank – Integrated Ombudsman Scheme.
-
-Thank you.
-
-[Your Name]
-[Your Contact Number]
-[Your Email]
-[Date]</div>
+With reference to my claim intimation dated [Date], I have been informed that the debit card variant [Card Variant Name] held by [Cardholder Name] is not eligible for personal accident insurance cover...</div>
+    <div class="tmpl-unlock">
+      <span>🔒 This is the letter that actually gets rejected claims reopened — demands written proof of exclusion. <b>Unlock full text + a version pre-filled with your details.</b></span>
+      <button class="tmpl-unlock-btn" onclick="document.getElementById('kitForm').scrollIntoView({behavior:'smooth',block:'center'})">Unlock — ₹99</button>
+    </div>
   </div>
 
-  <div class="tmpl-box">
-    <div class="tmpl-head"><span class="tmpl-title">📧 Template 3 — Escalation to Principal Nodal Officer (if no response in 15–30 days)</span><button class="tmpl-copy" onclick="copyTmpl('tmpl3', event)">Copy</button></div>
-    <div class="tmpl-text" id="tmpl3">To,
+  <div class="tmpl-box tmpl-locked">
+    <div class="tmpl-head"><span class="tmpl-title">📧 Template 3 — Escalation to Principal Nodal Officer</span></div>
+    <div class="tmpl-text">To,
 The Principal Nodal Officer,
 [Bank Name]
 
@@ -379,30 +372,17 @@ Subject: Escalation — Unresolved Personal Accident Insurance Claim, Ref No. [C
 
 Respected Sir/Madam,
 
-I had submitted a personal accident insurance claim on [Date] at [Branch Name] regarding the debit card held by [Cardholder Name], following their accident/death on [Date of Accident]. Despite following up multiple times, I have not received a satisfactory resolution within [30] days as mandated under RBI's customer grievance guidelines.
-
-Details of my complaint:
-- Claim Reference Number: [Reference Number, if issued]
-- Branch: [Branch Name/Code]
-- Date of Original Complaint: [Date]
-- Nature of Issue: [Brief description — e.g., "claim rejected without documentary proof of exclusion" / "no response received"]
-
-I request immediate review and resolution of this matter. Please note that if this is not resolved satisfactorily, I intend to file a complaint with the RBI Banking Ombudsman under the Reserve Bank – Integrated Ombudsman Scheme via the CMS portal (cms.rbi.org.in).
-
-I would appreciate a written response with a resolution timeline within 7 working days.
-
-Thank you.
-
-[Your Name]
-[Your Contact Number]
-[Your Email]
-[Date]</div>
+I had submitted a personal accident insurance claim on [Date] at [Branch Name] regarding the debit card held by [Cardholder Name], following their accident/death on [Date of Accident]...</div>
+    <div class="tmpl-unlock">
+      <span>🔒 For when the bank goes quiet. References the exact RBI Ombudsman clause and deadline. <b>Unlock full text + a version pre-filled with your details.</b></span>
+      <button class="tmpl-unlock-btn" onclick="document.getElementById('kitForm').scrollIntoView({behavior:'smooth',block:'center'})">Unlock — ₹99</button>
+    </div>
   </div>
 
   <div class="kit-panel">
     <div class="kit-badge">✨ Paid · Personalized · Instant PDF</div>
-    <h3>Get These 3 Letters Personalized to Your Case — ₹99</h3>
-    <p>Fill in your details once. We'll generate all three letters above — pre-filled with your bank, card, dates and names — as a ready-to-send PDF. No more finding-and-replacing brackets while you're already stressed.</p>
+    <h3>Unlock Templates 2 &amp; 3 + Get All Three Personalized — ₹99</h3>
+    <p>Fill in your details once. You'll get the full text of the rejection-challenge and escalation letters (locked above), plus all three letters regenerated with your actual bank, card, names and dates filled in — as a ready-to-send PDF. No finding-and-replacing brackets while you're already stressed.</p>
     <div class="kit-form" id="kitForm">
       <div class="kit-grid">
         <div class="kit-field"><label>Bank Name</label><input type="text" id="kit-bank" placeholder="e.g. State Bank of India"></div>

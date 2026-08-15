@@ -265,20 +265,6 @@
     border-radius:10px; padding:10px 14px;
     line-height:1.5;
   }
-  .test-mode-row{
-    display:flex; align-items:center; justify-content:center; gap:10px;
-    margin-top:18px; font-size:12.5px; color:var(--ink-soft);
-  }
-  .switch{
-    width:38px; height:22px; border-radius:999px; background:var(--marigold);
-    position:relative; cursor:pointer; flex-shrink:0; border:none;
-  }
-  .switch::after{
-    content:""; position:absolute; top:2px; left:2px; width:18px; height:18px;
-    border-radius:50%; background:#fff; transition:left .18s ease;
-  }
-  .switch.off{ background:#D9D6CC; }
-  .switch.off::after{ left:18px; }
 
   /* ---------- scratch card ---------- */
   .scratch-wrap{ max-width:420px; margin:46px auto 0; text-align:center; }
@@ -536,19 +522,13 @@
       <div class="pay-price"><span class="rupee">₹</span>1 <span style="font-size:16px;font-weight:600;color:var(--ink-soft);">only</span></div>
 
       <div class="qr-box" id="qrBox">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h7v7H3V3zm2 2v3h3V5H5zm-2 9h7v7H3v-7zm2 2v3h3v-3H5zm9-13h7v7h-7V3zm2 2v3h3V5h-3zM14 14h2v2h-2v-2zm3 0h2v2h-2v-2zm-3 3h2v2h-2v-2zm3 0h2v2h-2v-2z"/></svg>
-        <div>UPI_QR_CODE_HERE</div>
+        <img src="/assets/upi-qr-deepak.jpg" alt="Scan to pay ₹1 via UPI" style="width:100%;height:100%;object-fit:contain;border-radius:10px;">
       </div>
-      <div class="scan-label">Scan ₹1 using any supported UPI app</div>
+      <div class="scan-label">Scan ₹1 using any UPI app — PhonePe, GPay, Paytm</div>
 
       <button class="btn btn-primary btn-block" id="paidBtn">I HAVE PAID ₹1 — SHOW MY CARD</button>
 
-      <div class="proto-note" id="protoNote">Prototype mode — payment is not automatically verified.</div>
-
-      <div class="test-mode-row">
-        <button class="switch" id="testSwitch" aria-pressed="true" aria-label="Toggle test mode"></button>
-        <span id="testLabel">TEST MODE — This is a prototype. No payment is required. (admin-controlled)</span>
-      </div>
+      <div class="proto-note" id="protoNote">By continuing, you confirm the ₹1 UPI payment has been completed.</div>
     </div>
   </div>
 </section>
@@ -650,7 +630,7 @@
     </label>
     <button type="submit" class="btn btn-dark btn-block">SUBMIT IDEA</button>
     <div class="success-note" id="ideaSuccess">Thank you — your idea has been noted for this session.</div>
-    <div class="form-note">We only collect what's shown here. No phone number, email or ID required for this prototype.</div>
+    <div class="form-note">We only collect what's shown here. No phone number, email or ID required.</div>
   </form>
 </section>
 
@@ -688,11 +668,11 @@
     </div>
     <div class="faq-item">
       <div class="faq-q" tabindex="0" role="button">Can I get my ₹1 back? <span class="plus">+</span></div>
-      <div class="faq-a">The applicable payment/refund policy will be explained clearly once real payments are enabled.</div>
+      <div class="faq-a">Refunds aren't offered for the ₹1 contribution, as it unlocks digital content immediately.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q" tabindex="0" role="button">Is payment automatically verified? <span class="plus">+</span></div>
-      <div class="faq-a">No. Prototype payments are not automatically verified.</div>
+      <div class="faq-a">Payment is confirmed by scanning the UPI QR code and clicking "I have paid" — it isn't auto-verified against a bank feed.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q" tabindex="0" role="button">Is this an investment? <span class="plus">+</span></div>
@@ -911,21 +891,8 @@
     list.innerHTML = stats.ideas.length ? stats.ideas.map(i => '• ' + i).join('<br>') : 'None yet.';
   }
 
-  /* ================= TEST MODE ================= */
-  let testMode = true;
-  const testSwitch = document.getElementById('testSwitch');
-  const testLabel = document.getElementById('testLabel');
+  /* ================= payment mode: LIVE ================= */
   const protoNote = document.getElementById('protoNote');
-  function refreshTestModeUI(){
-    testSwitch.classList.toggle('off', !testMode);
-    testSwitch.setAttribute('aria-pressed', String(testMode));
-    testLabel.textContent = testMode
-      ? 'TEST MODE — This is a prototype. No payment is required. (admin-controlled)'
-      : 'Live mode — real UPI payment expected. (admin-controlled)';
-    protoNote.textContent = 'Prototype mode — payment is not automatically verified.';
-  }
-  testSwitch.addEventListener('click', ()=>{ testMode = !testMode; refreshTestModeUI(); });
-  refreshTestModeUI();
 
   /* ================= scroll to pay ================= */
   document.getElementById('ctaTry').addEventListener('click', ()=>{
@@ -937,10 +904,6 @@
   const paidBtn = document.getElementById('paidBtn');
   paidBtn.addEventListener('click', ()=>{
     stats.clickedPaid++;
-    // Prototype: never claim verification. Only "verified" in TEST MODE, marked clearly as demo.
-    if (testMode) {
-      stats.verifiedPayments += 0; // real verification not implemented — do not count as verified
-    }
     scratchSection.style.display = 'block';
     scratchSection.scrollIntoView({behavior:'smooth'});
     stats.attempts++;

@@ -151,16 +151,25 @@ html{overflow-x:hidden}
 
 /* ── NAV ── */
 .nav{background:rgba(247,247,252,.95);backdrop-filter:blur(20px);position:sticky;top:0;z-index:200;border-bottom:1px solid var(--border)}
-.nav-inner{max-width:1160px;margin:0 auto;padding:0 1.5rem;height:54px;display:flex;align-items:center;justify-content:space-between;gap:1rem;overflow:hidden}
+.nav-inner{max-width:1160px;margin:0 auto;padding:0 1.5rem;height:54px;display:flex;align-items:center;justify-content:space-between;gap:1rem}
 .brand{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0}
 .brand-mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--teal));display:flex;align-items:center;justify-content:center;font-size:14px}
 .brand-name{font-family:var(--display);font-size:18px;color:var(--ink);letter-spacing:-.02em}
 .brand-tag{font-size:9px;font-weight:700;background:var(--teal-bg);color:var(--teal);border:1px solid rgba(14,165,160,.2);padding:2px 7px;border-radius:20px;letter-spacing:.05em}
-.nav-links{display:flex;gap:2px;align-items:center;min-width:0;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 24px),transparent 100%);mask-image:linear-gradient(to right,#000 calc(100% - 24px),transparent 100%)}
-.nav-links::-webkit-scrollbar{display:none}
+.nav-links{display:flex;gap:2px;align-items:center}
 .nav-a{font-size:12px;font-weight:500;color:var(--mist);padding:5px 10px;border-radius:6px;text-decoration:none;transition:.15s;white-space:nowrap;flex-shrink:0}
 .nav-a:hover{color:var(--ink);background:var(--pale)}
 .nav-divider{width:1px;height:16px;background:var(--border);margin:0 4px;flex-shrink:0}
+.nav-more-wrap{position:relative;flex-shrink:0}
+.nav-more-btn{background:none;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:3px}
+.nav-more-btn svg{width:10px;height:10px;transition:.15s}
+.nav-more-btn.open svg{transform:rotate(180deg)}
+.nav-more-panel{position:absolute;top:calc(100% + 10px);right:0;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 16px 40px rgba(15,20,40,.14);padding:1.1rem;display:none;grid-template-columns:repeat(4,150px);gap:1.4rem;z-index:300}
+.nav-more-panel.open{display:grid}
+.nav-more-col-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mist);margin-bottom:.6rem}
+.nav-more-col a{display:block;font-size:12.5px;font-weight:500;color:var(--ink);text-decoration:none;padding:5px 0;transition:.15s}
+.nav-more-col a:hover{color:var(--accent);transform:translateX(2px)}
+@media(max-width:960px){.nav-more-panel{grid-template-columns:repeat(2,150px);right:auto;left:0}}
 .nav-badge{font-size:10px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--teal));color:#fff;padding:4px 10px;border-radius:20px;flex-shrink:0;letter-spacing:.03em}
 
 /* ── HERO ── */
@@ -438,7 +447,10 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
 /* ── RESPONSIVE ── */
 @media(max-width:960px){.nav-divider{display:none}}
-@media(max-width:800px){.nav-links .nav-a:nth-child(n+8){display:none}}
+@media(max-width:1080px){.nav-links>a.nav-a:nth-child(6){display:none}}
+@media(max-width:960px){.nav-links>a.nav-a:nth-child(5){display:none}}
+@media(max-width:860px){.nav-links>a.nav-a:nth-child(4){display:none}}
+@media(max-width:760px){.nav-links>a.nav-a:nth-child(3){display:none}}
 @media(max-width:640px){
   .th-grid{grid-template-columns:1fr}
   .regime-grid{grid-template-columns:1fr}
@@ -653,36 +665,57 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       <a class="nav-a" href="/patience-passbook.html" style="color:#182a44;font-weight:700">🏦 Patience Passbook</a>
       <a class="nav-a" href="/notice-shield.html" style="color:#e05c5c;font-weight:700">🛡️ Notice Shield</a>
       <a class="nav-a" href="/insurance-mitra.html" style="color:#0ea5a0;font-weight:700">🏥 Insurance Mitra</a>
-      <a class="nav-a" href="/insurance-reality-check.html" style="color:#b8752c;font-weight:700">🚗 Insurance Reality Check</a>
-      <a class="nav-a" href="/unfreeze-my-account.html" style="color:#a53f3f;font-weight:700">🔓 Unfreeze My Account</a>
-      <a class="nav-a" href="/subscription-leak-finder.html" style="color:#5b6af0;font-weight:700">🔍 Subscription Finder</a>
-      <a class="nav-a" href="/payslip-comparer.html" style="color:#00a656;font-weight:700">📄 Payslip Comparer</a>
-      <a class="nav-a" href="/mf-analyzer-bot.html" style="color:#16a34a;font-weight:700">📊 MF Analyzer</a>
-      <a class="nav-a" href="/family-passbook.html" style="color:#8B3A2B;font-weight:700">📔 Family Passbook</a>
-      <a class="nav-a" href="/tools/household-expense-bill.html" style="color:#0d9488;font-weight:700">🧾 Expense Bill</a>
-      <a class="nav-a" href="/pf-rejection-decoder.html" style="color:#c0392b;font-weight:700">📋 PF Rejection Decoder</a>
-      <a class="nav-a" href="/pan-correction-navigator.html" style="color:#2563eb;font-weight:700">🪪 PAN Correction</a>
-      <a class="nav-a" href="/superannuation-navigator.html" style="color:#ca8a04;font-weight:700">🏛️ Superannuation</a>
-      <a class="nav-a" href="/relieving-letter-kit.html" style="color:#0e7490;font-weight:700">📨 Relieving Letter</a>
-      <a class="nav-a" href="/tools/accident-cover-checker.html" style="color:#5b6af0;font-weight:700">💳 Accident Cover Checker</a>
-      <div class="nav-divider"></div>
-      <a class="nav-a" href="/tools/salary-calculator.html">💰 Salary</a>
-      <a class="nav-a" href="/tools/old-vs-new-tax-regime.html">📋 Tax Regime</a>
-      <a class="nav-a" href="/tools/capital-gains-calculator.html">📈 Capital Gains</a>
-      <a class="nav-a" href="/tools/esop-rsu-tax-calculator.html">🏢 ESOP/RSU</a>
-      <div class="nav-divider"></div>
-      <a class="nav-a" href="/tools/gratuity-calculator.html">🏆 Gratuity</a>
-      <a class="nav-a" href="/tools/notice-period-calculator.html">📋 Notice Pay</a>
-      <a class="nav-a" href="/tools/home-loan-emi-calculator.html">🏠 Home Loan</a>
-      <a class="nav-a" href="/tools/home-loan-rate-check.html">📉 Rate Check</a>
-      <a class="nav-a" href="/tools/huf-tax-calculator.html">👪 HUF Calculator</a>
-      <a class="nav-a" href="/tools/sip-calculator.html">📊 SIP</a>
-      <a class="nav-a" href="/tools/epf-calculator.html">🏦 EPF</a>
-      <div class="nav-divider"></div>
-      <a class="nav-a" href="/blog/" style="color:var(--accent);font-weight:700">📝 Blog</a>
-      <a class="nav-a" href="/for-employers.html" style="color:var(--teal);font-weight:700">🏢 For Employers</a>
-      <a class="nav-a" href="/pdf-signature-validator.html" style="color:#d97706;font-weight:700">📄 PDF Verify</a>
-      <a class="nav-a" href="/qr-decoder.html" style="color:#7c3aed;font-weight:700">📱 QR Decoder</a>
+      <div class="nav-more-wrap">
+        <button type="button" class="nav-a nav-more-btn" id="navMoreBtn" onclick="toggleNavMore(event)">
+          More
+          <svg viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="nav-more-panel" id="navMorePanel">
+          <div class="nav-more-col">
+            <div class="nav-more-col-title">Insurance &amp; Safety</div>
+            <a href="/notice-shield.html">🛡️ Notice Shield</a>
+            <a href="/insurance-mitra.html">🏥 Insurance Mitra</a>
+            <a href="/insurance-reality-check.html">🚗 Insurance Reality Check</a>
+            <a href="/unfreeze-my-account.html">🔓 Unfreeze My Account</a>
+            <a href="/tools/accident-cover-checker.html">💳 Accident Cover Checker</a>
+            <a href="/subscription-leak-finder.html">🔍 Subscription Finder</a>
+          </div>
+          <div class="nav-more-col">
+            <div class="nav-more-col-title">Passbooks &amp; Docs</div>
+            <a href="/life-passbook.html">📖 Life Passbook</a>
+            <a href="/patience-passbook.html">🏦 Patience Passbook</a>
+            <a href="/payslip-comparer.html">📄 Payslip Comparer</a>
+            <a href="/mf-analyzer-bot.html">📊 MF Analyzer</a>
+            <a href="/family-passbook.html">📔 Family Passbook</a>
+            <a href="/tools/household-expense-bill.html">🧾 Expense Bill</a>
+            <a href="/pdf-signature-validator.html">📄 PDF Verify</a>
+            <a href="/qr-decoder.html">📱 QR Decoder</a>
+          </div>
+          <div class="nav-more-col">
+            <div class="nav-more-col-title">Career &amp; Employment</div>
+            <a href="/pf-rejection-decoder.html">📋 PF Rejection Decoder</a>
+            <a href="/pan-correction-navigator.html">🪪 PAN Correction</a>
+            <a href="/superannuation-navigator.html">🏛️ Superannuation</a>
+            <a href="/relieving-letter-kit.html">📨 Relieving Letter</a>
+            <a href="/tools/notice-period-calculator.html">📋 Notice Pay</a>
+          </div>
+          <div class="nav-more-col">
+            <div class="nav-more-col-title">Calculators</div>
+            <a href="/tools/salary-calculator.html">💰 Salary</a>
+            <a href="/tools/old-vs-new-tax-regime.html">📋 Tax Regime</a>
+            <a href="/tools/capital-gains-calculator.html">📈 Capital Gains</a>
+            <a href="/tools/esop-rsu-tax-calculator.html">🏢 ESOP/RSU</a>
+            <a href="/tools/gratuity-calculator.html">🏆 Gratuity</a>
+            <a href="/tools/home-loan-emi-calculator.html">🏠 Home Loan</a>
+            <a href="/tools/home-loan-rate-check.html">📉 Rate Check</a>
+            <a href="/tools/huf-tax-calculator.html">👪 HUF Calculator</a>
+            <a href="/tools/sip-calculator.html">📊 SIP</a>
+            <a href="/tools/epf-calculator.html">🏦 EPF</a>
+            <a href="/blog/">📝 Blog</a>
+            <a href="/for-employers.html">🏢 For Employers</a>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="nav-badge">FY 2026-27</div>
     <button class="mob-menu-btn" onclick="openMobNav()" aria-label="Open menu">
@@ -2462,6 +2495,28 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 </style>
 
 <script>
+// ── DESKTOP NAV "MORE" DROPDOWN ──
+function toggleNavMore(e){
+  e.stopPropagation();
+  document.getElementById('navMorePanel').classList.toggle('open');
+  document.getElementById('navMoreBtn').classList.toggle('open');
+}
+document.addEventListener('click', function(e){
+  var panel = document.getElementById('navMorePanel');
+  var btn = document.getElementById('navMoreBtn');
+  if(panel && panel.classList.contains('open') && !panel.contains(e.target) && e.target !== btn){
+    panel.classList.remove('open');
+    btn.classList.remove('open');
+  }
+});
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    var panel = document.getElementById('navMorePanel');
+    var btn = document.getElementById('navMoreBtn');
+    if(panel){ panel.classList.remove('open'); btn.classList.remove('open'); }
+  }
+});
+
 // ── MOBILE NAV DRAWER ──
 function openMobNav(){
   document.getElementById('mob-overlay').classList.add('open');

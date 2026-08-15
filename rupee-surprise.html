@@ -854,12 +854,34 @@
   ];
 
   const usedIndexes = new Set();
-  function nextMessage(){
+  // Local fallback only — used if the live AI call fails (offline, API hiccup, etc.)
+  // so the card can never come up blank.
+  function localFallbackMessage(){
     if (usedIndexes.size >= MESSAGES.length) usedIndexes.clear();
     let idx;
     do { idx = Math.floor(Math.random()*MESSAGES.length); } while (usedIndexes.has(idx));
     usedIndexes.add(idx);
     return MESSAGES[idx];
+  }
+
+  /* ================= AI-generated surprise (live, different every time) ================= */
+  const shownTitles = [];
+  async function fetchSurpriseMessage(){
+    try{
+      const res = await fetch('/api/rupee-surprise', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ avoid: shownTitles.slice(-20) })
+      });
+      if (!res.ok) throw new Error('bad response: ' + res.status);
+      const data = await res.json();
+      if (!data || !data.title || !data.body) throw new Error('malformed response');
+      shownTitles.push(data.title);
+      return { cat: data.cat || 'Surprise', title: data.title, body: data.body };
+    } catch (err){
+      console.warn('Live surprise generation failed, using fallback:', err);
+      return localFallbackMessage();
+    }
   }
 
   /* ================= session state (in-memory only, demo) ================= */
@@ -951,17 +973,29 @@
     ctx.fillText('SCRATCH HERE', w/2, h/2);
   }
 
-  function loadNewCard(){
+  let cardReady = false;
+  async function loadNewCard(){
     revealedAlready = false;
+    cardReady = false;
     revealBlock.classList.remove('show');
     womBlock.style.display = 'none';
     progressBar.style.width = '0%';
-    currentMessage = nextMessage();
+    // Shown only under the foil while the AI writes the real message — invisible
+    // unless someone scratches before it's ready, which the pointer-events lock below prevents.
+    document.getElementById('msgCat').textContent = '…';
+    document.getElementById('msgTitle').textContent = 'ONE MOMENT';
+    document.getElementById('msgBody').textContent = 'Writing something just for you…';
+    canvas.style.opacity = '1';
+    canvas.style.pointerEvents = 'none';
+    sizeCanvas();
+
+    currentMessage = await fetchSurpriseMessage();
+
     document.getElementById('msgCat').textContent = currentMessage.cat;
     document.getElementById('msgTitle').textContent = currentMessage.title;
     document.getElementById('msgBody').textContent = currentMessage.body;
-    canvas.style.opacity = '1';
-    sizeCanvas();
+    canvas.style.pointerEvents = 'auto';
+    cardReady = true;
   }
 
   function getPos(e){
@@ -1023,7 +1057,7 @@
   }
 
   function handleMove(e){
-    if (!scratching) return;
+    if (!scratching || !cardReady) return;
     e.preventDefault();
     const {x,y} = getPos(e);
     scratchAt(x,y);

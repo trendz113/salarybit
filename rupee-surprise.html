@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>₹1 Surprise — One rupee. One scratch. One little moment of happiness.</title>
+<meta name="description" content="Pay ₹1. Scratch a card. Discover something wonderful. No prizes, no money — just a tiny surprise.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B1B2F;
+    --ink-soft:#4A4A68;
+    --paper:#FBF7EF;
+    --paper-dim:#F1EBDD;
+    --marigold:#F2A93B;
+    --marigold-deep:#D98A1E;
+    --foil:#C9CDD3;
+    --mint:#2FBF9F;
+    --line: rgba(27,27,47,0.14);
+    --radius: 22px;
+    --shadow: 0 12px 32px rgba(27,27,47,0.10);
+    --shadow-soft: 0 6px 18px rgba(27,27,47,0.08);
+    font-size: 16px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Manrope', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  a{color:inherit;}
+  button{font-family:inherit;}
+  img{max-width:100%;display:block;}
+
+  /* ---------- layout helpers ---------- */
+  .wrap{ max-width:1040px; margin:0 auto; padding:0 24px; }
+  .section{ padding:88px 0; position:relative; }
+  .section.tight{ padding:56px 0; }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--marigold-deep);
+    font-weight:600;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:14px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:16px; height:1px;
+    background:var(--marigold-deep);
+    display:inline-block;
+  }
+  .center{ text-align:center; }
+
+  /* perforated ticket divider between sections */
+  .stub-divider{
+    position:relative;
+    height:40px;
+    display:flex;
+    align-items:center;
+  }
+  .stub-divider::before{
+    content:"";
+    flex:1;
+    border-top:2px dashed var(--line);
+  }
+  .stub-divider .coin-mark{
+    width:34px; height:34px; border-radius:50%;
+    border:2px dashed var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:14px; font-weight:600; color:var(--ink-soft);
+    background:var(--paper);
+    margin:0 10px;
+    flex-shrink:0;
+  }
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(251,247,239,0.86);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    max-width:1040px; margin:0 auto; padding:14px 24px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .brandmark{
+    display:flex; align-items:center; gap:10px;
+    font-weight:700; font-size:17px;
+  }
+  .coin{
+    width:32px; height:32px; border-radius:50%;
+    background:radial-gradient(circle at 32% 28%, #ffe6b0, var(--marigold) 55%, var(--marigold-deep) 100%);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--ink); font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:14px;
+    box-shadow: inset 0 -3px 5px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .navlinks{ display:flex; gap:26px; font-size:14.5px; font-weight:600; color:var(--ink-soft); }
+  .navlinks a{ text-decoration:none; }
+  .navlinks a:hover{ color:var(--ink); }
+  @media (max-width:640px){ .navlinks{ display:none; } }
+
+  .btn{
+    border:none; cursor:pointer;
+    border-radius:999px;
+    padding:16px 30px;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:0.02em;
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .btn:active{ transform:scale(0.97); }
+  .btn-primary{
+    background:var(--marigold);
+    color:var(--ink);
+    box-shadow:0 10px 24px rgba(242,169,59,0.38);
+  }
+  .btn-primary:hover{ box-shadow:0 14px 30px rgba(242,169,59,0.5); transform:translateY(-1px); }
+  .btn-dark{
+    background:var(--ink); color:var(--paper);
+    box-shadow:0 10px 24px rgba(27,27,47,0.28);
+  }
+  .btn-dark:hover{ transform:translateY(-1px); }
+  .btn-outline{
+    background:transparent; color:var(--ink);
+    border:1.5px solid var(--line);
+  }
+  .btn-outline:hover{ border-color:var(--ink); }
+  .btn:disabled{ opacity:0.45; cursor:not-allowed; transform:none; box-shadow:none; }
+  .btn-block{ width:100%; }
+
+  /* ---------- hero ---------- */
+  .hero{
+    background:
+      radial-gradient(700px 400px at 85% -10%, rgba(242,169,59,0.35), transparent 60%),
+      radial-gradient(600px 380px at 5% 0%, rgba(47,191,159,0.18), transparent 60%),
+      var(--ink);
+    color:var(--paper);
+    padding:120px 0 100px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero .wrap{ position:relative; z-index:2; }
+  .hero-coin{
+    width:64px; height:64px; border-radius:50%; margin:0 auto 26px;
+    background:radial-gradient(circle at 32% 28%, #ffe6b0, var(--marigold) 55%, var(--marigold-deep) 100%);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--ink); font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:26px;
+    box-shadow: inset 0 -5px 8px rgba(0,0,0,0.22), 0 10px 22px rgba(0,0,0,0.35);
+    animation: coinfloat 4.5s ease-in-out infinite;
+  }
+  @keyframes coinfloat{ 0%,100%{ transform:translateY(0) rotate(0deg);} 50%{ transform:translateY(-8px) rotate(6deg);} }
+  .hero h1{
+    font-size:clamp(2.4rem, 6vw, 4rem);
+    line-height:1.04;
+    text-align:center;
+  }
+  .hero .tagline{
+    text-align:center;
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(1.05rem, 2.4vw, 1.35rem);
+    color:var(--marigold);
+    margin-top:16px;
+  }
+  .hero .support{
+    max-width:480px; margin:26px auto 0;
+    text-align:center;
+    font-size:16px;
+    line-height:1.65;
+    color:rgba(251,247,239,0.78);
+  }
+  .hero-cta{ text-align:center; margin-top:38px; }
+  .hero-cta .sub{
+    margin-top:14px; font-size:13.5px; color:rgba(251,247,239,0.55);
+  }
+
+  /* ---------- how it works ---------- */
+  .steps{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:20px;
+    margin-top:44px;
+  }
+  @media (max-width:760px){ .steps{ grid-template-columns:1fr; } }
+  .step-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:30px 26px;
+    box-shadow:var(--shadow-soft);
+  }
+  .step-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px; font-weight:600; color:var(--marigold-deep);
+    background:rgba(242,169,59,0.14);
+    width:30px; height:30px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:18px;
+  }
+  .step-card h3{ font-size:21px; margin-bottom:8px; }
+  .step-card p{ color:var(--ink-soft); font-size:15px; line-height:1.55; margin:0; }
+
+  /* ---------- ticket panel ---------- */
+  .ticket{
+    background:#fff;
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    position:relative;
+    border:1px solid var(--line);
+  }
+  .ticket-notch{
+    position:absolute; top:50%; width:26px; height:26px;
+    background:var(--paper); border-radius:50%; transform:translateY(-50%);
+  }
+  .ticket-notch.left{ left:-13px; }
+  .ticket-notch.right{ right:-13px; }
+  @media (max-width:640px){ .ticket-notch{ display:none; } }
+
+  /* ---------- payment ---------- */
+  .pay-panel{
+    max-width:480px; margin:44px auto 0;
+    padding:38px 32px 34px;
+    text-align:center;
+  }
+  .pay-price{
+    font-family:'Fraunces', serif; font-weight:700;
+    font-size:56px; margin:6px 0 2px;
+  }
+  .pay-price .rupee{ color:var(--marigold-deep); }
+  .qr-box{
+    width:200px; height:200px; margin:26px auto 14px;
+    border:2px dashed var(--line);
+    border-radius:16px;
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap:6px;
+    background:var(--paper-dim);
+    color:var(--ink-soft);
+    font-family:'IBM Plex Mono',monospace; font-size:12px; text-align:center; padding:14px;
+  }
+  .qr-box svg{ width:64px; height:64px; opacity:0.5; }
+  .scan-label{ font-weight:700; font-size:14.5px; margin-bottom:22px; }
+  .proto-note{
+    margin-top:16px;
+    font-size:12.5px; color:var(--ink-soft);
+    background:var(--paper-dim);
+    border-radius:10px; padding:10px 14px;
+    line-height:1.5;
+  }
+  .test-mode-row{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    margin-top:18px; font-size:12.5px; color:var(--ink-soft);
+  }
+  .switch{
+    width:38px; height:22px; border-radius:999px; background:var(--marigold);
+    position:relative; cursor:pointer; flex-shrink:0; border:none;
+  }
+  .switch::after{
+    content:""; position:absolute; top:2px; left:2px; width:18px; height:18px;
+    border-radius:50%; background:#fff; transition:left .18s ease;
+  }
+  .switch.off{ background:#D9D6CC; }
+  .switch.off::after{ left:18px; }
+
+  /* ---------- scratch card ---------- */
+  .scratch-wrap{ max-width:420px; margin:46px auto 0; text-align:center; }
+  .scratch-prompt{ font-family:'Fraunces', serif; font-style:italic; font-size:19px; margin-bottom:18px; color:var(--ink-soft); }
+  .scratch-card{
+    position:relative;
+    width:100%; aspect-ratio:1.55/1;
+    border-radius:24px;
+    overflow:hidden;
+    box-shadow:0 18px 40px rgba(27,27,47,0.22);
+    touch-action:none;
+    user-select:none;
+    background:var(--paper);
+  }
+  .scratch-message{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:20px;
+    background:linear-gradient(160deg,#fff, var(--paper-dim));
+    text-align:center;
+  }
+  .scratch-message .cat{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--mint); font-weight:600; margin-bottom:10px;
+  }
+  .scratch-message .title{
+    font-family:'Fraunces', serif; font-weight:700; font-size:clamp(1.6rem,5vw,2.4rem);
+    color:var(--ink); line-height:1.1;
+  }
+  .scratch-message .body{
+    margin-top:10px; font-size:14.5px; color:var(--ink-soft); max-width:300px; line-height:1.5;
+  }
+  .scratch-canvas{ position:absolute; inset:0; cursor:grab; }
+  .scratch-progress{
+    margin-top:16px; height:6px; border-radius:999px; background:var(--line); overflow:hidden;
+  }
+  .scratch-progress-bar{ height:100%; width:0%; background:var(--mint); transition:width .12s linear; }
+  .sparkle{
+    position:absolute; pointer-events:none; font-size:18px; opacity:0;
+    animation: sparkle-pop .9s ease forwards;
+  }
+  @keyframes sparkle-pop{
+    0%{ opacity:0; transform:scale(0.3) translateY(0); }
+    30%{ opacity:1; transform:scale(1.1) translateY(-6px); }
+    100%{ opacity:0; transform:scale(0.9) translateY(-22px); }
+  }
+
+  /* ---------- reveal ---------- */
+  .reveal{
+    max-width:460px; margin:38px auto 0; text-align:center;
+    display:none;
+  }
+  .reveal.show{ display:block; animation: reveal-in .5s ease; }
+  @keyframes reveal-in{ from{ opacity:0; transform:translateY(14px);} to{ opacity:1; transform:translateY(0);} }
+  .reveal-tag{ font-size:14px; letter-spacing:0.1em; text-transform:uppercase; font-family:'IBM Plex Mono',monospace; color:var(--marigold-deep); font-weight:600; }
+  .reveal-title{ font-family:'Fraunces',serif; font-weight:700; font-size:clamp(2rem,6vw,2.8rem); margin:14px 0 10px; }
+  .reveal-body{ color:var(--ink-soft); font-size:16px; line-height:1.6; }
+  .reveal-actions{ display:flex; gap:12px; justify-content:center; margin-top:28px; flex-wrap:wrap; }
+
+  /* word of mouth */
+  .wom{
+    max-width:460px; margin:56px auto 0; text-align:center;
+    padding:30px 26px; border-radius:var(--radius);
+    background:var(--paper-dim);
+  }
+  .wom p{ margin:0 0 18px; font-family:'Fraunces',serif; font-style:italic; font-size:18px; }
+  .share-row{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .icon-btn{
+    border:1px solid var(--line); background:#fff; border-radius:999px;
+    padding:10px 18px; font-size:13.5px; font-weight:700; cursor:pointer;
+    display:inline-flex; align-items:center; gap:7px;
+  }
+  .icon-btn:hover{ border-color:var(--ink); }
+
+  /* ---------- community counter ---------- */
+  .stats-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:40px;
+  }
+  @media (max-width:700px){ .stats-grid{ grid-template-columns:1fr; } }
+  .stat-card{
+    background:var(--ink); color:var(--paper);
+    border-radius:var(--radius); padding:30px 24px; text-align:center;
+  }
+  .stat-num{ font-family:'IBM Plex Mono',monospace; font-size:38px; font-weight:600; color:var(--marigold); }
+  .stat-label{ font-size:13.5px; color:rgba(251,247,239,0.7); margin-top:6px; }
+  .demo-flag{
+    display:inline-block; margin-top:44px; font-size:12px; font-family:'IBM Plex Mono',monospace;
+    color:var(--ink-soft); background:var(--paper-dim); padding:6px 14px; border-radius:999px;
+  }
+
+  /* why section */
+  .why-quote{
+    max-width:600px; margin:34px auto 0; text-align:center;
+    font-family:'Fraunces', serif; font-size:clamp(1.2rem,3vw,1.55rem); line-height:1.55; font-style:italic; color:var(--ink);
+  }
+
+  /* idea form */
+  .idea-panel{ max-width:560px; margin:40px auto 0; padding:34px 30px; }
+  .field{ margin-bottom:18px; text-align:left; }
+  .field label{ display:block; font-size:13px; font-weight:700; margin-bottom:7px; color:var(--ink-soft); }
+  .field input, .field textarea{
+    width:100%; border:1.5px solid var(--line); border-radius:12px; padding:12px 14px;
+    font-family:'Manrope',sans-serif; font-size:14.5px; background:var(--paper-dim); color:var(--ink);
+    resize:vertical;
+  }
+  .field input:focus, .field textarea:focus{ outline:2px solid var(--marigold); outline-offset:1px; }
+  .check-row{ display:flex; align-items:flex-start; gap:10px; margin:20px 0; font-size:13px; color:var(--ink-soft); text-align:left; }
+  .check-row input{ margin-top:3px; }
+  .form-note{ font-size:12px; color:var(--ink-soft); margin-top:14px; text-align:center; }
+  .success-note{
+    display:none; margin-top:16px; background:rgba(47,191,159,0.14); color:#187a63;
+    border-radius:10px; padding:12px 14px; font-size:13.5px; text-align:center; font-weight:600;
+  }
+  .success-note.show{ display:block; }
+
+  /* trust */
+  .trust-box{ max-width:640px; margin:34px auto 0; padding:30px 30px; text-align:center; }
+  .trust-box p{ font-size:15px; line-height:1.6; color:var(--ink-soft); }
+  .trust-box .strong-line{ font-weight:700; color:var(--ink); margin:14px 0 0; }
+
+  /* faq */
+  .faq-item{ border-bottom:1px solid var(--line); padding:20px 0; }
+  .faq-q{
+    display:flex; align-items:center; justify-content:space-between; cursor:pointer;
+    font-weight:700; font-size:16px;
+  }
+  .faq-q .plus{ font-family:'IBM Plex Mono',monospace; font-size:18px; color:var(--marigold-deep); transition:transform .2s ease; }
+  .faq-item.open .faq-q .plus{ transform:rotate(45deg); }
+  .faq-a{
+    max-height:0; overflow:hidden; transition:max-height .25s ease;
+    color:var(--ink-soft); font-size:14.5px; line-height:1.6;
+  }
+  .faq-item.open .faq-a{ max-height:200px; margin-top:12px; }
+
+  /* admin */
+  .admin-toggle{
+    position:fixed; bottom:18px; right:18px; z-index:60;
+    background:var(--ink); color:var(--paper);
+    border:none; border-radius:999px; padding:10px 16px;
+    font-family:'IBM Plex Mono',monospace; font-size:12px; cursor:pointer;
+    opacity:0.55;
+  }
+  .admin-toggle:hover{ opacity:1; }
+  .admin-overlay{
+    position:fixed; inset:0; background:rgba(27,27,47,0.6); z-index:80;
+    display:none; align-items:center; justify-content:center; padding:20px;
+  }
+  .admin-overlay.show{ display:flex; }
+  .admin-modal{
+    background:#fff; border-radius:20px; padding:32px; max-width:520px; width:100%;
+    max-height:82vh; overflow-y:auto;
+  }
+  .admin-login{ text-align:center; }
+  .admin-login input{
+    width:100%; border:1.5px solid var(--line); border-radius:12px; padding:12px 14px;
+    font-size:14.5px; margin:16px 0; background:var(--paper-dim);
+  }
+  .admin-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:20px 0; }
+  .admin-stat{ background:var(--paper-dim); border-radius:12px; padding:14px; }
+  .admin-stat .n{ font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:22px; }
+  .admin-stat .l{ font-size:11.5px; color:var(--ink-soft); margin-top:2px; }
+  .admin-note{ font-size:12px; color:var(--ink-soft); background:var(--paper-dim); border-radius:10px; padding:10px 12px; line-height:1.5; margin-top:10px; }
+  .admin-close{ position:absolute; top:14px; right:18px; background:none; border:none; font-size:20px; cursor:pointer; color:var(--ink-soft); }
+  .admin-modal{ position:relative; }
+  .admin-list{ font-size:13px; color:var(--ink-soft); max-height:120px; overflow-y:auto; border-top:1px solid var(--line); padding-top:10px; margin-top:6px; }
+
+  footer{
+    padding:50px 0 70px; text-align:center; color:var(--ink-soft); font-size:13px;
+  }
+  footer .coin{ margin:0 auto 14px; }
+
+  .visually-hidden{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+  :focus-visible{ outline:3px solid var(--mint); outline-offset:2px; }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="brandmark"><span class="coin">₹1</span> ₹1 Surprise</div>
+    <nav class="navlinks">
+      <a href="#how">How it works</a>
+      <a href="#why">Why ₹1</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-coin">₹1</div>
+    <h1>₹1 Surprise</h1>
+    <p class="tagline">One rupee. One scratch. One little moment of happiness.</p>
+    <p class="support">Sometimes ₹1 isn't about what you buy. It's about the little surprise waiting on the other side.</p>
+    <div class="hero-cta">
+      <button class="btn btn-primary" id="ctaTry">TRY MY ₹1 SURPRISE</button>
+      <div class="sub">No big prizes. No promises of money. Just a tiny surprise.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="wrap">
+    <div class="eyebrow center" style="display:flex;justify-content:center;">How it works</div>
+    <h2 class="center" style="font-size:clamp(1.6rem,4vw,2.2rem);">Three steps. Under a minute.</h2>
+    <div class="steps">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <h3>Pay ₹1</h3>
+        <p>A tiny contribution to unlock the experience.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <h3>Scratch</h3>
+        <p>Scratch the virtual card with your finger or mouse.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <h3>Discover</h3>
+        <p>Reveal a positive message created just for this moment.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="stub-divider"><span class="coin-mark">₹1</span></div></div>
+
+<!-- PAYMENT -->
+<section class="section" id="pay">
+  <div class="wrap">
+    <div class="eyebrow center" style="display:flex;justify-content:center;">Unlock your surprise</div>
+    <h2 class="center" style="font-size:clamp(1.6rem,4vw,2.2rem);">Unlock Your Surprise</h2>
+
+    <div class="ticket pay-panel">
+      <div class="ticket-notch left"></div><div class="ticket-notch right"></div>
+      <div class="mono" style="font-size:12px;letter-spacing:0.1em;color:var(--ink-soft);text-transform:uppercase;">Contribution</div>
+      <div class="pay-price"><span class="rupee">₹</span>1 <span style="font-size:16px;font-weight:600;color:var(--ink-soft);">only</span></div>
+
+      <div class="qr-box" id="qrBox">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h7v7H3V3zm2 2v3h3V5H5zm-2 9h7v7H3v-7zm2 2v3h3v-3H5zm9-13h7v7h-7V3zm2 2v3h3V5h-3zM14 14h2v2h-2v-2zm3 0h2v2h-2v-2zm-3 3h2v2h-2v-2zm3 0h2v2h-2v-2z"/></svg>
+        <div>UPI_QR_CODE_HERE</div>
+      </div>
+      <div class="scan-label">Scan ₹1 using any supported UPI app</div>
+
+      <button class="btn btn-primary btn-block" id="paidBtn">I HAVE PAID ₹1 — SHOW MY CARD</button>
+
+      <div class="proto-note" id="protoNote">Prototype mode — payment is not automatically verified.</div>
+
+      <div class="test-mode-row">
+        <button class="switch" id="testSwitch" aria-pressed="true" aria-label="Toggle test mode"></button>
+        <span id="testLabel">TEST MODE — This is a prototype. No payment is required. (admin-controlled)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCRATCH CARD -->
+<section class="section tight" id="scratchSection" style="display:none;">
+  <div class="wrap">
+    <div class="scratch-wrap">
+      <p class="scratch-prompt">Something wonderful is waiting…</p>
+      <div class="scratch-card" id="scratchCard">
+        <div class="scratch-message" id="scratchMessage">
+          <div class="cat" id="msgCat">—</div>
+          <div class="title" id="msgTitle">—</div>
+          <div class="body" id="msgBody">—</div>
+        </div>
+        <canvas class="scratch-canvas" id="scratchCanvas"></canvas>
+      </div>
+      <div class="scratch-progress"><div class="scratch-progress-bar" id="scratchProgress"></div></div>
+    </div>
+
+    <div class="reveal" id="revealBlock">
+      <div class="reveal-tag">✨ Your Surprise</div>
+      <div class="reveal-title" id="revealTitle">—</div>
+      <div class="reveal-body" id="revealBody">—</div>
+      <div class="reveal-actions">
+        <button class="btn btn-dark" id="shareBtn">SHARE MY SURPRISE</button>
+        <button class="btn btn-outline" id="againBtn">TRY ANOTHER ONE</button>
+      </div>
+    </div>
+
+    <div class="wom" id="womBlock" style="display:none;">
+      <p>Did ₹1 make you smile? Tell one person about it.</p>
+      <div class="share-row">
+        <button class="icon-btn" id="nativeShareBtn">SHARE ₹1 SURPRISE</button>
+        <button class="icon-btn" id="waShareBtn">WhatsApp</button>
+        <button class="icon-btn" id="copyLinkBtn">Copy link</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="stub-divider"><span class="coin-mark">₹1</span></div></div>
+
+<!-- COMMUNITY COUNTER -->
+<section class="section tight">
+  <div class="wrap center">
+    <div class="eyebrow" style="display:inline-flex;">The ₹1 experiment</div>
+    <h2 style="font-size:clamp(1.6rem,4vw,2.2rem);">The ₹1 Experiment</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num mono" id="statPeople">0</div>
+        <div class="stat-label">People who tried it</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num mono" id="statReveals">0</div>
+        <div class="stat-label">Surprises revealed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num mono" id="statRupees">₹0</div>
+        <div class="stat-label">₹1 contributions</div>
+      </div>
+    </div>
+    <div class="demo-flag">Demo / session-only values — not connected to a live database</div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="section" id="why">
+  <div class="wrap center">
+    <div class="eyebrow" style="display:inline-flex;">The philosophy</div>
+    <h2 style="font-size:clamp(1.6rem,4vw,2.2rem);">Why only ₹1?</h2>
+    <p class="why-quote">Because this experiment isn't about asking one person for a lot of money. It's about discovering what happens when thousands of ordinary people participate in something tiny. One rupee is small. But millions of people doing one small thing together can become something much bigger.</p>
+  </div>
+</section>
+
+<!-- IDEA SUBMISSION -->
+<section class="section tight">
+  <div class="wrap center">
+    <div class="eyebrow" style="display:inline-flex;">Community</div>
+    <h2 style="font-size:clamp(1.6rem,4vw,2rem);">What would you do with a ₹1 movement?</h2>
+  </div>
+  <form class="ticket idea-panel" id="ideaForm">
+    <div class="ticket-notch left"></div><div class="ticket-notch right"></div>
+    <div class="field">
+      <label for="ideaText">Your idea</label>
+      <textarea id="ideaText" rows="3" placeholder="A social problem, or a community improvement suggestion" required></textarea>
+    </div>
+    <div class="field">
+      <label for="ideaCity">City / State</label>
+      <input id="ideaCity" type="text" placeholder="e.g. Hoskote, Karnataka">
+    </div>
+    <div class="field">
+      <label for="ideaWhy">Why does this matter?</label>
+      <textarea id="ideaWhy" rows="3" placeholder="Your suggestion, in a few sentences"></textarea>
+    </div>
+    <label class="check-row">
+      <input type="checkbox" id="ideaConsent" required>
+      I agree that my submission may be displayed publicly.
+    </label>
+    <button type="submit" class="btn btn-dark btn-block">SUBMIT IDEA</button>
+    <div class="success-note" id="ideaSuccess">Thank you — your idea has been noted for this session.</div>
+    <div class="form-note">We only collect what's shown here. No phone number, email or ID required for this prototype.</div>
+  </form>
+</section>
+
+<!-- TRUST -->
+<section class="section tight">
+  <div class="wrap">
+    <div class="ticket trust-box">
+      <div class="ticket-notch left"></div><div class="ticket-notch right"></div>
+      <div class="eyebrow" style="display:inline-flex;">A simple idea</div>
+      <h2 style="font-size:1.6rem;">A Simple Idea</h2>
+      <p>₹1 should never feel like a burden. The purpose of this experiment is curiosity, participation and a tiny moment of happiness.</p>
+      <p class="strong-line">This website does not promise cash prizes, financial returns, investment returns or monetary rewards.</p>
+      <p class="strong-line">The scratch card only reveals digital content.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="wrap" style="max-width:680px;">
+    <div class="eyebrow center" style="display:flex;justify-content:center;">Questions</div>
+    <h2 class="center" style="font-size:clamp(1.6rem,4vw,2.2rem);margin-bottom:24px;">FAQ</h2>
+
+    <div class="faq-item">
+      <div class="faq-q" tabindex="0" role="button">Is this gambling? <span class="plus">+</span></div>
+      <div class="faq-a">No. The scratch card does not award money, cash, cryptocurrency, betting credits or valuable random prizes.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" tabindex="0" role="button">What do I receive? <span class="plus">+</span></div>
+      <div class="faq-a">A digital surprise such as a message, thought, challenge, fact or digital badge.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" tabindex="0" role="button">Why ₹1? <span class="plus">+</span></div>
+      <div class="faq-a">The ₹1 amount is part of the experiment.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" tabindex="0" role="button">Can I get my ₹1 back? <span class="plus">+</span></div>
+      <div class="faq-a">The applicable payment/refund policy will be explained clearly once real payments are enabled.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" tabindex="0" role="button">Is payment automatically verified? <span class="plus">+</span></div>
+      <div class="faq-a">No. Prototype payments are not automatically verified.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" tabindex="0" role="button">Is this an investment? <span class="plus">+</span></div>
+      <div class="faq-a">No.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" tabindex="0" role="button">Will I win money? <span class="plus">+</span></div>
+      <div class="faq-a">No.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="coin">₹1</div>
+  <div>₹1 Surprise — a tiny digital gift, not a financial product.</div>
+</footer>
+
+<!-- ADMIN -->
+<button class="admin-toggle" id="adminToggle">ADMIN</button>
+<div class="admin-overlay" id="adminOverlay">
+  <div class="admin-modal">
+    <button class="admin-close" id="adminClose">×</button>
+    <div id="adminLoginView" class="admin-login">
+      <div class="eyebrow" style="display:inline-flex;">Restricted</div>
+      <h3 style="font-size:1.3rem;">Admin sign-in</h3>
+      <p style="font-size:13px;color:var(--ink-soft);">Prototype demo login only — not secure authentication. Wire up real auth (e.g. hashed credentials + session tokens on a server) before going live.</p>
+      <input type="password" id="adminPass" placeholder="Demo password: admin123">
+      <button class="btn btn-dark btn-block" id="adminLoginBtn">Sign in</button>
+    </div>
+    <div id="adminDashView" style="display:none;">
+      <h3 style="font-size:1.3rem;margin-bottom:4px;">Admin dashboard</h3>
+      <div class="admin-note">Session-only demo data. In production, back this with a real database, server-side validation, rate limiting and CAPTCHA on public forms.</div>
+      <div class="admin-grid">
+        <div class="admin-stat"><div class="n mono" id="aVisitors">0</div><div class="l">Total visitors (session)</div></div>
+        <div class="admin-stat"><div class="n mono" id="aAttempts">0</div><div class="l">Scratch attempts</div></div>
+        <div class="admin-stat"><div class="n mono" id="aCompleted">0</div><div class="l">Completed experiences</div></div>
+        <div class="admin-stat"><div class="n mono" id="aClickedPaid">0</div><div class="l">Clicked "I have paid"</div></div>
+        <div class="admin-stat"><div class="n mono" id="aVerified">0</div><div class="l">Verified payments</div></div>
+        <div class="admin-stat"><div class="n mono" id="aConversion">0%</div><div class="l">Conversion rate</div></div>
+        <div class="admin-stat"><div class="n mono" id="aShares">0</div><div class="l">Shares</div></div>
+        <div class="admin-stat"><div class="n mono" id="aRepeat">0</div><div class="l">Repeat scratches</div></div>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:var(--ink-soft);margin-top:8px;">Most popular category</div>
+      <div class="mono" id="aTopCategory" style="font-size:14px;margin:4px 0 14px;">—</div>
+      <div style="font-size:12px;font-weight:700;color:var(--ink-soft);">Submitted ideas (this session)</div>
+      <div class="admin-list" id="aIdeaList">None yet.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+
+  /* ================= MESSAGE DATABASE ================= */
+  const MESSAGES = [
+    // Encouragement
+    {cat:"Encouragement", title:"KEEP GOING", body:"You are stronger than you think."},
+    {cat:"Encouragement", title:"STILL WRITING", body:"Keep going. Your story is still being written."},
+    {cat:"Encouragement", title:"ONE STEP", body:"One small step today can change tomorrow."},
+    {cat:"Encouragement", title:"SHOW UP", body:"Showing up today already counts for something."},
+    {cat:"Encouragement", title:"NOT DONE", body:"You've come further than you give yourself credit for."},
+    {cat:"Encouragement", title:"COURAGE", body:"You don't need to see the whole path. Just take the next step."},
+    {cat:"Encouragement", title:"SLOW IS FINE", body:"Slow progress is still progress."},
+    {cat:"Encouragement", title:"TRY AGAIN", body:"Every attempt teaches you something the last one couldn't."},
+    {cat:"Encouragement", title:"BREATHE", body:"You're allowed to take this one hour at a time."},
+    {cat:"Encouragement", title:"ENOUGH", body:"You are doing better than you think you are."},
+    {cat:"Encouragement", title:"NEXT CHAPTER", body:"A hard week doesn't erase everything you've built."},
+    {cat:"Encouragement", title:"KEEP AT IT", body:"Consistency beats intensity. Just keep at it."},
+    {cat:"Encouragement", title:"YOU CAN", body:"Whatever it is, you can handle it one piece at a time."},
+    {cat:"Encouragement", title:"REST TOO", body:"Rest is part of the work, not a break from it."},
+    {cat:"Encouragement", title:"KEEP ROOM", body:"Leave room for things to get better — they often do."},
+    {cat:"Encouragement", title:"TRUST IT", body:"Trust the version of you that's still trying."},
+    {cat:"Encouragement", title:"SMALL WINS", body:"Small wins add up faster than they feel like they do."},
+    {cat:"Encouragement", title:"KEEP MOVING", body:"You don't have to be fast. You just have to keep moving."},
+    {cat:"Encouragement", title:"IT COUNTS", body:"The effort no one saw still counts."},
+    {cat:"Encouragement", title:"ALMOST", body:"You're closer than it feels like right now."},
+
+    // Kindness
+    {cat:"Kindness", title:"ONE SMILE", body:"Today's mission: make one person smile."},
+    {cat:"Kindness", title:"REACH OUT", body:"Call someone you haven't spoken to in a while."},
+    {cat:"Kindness", title:"SAY THANKS", body:"Thank someone who helped you recently, even in a small way."},
+    {cat:"Kindness", title:"HOLD THE DOOR", body:"A tiny act of courtesy can be someone's best moment today."},
+    {cat:"Kindness", title:"CHECK IN", body:"Send a 'thinking of you' text to someone unexpected."},
+    {cat:"Kindness", title:"COMPLIMENT", body:"Give a genuine compliment to a stranger today."},
+    {cat:"Kindness", title:"LISTEN WELL", body:"Give someone your full attention for five minutes today."},
+    {cat:"Kindness", title:"SHARE CREDIT", body:"Give credit to someone who deserves it but rarely gets it."},
+    {cat:"Kindness", title:"BE PATIENT", body:"Offer patience to someone who's having a harder day than you."},
+    {cat:"Kindness", title:"TIP KINDLY", body:"If you can, tip a little more than expected today."},
+    {cat:"Kindness", title:"OFFER HELP", body:"Ask someone 'do you need a hand with that?' today."},
+    {cat:"Kindness", title:"FORGIVE ONE THING", body:"Let go of one small grudge you've been carrying."},
+    {cat:"Kindness", title:"WRITE A NOTE", body:"Leave a kind note somewhere someone will find it."},
+    {cat:"Kindness", title:"SHARE YOUR SNACK", body:"Offer to share something small with someone nearby."},
+    {cat:"Kindness", title:"CHEER SOMEONE ON", body:"Tell someone you believe in what they're working on."},
+
+    // Confidence
+    {cat:"Confidence", title:"MORE THAN THAT", body:"You are capable of more than you think."},
+    {cat:"Confidence", title:"START NOW", body:"Don't wait for perfect. Start with possible."},
+    {cat:"Confidence", title:"OWN IT", body:"You don't need permission to take up space."},
+    {cat:"Confidence", title:"YOU DECIDE", body:"You get to decide what today means, not yesterday."},
+    {cat:"Confidence", title:"SPEAK UP", body:"Your opinion is allowed to take up room in the conversation."},
+    {cat:"Confidence", title:"NO ONE ELSE", body:"No one else can do things exactly the way you do."},
+    {cat:"Confidence", title:"TRUST YOURSELF", body:"You know more than you give yourself credit for."},
+    {cat:"Confidence", title:"IMPERFECT ACTION", body:"An imperfect start beats a perfect plan that never begins."},
+    {cat:"Confidence", title:"STAND TALL", body:"You've earned the right to stand by your work."},
+    {cat:"Confidence", title:"ASK ANYWAY", body:"The worst answer is 'no' — and you'll survive that too."},
+    {cat:"Confidence", title:"YOUR PACE", body:"Comparing your pace to someone else's rarely helps you."},
+    {cat:"Confidence", title:"BE SEEN", body:"Let people see the real effort behind your work today."},
+    {cat:"Confidence", title:"TAKE THE SEAT", body:"You belong in the room you were invited into."},
+    {cat:"Confidence", title:"BOLD ENOUGH", body:"You are allowed to want more for yourself."},
+    {cat:"Confidence", title:"NO APOLOGIES", body:"You don't owe an apology for having boundaries."},
+
+    // Happiness
+    {cat:"Happiness", title:"JOY", body:"Your word today: joy."},
+    {cat:"Happiness", title:"ONE SMALL THING", body:"Find one small thing today that makes you smile."},
+    {cat:"Happiness", title:"WARMTH", body:"Notice the small warmth in an ordinary moment today."},
+    {cat:"Happiness", title:"SUNLIGHT", body:"Step outside for two minutes and just feel the air."},
+    {cat:"Happiness", title:"GOOD SONG", body:"Play a song that instantly makes you feel lighter."},
+    {cat:"Happiness", title:"SAVOUR IT", body:"Eat something today slowly, on purpose, without rushing."},
+    {cat:"Happiness", title:"LAUGH LINE", body:"Think of the last thing that made you laugh out loud."},
+    {cat:"Happiness", title:"CALM", body:"Your word today: calm."},
+    {cat:"Happiness", title:"WONDER", body:"Look for one thing today that quietly amazes you."},
+    {cat:"Happiness", title:"LIGHTNESS", body:"Let one small thing today feel easy on purpose."},
+    {cat:"Happiness", title:"GRATITUDE", body:"Name one thing, out loud, that you're glad about today."},
+    {cat:"Happiness", title:"PLAYFUL", body:"Your word today: playful."},
+    {cat:"Happiness", title:"SLOW MORNING", body:"Give yourself five extra unhurried minutes tomorrow."},
+    {cat:"Happiness", title:"COSY", body:"Make one part of your day a little more comfortable."},
+    {cat:"Happiness", title:"SMALL DELIGHT", body:"A small delight today counts as much as a big one."},
+
+    // Funny
+    {cat:"Funny", title:"COFFEE MATH", body:"Coffee doesn't wake you up. It just makes you panic faster."},
+    {cat:"Funny", title:"PLAN B", body:"Your plan for today: survive, then decide the rest tomorrow."},
+    {cat:"Funny", title:"WIFI LOGIC", body:"Somewhere, a router is judging your reconnect attempts."},
+    {cat:"Funny", title:"SNOOZE HERO", body:"You defeated the alarm five times today. Legendary."},
+    {cat:"Funny", title:"AUTOCORRECT", body:"Somewhere, autocorrect just ruined someone's very serious text."},
+    {cat:"Funny", title:"MONDAY LOGIC", body:"Mondays are just Sundays wearing a disguise."},
+    {cat:"Funny", title:"SNACK BREAK", body:"You've officially earned a snack. No further evidence needed."},
+    {cat:"Funny", title:"NAP CHAMPION", body:"You could win an Olympic medal in accidental napping."},
+    {cat:"Funny", title:"BATTERY LIFE", body:"You have more battery percentage anxiety than actual anxiety today."},
+    {cat:"Funny", title:"LATE REPLY", body:"'I'll reply in 5 minutes' — an ancient and unkeepable promise."},
+    {cat:"Funny", title:"CHAI BREAK", body:"This message has been officially approved by everyone's chai break."},
+    {cat:"Funny", title:"TRAFFIC WISDOM", body:"Somewhere right now, someone is deeply philosophical in traffic."},
+    {cat:"Funny", title:"TO-DO LIST", body:"Your to-do list called. It would like to be shorter."},
+    {cat:"Funny", title:"SOCK MYSTERY", body:"One sock is always missing. It has left the group chat."},
+    {cat:"Funny", title:"PHONE CHECK", body:"You checked your phone. Nothing changed in the last 9 seconds. Shocking."},
+
+    // Curiosity
+    {cat:"Curiosity", title:"DID YOU KNOW", body:"Honey never spoils — archaeologists have found 3,000-year-old honey that's still edible."},
+    {cat:"Curiosity", title:"DID YOU KNOW", body:"Octopuses have three hearts and blue blood."},
+    {cat:"Curiosity", title:"DID YOU KNOW", body:"Bananas are botanically classified as berries."},
+    {cat:"Curiosity", title:"DID YOU KNOW", body:"A single cloud can weigh more than a million kilograms."},
+    {cat:"Curiosity", title:"DID YOU KNOW", body:"The Eiffel Tower grows slightly taller in summer due to heat expansion."},
+    {cat:"Curiosity", title:"DID YOU KNOW", body:"Your nose can remember around 50,000 different scents."},
+    {cat:"Curiosity", title:"DID YOU KNOW", body:"Sea otters hold hands while sleeping so they don't drift apart."},
+    {cat:"Curiosity", title:"DID YOU KNOW", body:"A day on Venus is longer than a year on Venus."},
+    {cat:"Curiosity", title:"DID YOU KNOW", body:"Wombats produce cube-shaped droppings."},
+    {cat:"Curiosity", title:"DID YOU KNOW", body:"The shortest war in history lasted about 38 minutes."},
+    {cat:"Curiosity", title:"DID YOU KNOW", body:"Sharks existed before trees appeared on Earth."},
+    {cat:"Curiosity", title:"DID YOU KNOW", body:"Your heart beats around 100,000 times a day without a single break."},
+    {cat:"Curiosity", title:"DID YOU KNOW", body:"There are more possible chess games than atoms in the observable universe."},
+    {cat:"Curiosity", title:"DID YOU KNOW", body:"Butterflies taste with their feet."},
+    {cat:"Curiosity", title:"DID YOU KNOW", body:"Antarctica is technically the world's largest desert."},
+
+    // Mini challenges
+    {cat:"Mini Challenge", title:"HYDRATE", body:"Drink some water and take a 5-minute walk."},
+    {cat:"Mini Challenge", title:"SAY THANKS", body:"Thank someone who helped you recently."},
+    {cat:"Mini Challenge", title:"STRETCH", body:"Stand up and stretch for 60 seconds, right now."},
+    {cat:"Mini Challenge", title:"TIDY ONE SPOT", body:"Clear just one small corner of your space today."},
+    {cat:"Mini Challenge", title:"UNPLUG", body:"Keep your phone away for the next 20 minutes."},
+    {cat:"Mini Challenge", title:"WRITE IT DOWN", body:"Write down one thing you're proud of from this week."},
+    {cat:"Mini Challenge", title:"DEEP BREATH", body:"Take five slow, deliberate breaths before your next task."},
+    {cat:"Mini Challenge", title:"REACH OUT", body:"Message someone you've been meaning to reply to."},
+    {cat:"Mini Challenge", title:"SUNLIGHT BREAK", body:"Step into natural light for two minutes today."},
+    {cat:"Mini Challenge", title:"NO SCROLL", body:"Go 30 minutes without opening social media."},
+    {cat:"Mini Challenge", title:"PLAN TOMORROW", body:"Write down your first task for tomorrow, tonight."},
+    {cat:"Mini Challenge", title:"COMPLIMENT LOOP", body:"Compliment one person, then thank one person, today."},
+    {cat:"Mini Challenge", title:"DESK RESET", body:"Clear your desk or workspace for two minutes."},
+    {cat:"Mini Challenge", title:"EARLY WIND-DOWN", body:"Put your phone down 10 minutes earlier tonight."},
+    {cat:"Mini Challenge", title:"MOVE A LITTLE", body:"Take the stairs, or a short walk, at least once today."},
+  ];
+
+  const usedIndexes = new Set();
+  function nextMessage(){
+    if (usedIndexes.size >= MESSAGES.length) usedIndexes.clear();
+    let idx;
+    do { idx = Math.floor(Math.random()*MESSAGES.length); } while (usedIndexes.has(idx));
+    usedIndexes.add(idx);
+    return MESSAGES[idx];
+  }
+
+  /* ================= session state (in-memory only, demo) ================= */
+  const stats = {
+    visitors:1, attempts:0, completed:0, clickedPaid:0, verifiedPayments:0,
+    shares:0, repeats:0, categoryCounts:{}, ideas:[]
+  };
+  let scratchesThisSession = 0;
+
+  function renderPublicCounters(){
+    document.getElementById('statPeople').textContent = stats.completed > 0 ? stats.completed : 0;
+    document.getElementById('statReveals').textContent = stats.completed;
+    document.getElementById('statRupees').textContent = '₹' + stats.verifiedPayments;
+  }
+  function renderAdmin(){
+    document.getElementById('aVisitors').textContent = stats.visitors;
+    document.getElementById('aAttempts').textContent = stats.attempts;
+    document.getElementById('aCompleted').textContent = stats.completed;
+    document.getElementById('aClickedPaid').textContent = stats.clickedPaid;
+    document.getElementById('aVerified').textContent = stats.verifiedPayments;
+    const conv = stats.clickedPaid > 0 ? Math.round((stats.completed/stats.clickedPaid)*100) : 0;
+    document.getElementById('aConversion').textContent = conv + '%';
+    document.getElementById('aShares').textContent = stats.shares;
+    document.getElementById('aRepeat').textContent = stats.repeats;
+    let top = '—', topN = 0;
+    Object.entries(stats.categoryCounts).forEach(([k,v])=>{ if(v>topN){ top=k; topN=v; } });
+    document.getElementById('aTopCategory').textContent = top === '—' ? '—' : (top + ' (' + topN + ')');
+    const list = document.getElementById('aIdeaList');
+    list.innerHTML = stats.ideas.length ? stats.ideas.map(i => '• ' + i).join('<br>') : 'None yet.';
+  }
+
+  /* ================= TEST MODE ================= */
+  let testMode = true;
+  const testSwitch = document.getElementById('testSwitch');
+  const testLabel = document.getElementById('testLabel');
+  const protoNote = document.getElementById('protoNote');
+  function refreshTestModeUI(){
+    testSwitch.classList.toggle('off', !testMode);
+    testSwitch.setAttribute('aria-pressed', String(testMode));
+    testLabel.textContent = testMode
+      ? 'TEST MODE — This is a prototype. No payment is required. (admin-controlled)'
+      : 'Live mode — real UPI payment expected. (admin-controlled)';
+    protoNote.textContent = 'Prototype mode — payment is not automatically verified.';
+  }
+  testSwitch.addEventListener('click', ()=>{ testMode = !testMode; refreshTestModeUI(); });
+  refreshTestModeUI();
+
+  /* ================= scroll to pay ================= */
+  document.getElementById('ctaTry').addEventListener('click', ()=>{
+    document.getElementById('pay').scrollIntoView({behavior:'smooth'});
+  });
+
+  /* ================= payment button -> scratch card ================= */
+  const scratchSection = document.getElementById('scratchSection');
+  const paidBtn = document.getElementById('paidBtn');
+  paidBtn.addEventListener('click', ()=>{
+    stats.clickedPaid++;
+    // Prototype: never claim verification. Only "verified" in TEST MODE, marked clearly as demo.
+    if (testMode) {
+      stats.verifiedPayments += 0; // real verification not implemented — do not count as verified
+    }
+    scratchSection.style.display = 'block';
+    scratchSection.scrollIntoView({behavior:'smooth'});
+    stats.attempts++;
+    scratchesThisSession++;
+    if (scratchesThisSession > 1) stats.repeats++;
+    loadNewCard();
+    renderAdmin();
+  });
+
+  /* ================= scratch card logic ================= */
+  const canvas = document.getElementById('scratchCanvas');
+  const cardEl = document.getElementById('scratchCard');
+  const ctx = canvas.getContext('2d');
+  const progressBar = document.getElementById('scratchProgress');
+  const revealBlock = document.getElementById('revealBlock');
+  const womBlock = document.getElementById('womBlock');
+  let currentMessage = null;
+  let scratching = false;
+  let revealedAlready = false;
+
+  function sizeCanvas(){
+    const rect = cardEl.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    drawFoil();
+  }
+  function drawFoil(){
+    const w = canvas.width, h = canvas.height;
+    const grad = ctx.createLinearGradient(0,0,w,h);
+    grad.addColorStop(0,'#E4E7EC');
+    grad.addColorStop(0.5,'#C9CDD3');
+    grad.addColorStop(1,'#B7BBC2');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0,0,w,h);
+    // fleck texture
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    for(let i=0;i<70;i++){
+      const x = Math.random()*w, y = Math.random()*h, r = Math.random()*1.6+0.4;
+      ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+    }
+    ctx.fillStyle = 'rgba(27,27,47,0.55)';
+    ctx.font = '700 15px IBM Plex Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('SCRATCH HERE', w/2, h/2);
+  }
+
+  function loadNewCard(){
+    revealedAlready = false;
+    revealBlock.classList.remove('show');
+    womBlock.style.display = 'none';
+    progressBar.style.width = '0%';
+    currentMessage = nextMessage();
+    document.getElementById('msgCat').textContent = currentMessage.cat;
+    document.getElementById('msgTitle').textContent = currentMessage.title;
+    document.getElementById('msgBody').textContent = currentMessage.body;
+    canvas.style.opacity = '1';
+    sizeCanvas();
+  }
+
+  function getPos(e){
+    const rect = canvas.getBoundingClientRect();
+    const point = e.touches ? e.touches[0] : e;
+    return { x: point.clientX - rect.left, y: point.clientY - rect.top };
+  }
+
+  function scratchAt(x,y){
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath();
+    ctx.arc(x,y, 26, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  function computeScratchedPct(){
+    const w = canvas.width, h = canvas.height;
+    if (!w || !h) return 0;
+    const sampleStep = 6;
+    const data = ctx.getImageData(0,0,w,h).data;
+    let cleared = 0, total = 0;
+    for (let y=0; y<h; y+=sampleStep){
+      for (let x=0; x<w; x+=sampleStep){
+        const i = (y*w + x) * 4;
+        total++;
+        if (data[i+3] < 40) cleared++;
+      }
+    }
+    return total ? (cleared/total) : 0;
+  }
+
+  function spawnSparkle(x,y){
+    const s = document.createElement('div');
+    s.className = 'sparkle';
+    s.textContent = '✨';
+    s.style.left = x + 'px';
+    s.style.top = y + 'px';
+    cardEl.appendChild(s);
+    setTimeout(()=> s.remove(), 900);
+  }
+
+  function completeReveal(){
+    if (revealedAlready) return;
+    revealedAlready = true;
+    canvas.style.transition = 'opacity .5s ease';
+    canvas.style.opacity = '0';
+    setTimeout(()=>{ canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height); }, 500);
+    document.getElementById('revealTitle').textContent = currentMessage.title;
+    document.getElementById('revealBody').textContent = currentMessage.body;
+    revealBlock.classList.add('show');
+    womBlock.style.display = 'block';
+    stats.completed++;
+    stats.categoryCounts[currentMessage.cat] = (stats.categoryCounts[currentMessage.cat]||0) + 1;
+    renderPublicCounters();
+    renderAdmin();
+    for(let i=0;i<6;i++){
+      setTimeout(()=> spawnSparkle(20+Math.random()*(cardEl.clientWidth-40), 20+Math.random()*(cardEl.clientHeight-40)), i*120);
+    }
+  }
+
+  function handleMove(e){
+    if (!scratching) return;
+    e.preventDefault();
+    const {x,y} = getPos(e);
+    scratchAt(x,y);
+    const pct = computeScratchedPct();
+    progressBar.style.width = Math.min(100, Math.round(pct*100)) + '%';
+    if (pct >= 0.65) completeReveal();
+  }
+
+  canvas.addEventListener('mousedown', (e)=>{ scratching = true; handleMove(e); });
+  window.addEventListener('mouseup', ()=> scratching = false);
+  canvas.addEventListener('mousemove', handleMove);
+
+  canvas.addEventListener('touchstart', (e)=>{ scratching = true; handleMove(e); }, {passive:false});
+  canvas.addEventListener('touchmove', handleMove, {passive:false});
+  window.addEventListener('touchend', ()=> scratching = false);
+
+  window.addEventListener('resize', ()=>{ if(scratchSection.style.display !== 'none') sizeCanvas(); });
+
+  document.getElementById('againBtn').addEventListener('click', ()=>{
+    stats.attempts++;
+    scratchesThisSession++;
+    stats.repeats++;
+    loadNewCard();
+    renderAdmin();
+  });
+
+  /* ================= share ================= */
+  function shareText(){
+    return `₹1 Surprise\n\n"${currentMessage.title}" — ${currentMessage.body}\n\nWhat will you get? Try ₹1 Surprise.`;
+  }
+  async function doShare(){
+    stats.shares++;
+    renderAdmin();
+    if (navigator.share){
+      try{ await navigator.share({ title:'₹1 Surprise', text: shareText() }); }
+      catch(e){ /* user cancelled — no action needed */ }
+    } else {
+      copyShareText();
+    }
+  }
+  function copyShareText(){
+    navigator.clipboard && navigator.clipboard.writeText(shareText());
+  }
+  document.getElementById('shareBtn').addEventListener('click', doShare);
+  document.getElementById('nativeShareBtn').addEventListener('click', doShare);
+  document.getElementById('waShareBtn').addEventListener('click', ()=>{
+    stats.shares++; renderAdmin();
+    window.open('https://wa.me/?text=' + encodeURIComponent(shareText()), '_blank', 'noopener');
+  });
+  document.getElementById('copyLinkBtn').addEventListener('click', ()=>{
+    stats.shares++; renderAdmin();
+    copyShareText();
+    const btn = document.getElementById('copyLinkBtn');
+    const old = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(()=> btn.textContent = old, 1400);
+  });
+
+  /* ================= idea form (client-side demo only) ================= */
+  document.getElementById('ideaForm').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const idea = document.getElementById('ideaText').value.trim();
+    const city = document.getElementById('ideaCity').value.trim();
+    if (!idea) return;
+    stats.ideas.push(idea + (city ? ' — ' + city : ''));
+    renderAdmin();
+    document.getElementById('ideaSuccess').classList.add('show');
+    e.target.reset();
+    setTimeout(()=> document.getElementById('ideaSuccess').classList.remove('show'), 3500);
+  });
+
+  /* ================= FAQ accordion ================= */
+  document.querySelectorAll('.faq-q').forEach(q=>{
+    function toggle(){
+      const item = q.closest('.faq-item');
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(i=> i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    }
+    q.addEventListener('click', toggle);
+    q.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); toggle(); }});
+  });
+
+  /* ================= admin panel (demo-only auth) ================= */
+  const adminOverlay = document.getElementById('adminOverlay');
+  const adminLoginView = document.getElementById('adminLoginView');
+  const adminDashView = document.getElementById('adminDashView');
+  document.getElementById('adminToggle').addEventListener('click', ()=>{
+    adminOverlay.classList.add('show');
+  });
+  document.getElementById('adminClose').addEventListener('click', ()=> adminOverlay.classList.remove('show'));
+  adminOverlay.addEventListener('click', (e)=>{ if(e.target === adminOverlay) adminOverlay.classList.remove('show'); });
+  document.getElementById('adminLoginBtn').addEventListener('click', ()=>{
+    const pass = document.getElementById('adminPass').value;
+    if (pass === 'admin123'){
+      adminLoginView.style.display = 'none';
+      adminDashView.style.display = 'block';
+      renderAdmin();
+    } else {
+      document.getElementById('adminPass').style.borderColor = '#D9534F';
+    }
+  });
+
+  renderPublicCounters();
+  renderAdmin();
+})();
+</script>
+</body>
+</html>

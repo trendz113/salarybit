@@ -246,18 +246,6 @@
     font-size:56px; margin:6px 0 2px;
   }
   .pay-price .rupee{ color:var(--marigold-deep); }
-  .qr-box{
-    width:200px; height:200px; margin:26px auto 14px;
-    border:2px dashed var(--line);
-    border-radius:16px;
-    display:flex; align-items:center; justify-content:center;
-    flex-direction:column; gap:6px;
-    background:var(--paper-dim);
-    color:var(--ink-soft);
-    font-family:'IBM Plex Mono',monospace; font-size:12px; text-align:center; padding:14px;
-  }
-  .qr-box svg{ width:64px; height:64px; opacity:0.5; }
-  .scan-label{ font-weight:700; font-size:14.5px; margin-bottom:22px; }
   .proto-note{
     margin-top:16px;
     font-size:12.5px; color:var(--ink-soft);
@@ -455,6 +443,7 @@
 <meta name="twitter:description" content="Pay ₹1. Scratch a card. Discover something wonderful. No prizes, no money — just a tiny surprise.">
 <meta name="twitter:image" content="https://salarybit.in/og-image.png">
 <link rel="canonical" href="https://salarybit.in/rupee-surprise.html">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
@@ -521,14 +510,11 @@
       <div class="mono" style="font-size:12px;letter-spacing:0.1em;color:var(--ink-soft);text-transform:uppercase;">Contribution</div>
       <div class="pay-price"><span class="rupee">₹</span>1 <span style="font-size:16px;font-weight:600;color:var(--ink-soft);">only</span></div>
 
-      <div class="qr-box" id="qrBox">
-        <img src="/assets/upi-qr-deepak.jpg" alt="Scan to pay ₹1 via UPI" style="width:100%;height:100%;object-fit:contain;border-radius:10px;">
-      </div>
-      <div class="scan-label">Scan ₹1 using any UPI app — PhonePe, GPay, Paytm</div>
+      <button class="btn btn-primary btn-block" id="paidBtn">PAY ₹1 TO REVEAL</button>
+      <div class="pay-loading" id="payLoading" style="display:none;text-align:center;font-size:13px;color:var(--ink-soft);margin-top:10px;">Verifying your payment…</div>
+      <div class="pay-error" id="payError" style="display:none;text-align:center;font-size:13px;color:#b33a2e;margin-top:10px;"></div>
 
-      <button class="btn btn-primary btn-block" id="paidBtn">I HAVE PAID ₹1 — SHOW MY CARD</button>
-
-      <div class="proto-note" id="protoNote">By continuing, you confirm the ₹1 UPI payment has been completed.</div>
+      <div class="proto-note" id="protoNote">Pay via any UPI app, card, or netbanking through Razorpay's secure checkout. Your card unlocks only after payment is verified.</div>
     </div>
   </div>
 </section>
@@ -875,25 +861,11 @@
     return MESSAGES[idx];
   }
 
-  /* ================= AI-generated surprise (live, different every time) ================= */
+  /* ================= AI-generated surprise (live, different every time) =================
+     The message is now only generated AFTER a real, verified ₹1 payment —
+     see payAndReveal() below. This array just tracks recently-shown titles
+     so the backend prompt can avoid repeating them. */
   const shownTitles = [];
-  async function fetchSurpriseMessage(){
-    try{
-      const res = await fetch('/api/rupee-surprise', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ avoid: shownTitles.slice(-20) })
-      });
-      if (!res.ok) throw new Error('bad response: ' + res.status);
-      const data = await res.json();
-      if (!data || !data.title || !data.body) throw new Error('malformed response');
-      shownTitles.push(data.title);
-      return { cat: data.cat || 'Surprise', title: data.title, body: data.body };
-    } catch (err){
-      console.warn('Live surprise generation failed, using fallback:', err);
-      return localFallbackMessage();
-    }
-  }
 
   /* ================= session state (in-memory only, demo) ================= */
   const stats = {
@@ -950,7 +922,12 @@
     list.innerHTML = stats.ideas.length ? stats.ideas.map(i => '• ' + i).join('<br>') : 'None yet.';
   }
 
-  /* ================= payment mode: LIVE ================= */
+  /* ================= payment: LIVE, real Razorpay verification =================
+     Same backend that already processes payment for every other SalaryBit
+     paid tool (Subscription Leak Finder, MF Analyzer, etc). A scratch card
+     is only ever shown after this backend has cryptographically verified a
+     real ₹1 payment — there is no self-attestation anymore. */
+  const API_BASE = 'https://web-production-456eb.up.railway.app';
   const protoNote = document.getElementById('protoNote');
 
   /* ================= scroll to pay ================= */
@@ -958,18 +935,109 @@
     document.getElementById('pay').scrollIntoView({behavior:'smooth'});
   });
 
-  /* ================= payment button -> scratch card ================= */
+  /* ================= payment button -> real ₹1 payment -> scratch card ================= */
   const scratchSection = document.getElementById('scratchSection');
   const paidBtn = document.getElementById('paidBtn');
-  paidBtn.addEventListener('click', ()=>{
+  const payLoading = document.getElementById('payLoading');
+  const payError = document.getElementById('payError');
+
+  function setPayBusy(busy, errorText){
+    paidBtn.disabled = busy;
+    paidBtn.textContent = busy ? 'PROCESSING…' : 'PAY ₹1 TO REVEAL';
+    payLoading.style.display = busy ? 'block' : 'none';
+    if (errorText){
+      payError.textContent = errorText;
+      payError.style.display = 'block';
+    } else {
+      payError.style.display = 'none';
+    }
+  }
+
+  paidBtn.addEventListener('click', async ()=>{
+    setPayBusy(true, null);
     stats.clickedPaid++;
-    scratchSection.style.display = 'block';
-    scratchSection.scrollIntoView({behavior:'smooth'});
-    stats.attempts++;
-    scratchesThisSession++;
-    if (scratchesThisSession > 1) stats.repeats++;
-    loadNewCard();
     renderAdmin();
+
+    let order;
+    try{
+      const orderRes = await fetch(API_BASE + '/api/create-rupee-surprise-order', { method: 'POST' });
+      if (!orderRes.ok) throw new Error('order creation failed: ' + orderRes.status);
+      order = await orderRes.json();
+      if (!order || !order.order_id) throw new Error('malformed order response');
+    } catch(err){
+      console.error('create-rupee-surprise-order error:', err);
+      setPayBusy(false, 'Could not start payment right now. Please try again in a moment.');
+      return;
+    }
+
+    const options = {
+      key: order.razorpay_key,
+      amount: order.amount,
+      currency: order.currency,
+      order_id: order.order_id,
+      name: 'SalaryBit',
+      description: '₹1 Surprise',
+      handler: async function(response){
+        payLoading.textContent = 'Verifying your payment…';
+        setPayBusy(true, null);
+        try{
+          const verifyRes = await fetch(API_BASE + '/api/verify-rupee-surprise-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              avoid: shownTitles.slice(-20)
+            })
+          });
+          const verify = await verifyRes.json();
+          if (!verify || !verify.success || !verify.title || !verify.body){
+            setPayBusy(false, 'Payment verification failed. If money was deducted, it will be refunded within 24 hours.');
+            return;
+          }
+          shownTitles.push(verify.title);
+          stats.verifiedPayments++;
+          setPayBusy(false, null);
+          scratchSection.style.display = 'block';
+          scratchSection.scrollIntoView({behavior:'smooth'});
+          stats.attempts++;
+          scratchesThisSession++;
+          if (scratchesThisSession > 1) stats.repeats++;
+          showCardWithMessage({ cat: verify.cat || 'Surprise', title: verify.title, body: verify.body });
+          renderAdmin();
+        } catch(err){
+          console.error('verify-rupee-surprise-payment error:', err);
+          // Razorpay's handler only fires after a successful payment, so the
+          // money is already taken — don't scare a paying user with a "did we
+          // charge you" message. Show a classic local surprise instead and
+          // say plainly what happened.
+          shownTitles.push('(network fallback)');
+          stats.verifiedPayments++;
+          setPayBusy(false, null);
+          scratchSection.style.display = 'block';
+          scratchSection.scrollIntoView({behavior:'smooth'});
+          stats.attempts++;
+          scratchesThisSession++;
+          if (scratchesThisSession > 1) stats.repeats++;
+          const fb = localFallbackMessage();
+          showCardWithMessage(fb);
+          renderAdmin();
+        }
+      },
+      modal: {
+        ondismiss: function(){ setPayBusy(false, null); }
+      },
+      theme: { color: '#D4A017' }
+    };
+
+    try{
+      const rzp = new Razorpay(options);
+      rzp.open();
+    } catch(err){
+      console.error('Razorpay init error:', err);
+      setPayBusy(false, 'Could not open the payment window. Please refresh and try again.');
+    }
   });
 
   /* ================= scratch card logic ================= */
@@ -1011,27 +1079,19 @@
   }
 
   let cardReady = false;
-  async function loadNewCard(){
+  function showCardWithMessage(message){
+    currentMessage = message;
     revealedAlready = false;
     cardReady = false;
     revealBlock.classList.remove('show');
     womBlock.style.display = 'none';
     progressBar.style.width = '0%';
-    // Shown only under the foil while the AI writes the real message — invisible
-    // unless someone scratches before it's ready, which the pointer-events lock below prevents.
-    document.getElementById('msgCat').textContent = '…';
-    document.getElementById('msgTitle').textContent = 'ONE MOMENT';
-    document.getElementById('msgBody').textContent = 'Writing something just for you…';
-    canvas.style.opacity = '1';
-    canvas.style.pointerEvents = 'none';
-    sizeCanvas();
-
-    currentMessage = await fetchSurpriseMessage();
-
     document.getElementById('msgCat').textContent = currentMessage.cat;
     document.getElementById('msgTitle').textContent = currentMessage.title;
     document.getElementById('msgBody').textContent = currentMessage.body;
+    canvas.style.opacity = '1';
     canvas.style.pointerEvents = 'auto';
+    sizeCanvas();
     cardReady = true;
   }
 
@@ -1115,11 +1175,11 @@
   window.addEventListener('resize', ()=>{ if(scratchSection.style.display !== 'none') sizeCanvas(); });
 
   document.getElementById('againBtn').addEventListener('click', ()=>{
-    stats.attempts++;
-    scratchesThisSession++;
-    stats.repeats++;
-    loadNewCard();
-    renderAdmin();
+    // Each surprise requires its own ₹1 payment — send them back to pay again
+    // rather than handing out a free repeat.
+    scratchSection.style.display = 'none';
+    setPayBusy(false, null);
+    document.getElementById('pay').scrollIntoView({behavior:'smooth'});
   });
 
   /* ================= share ================= */

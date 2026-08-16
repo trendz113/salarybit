@@ -548,6 +548,7 @@ Output format:
         ai_failed = True
 
     id_map = {i["narration"]: i for i in identifications}
+
     enriched = []
     for r in recurring_list:
         match = id_map.get(r["narration_sample"], {})
@@ -562,6 +563,145 @@ Output format:
             "payment_method": payment_method,
         })
     return enriched, ai_failed
+
+
+# ── RUPEE SURPRISE (₹1 scratch-card message generator) ──────
+RUPEE_SURPRISE_CATEGORIES = [
+    'Encouragement', 'Kindness', 'Confidence', 'Happiness', 'Funny',
+    'Curiosity', 'Mini Challenge'
+]
+RUPEE_SURPRISE_FALLBACK = [
+    {"cat": "Encouragement", "title": "KEEP GOING", "body": "You are stronger than you think."},
+    {"cat": "Happiness", "title": "JOY", "body": "Your word today: joy."},
+    {"cat": "Kindness", "title": "ONE SMILE", "body": "Today's mission: make one person smile."},
+]
+
+
+def generate_rupee_surprise_message(avoid_titles):
+    """
+    Uses ANTHROPIC_API_KEY to write one fresh scratch-card message, same
+    urllib.request pattern as the rest of this file. Only ever called after
+    a verified ₹1 Razorpay payment. Falls back to a small static list if
+    the Claude call fails, so a paying user is never shown a blank card.
+    """
+    import random
+    claude_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not claude_key:
+        return random.choice(RUPEE_SURPRISE_FALLBACK), True
+
+    category = random.choice(RUPEE_SURPRISE_CATEGORIES)
+    avoid_str = ", ".join(avoid_titles[-20:]) if avoid_titles else "(none yet)"
+    prompt = f"""You write short "scratch card" surprise messages for a ₹1 novelty website in India.
+
+Write ONE new message in the category: {category}.
+
+Rules:
+- "title": 1-4 words, punchy, ALL CAPS (like a scratch-card headline).
+- "body": one warm, plain-English sentence, under 20 words, no clichés, no emojis, no hashtags.
+- Never mention money, prizes, winning, cash, luck, gambling, or investments.
+- Make it feel human and specific, not generic.
+- Do not repeat or closely resemble any of these already-shown titles: {avoid_str}
+
+Respond with ONLY valid JSON, no markdown, no explanation:
+{{"cat": "{category}", "title": "...", "body": "..."}}"""
+
+    payload = json.dumps({
+        "model": "claude-sonnet-4-6",
+        "max_tokens": 200,
+        "temperature": 1,
+        "messages": [{"role": "user", "content": prompt}]
+    }).encode("utf-8")
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": claude_key,
+            "anthropic-version": "2023-06-01"
+        },
+        method="POST"
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            result = json.loads(resp.read().decode("utf-8"))
+        raw = result["content"][0]["text"]
+        clean = raw.replace("```json", "").replace("```", "").strip()
+        parsed = json.loads(clean)
+        if not parsed.get("title") or not parsed.get("body"):
+            raise ValueError("Malformed message JSON")
+        return {
+            "cat": parsed.get("cat", category),
+            "title": str(parsed["title"])[:40],
+            "body": str(parsed["body"])[:160],
+        }, False
+    except Exception as e:
+        print(f"generate_rupee_surprise_message error: {e}")
+        return random.choice(RUPEE_SURPRISE_FALLBACK), True
+
+
+RUPEE_SURPRISE_PRICE_PAISE = 100  # ₹1 — hardcoded, never trust client
+
+
+@app.route("/api/create-rupee-surprise-order", methods=["POST", "OPTIONS"])
+def create_rupee_surprise_order():
+    """Matches the existing create_subscription_scan_order() pattern exactly."""
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": RUPEE_SURPRISE_PRICE_PAISE,
+            "currency": "INR",
+            "receipt": f"rupeesurprise_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
+    except Exception as e:
+        print(f"create-rupee-surprise-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/verify-rupee-surprise-payment", methods=["POST", "OPTIONS"])
+def verify_rupee_surprise_payment():
+    """
+    Matches the existing verify_subscription_payment() HMAC pattern exactly.
+    Once the ₹1 payment is verified, generates the scratch-card message via
+    Claude and returns it in the same response — so the frontend never shows
+    a scratch card until a real, verified payment has happened.
+    """
+    if request.method == "OPTIONS":
+        return "", 200
+    data = request.get_json(silent=True) or {}
+    order_id = data.get("razorpay_order_id")
+    payment_id = data.get("razorpay_payment_id")
+    signature = data.get("razorpay_signature")
+    avoid_titles = data.get("avoid") or []
+    if not all([order_id, payment_id, signature]):
+        return jsonify({"success": False, "error": "Missing required fields."}), 400
+
+    body = f"{order_id}|{payment_id}"
+    expected = hmac.new(
+        os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+        body.encode(),
+        hashlib.sha256
+    ).hexdigest()
+    if expected != signature:
+        return jsonify({"success": False, "error": "Payment verification failed."}), 400
+
+    message, ai_failed = generate_rupee_surprise_message(avoid_titles)
+    response = {
+        "success": True,
+        "cat": message["cat"],
+        "title": message["title"],
+        "body": message["body"],
+        "payment_id": payment_id,
+    }
+    if ai_failed:
+        response["warning"] = "Payment succeeded — showing one of our classic surprises this time."
+    return jsonify(response)
 
 
 # ── EMBED HTML ────────────────────────────────────────────

@@ -704,11 +704,14 @@
     </div>
     <div id="adminDashView" style="display:none;">
       <h3 style="font-size:1.3rem;margin-bottom:4px;">Admin dashboard</h3>
-      <div class="admin-note">Session-only demo data. In production, back this with a real database, server-side validation, rate limiting and CAPTCHA on public forms.</div>
+      <div class="admin-note">The "all-time, all visitors" number below is real and persists across devices. Everything else on this dashboard is session-only (resets on refresh) — wire up a real database for full per-visitor history.</div>
       <div class="admin-grid">
+        <div class="admin-stat"><div class="n mono" id="aGlobalCompleted">—</div><div class="l">Total surprises revealed (all-time, all visitors)</div></div>
+      </div>
+      <div class="admin-grid" style="margin-top:10px;">
         <div class="admin-stat"><div class="n mono" id="aVisitors">0</div><div class="l">Total visitors (session)</div></div>
         <div class="admin-stat"><div class="n mono" id="aAttempts">0</div><div class="l">Scratch attempts</div></div>
-        <div class="admin-stat"><div class="n mono" id="aCompleted">0</div><div class="l">Completed experiences</div></div>
+        <div class="admin-stat"><div class="n mono" id="aCompleted">0</div><div class="l">Completed experiences (session)</div></div>
         <div class="admin-stat"><div class="n mono" id="aClickedPaid">0</div><div class="l">Clicked "I have paid"</div></div>
         <div class="admin-stat"><div class="n mono" id="aVerified">0</div><div class="l">Verified payments</div></div>
         <div class="admin-stat"><div class="n mono" id="aConversion">0%</div><div class="l">Conversion rate</div></div>
@@ -899,12 +902,38 @@
   };
   let scratchesThisSession = 0;
 
+  /* ================= real, cross-visitor usage counter =================
+     Uses a free public counter service (countapi.xyz) so "how many people
+     used this" is a genuine number shared across every visitor and device,
+     not just this browser tab. No signup/setup needed. It persists as long
+     as that free service is up — for guaranteed long-term tracking, swap
+     this for a real database (e.g. Vercel KV / Supabase) behind a
+     dedicated /api endpoint. */
+  const COUNTER_NS = 'salarybit-in-rupee-surprise-v1';
+  let globalCompletedCount = null;
+
+  function fetchGlobalCount(){
+    fetch('https://api.countapi.xyz/get/' + COUNTER_NS + '/completions')
+      .then(r => r.json())
+      .then(d => { globalCompletedCount = (d && typeof d.value === 'number') ? d.value : 0; renderPublicCounters(); renderAdmin(); })
+      .catch(()=>{ globalCompletedCount = null; renderAdmin(); });
+  }
+  function bumpGlobalCount(){
+    fetch('https://api.countapi.xyz/hit/' + COUNTER_NS + '/completions')
+      .then(r => r.json())
+      .then(d => { if (d && typeof d.value === 'number') globalCompletedCount = d.value; renderPublicCounters(); renderAdmin(); })
+      .catch(()=>{});
+  }
+  fetchGlobalCount();
+
   function renderPublicCounters(){
-    document.getElementById('statPeople').textContent = stats.completed > 0 ? stats.completed : 0;
-    document.getElementById('statReveals').textContent = stats.completed;
-    document.getElementById('statRupees').textContent = '₹' + stats.verifiedPayments;
+    const shown = globalCompletedCount !== null ? globalCompletedCount : stats.completed;
+    document.getElementById('statPeople').textContent = shown > 0 ? shown : 0;
+    document.getElementById('statReveals').textContent = shown;
+    document.getElementById('statRupees').textContent = '₹' + shown;
   }
   function renderAdmin(){
+    document.getElementById('aGlobalCompleted').textContent = globalCompletedCount !== null ? globalCompletedCount : '—';
     document.getElementById('aVisitors').textContent = stats.visitors;
     document.getElementById('aAttempts').textContent = stats.attempts;
     document.getElementById('aCompleted').textContent = stats.completed;
@@ -1057,6 +1086,7 @@
     womBlock.style.display = 'block';
     stats.completed++;
     stats.categoryCounts[currentMessage.cat] = (stats.categoryCounts[currentMessage.cat]||0) + 1;
+    bumpGlobalCount();
     renderPublicCounters();
     renderAdmin();
     for(let i=0;i<6;i++){
@@ -1141,7 +1171,7 @@
       why ? 'Why it matters: ' + why : ''
     ].filter(Boolean).join('\n\n');
     const body = encodeURIComponent(bodyLines);
-    window.location.href = 'mailto:hello@salarybit.in?subject=' + subject + '&body=' + body;
+    window.location.href = 'mailto:tremendouscollections@gmail.com?subject=' + subject + '&body=' + body;
 
     document.getElementById('ideaSuccess').classList.add('show');
     e.target.reset();

@@ -629,7 +629,7 @@
       I agree that my submission may be displayed publicly.
     </label>
     <button type="submit" class="btn btn-dark btn-block">SUBMIT IDEA</button>
-    <div class="success-note" id="ideaSuccess">Thank you — your idea has been noted for this session.</div>
+    <div class="success-note" id="ideaSuccess">Opening your email app to send this to us — hit send to complete it.</div>
     <div class="form-note">We only collect what's shown here. No phone number, email or ID required.</div>
   </form>
 </section>
@@ -853,14 +853,22 @@
     {cat:"Mini Challenge", title:"MOVE A LITTLE", body:"Take the stairs, or a short walk, at least once today."},
   ];
 
-  const usedIndexes = new Set();
+  const usedIndexes = (function(){
+    try { return new Set(JSON.parse(localStorage.getItem('rupeeSurpriseUsed') || '[]')); }
+    catch(e){ return new Set(); }
+  })();
+  function saveUsedIndexes(){
+    try { localStorage.setItem('rupeeSurpriseUsed', JSON.stringify([...usedIndexes])); } catch(e){}
+  }
   // Local fallback only — used if the live AI call fails (offline, API hiccup, etc.)
-  // so the card can never come up blank.
+  // so the card can never come up blank. Persisted across visits so even the
+  // fallback never repeats a message until the whole pool has been shown once.
   function localFallbackMessage(){
     if (usedIndexes.size >= MESSAGES.length) usedIndexes.clear();
     let idx;
     do { idx = Math.floor(Math.random()*MESSAGES.length); } while (usedIndexes.has(idx));
     usedIndexes.add(idx);
+    saveUsedIndexes();
     return MESSAGES[idx];
   }
 
@@ -1116,14 +1124,25 @@
     setTimeout(()=> btn.textContent = old, 1400);
   });
 
-  /* ================= idea form (client-side demo only) ================= */
+  /* ================= idea form -> emails you directly ================= */
   document.getElementById('ideaForm').addEventListener('submit', (e)=>{
     e.preventDefault();
     const idea = document.getElementById('ideaText').value.trim();
     const city = document.getElementById('ideaCity').value.trim();
+    const why = document.getElementById('ideaWhy').value.trim();
     if (!idea) return;
     stats.ideas.push(idea + (city ? ' — ' + city : ''));
     renderAdmin();
+
+    const subject = encodeURIComponent('₹1 Surprise — new idea submission');
+    const bodyLines = [
+      'Idea: ' + idea,
+      city ? 'City/State: ' + city : '',
+      why ? 'Why it matters: ' + why : ''
+    ].filter(Boolean).join('\n\n');
+    const body = encodeURIComponent(bodyLines);
+    window.location.href = 'mailto:hello@salarybit.in?subject=' + subject + '&body=' + body;
+
     document.getElementById('ideaSuccess').classList.add('show');
     e.target.reset();
     setTimeout(()=> document.getElementById('ideaSuccess').classList.remove('show'), 3500);

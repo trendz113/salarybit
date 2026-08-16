@@ -250,7 +250,7 @@ select.fld-inp.bare{cursor:pointer}
 .reset-btn:hover{color:var(--ink);border-color:var(--cloud)}
 
 /* ── RESULTS AREA ── */
-.results-area{}
+.results-area{min-width:0}
 .results-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:360px;background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);text-align:center;padding:2rem}
 .rp-icon{font-size:48px;margin-bottom:1rem;opacity:.5}
 .rp-title{font-family:var(--display);font-size:22px;color:var(--ink);margin-bottom:.5rem}
@@ -272,6 +272,12 @@ select.fld-inp.bare{cursor:pointer}
 .sec-nav{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.25rem}
 .sec-btn{font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--mist);cursor:pointer;transition:.15s}
 .sec-btn.on,.sec-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.sec-nav-wrap{position:relative}
+.sec-nav-arrow{display:none;position:absolute;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:50%;background:#fff;border:1px solid var(--border);box-shadow:0 3px 10px rgba(15,20,40,.16);align-items:center;justify-content:center;cursor:pointer;z-index:5;padding:0;color:var(--ink)}
+.sec-nav-arrow svg{width:13px;height:13px}
+.sec-nav-arrow.left{left:-2px}
+.sec-nav-arrow.right{right:-2px}
+.sec-nav-arrow.is-hidden{opacity:0;pointer-events:none}
 
 /* ── CARDS ── */
 .card{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:1.25rem;margin-bottom:1.25rem;box-shadow:var(--shadow)}
@@ -500,6 +506,8 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   .hero-stat-label{font-size:9px!important}
   .stamp-badge{width:56px!important;height:56px!important;font-size:7px!important;border-width:1.5px!important}
   /* section nav scroll */
+  .sec-nav-wrap{padding:0 20px}
+  .sec-nav-arrow{display:flex}
   .sec-nav{flex-wrap:nowrap!important;overflow-x:auto!important;scrollbar-width:none!important;padding-bottom:4px!important}
   .sec-nav::-webkit-scrollbar{display:none}
   .sec-btn{flex-shrink:0!important;white-space:nowrap!important;font-size:11px!important;padding:5px 11px!important}
@@ -1095,15 +1103,23 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
 
         <!-- SECTION NAV -->
-        <div class="sec-nav">
-          <button class="sec-btn on" onclick="showSection('salary',this)">💰 Salary</button>
-          <button class="sec-btn" onclick="showSection('tax',this)">📋 Tax Regime</button>
-          <button class="sec-btn" onclick="showSection('insurance',this)" id="insurance-section">🛡️ Insurance</button>
-          <button class="sec-btn" onclick="showSection('roadmap',this)">🗺️ Roadmap</button>
-          <button class="sec-btn" onclick="showSection('labour',this)" id="labour-section">⚖️ Labour Code</button>
-          <button class="sec-btn" onclick="showSection('rights',this)" id="rights-section">🏛️ Your Rights</button>
-          <button class="sec-btn" onclick="window.location='/tools/capital-gains-calculator.html';return false;//({behavior:'smooth'})" id="sharetax-section">📈 Share Tax</button>
-          <button class="sec-btn" onclick="window.location='/tools/esop-rsu-tax-calculator.html';return false;//({behavior:'smooth'})" id="esop-section">🏢 ESOP Tax</button>
+        <div class="sec-nav-wrap">
+          <button type="button" class="sec-nav-arrow left is-hidden" id="secNavLeft" onclick="scrollSecNav(-1)" aria-label="Scroll left">
+            <svg viewBox="0 0 12 12" fill="none"><path d="M8 2L4 6l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="sec-nav" id="secNav">
+            <button class="sec-btn on" onclick="showSection('salary',this)">💰 Salary</button>
+            <button class="sec-btn" onclick="showSection('tax',this)">📋 Tax Regime</button>
+            <button class="sec-btn" onclick="showSection('insurance',this)" id="insurance-section">🛡️ Insurance</button>
+            <button class="sec-btn" onclick="showSection('roadmap',this)">🗺️ Roadmap</button>
+            <button class="sec-btn" onclick="showSection('labour',this)" id="labour-section">⚖️ Labour Code</button>
+            <button class="sec-btn" onclick="showSection('rights',this)" id="rights-section">🏛️ Your Rights</button>
+            <button class="sec-btn" onclick="window.location='/tools/capital-gains-calculator.html';return false;//({behavior:'smooth'})" id="sharetax-section">📈 Share Tax</button>
+            <button class="sec-btn" onclick="window.location='/tools/esop-rsu-tax-calculator.html';return false;//({behavior:'smooth'})" id="esop-section">🏢 ESOP Tax</button>
+          </div>
+          <button type="button" class="sec-nav-arrow right" id="secNavRight" onclick="scrollSecNav(1)" aria-label="Scroll right">
+            <svg viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
         </div>
 
         <!-- ── SALARY SECTION ── -->
@@ -2495,6 +2511,29 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 </style>
 
 <script>
+// ── SECTION NAV SCROLL ARROWS ──
+function scrollSecNav(dir){
+  var el = document.getElementById('secNav');
+  if(el) el.scrollBy({left: dir*160, behavior:'smooth'});
+}
+function updateSecNavArrows(){
+  var el = document.getElementById('secNav');
+  var left = document.getElementById('secNavLeft');
+  var right = document.getElementById('secNavRight');
+  if(!el || !left || !right) return;
+  var maxScroll = el.scrollWidth - el.clientWidth;
+  left.classList.toggle('is-hidden', el.scrollLeft <= 4);
+  right.classList.toggle('is-hidden', maxScroll <= 4 || el.scrollLeft >= maxScroll - 4);
+}
+(function(){
+  var el = document.getElementById('secNav');
+  if(el){
+    el.addEventListener('scroll', updateSecNavArrows);
+    window.addEventListener('resize', updateSecNavArrows);
+    setTimeout(updateSecNavArrows, 100);
+  }
+})();
+
 // ── DESKTOP NAV "MORE" DROPDOWN ──
 function toggleNavMore(e){
   e.stopPropagation();
@@ -2898,6 +2937,7 @@ function calc(){
   el('resultsContent').style.display='block';
   el('calcBtn').classList.remove('pulse');
   el('calcBtn').textContent='Recalculate →';
+  if(typeof updateSecNavArrows==='function') setTimeout(updateSecNavArrows, 50);
 
   const basic=gv('sl-basic'),hra=gv('sl-hra'),special=gv('sl-special');
   const lta=gv('sl-lta')||Math.round(basic*0.1667);

@@ -219,6 +219,25 @@
   .step-card h3{ font-size:21px; margin-bottom:8px; }
   .step-card p{ color:var(--ink-soft); font-size:15px; line-height:1.55; margin:0; }
 
+  /* ---------- impact idea cards ---------- */
+  .impact-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:18px;
+    margin-top:40px;
+  }
+  @media (max-width:900px){ .impact-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:600px){ .impact-grid{ grid-template-columns:1fr; } }
+  .impact-card{
+    background:#fff; border:1px solid var(--line); border-radius:var(--radius);
+    padding:24px 22px; box-shadow:var(--shadow-soft);
+  }
+  .impact-card .emoji{ font-size:28px; margin-bottom:12px; display:block; }
+  .impact-card h3{ font-size:17px; margin-bottom:8px; line-height:1.3; }
+  .impact-card p{ color:var(--ink-soft); font-size:14px; line-height:1.55; margin:0; }
+  .impact-tagline{
+    text-align:center; font-size:14px; color:var(--ink-soft); margin-top:30px;
+    font-style:italic;
+  }
+
   /* ---------- ticket panel ---------- */
   .ticket{
     background:#fff;
@@ -563,6 +582,80 @@
     <div class="eyebrow" style="display:inline-flex;">The philosophy</div>
     <h2 style="font-size:clamp(1.6rem,4vw,2.2rem);">Why only ₹1?</h2>
     <p class="why-quote">Because this experiment isn't about asking one person for a lot of money. It's about discovering what happens when thousands of ordinary people participate in something tiny. One rupee is small. But millions of people doing one small thing together can become something much bigger.</p>
+  </div>
+</section>
+
+<!-- IMPACT IDEAS -->
+<section class="section tight" id="impact">
+  <div class="wrap center">
+    <div class="eyebrow" style="display:inline-flex;">Imagine 10,000 people</div>
+    <h2 style="font-size:clamp(1.6rem,4vw,2.2rem);">What ₹1, Multiplied, Could Do</h2>
+    <p class="why-quote" style="margin-bottom:0;">₹1 from 10,000 people is ₹10,000. That's not nothing — that's real, specific, done-by-this-weekend kind of change. Here's what that could actually look like.</p>
+  </div>
+  <div class="wrap">
+    <div class="impact-grid">
+      <div class="impact-card">
+        <span class="emoji">📚</span>
+        <h3>10,000 People, One Small Library</h3>
+        <p>₹10,000 could buy around 100 story books for a government school that currently has none.</p>
+      </div>
+      <div class="impact-card">
+        <span class="emoji">✏️</span>
+        <h3>A Fresh Start for 500 Kids</h3>
+        <p>₹10,000 buys new notebooks for roughly 500 students starting the year empty-handed.</p>
+      </div>
+      <div class="impact-card">
+        <span class="emoji">☔</span>
+        <h3>No More Wet Schoolbags</h3>
+        <p>₹10,000 could buy umbrellas for around 100 children who walk to school through the monsoon.</p>
+      </div>
+      <div class="impact-card">
+        <span class="emoji">⚽</span>
+        <h3>A Full Sports Kit</h3>
+        <p>₹10,000 can equip an entire school with football, volleyball and cricket gear that lasts for years.</p>
+      </div>
+      <div class="impact-card">
+        <span class="emoji">🖍️</span>
+        <h3>Colour For a Whole Anganwadi</h3>
+        <p>₹10,000 buys crayons, slates and basic learning kits for an entire pre-school batch.</p>
+      </div>
+      <div class="impact-card">
+        <span class="emoji">🧣</span>
+        <h3>Warmth for a Winter</h3>
+        <p>₹10,000 could provide blankets for around 50 families sleeping without one through a cold season.</p>
+      </div>
+      <div class="impact-card">
+        <span class="emoji">💧</span>
+        <h3>Clean Water, One Filter</h3>
+        <p>₹10,000 is close to the cost of a working water filter for a school that currently has none.</p>
+      </div>
+      <div class="impact-card">
+        <span class="emoji">🍽️</span>
+        <h3>A Week of Better Meals</h3>
+        <p>₹10,000 can top up a school's mid-day meal with fruit or eggs for an entire week.</p>
+      </div>
+      <div class="impact-card">
+        <span class="emoji">🔧</span>
+        <h3>Fixing What's Broken</h3>
+        <p>₹10,000 is often enough to repair a village hand-pump that hundreds of people rely on daily.</p>
+      </div>
+      <div class="impact-card">
+        <span class="emoji">🎧</span>
+        <h3>Learning, Made Accessible</h3>
+        <p>₹10,000 could fund audio books or Braille material for students who need them to keep up in class.</p>
+      </div>
+      <div class="impact-card">
+        <span class="emoji">🎉</span>
+        <h3>A Proper Republic Day</h3>
+        <p>₹10,000 covers flags, sweets and a small celebration for a school that usually has to skip it.</p>
+      </div>
+      <div class="impact-card">
+        <span class="emoji">🌳</span>
+        <h3>A Hundred Trees</h3>
+        <p>₹10,000 plants and cares for around 100 saplings in a neighbourhood that needs more shade.</p>
+      </div>
+    </div>
+    <p class="impact-tagline">None of this has happened yet. It's just what ₹1, multiplied by enough people, is capable of — if enough people believe it's worth trying. Got a better idea? Tell us below.</p>
   </div>
 </section>
 

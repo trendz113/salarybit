@@ -246,6 +246,12 @@
     font-size:56px; margin:6px 0 2px;
   }
   .pay-price .rupee{ color:var(--marigold-deep); }
+  .qr-box{
+    width:200px; height:200px; margin:26px auto 14px;
+    border-radius:16px; overflow:hidden;
+    background:var(--paper-dim);
+  }
+  .scan-label{ font-weight:700; font-size:14.5px; margin-bottom:22px; }
   .proto-note{
     margin-top:16px;
     font-size:12.5px; color:var(--ink-soft);
@@ -387,38 +393,6 @@
   }
   .faq-item.open .faq-a{ max-height:200px; margin-top:12px; }
 
-  /* admin */
-  .admin-toggle{
-    position:fixed; bottom:18px; right:18px; z-index:60;
-    background:var(--ink); color:var(--paper);
-    border:none; border-radius:999px; padding:10px 16px;
-    font-family:'IBM Plex Mono',monospace; font-size:12px; cursor:pointer;
-    opacity:0.55;
-  }
-  .admin-toggle:hover{ opacity:1; }
-  .admin-overlay{
-    position:fixed; inset:0; background:rgba(27,27,47,0.6); z-index:80;
-    display:none; align-items:center; justify-content:center; padding:20px;
-  }
-  .admin-overlay.show{ display:flex; }
-  .admin-modal{
-    background:#fff; border-radius:20px; padding:32px; max-width:520px; width:100%;
-    max-height:82vh; overflow-y:auto;
-  }
-  .admin-login{ text-align:center; }
-  .admin-login input{
-    width:100%; border:1.5px solid var(--line); border-radius:12px; padding:12px 14px;
-    font-size:14.5px; margin:16px 0; background:var(--paper-dim);
-  }
-  .admin-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:20px 0; }
-  .admin-stat{ background:var(--paper-dim); border-radius:12px; padding:14px; }
-  .admin-stat .n{ font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:22px; }
-  .admin-stat .l{ font-size:11.5px; color:var(--ink-soft); margin-top:2px; }
-  .admin-note{ font-size:12px; color:var(--ink-soft); background:var(--paper-dim); border-radius:10px; padding:10px 12px; line-height:1.5; margin-top:10px; }
-  .admin-close{ position:absolute; top:14px; right:18px; background:none; border:none; font-size:20px; cursor:pointer; color:var(--ink-soft); }
-  .admin-modal{ position:relative; }
-  .admin-list{ font-size:13px; color:var(--ink-soft); max-height:120px; overflow-y:auto; border-top:1px solid var(--line); padding-top:10px; margin-top:6px; }
-
   footer{
     padding:50px 0 70px; text-align:center; color:var(--ink-soft); font-size:13px;
   }
@@ -443,7 +417,6 @@
 <meta name="twitter:description" content="Pay ₹1. Scratch a card. Discover something wonderful. No prizes, no money — just a tiny surprise.">
 <meta name="twitter:image" content="https://salarybit.in/og-image.png">
 <link rel="canonical" href="https://salarybit.in/rupee-surprise.html">
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
@@ -510,11 +483,14 @@
       <div class="mono" style="font-size:12px;letter-spacing:0.1em;color:var(--ink-soft);text-transform:uppercase;">Contribution</div>
       <div class="pay-price"><span class="rupee">₹</span>1 <span style="font-size:16px;font-weight:600;color:var(--ink-soft);">only</span></div>
 
-      <button class="btn btn-primary btn-block" id="paidBtn">PAY ₹1 TO REVEAL</button>
-      <div class="pay-loading" id="payLoading" style="display:none;text-align:center;font-size:13px;color:var(--ink-soft);margin-top:10px;">Verifying your payment…</div>
-      <div class="pay-error" id="payError" style="display:none;text-align:center;font-size:13px;color:#b33a2e;margin-top:10px;"></div>
+      <div class="qr-box" id="qrBox">
+        <img src="/assets/upi-qr-deepak.jpg" alt="Scan to pay ₹1 via UPI" style="width:100%;height:100%;object-fit:contain;border-radius:10px;">
+      </div>
+      <div class="scan-label">Scan ₹1 using any UPI app — PhonePe, GPay, Paytm</div>
 
-      <div class="proto-note" id="protoNote">Pay via any UPI app, card, or netbanking through Razorpay's secure checkout. Your card unlocks only after payment is verified.</div>
+      <button class="btn btn-primary btn-block" id="paidBtn">I HAVE PAID ₹1 — SHOW MY CARD</button>
+
+      <div class="proto-note" id="protoNote">By continuing, you confirm the ₹1 UPI payment has been completed.</div>
     </div>
   </div>
 </section>
@@ -577,7 +553,7 @@
         <div class="stat-label">₹1 contributions</div>
       </div>
     </div>
-    <div class="demo-flag">Demo / session-only values — not connected to a live database</div>
+    <div class="demo-flag">Real count across every visitor — payments are self-reported (₹1, honor system), not independently verified</div>
   </div>
 </section>
 
@@ -675,42 +651,6 @@
   <div class="coin">₹1</div>
   <div>₹1 Surprise — a tiny digital gift, not a financial product.</div>
 </footer>
-
-<!-- ADMIN -->
-<button class="admin-toggle" id="adminToggle">ADMIN</button>
-<div class="admin-overlay" id="adminOverlay">
-  <div class="admin-modal">
-    <button class="admin-close" id="adminClose">×</button>
-    <div id="adminLoginView" class="admin-login">
-      <div class="eyebrow" style="display:inline-flex;">Restricted</div>
-      <h3 style="font-size:1.3rem;">Admin sign-in</h3>
-      <p style="font-size:13px;color:var(--ink-soft);">Prototype demo login only — not secure authentication. Wire up real auth (e.g. hashed credentials + session tokens on a server) before going live.</p>
-      <input type="password" id="adminPass" placeholder="Demo password: admin123">
-      <button class="btn btn-dark btn-block" id="adminLoginBtn">Sign in</button>
-    </div>
-    <div id="adminDashView" style="display:none;">
-      <h3 style="font-size:1.3rem;margin-bottom:4px;">Admin dashboard</h3>
-      <div class="admin-note">The "all-time, all visitors" number below is real and persists across devices. Everything else on this dashboard is session-only (resets on refresh) — wire up a real database for full per-visitor history.</div>
-      <div class="admin-grid">
-        <div class="admin-stat"><div class="n mono" id="aGlobalCompleted">—</div><div class="l">Total surprises revealed (all-time, all visitors)</div></div>
-      </div>
-      <div class="admin-grid" style="margin-top:10px;">
-        <div class="admin-stat"><div class="n mono" id="aVisitors">0</div><div class="l">Total visitors (session)</div></div>
-        <div class="admin-stat"><div class="n mono" id="aAttempts">0</div><div class="l">Scratch attempts</div></div>
-        <div class="admin-stat"><div class="n mono" id="aCompleted">0</div><div class="l">Completed experiences (session)</div></div>
-        <div class="admin-stat"><div class="n mono" id="aClickedPaid">0</div><div class="l">Clicked "I have paid"</div></div>
-        <div class="admin-stat"><div class="n mono" id="aVerified">0</div><div class="l">Verified payments</div></div>
-        <div class="admin-stat"><div class="n mono" id="aConversion">0%</div><div class="l">Conversion rate</div></div>
-        <div class="admin-stat"><div class="n mono" id="aShares">0</div><div class="l">Shares</div></div>
-        <div class="admin-stat"><div class="n mono" id="aRepeat">0</div><div class="l">Repeat scratches</div></div>
-      </div>
-      <div style="font-size:12px;font-weight:700;color:var(--ink-soft);margin-top:8px;">Most popular category</div>
-      <div class="mono" id="aTopCategory" style="font-size:14px;margin:4px 0 14px;">—</div>
-      <div style="font-size:12px;font-weight:700;color:var(--ink-soft);">Submitted ideas (this session)</div>
-      <div class="admin-list" id="aIdeaList">None yet.</div>
-    </div>
-  </div>
-</div>
 
 <script>
 (function(){
@@ -840,6 +780,395 @@
     {cat:"Mini Challenge", title:"DESK RESET", body:"Clear your desk or workspace for two minutes."},
     {cat:"Mini Challenge", title:"EARLY WIND-DOWN", body:"Put your phone down 10 minutes earlier tonight."},
     {cat:"Mini Challenge", title:"MOVE A LITTLE", body:"Take the stairs, or a short walk, at least once today."},
+    {cat:"Encouragement", title:"STILL HERE", body:"You're still here. That's not nothing."},
+    {cat:"Encouragement", title:"ONE MORE", body:"One more try is still allowed."},
+    {cat:"Encouragement", title:"NOT LATE", body:"You're not late. You're right on time for you."},
+    {cat:"Encouragement", title:"QUIET WORK", body:"The work no one claps for still builds something."},
+    {cat:"Encouragement", title:"HOLD ON", body:"Hold on a little longer than feels comfortable."},
+    {cat:"Encouragement", title:"BENT NOT BROKEN", body:"Bent doesn't mean broken."},
+    {cat:"Encouragement", title:"STEADY", body:"Steady beats fast when the road is long."},
+    {cat:"Encouragement", title:"YOUR OWN SPEED", body:"Your pace is allowed to be different."},
+    {cat:"Encouragement", title:"SOFT START", body:"A soft start still counts as starting."},
+    {cat:"Encouragement", title:"UNFINISHED", body:"Unfinished is not the same as failed."},
+    {cat:"Encouragement", title:"EARNED REST", body:"The rest you take is earned, not stolen."},
+    {cat:"Encouragement", title:"SMALL STEP", body:"A small step today is still a step."},
+    {cat:"Encouragement", title:"KEEP GOING SOFTLY", body:"You don't have to push hard. Just keep going softly."},
+    {cat:"Encouragement", title:"NOT ALONE", body:"Whatever it is, you're not carrying it alone."},
+    {cat:"Encouragement", title:"GOOD ENOUGH", body:"Good enough today is genuinely good enough."},
+    {cat:"Encouragement", title:"PATIENCE PAYS", body:"Patience is quietly doing more than you can see."},
+    {cat:"Encouragement", title:"TRY SOFTLY", body:"You can try again without trying harder."},
+    {cat:"Encouragement", title:"MOVING STILL", body:"Even slow motion is still motion."},
+    {cat:"Encouragement", title:"BUILT SLOWLY", body:"The best things were built slowly too."},
+    {cat:"Encouragement", title:"YOU SHOWED UP", body:"You showed up. That's the hard part, mostly done."},
+    {cat:"Encouragement", title:"A LITTLE FURTHER", body:"You've gone a little further than yesterday."},
+    {cat:"Encouragement", title:"NO RUSH", body:"There's no deadline on becoming okay."},
+    {cat:"Encouragement", title:"KEEP THE LIGHT", body:"Keep a small light on for yourself today."},
+    {cat:"Encouragement", title:"DOING FINE", body:"You are doing more fine than you think."},
+    {cat:"Encouragement", title:"NEXT STEP ONLY", body:"You only need to see the next step, not all of them."},
+    {cat:"Encouragement", title:"STILL TRYING", body:"Still trying counts as still winning."},
+    {cat:"Encouragement", title:"GENTLE PUSH", body:"A gentle push forward is still forward."},
+    {cat:"Encouragement", title:"WORTH IT", body:"Whatever you're building is worth the slow part too."},
+    {cat:"Encouragement", title:"HOLDING STEADY", body:"You're holding steady even when it doesn't feel like it."},
+    {cat:"Encouragement", title:"ROOM TO GROW", body:"There's still room for this to get better."},
+    {cat:"Encouragement", title:"KEEP FAITH", body:"Keep a little faith in the version of you still trying."},
+    {cat:"Encouragement", title:"NOT STUCK", body:"You're not stuck. You're just between steps."},
+    {cat:"Encouragement", title:"SLOW BUILD", body:"Slow builds tend to last longer."},
+    {cat:"Encouragement", title:"KIND TO SELF", body:"Be as kind to yourself as you'd be to a friend today."},
+    {cat:"Encouragement", title:"A FRESH TRY", body:"A fresh try is always available to you."},
+    {cat:"Encouragement", title:"PROOF OF EFFORT", body:"This moment is proof you're still trying."},
+    {cat:"Encouragement", title:"YOU ADAPT", body:"You've adapted before. You'll adapt again."},
+    {cat:"Encouragement", title:"CARRY LIGHTER", body:"You're allowed to carry this a little lighter."},
+    {cat:"Encouragement", title:"SEED STAGE", body:"Some things just need to stay in the seed stage a while."},
+    {cat:"Encouragement", title:"QUIET PROGRESS", body:"Progress doesn't have to be loud to be real."},
+    {cat:"Encouragement", title:"KEEP THE FAITH", body:"Keep the faith. The timing is still working itself out."},
+    {cat:"Encouragement", title:"ONE DAY CLOSER", body:"You're one day closer than you were yesterday."},
+    {cat:"Encouragement", title:"NOT OVER", body:"This chapter isn't over. It's just slow right now."},
+    {cat:"Encouragement", title:"SMALL VICTORY", body:"Today's small victory still counts as a victory."},
+    {cat:"Encouragement", title:"YOU'RE ALLOWED", body:"You're allowed to go at your own speed."},
+    {cat:"Encouragement", title:"KEEP SHOWING UP", body:"Keep showing up. That's most of the work."},
+    {cat:"Encouragement", title:"STILL WORTH IT", body:"This is still worth the effort you're putting in."},
+    {cat:"Encouragement", title:"A DIFFERENT ROUTE", body:"A different route doesn't mean a wrong one."},
+    {cat:"Encouragement", title:"EASE UP", body:"You can ease up a little and still get there."},
+    {cat:"Encouragement", title:"NOT FINISHED", body:"You're not finished. You're still becoming."},
+    {cat:"Encouragement", title:"TRUST THE PACE", body:"Trust the pace, even when you can't see the finish."},
+    {cat:"Encouragement", title:"KEEP THE FLAME", body:"Keep the flame small but lit."},
+    {cat:"Encouragement", title:"NEARLY THERE", body:"You might be closer to a breakthrough than you know."},
+    {cat:"Encouragement", title:"GOOD DIRECTION", body:"Even a slow step in a good direction is progress."},
+    {cat:"Mini Challenge", title:"TEXT THEM", body:"Text one person you've been meaning to reply to."},
+    {cat:"Mini Challenge", title:"DRINK WATER", body:"Drink a full glass of water right now."},
+    {cat:"Mini Challenge", title:"STAND UP", body:"Stand up and stretch for 20 seconds."},
+    {cat:"Mini Challenge", title:"SEND IT", body:"Send that message you've been drafting."},
+    {cat:"Mini Challenge", title:"ONE CALL", body:"Make one phone call you've been putting off."},
+    {cat:"Mini Challenge", title:"TIDY ONE THING", body:"Tidy just one small corner of your space."},
+    {cat:"Mini Challenge", title:"SAY IT OUT LOUD", body:"Say thank you to someone today, out loud."},
+    {cat:"Mini Challenge", title:"WALK 5 MIN", body:"Take a 5-minute walk before you do anything else."},
+    {cat:"Mini Challenge", title:"CLOSE 3 TABS", body:"Close three tabs you don't need open."},
+    {cat:"Mini Challenge", title:"WRITE 1 LINE", body:"Write one line about how today is going."},
+    {cat:"Mini Challenge", title:"FIVE SLOW BREATHS", body:"Take five slow, deep breaths right now."},
+    {cat:"Mini Challenge", title:"LOOK OUTSIDE", body:"Look out of a window for 30 seconds. Really look."},
+    {cat:"Mini Challenge", title:"SMILE FIRST", body:"Smile at the next person you see, first."},
+    {cat:"Mini Challenge", title:"SKIP THE SCROLL", body:"Skip one scroll session today. Just one."},
+    {cat:"Mini Challenge", title:"ASK A QUESTION", body:"Ask someone a genuine question today."},
+    {cat:"Mini Challenge", title:"TIDY YOUR DESK", body:"Clear your desk for two minutes."},
+    {cat:"Mini Challenge", title:"NO PHONE 10MIN", body:"Keep your phone away for the next 10 minutes."},
+    {cat:"Mini Challenge", title:"COMPLIMENT SOMEONE", body:"Give someone a real, specific compliment today."},
+    {cat:"Mini Challenge", title:"STRETCH IT OUT", body:"Stretch your neck and shoulders right now."},
+    {cat:"Mini Challenge", title:"WRITE A LIST", body:"Write down three things you need to do — no more."},
+    {cat:"Mini Challenge", title:"REPLY TODAY", body:"Reply to that one message sitting unread."},
+    {cat:"Mini Challenge", title:"SIT UP STRAIGHT", body:"Sit up straight for the next five minutes."},
+    {cat:"Mini Challenge", title:"SET UP TOMORROW", body:"Write one thing you'll do first tomorrow."},
+    {cat:"Mini Challenge", title:"UNFOLLOW ONE", body:"Unfollow one account that doesn't help you."},
+    {cat:"Mini Challenge", title:"CALL A PARENT", body:"Call a parent or someone who raised you, just to talk."},
+    {cat:"Mini Challenge", title:"SAVE ₹10", body:"Set aside ₹10 somewhere today, just for fun."},
+    {cat:"Mini Challenge", title:"LOOK UP", body:"Put your phone down and look up for a minute."},
+    {cat:"Mini Challenge", title:"FIX ONE THING", body:"Fix one small annoying thing you've been ignoring."},
+    {cat:"Mini Challenge", title:"WATER A PLANT", body:"Water a plant, even if it's not yours."},
+    {cat:"Mini Challenge", title:"WASH YOUR FACE", body:"Splash your face with cold water right now."},
+    {cat:"Mini Challenge", title:"NAME 3 GOOD", body:"Name three good things about today, even small ones."},
+    {cat:"Mini Challenge", title:"SEND A MEME", body:"Send a friend something that made you smile."},
+    {cat:"Mini Challenge", title:"STEP OUTSIDE", body:"Step outside for one minute, even just the doorway."},
+    {cat:"Mini Challenge", title:"EAT SLOWLY", body:"Eat your next meal a little slower than usual."},
+    {cat:"Mini Challenge", title:"ORGANISE FILES", body:"Delete or organise five files on your phone."},
+    {cat:"Mini Challenge", title:"WRITE A THANK YOU", body:"Write a short thank-you note to no one but yourself."},
+    {cat:"Mini Challenge", title:"SET ONE TIMER", body:"Set a 10-minute timer and do just one task."},
+    {cat:"Mini Challenge", title:"PUT PHONE DOWN", body:"Put your phone face-down for the next 15 minutes."},
+    {cat:"Mini Challenge", title:"TIDY YOUR BAG", body:"Empty your bag and put back only what you need."},
+    {cat:"Mini Challenge", title:"NOTICE A SOUND", body:"Stop and notice one sound around you right now."},
+    {cat:"Mini Challenge", title:"GIVE A HIGH FIVE", body:"Give someone a genuine high five today."},
+    {cat:"Mini Challenge", title:"NAME IT PLAINLY", body:"Write down the thing you're avoiding. Just name it."},
+    {cat:"Mini Challenge", title:"ONE KIND DM", body:"Send one kind message to someone, unprompted."},
+    {cat:"Mini Challenge", title:"STRAIGHTEN UP", body:"Straighten one shelf, drawer, or pile today."},
+    {cat:"Mini Challenge", title:"LOOK AT OLD PHOTOS", body:"Look at one old photo that makes you smile."},
+    {cat:"Mini Challenge", title:"DO IT NOW", body:"Do the smallest task on your list right now."},
+    {cat:"Mini Challenge", title:"HYDRATE AGAIN", body:"Refill your water bottle before you forget."},
+    {cat:"Mini Challenge", title:"PAUSE A MINUTE", body:"Pause whatever you're doing for one full minute."},
+    {cat:"Mini Challenge", title:"NAME YOUR MOOD", body:"Name your mood in one word, honestly."},
+    {cat:"Mini Challenge", title:"CLEAR NOTIFICATIONS", body:"Clear your notification bar completely, once."},
+    {cat:"Mini Challenge", title:"WALK WITHOUT PHONE", body:"Take a short walk without your phone."},
+    {cat:"Mini Challenge", title:"GIVE FEEDBACK", body:"Give someone helpful feedback today, kindly."},
+    {cat:"Mini Challenge", title:"REST YOUR EYES", body:"Close your eyes and rest them for 30 seconds."},
+    {cat:"Mini Challenge", title:"PICK UP LITTER", body:"Pick up one piece of litter you see today."},
+    {cat:"Mini Challenge", title:"SIT IN SILENCE", body:"Sit in silence for one full minute."},
+    {cat:"Mini Challenge", title:"SET A BOUNDARY", body:"Say no to one thing that drains you today."},
+    {cat:"Kindness", title:"SOMEONE NOTICED", body:"Someone, somewhere, noticed something kind you did."},
+    {cat:"Kindness", title:"PASS IT ON", body:"Kindness you received is worth passing on."},
+    {cat:"Kindness", title:"QUIET KINDNESS", body:"The kindness no one saw still mattered."},
+    {cat:"Kindness", title:"YOU HELPED", body:"You helped more than you realise, more than once."},
+    {cat:"Kindness", title:"SMALL MERCY", body:"A small mercy today can carry someone far."},
+    {cat:"Kindness", title:"GENTLE WORDS", body:"Your gentle words landed somewhere they were needed."},
+    {cat:"Kindness", title:"SEEN AND VALUED", body:"Someone sees the good you quietly do."},
+    {cat:"Kindness", title:"A KIND PAUSE", body:"Pausing to be kind is never wasted time."},
+    {cat:"Kindness", title:"YOU MATTER TO SOMEONE", body:"You matter more to someone than you know."},
+    {cat:"Kindness", title:"KINDNESS RETURNS", body:"Kindness has a way of finding its way back."},
+    {cat:"Kindness", title:"THANK YOU FOR CARING", body:"Thank you for caring, even when it's hard."},
+    {cat:"Kindness", title:"SOFT HEART", body:"Keep your soft heart. It's a strength."},
+    {cat:"Kindness", title:"GIVEN FREELY", body:"What you give freely often means the most."},
+    {cat:"Kindness", title:"A KIND STRANGER", body:"Somewhere today, a stranger was kind because of you."},
+    {cat:"Kindness", title:"YOUR PRESENCE HELPS", body:"Just being present for someone helps more than you think."},
+    {cat:"Kindness", title:"GENTLE TODAY", body:"Someone needs you to be gentle with them today — maybe that's you."},
+    {cat:"Kindness", title:"NOTICED KINDNESS", body:"Someone remembers a kind thing you did years ago."},
+    {cat:"Kindness", title:"SILENT SUPPORT", body:"Silent support still counts as showing up."},
+    {cat:"Kindness", title:"A GOOD LISTENER", body:"Being a good listener is its own quiet gift."},
+    {cat:"Kindness", title:"SHARED WARMTH", body:"The warmth you share doesn't run out — it grows."},
+    {cat:"Kindness", title:"YOU LIFTED SOMEONE", body:"You lifted someone's day without even knowing it."},
+    {cat:"Kindness", title:"BE THE SOFT PLACE", body:"Be someone's soft place to land today."},
+    {cat:"Kindness", title:"KIND WITHOUT REASON", body:"Being kind without a reason is still a good reason."},
+    {cat:"Kindness", title:"A GENTLE ANSWER", body:"A gentle answer today might change someone's whole mood."},
+    {cat:"Kindness", title:"YOU ARE REMEMBERED", body:"Someone remembers how you made them feel."},
+    {cat:"Kindness", title:"GRACE GIVEN", body:"The grace you gave someone mattered more than they said."},
+    {cat:"Kindness", title:"HELD SPACE", body:"You held space for someone when they needed it."},
+    {cat:"Kindness", title:"A SOFT WORD", body:"One soft word from you might be someone's whole day."},
+    {cat:"Kindness", title:"YOUR CARE COUNTS", body:"Your care, even the quiet kind, counts."},
+    {cat:"Kindness", title:"THOUGHT OF YOU", body:"Someone thought of you kindly today."},
+    {cat:"Kindness", title:"YOU ARE APPRECIATED", body:"You are appreciated more than gets said out loud."},
+    {cat:"Kindness", title:"KIND ON PURPOSE", body:"Being kind on purpose is a quiet kind of strength."},
+    {cat:"Kindness", title:"A GOOD DEED UNSEEN", body:"A good deed doesn't need an audience to matter."},
+    {cat:"Kindness", title:"YOU BRIGHTENED SOMETHING", body:"You brightened something for someone, even briefly."},
+    {cat:"Kindness", title:"CARRY LESS ALONE", body:"Someone is glad they don't carry things alone because of you."},
+    {cat:"Kindness", title:"A KIND HABIT", body:"Kindness is a habit you've clearly been keeping."},
+    {cat:"Kindness", title:"YOU MADE ROOM", body:"You made room for someone when it wasn't easy."},
+    {cat:"Kindness", title:"STILL GENEROUS", body:"You stayed generous even on a hard day."},
+    {cat:"Kindness", title:"A QUIET THANK YOU", body:"This is a quiet thank you, from someone who noticed."},
+    {cat:"Kindness", title:"YOUR EFFORT SEEN", body:"Your effort to be kind has been seen, even if unspoken."},
+    {cat:"Kindness", title:"GENTLE ON PURPOSE", body:"Being gentle on purpose is underrated strength."},
+    {cat:"Kindness", title:"YOU CHOSE KIND", body:"In a hard moment, you chose kind. That matters."},
+    {cat:"Kindness", title:"A SOFT REMINDER", body:"A soft reminder: your kindness isn't wasted."},
+    {cat:"Kindness", title:"YOU SHOWED UP KIND", body:"You showed up kind, even when tired."},
+    {cat:"Kindness", title:"SOMEONE'S RELIEF", body:"You were someone's relief on a hard day."},
+    {cat:"Kindness", title:"KINDNESS NOTICED LATE", body:"Some kindness gets noticed late — it still counts."},
+    {cat:"Kindness", title:"A WARM MOMENT", body:"You gave someone a warm moment in a cold week."},
+    {cat:"Kindness", title:"STILL GENTLE", body:"Even tired, you stayed gentle. That's rare."},
+    {cat:"Kindness", title:"YOU MADE IT EASIER", body:"You made something easier for someone, quietly."},
+    {cat:"Kindness", title:"GOOD WITHOUT PRAISE", body:"You did good without needing praise for it."},
+    {cat:"Kindness", title:"A CARING LOOK", body:"A caring look from you can say more than words."},
+    {cat:"Kindness", title:"YOU LEFT IT BETTER", body:"You left something — or someone — a little better."},
+    {cat:"Kindness", title:"GENTLE STRENGTH", body:"Gentleness is its own kind of strength."},
+    {cat:"Kindness", title:"A KIND EXCEPTION", body:"You made a kind exception for someone who needed it."},
+    {cat:"Kindness", title:"YOUR WARMTH TRAVELS", body:"The warmth you give off travels further than you think."},
+    {cat:"Kindness", title:"STILL SOFT", body:"Life has been hard, and you're still soft. That's beautiful."},
+    {cat:"Happiness", title:"TINY JOY", body:"A tiny joy today still counts as joy."},
+    {cat:"Happiness", title:"GOOD SMELL", body:"Notice one good smell today — really notice it."},
+    {cat:"Happiness", title:"WARM CUP", body:"A warm cup in your hands is a small kind of happiness."},
+    {cat:"Happiness", title:"SUNLIGHT MOMENT", body:"A patch of sunlight can quietly fix a mood."},
+    {cat:"Happiness", title:"FAVOURITE SONG", body:"Let your favourite song play all the way through today."},
+    {cat:"Happiness", title:"SOFT BLANKET", body:"A soft blanket is underrated happiness."},
+    {cat:"Happiness", title:"GOOD FIRST SIP", body:"The first sip of your drink today, savoured."},
+    {cat:"Happiness", title:"A REAL LAUGH", body:"A real laugh today is worth more than it costs."},
+    {cat:"Happiness", title:"SIMPLE MEAL", body:"A simple meal, eaten slowly, is its own happiness."},
+    {cat:"Happiness", title:"QUIET MORNING", body:"A quiet morning is a gift most days forget to give."},
+    {cat:"Happiness", title:"SMALL SURPRISE", body:"Small surprises like this one are meant to be enjoyed."},
+    {cat:"Happiness", title:"HAPPY ACCIDENT", body:"Not everything good has to be planned."},
+    {cat:"Happiness", title:"COOL BREEZE", body:"A cool breeze today, if you're lucky enough to catch one."},
+    {cat:"Happiness", title:"GOOD NEWS DUE", body:"Good news is allowed to be due to you."},
+    {cat:"Happiness", title:"A FRIEND'S VOICE", body:"A friend's voice on a call can lift an entire day."},
+    {cat:"Happiness", title:"SOFT LIGHT", body:"Soft evening light has a way of making things feel okay."},
+    {cat:"Happiness", title:"FAVOURITE CHAIR", body:"Your favourite spot to sit is a small daily happiness."},
+    {cat:"Happiness", title:"GOOD SLEEP AHEAD", body:"A good night's sleep is coming for you tonight."},
+    {cat:"Happiness", title:"NICE SURPRISE TEXT", body:"A nice surprise text might be on its way to you."},
+    {cat:"Happiness", title:"SMALL TREAT", body:"You deserve a small treat today, no occasion needed."},
+    {cat:"Happiness", title:"HAPPY MEMORY", body:"One good memory is available to you right now, free."},
+    {cat:"Happiness", title:"A GOOD SONG PLAYS", body:"When the right song plays, everything softens a little."},
+    {cat:"Happiness", title:"PLEASANT SURPRISE", body:"Something pleasantly surprising is more likely than you think today."},
+    {cat:"Happiness", title:"A FULL BREATH", body:"A full, easy breath is its own small happiness."},
+    {cat:"Happiness", title:"COMFORT FOOD", body:"Comfort food, guilt-free, today."},
+    {cat:"Happiness", title:"SOFT PILLOW", body:"The softest pillow in the house has your name on it tonight."},
+    {cat:"Happiness", title:"GOOD COMPANY", body:"Good company, even briefly, is real happiness."},
+    {cat:"Happiness", title:"A CLEAR SKY", body:"A clear sky is a free, good thing today."},
+    {cat:"Happiness", title:"FUNNY MEMORY", body:"A funny memory is one thought away from making you smile."},
+    {cat:"Happiness", title:"EASY AFTERNOON", body:"An easy afternoon is allowed, no reason required."},
+    {cat:"Happiness", title:"WARM WEATHER JOY", body:"Warm weather has a way of lifting a mood, if you let it."},
+    {cat:"Happiness", title:"A GOOD BOOK WAITING", body:"A good book is waiting for you whenever you're ready."},
+    {cat:"Happiness", title:"SMALL WIN JOY", body:"A small win today deserves an equally small celebration."},
+    {cat:"Happiness", title:"A COSY CORNER", body:"Find your cosy corner today, even for ten minutes."},
+    {cat:"Happiness", title:"NICE SMELL OF RAIN", body:"The smell before rain is one of life's free happinesses."},
+    {cat:"Happiness", title:"SATISFYING TASK", body:"A satisfying, simple task today can be its own reward."},
+    {cat:"Happiness", title:"A GOOD STRETCH", body:"A good stretch first thing can set a nice tone."},
+    {cat:"Happiness", title:"FAVOURITE SNACK", body:"Your favourite snack, unrushed, today."},
+    {cat:"Happiness", title:"A KIND TEXT WAITING", body:"A kind message might already be waiting for you to read."},
+    {cat:"Happiness", title:"EASY LAUGH DUE", body:"An easy, easy laugh is due to you today."},
+    {cat:"Happiness", title:"SOFT MORNING LIGHT", body:"Soft morning light is one of the quiet good things."},
+    {cat:"Happiness", title:"A GOOD HAIR DAY", body:"A good hair day, small as it sounds, counts."},
+    {cat:"Happiness", title:"FAMILIAR COMFORT", body:"A familiar comfort — a smell, a song, a place — is close by."},
+    {cat:"Happiness", title:"HAPPY COINCIDENCE", body:"A happy coincidence might be closer than you think."},
+    {cat:"Happiness", title:"A GOOD CHAT DUE", body:"A good, easy conversation is due to you soon."},
+    {cat:"Happiness", title:"TINY DELIGHT", body:"A small delight is hiding somewhere in your day."},
+    {cat:"Happiness", title:"PEACEFUL MOMENT", body:"A peaceful five minutes is available to you, if you take it."},
+    {cat:"Happiness", title:"NICE WEATHER LUCK", body:"If the weather's nice today, that's a small stroke of luck."},
+    {cat:"Happiness", title:"A GOOD MOOD COMING", body:"A better mood might be closer than it feels right now."},
+    {cat:"Happiness", title:"FAVOURITE PLACE", body:"Think of your favourite place for a second. Feel that."},
+    {cat:"Happiness", title:"SATISFYING CLICK", body:"That satisfying click of finishing a task — enjoy it today."},
+    {cat:"Happiness", title:"A GENUINE SMILE", body:"A genuine smile, even brief, changes a whole moment."},
+    {cat:"Happiness", title:"GOOD TEA MOMENT", body:"A well-made cup of tea or coffee, unrushed."},
+    {cat:"Happiness", title:"HAPPY DISTRACTION", body:"A happy little distraction is allowed today."},
+    {cat:"Happiness", title:"FRESH AIR MOMENT", body:"A minute of fresh air can reset more than you'd expect."},
+    {cat:"Funny", title:"SEND SEND SEND", body:"You've read this. Now go double-tap send on that message you're overthinking."},
+    {cat:"Funny", title:"AUTOCORRECT WON", body:"Somewhere, autocorrect just ruined someone's serious text. Not you. Today."},
+    {cat:"Funny", title:"CHAI TAX", body:"This counts as chai tax. You still owe yourself an actual chai."},
+    {cat:"Funny", title:"MYSTERY SOCK", body:"Somewhere, a washing machine is eating a sock right now. Not yours. Today."},
+    {cat:"Funny", title:"WIFI BLESSING", body:"May your WiFi never buffer during the important part."},
+    {cat:"Funny", title:"AUTO RICKSHAW LUCK", body:"May your next auto agree to the fare without an argument."},
+    {cat:"Funny", title:"ONE RUPEE WISDOM", body:"This ₹1 has seen things. It's not telling."},
+    {cat:"Funny", title:"SNACK PERMISSION", body:"Official permission: eat the snack you were 'saving'."},
+    {cat:"Funny", title:"CHARGER FOUND", body:"May you find your phone charger on the first try today."},
+    {cat:"Funny", title:"LIFT ARRIVES", body:"May the lift already be on your floor next time you call it."},
+    {cat:"Funny", title:"PARKING SPOT LUCK", body:"May a parking spot appear exactly when you need it."},
+    {cat:"Funny", title:"LAST PIECE", body:"May you get the last piece of whatever you're craving."},
+    {cat:"Funny", title:"NO SPAM CALLS", body:"May today have zero 'loan available sir' calls."},
+    {cat:"Funny", title:"GOOD HAIR DAY OFFICIAL", body:"This is your official good hair day, whether you agree or not."},
+    {cat:"Funny", title:"SILENT PHONE WIN", body:"May your phone stay silent exactly when you need silence."},
+    {cat:"Funny", title:"CORRECT CHANGE", body:"May the shopkeeper actually have change today."},
+    {cat:"Funny", title:"NO RED LIGHTS", body:"May you catch more green lights than red ones today."},
+    {cat:"Funny", title:"SAMOSA ENERGY", body:"You now officially have samosa-level main character energy."},
+    {cat:"Funny", title:"QUEUE LUCK", body:"May you pick the fastest queue for once."},
+    {cat:"Funny", title:"PERFECT TEMP CHAI", body:"May your next chai arrive at exactly the right temperature."},
+    {cat:"Funny", title:"BATTERY BLESSING", body:"May your phone battery outlast your patience today."},
+    {cat:"Funny", title:"NO REPLY-ALL", body:"May you never accidentally reply-all again. No promises though."},
+    {cat:"Funny", title:"SPICE LEVEL RIGHT", body:"May your food arrive at exactly the spice level you wanted."},
+    {cat:"Funny", title:"FREE UPGRADE ENERGY", body:"You have main-character, free-upgrade energy today."},
+    {cat:"Funny", title:"NO SURPRISE MEETINGS", body:"May no surprise meetings appear on your calendar today."},
+    {cat:"Funny", title:"SOCK MATCH FOUND", body:"May both socks in your drawer actually match today."},
+    {cat:"Funny", title:"SNOOZE WISELY", body:"May you snooze the alarm exactly the right number of times."},
+    {cat:"Funny", title:"PERFECT SONG TIMING", body:"May the perfect song play right as you step outside."},
+    {cat:"Funny", title:"NO WRONG NUMBER", body:"May today have zero 'wrong number bhai' calls."},
+    {cat:"Funny", title:"SAME PAGE ENERGY", body:"May everyone actually be on the same page today. Rare, but possible."},
+    {cat:"Funny", title:"TIFFIN LUCK", body:"May your tiffin survive the commute intact today."},
+    {cat:"Funny", title:"EXTRA CHUTNEY", body:"May you get the extra chutney without even asking."},
+    {cat:"Funny", title:"NO EXISTENTIAL LAUNDRY", body:"May your laundry pile not stare at you today."},
+    {cat:"Funny", title:"SIGNAL STRONG", body:"May your network bars stay full through the important call."},
+    {cat:"Funny", title:"PERFECT PARKING KARMA", body:"Consider this your parking karma refill for the week."},
+    {cat:"Funny", title:"NOT TODAY, MONDAY", body:"Whatever day it is, it's officially not allowed to be a Monday."},
+    {cat:"Funny", title:"TEA BREAK PERMIT", body:"This is your legally binding permission slip for a tea break."},
+    {cat:"Funny", title:"SEAT AVAILABLE", body:"May a seat magically be free next time you take the bus."},
+    {cat:"Funny", title:"NO CHARGER MYSTERY", body:"May your charger not vanish into the couch today."},
+    {cat:"Funny", title:"SPOTLESS DELIVERY", body:"May your food delivery arrive exactly on time, hot."},
+    {cat:"Funny", title:"ONE GOOD PUN", body:"Somewhere today, someone will make a genuinely good pun. Be ready."},
+    {cat:"Funny", title:"SURPRISE DISCOUNT", body:"May a surprise discount find you when you least expect it."},
+    {cat:"Funny", title:"CAT SUPERVISOR", body:"Somewhere, a cat is currently supervising someone's work call."},
+    {cat:"Funny", title:"BONUS EPISODE ENERGY", body:"Today has extra, unplanned bonus-episode energy. Enjoy it."},
+    {cat:"Funny", title:"LUCKY ELEVATOR", body:"May you never have to wait for the lift twice in one day."},
+    {cat:"Funny", title:"SAME WAVELENGTH", body:"May you and one person be exactly on the same wavelength today."},
+    {cat:"Funny", title:"PLOT TWIST SNACK", body:"Plot twist: there's a better snack in the house than you remember."},
+    {cat:"Funny", title:"FREE UPGRADE VIBES", body:"You are giving free-upgrade, extra-legroom energy today."},
+    {cat:"Funny", title:"NO BUFFERING TODAY", body:"May your video call have zero 'you're frozen' moments."},
+    {cat:"Funny", title:"PERFECTLY TIMED NAP", body:"May a nap find you at exactly the right ten minutes."},
+    {cat:"Funny", title:"SURPRISE HOLIDAY ENERGY", body:"Today quietly has surprise-holiday energy. Use it well."},
+    {cat:"Funny", title:"SPICE LEVEL LEGEND", body:"Whoever made your food today respected the spice level. Legend."},
+    {cat:"Funny", title:"EXTRA MINUTES", body:"May you somehow get five bonus minutes back today."},
+    {cat:"Funny", title:"SMOOTH COMMUTE", body:"May today's commute be suspiciously smooth."},
+    {cat:"Funny", title:"BONUS BISCUIT", body:"There's a bonus biscuit somewhere in the house. Go find it."},
+    {cat:"Funny", title:"RIGHT TIME RIGHT SONG", body:"The right song is going to hit at exactly the right time today."},
+    {cat:"Curiosity", title:"HONEY NEVER SPOILS", body:"Archaeologists have found 3,000-year-old honey that was still edible."},
+    {cat:"Curiosity", title:"OCTOPUS HEARTS", body:"An octopus has three hearts, and two stop beating when it swims."},
+    {cat:"Curiosity", title:"BANANAS ARE BERRIES", body:"Botanically, bananas are berries — but strawberries aren't."},
+    {cat:"Curiosity", title:"SHARKS OLDER THAN TREES", body:"Sharks existed before trees did, by tens of millions of years."},
+    {cat:"Curiosity", title:"CLOUD WEIGHT", body:"An average cloud weighs about as much as 100 elephants."},
+    {cat:"Curiosity", title:"WOMBAT POOP", body:"Wombats produce cube-shaped droppings — still not fully understood why."},
+    {cat:"Curiosity", title:"HEART SOUND SPACE", body:"In space, without gravity pulling blood down, your heart sounds different."},
+    {cat:"Curiosity", title:"BUTTERFLY TASTE", body:"Butterflies taste with their feet, not their mouths."},
+    {cat:"Curiosity", title:"MOON MOVING AWAY", body:"The Moon drifts about 3.8 cm farther from Earth every year."},
+    {cat:"Curiosity", title:"ANTS DON'T SLEEP LIKE US", body:"Some ant colonies never fully stop — they nap in short bursts, in shifts."},
+    {cat:"Curiosity", title:"VENUS DAY LONGER", body:"Venus also spins backwards compared to most other planets in the solar system."},
+    {cat:"Curiosity", title:"HUMAN BONES OUTNUMBER BABY BONES", body:"Babies are born with about 300 bones; adults end up with 206 as some fuse."},
+    {cat:"Curiosity", title:"EIFFEL TOWER GROWS", body:"The Eiffel Tower grows a little taller in summer heat."},
+    {cat:"Curiosity", title:"STARFISH NO BRAIN", body:"Starfish have no brain, yet can still 'see' light through their skin."},
+    {cat:"Curiosity", title:"HOT WATER FREEZES FASTER", body:"Under certain conditions, hot water can freeze faster than cold — it's called the Mpemba effect."},
+    {cat:"Curiosity", title:"OCTOPUS TASTES BY TOUCH", body:"Octopuses can taste things simply by touching them with their arms."},
+    {cat:"Curiosity", title:"SNAILS SLEEP FOR YEARS", body:"Some snails can sleep for up to three years during harsh conditions."},
+    {cat:"Curiosity", title:"YOUR NOSE REMEMBERS", body:"Smell is the sense most closely linked to memory in the brain."},
+    {cat:"Curiosity", title:"TARDIGRADES SURVIVE SPACE", body:"Tiny tardigrades have survived being exposed directly to outer space."},
+    {cat:"Curiosity", title:"PENGUINS PROPOSE WITH STONES", body:"Some penguins offer a pebble to a mate as a kind of proposal."},
+    {cat:"Curiosity", title:"YOUR BODY GLOWS", body:"Human bodies emit a faint visible light — too dim for our eyes to catch."},
+    {cat:"Curiosity", title:"CROWS RECOGNISE FACES", body:"Crows can remember and recognise individual human faces for years."},
+    {cat:"Curiosity", title:"SEA OTTERS HOLD HANDS", body:"Sea otters also wrap themselves in kelp like a blanket so they don't float away."},
+    {cat:"Curiosity", title:"BONES STRONGER THAN STEEL", body:"Gram for gram, bone is stronger than steel in some respects."},
+    {cat:"Curiosity", title:"A DAY WASN'T ALWAYS 24H", body:"Earth's days used to be shorter — closer to 22 hours, millions of years ago."},
+    {cat:"Curiosity", title:"LIGHTNING HOTTER THAN SUN", body:"A lightning bolt can be hotter than the surface of the sun, briefly."},
+    {cat:"Curiosity", title:"ELEPHANTS CAN'T JUMP", body:"Elephants are the only mammals known that physically cannot jump."},
+    {cat:"Curiosity", title:"YOUR STOMACH REBUILDS ITSELF", body:"Your stomach lining renews itself every few days to avoid digesting itself."},
+    {cat:"Curiosity", title:"KOALAS HAVE FINGERPRINTS", body:"Koala fingerprints are so similar to human ones, they've confused crime scenes."},
+    {cat:"Curiosity", title:"SAHARA WAS GREEN", body:"The Sahara was a lush, green landscape a few thousand years ago."},
+    {cat:"Curiosity", title:"OCEAN MOSTLY UNEXPLORED", body:"More than 80% of the ocean remains unexplored and unmapped."},
+    {cat:"Curiosity", title:"FLAMINGOS BORN GREY", body:"Flamingos are born grey — their pink comes from what they eat."},
+    {cat:"Curiosity", title:"A GROUP OF FLAMINGOS", body:"A group of flamingos is technically called a 'flamboyance'."},
+    {cat:"Curiosity", title:"YOUR EARS NEVER STOP GROWING", body:"Ears and noses keep slowly growing throughout a person's whole life."},
+    {cat:"Curiosity", title:"BEES RECOGNISE FACES TOO", body:"Bees can be trained to recognise individual human faces."},
+    {cat:"Curiosity", title:"ICELAND NO MOSQUITOES", body:"Iceland is one of the very few places on Earth with no mosquitoes."},
+    {cat:"Curiosity", title:"OCTOPUSES HAVE BLUE BLOOD", body:"Octopus blood is blue because it's copper-based, not iron-based."},
+    {cat:"Curiosity", title:"A CLOUD CAN'T BE TOUCHED", body:"Technically, you already 'touch' clouds every time you're in fog."},
+    {cat:"Curiosity", title:"SLOTHS CAN HOLD BREATH LONG", body:"Sloths can hold their breath longer than dolphins can."},
+    {cat:"Curiosity", title:"YOUR BRAIN USES MOST ENERGY", body:"The brain uses about 20% of your body's total energy despite its size."},
+    {cat:"Curiosity", title:"WHALES SING REGIONAL SONGS", body:"Whale songs vary by region, almost like different dialects."},
+    {cat:"Curiosity", title:"HUMMINGBIRDS FLY BACKWARDS", body:"Hummingbirds are the only birds that can fly backwards."},
+    {cat:"Curiosity", title:"TREE RINGS TELL STORIES", body:"A tree's rings can reveal droughts and fires from centuries ago."},
+    {cat:"Curiosity", title:"GIRAFFES SAME NECK BONES", body:"Giraffes have the same number of neck bones as humans — just much bigger."},
+    {cat:"Curiosity", title:"YOUR SKIN REPLACES ITSELF", body:"Your skin fully replaces itself roughly every month."},
+    {cat:"Curiosity", title:"DOLPHINS HAVE NAMES", body:"Dolphins call each other using signature whistles, like names."},
+    {cat:"Curiosity", title:"VOLCANIC LIGHTNING EXISTS", body:"Erupting volcanoes can generate their own lightning storms."},
+    {cat:"Curiosity", title:"SPIDER SILK STRONGER THAN STEEL", body:"Spider silk is, by weight, stronger than steel."},
+    {cat:"Curiosity", title:"OWLS CAN'T MOVE EYES", body:"Owls can't move their eyes in their sockets — only their whole head."},
+    {cat:"Curiosity", title:"PLANTS CAN 'HEAR' WATER", body:"Some plant roots can sense the sound of running water and grow toward it."},
+    {cat:"Curiosity", title:"YOUR HEART BEATS 100000x/DAY", body:"Your heart beats about 100,000 times in a single day."},
+    {cat:"Curiosity", title:"A SNEEZE TRAVELS FAST", body:"A sneeze can travel out of your body at over 100 km/h."},
+    {cat:"Curiosity", title:"ANTARCTICA IS A DESERT", body:"Antarctica is technically the largest desert in the world, by dryness."},
+    {cat:"Curiosity", title:"OCTOPUS ARMS THINK ALONE", body:"An octopus's arms have their own neurons and can act semi-independently."},
+    {cat:"Curiosity", title:"YOUR BODY MAKES NEW BLOOD", body:"Your body produces about two million new red blood cells every second."},
+    {cat:"Curiosity", title:"SATURN COULD FLOAT", body:"Saturn is so light for its size, it would float in water — if you had a big enough tub."},
+    {cat:"Confidence", title:"YOUR CALL TODAY", body:"You get to decide what today means, not the mistakes."},
+    {cat:"Confidence", title:"QUIET STRENGTH", body:"Not all strength is loud. Some of it looks like showing up."},
+    {cat:"Confidence", title:"YOU'VE SURVIVED WORSE", body:"You've survived every hard day so far. That's a real track record."},
+    {cat:"Confidence", title:"YOUR OWN PACE", body:"You don't owe anyone a faster version of yourself."},
+    {cat:"Confidence", title:"STILL STANDING", body:"You're still standing after things that could've knocked you down."},
+    {cat:"Confidence", title:"EARNED THIS", body:"Whatever confidence you have, you earned the hard way."},
+    {cat:"Confidence", title:"YOU KNOW MORE NOW", body:"You know more today than you did a year ago. That's growth."},
+    {cat:"Confidence", title:"TRUST YOUR READ", body:"Trust the read you have on this. You've been right before."},
+    {cat:"Confidence", title:"YOU ADAPT WELL", body:"You've adapted to more than you give yourself credit for."},
+    {cat:"Confidence", title:"NOT LUCK, WORK", body:"What looks like luck is often just work nobody saw."},
+    {cat:"Confidence", title:"YOU BELONG HERE", body:"You belong in the room you're standing in."},
+    {cat:"Confidence", title:"STOP SHRINKING", body:"You don't need to shrink to make others comfortable."},
+    {cat:"Confidence", title:"YOUR VOICE COUNTS", body:"Your voice is allowed to take up space too."},
+    {cat:"Confidence", title:"PROVEN BEFORE", body:"You've proven doubt wrong before. You can do it again."},
+    {cat:"Confidence", title:"STEADY UNDER PRESSURE", body:"You've handled pressure better than you remember."},
+    {cat:"Confidence", title:"YOU CHOSE TO SHOW UP", body:"Showing up today, as you are, is its own quiet confidence."},
+    {cat:"Confidence", title:"YOUR STANDARDS ARE FINE", body:"Your standards for yourself don't need to apologise."},
+    {cat:"Confidence", title:"NOT AN IMPOSTER", body:"You're not an impostor. You're just early in this chapter."},
+    {cat:"Confidence", title:"YOU LEARN FAST", body:"You pick things up faster than you give yourself credit for."},
+    {cat:"Confidence", title:"HANDLED IT BEFORE", body:"You've handled harder days than this one."},
+    {cat:"Confidence", title:"BUILT THIS YOURSELF", body:"Whatever you've built, you built with real effort — own that."},
+    {cat:"Confidence", title:"YOU DON'T NEED PERMISSION", body:"You don't need permission to trust your own judgment."},
+    {cat:"Confidence", title:"QUIETLY CAPABLE", body:"You are quietly more capable than this moment feels."},
+    {cat:"Confidence", title:"YOUR WORTH ISN'T A SCORE", body:"Your worth was never actually tied to one result."},
+    {cat:"Confidence", title:"YOU'VE GOT RECEIPTS", body:"You have proof — real ones — that you can do hard things."},
+    {cat:"Confidence", title:"NOT EVERYONE'S APPROVAL", body:"You don't need everyone's approval to keep going."},
+    {cat:"Confidence", title:"YOU CAN SAY NO", body:"Saying no to the wrong thing is its own kind of confidence."},
+    {cat:"Confidence", title:"TRUST THE PROCESS YOU BUILT", body:"Trust the process you built, even when it's slow."},
+    {cat:"Confidence", title:"YOU'RE ALLOWED TO BE PROUD", body:"You're allowed to be proud without waiting for someone else to say it."},
+    {cat:"Confidence", title:"KNOWN FOR SHOWING UP", body:"You're the kind of person people know will show up."},
+    {cat:"Confidence", title:"YOUR STANDARDS BUILT THIS", body:"High standards got you here. Don't apologise for them."},
+    {cat:"Confidence", title:"STILL LEARNING, STILL GOOD", body:"You can be still learning and still genuinely good at this."},
+    {cat:"Confidence", title:"YOU DON'T NEED TO SHOUT", body:"Confidence doesn't need to be loud to be real."},
+    {cat:"Confidence", title:"BACK YOURSELF", body:"Back yourself the way you'd back a friend."},
+    {cat:"Confidence", title:"YOUR TRACK RECORD IS SOLID", body:"Your track record with hard things is better than you remember."},
+    {cat:"Confidence", title:"YOU FIGURE IT OUT", body:"Whatever comes up, you tend to figure it out. That's your pattern."},
+    {cat:"Confidence", title:"NOT FRAGILE", body:"You're not as fragile as your worst day makes you feel."},
+    {cat:"Confidence", title:"YOU EARNED YOUR SEAT", body:"You earned your seat at that table. Sit in it fully."},
+    {cat:"Confidence", title:"YOU'RE NOT BEHIND", body:"You're not behind. You're on a timeline only you are on."},
+    {cat:"Confidence", title:"CONFIDENCE FROM REPS", body:"Confidence comes from reps, and you've put in more than you think."},
+    {cat:"Confidence", title:"YOUR NO IS VALID", body:"Your 'no' is a complete sentence, and it's valid."},
+    {cat:"Confidence", title:"YOU DON'T NEED THE LOUDEST VOICE", body:"You don't need to be the loudest voice to be the most right one."},
+    {cat:"Confidence", title:"YOU'VE OUTGROWN OLD DOUBTS", body:"Some of your old doubts don't fit who you are now."},
+    {cat:"Confidence", title:"STILL YOU, STRONGER", body:"You're still you — just a stronger version than before."},
+    {cat:"Confidence", title:"NOT ASKING TWICE", body:"You don't need to ask twice for something you've earned."},
+    {cat:"Confidence", title:"YOUR PACE IS VALID", body:"Getting there slower doesn't make it less yours."},
+    {cat:"Confidence", title:"YOU MAKE GOOD CALLS", body:"More of your instincts are right than you give them credit for."},
+    {cat:"Confidence", title:"YOU'VE CHANGED FOR THE BETTER", body:"You've genuinely changed for the better — notice that."},
+    {cat:"Confidence", title:"YOU HANDLE HARD THINGS", body:"Hard things keep happening, and you keep handling them."},
+    {cat:"Confidence", title:"YOUR EFFORT IS REAL", body:"No one can take away the effort you've genuinely put in."},
+    {cat:"Confidence", title:"YOU DON'T OWE AN EXPLANATION", body:"You don't owe everyone an explanation for your choices."},
+    {cat:"Confidence", title:"STRONGER THAN LAST YEAR", body:"You are stronger than the version of you from last year."},
+    {cat:"Confidence", title:"YOU KEPT YOUR WORD", body:"You kept your word to yourself more than you notice."},
+    {cat:"Confidence", title:"YOU'VE GOT THIS ONE TOO", body:"You've handled every 'this' so far. You've got this one too."},
+    {cat:"Confidence", title:"YOUR CALM IS A SKILL", body:"Staying calm under pressure is a skill — and you have it."},
+    {cat:"Confidence", title:"TRUST WHAT YOU BUILT", body:"Trust the thing you built, even on the days it feels shaky."},
   ];
 
   const usedIndexes = (function(){
@@ -849,9 +1178,9 @@
   function saveUsedIndexes(){
     try { localStorage.setItem('rupeeSurpriseUsed', JSON.stringify([...usedIndexes])); } catch(e){}
   }
-  // Local fallback only — used if the live AI call fails (offline, API hiccup, etc.)
-  // so the card can never come up blank. Persisted across visits so even the
-  // fallback never repeats a message until the whole pool has been shown once.
+  // Primary message source — a local pool of ~500 pre-written messages.
+  // No live API call needed. Persisted across visits via localStorage so
+  // the same person never sees a repeat until the whole pool has cycled.
   function localFallbackMessage(){
     if (usedIndexes.size >= MESSAGES.length) usedIndexes.clear();
     let idx;
@@ -861,10 +1190,6 @@
     return MESSAGES[idx];
   }
 
-  /* ================= AI-generated surprise (live, different every time) =================
-     The message is now only generated AFTER a real, verified ₹1 payment —
-     see payAndReveal() below. This array just tracks recently-shown titles
-     so the backend prompt can avoid repeating them. */
   const shownTitles = [];
 
   /* ================= session state (in-memory only, demo) ================= */
@@ -905,29 +1230,18 @@
     document.getElementById('statRupees').textContent = '₹' + shown;
   }
   function renderAdmin(){
-    document.getElementById('aGlobalCompleted').textContent = globalCompletedCount !== null ? globalCompletedCount : '—';
-    document.getElementById('aVisitors').textContent = stats.visitors;
-    document.getElementById('aAttempts').textContent = stats.attempts;
-    document.getElementById('aCompleted').textContent = stats.completed;
-    document.getElementById('aClickedPaid').textContent = stats.clickedPaid;
-    document.getElementById('aVerified').textContent = stats.verifiedPayments;
-    const conv = stats.clickedPaid > 0 ? Math.round((stats.completed/stats.clickedPaid)*100) : 0;
-    document.getElementById('aConversion').textContent = conv + '%';
-    document.getElementById('aShares').textContent = stats.shares;
-    document.getElementById('aRepeat').textContent = stats.repeats;
-    let top = '—', topN = 0;
-    Object.entries(stats.categoryCounts).forEach(([k,v])=>{ if(v>topN){ top=k; topN=v; } });
-    document.getElementById('aTopCategory').textContent = top === '—' ? '—' : (top + ' (' + topN + ')');
-    const list = document.getElementById('aIdeaList');
-    list.innerHTML = stats.ideas.length ? stats.ideas.map(i => '• ' + i).join('<br>') : 'None yet.';
+    // Admin dashboard removed — this is now a no-op kept only so the
+    // existing renderAdmin() calls scattered through the tracking code
+    // below don't need to be individually deleted.
   }
 
-  /* ================= payment: LIVE, real Razorpay verification =================
-     Same backend that already processes payment for every other SalaryBit
-     paid tool (Subscription Leak Finder, MF Analyzer, etc). A scratch card
-     is only ever shown after this backend has cryptographically verified a
-     real ₹1 payment — there is no self-attestation anymore. */
-  const API_BASE = 'https://web-production-456eb.up.railway.app';
+  /* ================= payment: static UPI QR, honor system =================
+     No payment gateway, no server-side verification. The person scans the
+     QR, pays ₹1 in their own UPI app, then clicks the button below to say
+     they've paid. There's no way to confirm that from this end — this is
+     a deliberate, known trade-off in exchange for zero friction (no phone
+     number prompts, no checkout modal). The public/counter numbers on this
+     page reflect clicks of this button, not verified payments. */
   const protoNote = document.getElementById('protoNote');
 
   /* ================= scroll to pay ================= */
@@ -935,109 +1249,22 @@
     document.getElementById('pay').scrollIntoView({behavior:'smooth'});
   });
 
-  /* ================= payment button -> real ₹1 payment -> scratch card ================= */
+  /* ================= payment button -> scratch card ================= */
   const scratchSection = document.getElementById('scratchSection');
   const paidBtn = document.getElementById('paidBtn');
-  const payLoading = document.getElementById('payLoading');
-  const payError = document.getElementById('payError');
 
-  function setPayBusy(busy, errorText){
-    paidBtn.disabled = busy;
-    paidBtn.textContent = busy ? 'PROCESSING…' : 'PAY ₹1 TO REVEAL';
-    payLoading.style.display = busy ? 'block' : 'none';
-    if (errorText){
-      payError.textContent = errorText;
-      payError.style.display = 'block';
-    } else {
-      payError.style.display = 'none';
-    }
-  }
-
-  paidBtn.addEventListener('click', async ()=>{
-    setPayBusy(true, null);
+  paidBtn.addEventListener('click', ()=>{
     stats.clickedPaid++;
-    renderAdmin();
-
-    let order;
-    try{
-      const orderRes = await fetch(API_BASE + '/api/create-rupee-surprise-order', { method: 'POST' });
-      if (!orderRes.ok) throw new Error('order creation failed: ' + orderRes.status);
-      order = await orderRes.json();
-      if (!order || !order.order_id) throw new Error('malformed order response');
-    } catch(err){
-      console.error('create-rupee-surprise-order error:', err);
-      setPayBusy(false, 'Could not start payment right now. Please try again in a moment.');
-      return;
-    }
-
-    const options = {
-      key: order.razorpay_key,
-      amount: order.amount,
-      currency: order.currency,
-      order_id: order.order_id,
-      name: 'SalaryBit',
-      description: '₹1 Surprise',
-      handler: async function(response){
-        payLoading.textContent = 'Verifying your payment…';
-        setPayBusy(true, null);
-        try{
-          const verifyRes = await fetch(API_BASE + '/api/verify-rupee-surprise-payment', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              avoid: shownTitles.slice(-20)
-            })
-          });
-          const verify = await verifyRes.json();
-          if (!verify || !verify.success || !verify.title || !verify.body){
-            setPayBusy(false, 'Payment verification failed. If money was deducted, it will be refunded within 24 hours.');
-            return;
-          }
-          shownTitles.push(verify.title);
-          stats.verifiedPayments++;
-          setPayBusy(false, null);
-          scratchSection.style.display = 'block';
-          scratchSection.scrollIntoView({behavior:'smooth'});
-          stats.attempts++;
-          scratchesThisSession++;
-          if (scratchesThisSession > 1) stats.repeats++;
-          showCardWithMessage({ cat: verify.cat || 'Surprise', title: verify.title, body: verify.body });
-          renderAdmin();
-        } catch(err){
-          console.error('verify-rupee-surprise-payment error:', err);
-          // Razorpay's handler only fires after a successful payment, so the
-          // money is already taken — don't scare a paying user with a "did we
-          // charge you" message. Show a classic local surprise instead and
-          // say plainly what happened.
-          shownTitles.push('(network fallback)');
-          stats.verifiedPayments++;
-          setPayBusy(false, null);
-          scratchSection.style.display = 'block';
-          scratchSection.scrollIntoView({behavior:'smooth'});
-          stats.attempts++;
-          scratchesThisSession++;
-          if (scratchesThisSession > 1) stats.repeats++;
-          const fb = localFallbackMessage();
-          showCardWithMessage(fb);
-          renderAdmin();
-        }
-      },
-      modal: {
-        ondismiss: function(){ setPayBusy(false, null); }
-      },
-      theme: { color: '#D4A017' }
-    };
-
-    try{
-      const rzp = new Razorpay(options);
-      rzp.open();
-    } catch(err){
-      console.error('Razorpay init error:', err);
-      setPayBusy(false, 'Could not open the payment window. Please refresh and try again.');
-    }
+    stats.verifiedPayments++; // honor-system "verification" — self-attested only
+    scratchSection.style.display = 'block';
+    scratchSection.scrollIntoView({behavior:'smooth'});
+    stats.attempts++;
+    scratchesThisSession++;
+    if (scratchesThisSession > 1) stats.repeats++;
+    const message = localFallbackMessage();
+    shownTitles.push(message.title);
+    bumpGlobalCount();
+    showCardWithMessage(message);
   });
 
   /* ================= scratch card logic ================= */
@@ -1250,28 +1477,7 @@
     q.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); toggle(); }});
   });
 
-  /* ================= admin panel (demo-only auth) ================= */
-  const adminOverlay = document.getElementById('adminOverlay');
-  const adminLoginView = document.getElementById('adminLoginView');
-  const adminDashView = document.getElementById('adminDashView');
-  document.getElementById('adminToggle').addEventListener('click', ()=>{
-    adminOverlay.classList.add('show');
-  });
-  document.getElementById('adminClose').addEventListener('click', ()=> adminOverlay.classList.remove('show'));
-  adminOverlay.addEventListener('click', (e)=>{ if(e.target === adminOverlay) adminOverlay.classList.remove('show'); });
-  document.getElementById('adminLoginBtn').addEventListener('click', ()=>{
-    const pass = document.getElementById('adminPass').value;
-    if (pass === 'admin123'){
-      adminLoginView.style.display = 'none';
-      adminDashView.style.display = 'block';
-      renderAdmin();
-    } else {
-      document.getElementById('adminPass').style.borderColor = '#D9534F';
-    }
-  });
-
   renderPublicCounters();
-  renderAdmin();
 })();
 </script>
 </body>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recharge Value Analyzer — Are You Paying for Features You Never Use? | SalaryBit</title>
+<meta name="description" content="Find out how much of your mobile recharge plan you actually use. Enter your plan details and get an instant, AI-powered breakdown of unused bundled features — free.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://salarybit.in/recharge-value-analyzer.html">
+<meta property="og:title" content="Recharge Value Analyzer | SalaryBit">
+<meta property="og:description" content="Find out how much of your mobile recharge plan you actually use. Free, instant, AI-powered breakdown of unused bundled features.">
+<meta property="og:url" content="https://salarybit.in/recharge-value-analyzer.html">
+<meta property="og:image" content="https://salarybit.in/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://salarybit.in/og-image.png">
+<script type="application/ld+json">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Recharge Value Analyzer — SalaryBit",
+    "url": "https://salarybit.in/recharge-value-analyzer.html",
+    "description": "Find out how much of your mobile recharge plan you actually use. Instant breakdown of unused bundled features like OTT, cloud storage, gaming rewards and more.",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" },
+    "creator": { "@type": "Organization", "name": "SalaryBit", "url": "https://salarybit.in/" }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Why do mobile recharge plans bundle so many extra features?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Telecom operators bundle OTT subscriptions, cloud storage, gaming rewards and similar extras to make higher-priced plans look like better value and to differentiate from competitors. Most subscribers only use core connectivity — calling, WhatsApp, UPI and general data — and never activate the bundled extras."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I find a simpler, cheaper recharge plan?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Check your operator's app or website for their full tariff list, not just the plans shown on the recharge screen — most operators have simpler 'unlimited calling + data only' plans priced lower than their bundled plans, but these are often less prominently advertised."
+        }
+      }
+    ]
+  }
+]
+</script>
+<style>
+  :root {
+    --bg: #0b0e14;
+    --bg-card: #151a24;
+    --bg-card-light: #1c2230;
+    --green: #00e676;
+    --green-dark: #00c264;
+    --ink: #ffffff;
+    --muted: #8b93a7;
+    --line: #232938;
+    --warn: #ff6b5e;
+    --amber: #ffb84d;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, 'Inter', 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 40px 20px 100px; }
+  .eyebrow {
+    display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--green); background: rgba(0,230,118,0.1);
+    padding: 6px 12px; border-radius: 20px; margin-bottom: 20px;
+  }
+  h1 { font-size: clamp(28px, 6vw, 42px); line-height: 1.14; margin: 0 0 16px; font-weight: 700; letter-spacing: -0.01em; }
+  h1 .accent { color: var(--green); }
+  .sub { font-size: 16px; color: var(--muted); max-width: 560px; margin-bottom: 32px; }
+
+  .card { background: var(--bg-card); border: 1px solid var(--line); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+  .card h2 { font-size: 16px; font-weight: 700; margin: 0 0 4px; }
+  .card .hint { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 4px; }
+  @media (max-width: 520px) { .row2 { grid-template-columns: 1fr; } }
+  label.field-label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+  .inp-wrap { display: flex; align-items: center; background: var(--bg-card-light); border: 1.5px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .inp-wrap:focus-within { border-color: var(--green); }
+  .inp-pre { padding: 0 10px; font-size: 13px; color: var(--muted); background: rgba(255,255,255,.03); height: 42px; display: flex; align-items: center; }
+  .inp-wrap input { border: none; background: transparent; color: var(--ink); font-size: 14px; padding: 0 10px; height: 42px; width: 100%; outline: none; }
+
+  .feature-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .feature-row:last-child { border-bottom: none; }
+  .feature-label { font-size: 14px; display: flex; align-items: center; gap: 8px; }
+  .feature-icon { font-size: 16px; }
+  .toggles { display: flex; gap: 6px; flex-shrink: 0; }
+  .toggle-chip {
+    font-size: 11px; font-weight: 600; padding: 6px 10px; border-radius: 8px; cursor: pointer;
+    border: 1.5px solid var(--line); color: var(--muted); background: transparent; user-select: none; white-space: nowrap;
+  }
+  .toggle-chip.on-included { border-color: var(--amber); color: var(--amber); background: rgba(255,184,77,.1); }
+  .toggle-chip.on-used { border-color: var(--green); color: var(--green); background: rgba(0,230,118,.1); }
+
+  .core-chip { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 10px; border: 1.5px solid var(--line); font-size: 13px; cursor: pointer; margin: 0 8px 8px 0; }
+  .core-chip.selected { border-color: var(--green); background: rgba(0,230,118,.1); color: var(--green); }
+
+  .cta-btn {
+    width: 100%; padding: 15px; background: var(--green); color: #06110a; border: none;
+    border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background .15s;
+    margin-top: 8px;
+  }
+  .cta-btn:hover { background: var(--green-dark); }
+  .cta-btn:disabled { background: #2a3142; color: var(--muted); cursor: not-allowed; }
+
+  #result { display: none; }
+  .stat-row { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-row b { font-size: 16px; }
+  .unused-item { display: flex; align-items: center; gap: 8px; padding: 8px 0; font-size: 14px; color: var(--warn); }
+  .used-item { display: flex; align-items: center; gap: 8px; padding: 8px 0; font-size: 14px; color: var(--green); }
+  .ai-box { background: var(--bg-card-light); border: 1px solid var(--line); border-radius: 12px; padding: 18px; font-size: 14px; line-height: 1.7; color: var(--ink); white-space: pre-wrap; }
+  .ai-loading { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  .spin { width: 14px; height: 14px; border: 2px solid var(--line); border-top-color: var(--green); border-radius: 50%; animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .seo { max-width: 720px; margin: 40px auto 0; padding: 0 20px; }
+  .seo h2 { font-size: 22px; font-weight: 700; margin: 28px 0 10px; }
+  .seo h3 { font-size: 15px; font-weight: 700; margin: 16px 0 6px; }
+  .seo p, .seo li { font-size: 14px; color: var(--muted); line-height: 1.7; }
+  .seo ul { padding-left: 20px; margin-bottom: 12px; }
+  .faq-item { background: var(--bg-card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+  .faq-q { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+  .faq-a { font-size: 13px; color: var(--muted); }
+
+  .home-link { display: inline-block; font-size: 13px; color: var(--muted); text-decoration: none; margin-bottom: 18px; }
+  .home-link:hover { color: var(--green); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="home-link" href="/">← SalaryBit</a>
+  <div class="eyebrow">🔋 Free · Instant · No Login</div>
+  <h1>Recharge Value <span class="accent">Analyzer</span></h1>
+  <p class="sub">Most recharge plans bundle OTT, cloud storage, gaming rewards, insurance and more — but most people only use calling, WhatsApp, UPI and browsing. Find out exactly what you're paying for but never touch.</p>
+
+  <div class="card">
+    <h2>Current Plan Comparison</h2>
+    <div class="hint">Real plans, verified as of August 2026 — prices can vary slightly by telecom circle, confirm on your operator's app before recharging.</div>
+    <div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead>
+        <tr style="border-bottom:1.5px solid var(--line);">
+          <th style="text-align:left;padding:8px 6px;color:var(--muted);font-weight:600;">Operator</th>
+          <th style="text-align:left;padding:8px 6px;color:var(--muted);font-weight:600;">Price</th>
+          <th style="text-align:left;padding:8px 6px;color:var(--muted);font-weight:600;">Validity</th>
+          <th style="text-align:left;padding:8px 6px;color:var(--muted);font-weight:600;">Data</th>
+          <th style="text-align:left;padding:8px 6px;color:var(--muted);font-weight:600;">Bundled Extras</th>
+        </tr>
+      </thead>
+      <tbody id="planCompareBody"></tbody>
+    </table>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-top:10px;">Sources: operator plan pages and TelecomTalk.info coverage, checked August 2026. This is a snapshot for reference, not a live feed — always confirm the exact current plan on your operator's own app before recharging.</div>
+  </div>
+
+  <div class="card">
+    <h2>Your Plan Details</h2>
+    <div class="hint">From your last recharge receipt or operator app</div>
+    <div class="row2">
+      <div>
+        <label class="field-label">Plan Price</label>
+        <div class="inp-wrap"><span class="inp-pre">₹</span><input type="number" id="planPrice" placeholder="e.g. 599"></div>
+      </div>
+      <div>
+        <label class="field-label">Validity</label>
+        <div class="inp-wrap"><input type="number" id="planValidity" placeholder="e.g. 28"><span class="inp-pre">days</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>What You Actually Use Daily</h2>
+    <div class="hint">Tap to select — these are the core things almost every plan needs to cover</div>
+    <div id="coreChips">
+      <span class="core-chip" data-key="calling">📞 Calling</span>
+      <span class="core-chip" data-key="whatsapp">💬 WhatsApp / Messaging</span>
+      <span class="core-chip" data-key="upi">💳 UPI / Payments</span>
+      <span class="core-chip" data-key="browsing">🌐 General Internet / Browsing</span>
+      <span class="core-chip" data-key="video">📺 Video Streaming on Mobile Data</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Bundled Features in Your Plan</h2>
+    <div class="hint">For each one — mark if your plan includes it, and separately if you actually use it</div>
+    <div id="featureList"></div>
+  </div>
+
+  <button class="cta-btn" id="analyzeBtn">Analyze My Plan →</button>
+
+  <div id="result">
+    <div class="card">
+      <h2>Your Result</h2>
+      <div class="stat-row"><span>Monthly-equivalent cost</span><b id="statMonthly">—</b></div>
+      <div class="stat-row"><span>Bundled features included</span><b id="statIncluded">—</b></div>
+      <div class="stat-row"><span>Of those, actually used</span><b id="statUsed">—</b></div>
+      <div class="stat-row"><span style="color:var(--warn)">Going unused</span><b id="statUnused" style="color:var(--warn)">—</b></div>
+    </div>
+
+    <div class="card">
+      <h2>What's Going Unused</h2>
+      <div id="unusedList"></div>
+      <div id="noneUnused" style="display:none;font-size:14px;color:var(--green);">✅ You're using everything your plan includes — no waste here.</div>
+    </div>
+
+    <div class="card">
+      <h2>💡 AI Recommendation</h2>
+      <div id="aiLoading" class="ai-loading" style="display:none;"><div class="spin"></div> Analyzing your plan...</div>
+      <div id="aiBox" class="ai-box" style="display:none;"></div>
+    </div>
+  </div>
+
+  <div class="seo">
+    <h2>Why Recharge Plans Bundle Features You Don't Use</h2>
+    <p>Telecom operators compete heavily on "value," and the easiest way to make a plan look valuable is to bundle in extras — OTT subscriptions, cloud storage, gaming rewards, caller tunes, coupons, insurance, spam protection, international roaming, family data sharing. Most of these cost the operator very little to include (many are barter deals with content partners), but they let the plan be marketed as worth far more than its price.</p>
+    <p>The problem: most subscribers use only four things on their phone — calling, WhatsApp, UPI, and general browsing. Everything else bundled in is effectively invisible value that never gets activated.</p>
+    <h3>What to actually do if you're overpaying</h3>
+    <ul>
+      <li>Check your operator's full tariff list (not just what's shown on the recharge screen) — most operators have simpler "unlimited calling + data" plans without the extras, usually priced lower.</li>
+      <li>If you do want to keep one or two bundled extras (say, the OTT subscription), compare whether subscribing to just that service directly costs less than the premium you're paying for the bundled plan.</li>
+      <li>Re-check this every 3-6 months — your usage habits change, and so do the plans on offer.</li>
+    </ul>
+    <div class="faq-item"><div class="faq-q">Why do mobile recharge plans bundle so many extra features?</div><div class="faq-a">Telecom operators bundle OTT subscriptions, cloud storage, gaming rewards and similar extras to make higher-priced plans look like better value and to differentiate from competitors. Most subscribers only use core connectivity — calling, WhatsApp, UPI and general data — and never activate the bundled extras.</div></div>
+    <div class="faq-item"><div class="faq-q">How do I find a simpler, cheaper recharge plan?</div><div class="faq-a">Check your operator's app or website for their full tariff list, not just the plans shown on the recharge screen — most operators have simpler "unlimited calling + data only" plans priced lower than their bundled plans, but these are often less prominently advertised.</div></div>
+  </div>
+</div>
+
+<script>
+// Snapshot of real plans, manually verified via operator coverage as of Aug 2026.
+// NOT a live feed — prices/benefits change and vary by circle. Refresh this list
+// periodically by checking telecomtalk.info or the operator's own plan page.
+const PLAN_COMPARISON = [
+  { op: 'Jio', price: 123, validity: 28, data: '0.5GB/day', extras: 'JioSaavn, JioTV (no major OTT bundle)' },
+  { op: 'Jio', price: 299, validity: 28, data: '1.5GB/day', extras: 'JioTV, JioAICloud, 18mo Gemini Pro' },
+  { op: 'Jio', price: 349, validity: 28, data: '2GB/day + Unlimited 5G', extras: 'JioHotstar (3mo), 50GB cloud, Gemini Pro' },
+  { op: 'Jio', price: 445, validity: 28, data: '2GB/day + Unlimited 5G', extras: '10 OTTs (SonyLIV, ZEE5, Discovery+...), JioHotstar, cloud, Gemini Pro' },
+  { op: 'Jio', price: 545, validity: 28, data: '2GB/day + 5GB extra + 5G', extras: 'JioGames Cloud, BGMI skin, FanCode, JioHotstar, cloud, Gemini Pro' },
+  { op: 'Airtel', price: 299, validity: 28, data: '~2GB/day', extras: 'Basic data + calling, light bundles' },
+  { op: 'Airtel', price: 449, validity: 28, data: '2.5-3GB/day', extras: 'Xstream Play OTT bundle (select circles)' },
+  { op: 'Airtel', price: 598, validity: 28, data: '2GB/day + 5G', extras: 'Netflix included (premium tier plan)' },
+  { op: 'Airtel', price: 899, validity: 84, data: '1.5-2GB/day', extras: '"Truly Unlimited" long-validity pack' },
+  { op: 'Vi', price: 299, validity: 28, data: '1.5GB/day', extras: 'Vi Movies & TV, Binge All Night, weekend rollover' },
+  { op: 'Vi', price: 696, validity: 56, data: '2GB/day', extras: 'Amazon Prime Lite (56 days)' },
+  { op: 'Vi', price: 795, validity: 56, data: '3GB/day', extras: 'Vi Movies & TV Super — SonyLIV, ZEE5, FanCode +16 more OTTs' },
+  { op: 'Vi', price: 1005, validity: 84, data: 'Unlimited (4G+5G)', extras: 'NonStop Hero — unlimited data, unlimited calls' },
+];
+
+const OP_COLORS = { Jio: '#00e676', Airtel: '#ff6b5e', Vi: '#ffb84d' };
+const planCompareBody = document.getElementById('planCompareBody');
+PLAN_COMPARISON.forEach(p => {
+  const tr = document.createElement('tr');
+  tr.style.borderBottom = '1px solid var(--line)';
+  tr.innerHTML = `
+    <td style="padding:8px 6px;font-weight:700;color:${OP_COLORS[p.op] || 'var(--ink)'};">${p.op}</td>
+    <td style="padding:8px 6px;">₹${p.price}</td>
+    <td style="padding:8px 6px;">${p.validity}d</td>
+    <td style="padding:8px 6px;">${p.data}</td>
+    <td style="padding:8px 6px;color:var(--muted);">${p.extras}</td>
+  `;
+  planCompareBody.appendChild(tr);
+});
+
+const FEATURES = [
+  { key: 'ott', label: 'OTT Subscription (Hotstar/Netflix/etc.)', icon: '🎬' },
+  { key: 'cloud', label: 'Cloud Storage', icon: '☁️' },
+  { key: 'gaming', label: 'Gaming Rewards / Zone', icon: '🎮' },
+  { key: 'callertune', label: 'Caller Tune / Hello Tune', icon: '🎵' },
+  { key: 'coupons', label: 'Coupons & Cashback Offers', icon: '🎟️' },
+  { key: 'insurance', label: 'Insurance Cover', icon: '🛡️' },
+  { key: 'spam', label: 'Spam / Call Protection', icon: '🚫' },
+  { key: 'roaming', label: 'International Roaming', icon: '✈️' },
+  { key: 'familyshare', label: 'Family Data Sharing', icon: '👨‍👩‍👧' },
+  { key: 'partnerapps', label: 'Partner App Subscriptions (news/music)', icon: '📱' },
+];
+
+const featureListEl = document.getElementById('featureList');
+FEATURES.forEach(f => {
+  const row = document.createElement('div');
+  row.className = 'feature-row';
+  row.innerHTML = `
+    <div class="feature-label"><span class="feature-icon">${f.icon}</span>${f.label}</div>
+    <div class="toggles">
+      <button type="button" class="toggle-chip" data-feature="${f.key}" data-type="included">Included</button>
+      <button type="button" class="toggle-chip" data-feature="${f.key}" data-type="used">I use it</button>
+    </div>
+  `;
+  featureListEl.appendChild(row);
+});
+
+const state = { core: new Set(), included: new Set(), used: new Set() };
+
+document.querySelectorAll('.core-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    chip.classList.toggle('selected');
+    const key = chip.dataset.key;
+    if (chip.classList.contains('selected')) state.core.add(key); else state.core.delete(key);
+  });
+});
+
+featureListEl.addEventListener('click', (e) => {
+  const btn = e.target.closest('.toggle-chip');
+  if (!btn) return;
+  const key = btn.dataset.feature;
+  const type = btn.dataset.type;
+  const set = type === 'included' ? state.included : state.used;
+  const cls = type === 'included' ? 'on-included' : 'on-used';
+  if (set.has(key)) { set.delete(key); btn.classList.remove(cls); }
+  else {
+    set.add(key); btn.classList.add(cls);
+    if (type === 'used') { state.included.add(key); btn.parentElement.querySelector('[data-type="included"]').classList.add('on-included'); }
+  }
+});
+
+function fmtI(n){ return '₹' + Math.round(n).toLocaleString('en-IN'); }
+
+async function analyzeRecharge(){
+  const price = parseFloat(document.getElementById('planPrice').value) || 0;
+  const validity = parseFloat(document.getElementById('planValidity').value) || 0;
+
+  if (!price || !validity) { alert('Please enter your plan price and validity.'); return; }
+
+  const includedFeatures = FEATURES.filter(f => state.included.has(f.key));
+  const usedFeatures = FEATURES.filter(f => state.used.has(f.key));
+  const unusedFeatures = includedFeatures.filter(f => !state.used.has(f.key));
+
+  const monthlyEquiv = price / validity * 30;
+
+  document.getElementById('statMonthly').textContent = fmtI(monthlyEquiv);
+  document.getElementById('statIncluded').textContent = includedFeatures.length;
+  document.getElementById('statUsed').textContent = usedFeatures.length;
+  document.getElementById('statUnused').textContent = unusedFeatures.length;
+
+  const unusedListEl = document.getElementById('unusedList');
+  const noneUnusedEl = document.getElementById('noneUnused');
+  unusedListEl.innerHTML = '';
+  if (unusedFeatures.length === 0) {
+    noneUnusedEl.style.display = 'block';
+  } else {
+    noneUnusedEl.style.display = 'none';
+    unusedFeatures.forEach(f => {
+      const div = document.createElement('div');
+      div.className = 'unused-item';
+      div.innerHTML = `<span>${f.icon}</span> ${f.label} — included but unused`;
+      unusedListEl.appendChild(div);
+    });
+  }
+
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // AI-narrated recommendation
+  const aiLoading = document.getElementById('aiLoading');
+  const aiBox = document.getElementById('aiBox');
+  aiLoading.style.display = 'flex';
+  aiBox.style.display = 'none';
+
+  const coreUsedLabels = Array.from(state.core).join(', ') || 'none specified';
+  const usedLabels = usedFeatures.map(f => f.label).join(', ') || 'none';
+  const unusedLabels = unusedFeatures.map(f => f.label).join(', ') || 'none';
+
+  const prompt = `You are a plain-spoken Indian consumer-finance writer for SalaryBit. Someone pays ${fmtI(price)} `+
+    `for a recharge plan valid ${validity} days (about ${fmtI(monthlyEquiv)}/month equivalent). `+
+    `They regularly use: ${coreUsedLabels}. Of the bundled extras in their plan, they actually use: ${usedLabels}. `+
+    `They are NOT using these bundled extras despite paying for them: ${unusedLabels}.\n\n`+
+    `Write a short, direct recommendation (under 120 words, plain paragraphs, no markdown headers, no bullet lists) on whether it's worth `+
+    `looking for a simpler plan without the unused extras, or whether it's fine to keep the current plan. `+
+    `Do NOT invent or state specific competitor plan names, prices, or operator names — you don't have real current pricing data. `+
+    `Instead give general, actionable guidance (e.g. "check your operator's full tariff list for a plan without X"). `+
+    `If nothing is going unused, just affirm the plan looks well-matched to their usage.`;
+
+  try {
+    const res = await fetch('https://web-production-456eb.up.railway.app/api/claude-proxy', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ max_tokens: 400, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error((data && data.error) || 'AI request failed');
+    const reply = (data.content || []).map(c => c.text || '').join('').trim();
+    aiBox.textContent = reply || "Couldn't generate a recommendation right now — please try again.";
+  } catch (err) {
+    aiBox.textContent = "Couldn't reach the AI recommendation service right now. Your usage breakdown above is still accurate — please try again in a moment for the personalized note.";
+  }
+  aiLoading.style.display = 'none';
+  aiBox.style.display = 'block';
+}
+
+document.getElementById('analyzeBtn').addEventListener('click', analyzeRecharge);
+</script>
+
+<script src="/assets/js/site-widgets.js"></script>
+</body>
+</html>

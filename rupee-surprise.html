@@ -282,17 +282,43 @@
   /* ---------- scratch card ---------- */
   .scratch-wrap{ max-width:420px; margin:46px auto 0; text-align:center; }
   .scratch-prompt{ font-family:'Fraunces', serif; font-style:italic; font-size:19px; margin-bottom:18px; color:var(--ink-soft); }
-  .vend-slot{
-    width:110px; height:16px; margin:0 auto -1px;
-    background:linear-gradient(180deg,#2b2b3d,#1b1b2f);
-    border-radius:8px 8px 0 0;
-    position:relative; z-index:2;
-    box-shadow:0 4px 10px rgba(27,27,47,0.25);
+
+  /* ---------- vending machine ---------- */
+  .vend-machine{
+    position:relative;
+    width:170px; margin:0 auto -2px;
+    z-index:2;
+    filter:drop-shadow(0 10px 16px rgba(27,27,47,0.22));
   }
-  .vend-slot::after{
-    content:""; position:absolute; top:6px; left:50%; transform:translateX(-50%);
-    width:70px; height:4px; background:#000; border-radius:2px;
-    box-shadow:inset 0 1px 3px rgba(0,0,0,0.7);
+  .vend-machine svg{ display:block; width:100%; height:auto; }
+  .vend-window-glow{ opacity:0; }
+  .vend-machine.working .vend-window-glow{ animation: vendFlicker 0.38s ease-in-out 3; }
+  @keyframes vendFlicker{ 0%,100%{ opacity:0; } 50%{ opacity:1; } }
+  .vend-machine.working .vend-body{ animation: vendShake 0.38s ease-in-out 3; }
+  @keyframes vendShake{
+    0%,100%{ transform:translateX(0); }
+    25%{ transform:translateX(-1.5px); }
+    75%{ transform:translateX(1.5px); }
+  }
+  .vend-coin{
+    position:absolute; top:-30px; left:50%;
+    width:26px; height:26px; border-radius:50%;
+    background:linear-gradient(155deg,#F5D061,#D4A017 60%,#a8790f);
+    border:1.5px solid rgba(255,255,255,0.5);
+    box-shadow:0 2px 6px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.5);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:10px;
+    color:#5c4108;
+    opacity:0; z-index:3; pointer-events:none;
+  }
+  .vend-coin.dropping{
+    animation: coinDrop 0.68s cubic-bezier(.6,.04,.55,.95) forwards;
+  }
+  @keyframes coinDrop{
+    0%   { top:-30px; opacity:1; transform:translateX(-50%) rotate(0deg) scale(1); }
+    55%  { top:15px;  opacity:1; transform:translateX(-50%) rotate(210deg) scale(1); }
+    78%  { top:19px;  opacity:1; transform:translateX(-50%) rotate(250deg) scale(0.7); }
+    100% { top:19px;  opacity:0; transform:translateX(-50%) rotate(270deg) scale(0.3); }
   }
   .scratch-card{
     position:relative;
@@ -540,7 +566,32 @@
   <div class="wrap">
     <div class="scratch-wrap">
       <p class="scratch-prompt">Something wonderful is waiting…</p>
-      <div class="vend-slot" aria-hidden="true"></div>
+      <div class="vend-machine" id="vendMachine" aria-hidden="true">
+        <div class="vend-coin" id="vendCoin">₹1</div>
+        <svg viewBox="0 0 170 160" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="85" cy="155" rx="58" ry="5" fill="rgba(27,27,47,0.14)"/>
+          <rect class="vend-body" x="12" y="10" width="146" height="128" rx="16" fill="#8B3A2B"/>
+          <rect x="12" y="10" width="146" height="128" rx="16" fill="url(#vendBodyGrad)"/>
+          <rect x="12" y="10" width="146" height="20" rx="10" fill="rgba(0,0,0,0.16)"/>
+          <text x="85" y="24" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="7.5" font-weight="700" fill="rgba(255,255,255,0.85)" letter-spacing="0.5">₹1 SURPRISE CO.</text>
+          <rect x="73" y="32" width="24" height="7" rx="3.5" fill="#14141f"/>
+          <rect x="76" y="34" width="18" height="3" rx="1.5" fill="#000"/>
+          <rect x="26" y="46" width="118" height="50" rx="9" fill="#14141f"/>
+          <rect class="vend-window-glow" x="26" y="46" width="118" height="50" rx="9" fill="#F0B429"/>
+          <text x="85" y="74" text-anchor="middle" font-family="Fraunces, serif" font-weight="700" font-size="17" fill="#F0B429">₹1</text>
+          <text x="85" y="88" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="6.5" fill="rgba(255,255,255,0.6)" letter-spacing="0.5">INSERT COIN ABOVE</text>
+          <rect x="40" y="112" width="90" height="11" rx="5.5" fill="#14141f"/>
+          <rect x="40" y="112" width="90" height="11" rx="5.5" fill="none" stroke="rgba(0,0,0,0.35)" stroke-width="1"/>
+          <rect x="24" y="136" width="12" height="9" rx="2" fill="#5c2419"/>
+          <rect x="134" y="136" width="12" height="9" rx="2" fill="#5c2419"/>
+          <defs>
+            <linearGradient id="vendBodyGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#A8462F"/>
+              <stop offset="1" stop-color="#7A2E1F"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
       <div class="scratch-card" id="scratchCard">
         <div class="scratch-message" id="scratchMessage">
           <div class="cat" id="msgCat">—</div>
@@ -1364,22 +1415,52 @@
     document.getElementById('pay').scrollIntoView({behavior:'smooth'});
   });
 
-  /* ================= payment button -> scratch card ================= */
+  /* ================= payment button -> vending animation -> scratch card ================= */
   const scratchSection = document.getElementById('scratchSection');
   const paidBtn = document.getElementById('paidBtn');
+  const vendMachine = document.getElementById('vendMachine');
+  const vendCoin = document.getElementById('vendCoin');
+  function sleep(ms){ return new Promise(resolve => setTimeout(resolve, ms)); }
 
-  paidBtn.addEventListener('click', ()=>{
-    stats.clickedPaid++;
-    stats.verifiedPayments++; // honor-system "verification" — self-attested only
+  let isVending = false;
+  async function playVendingSequence(message){
+    isVending = true;
+    paidBtn.disabled = true;
+
     scratchSection.style.display = 'block';
     scratchSection.scrollIntoView({behavior:'smooth'});
+    await sleep(450); // let the scroll settle before the coin drops
+
+    // coin drops into the slot
+    vendCoin.classList.remove('dropping');
+    void vendCoin.offsetWidth; // force reflow so it re-triggers every time
+    vendCoin.classList.add('dropping');
+    await sleep(680);
+
+    // machine "processes" the payment — brief flicker + shake
+    vendMachine.classList.add('working');
+    await sleep(760);
+    vendMachine.classList.remove('working');
+    await sleep(120);
+
+    // ticket prints out
+    showCardWithMessage(message);
+
+    paidBtn.disabled = false;
+    isVending = false;
+  }
+
+  paidBtn.addEventListener('click', ()=>{
+    if (isVending) return;
+    stats.clickedPaid++;
+    stats.verifiedPayments++; // honor-system "verification" — self-attested only
     stats.attempts++;
     scratchesThisSession++;
     if (scratchesThisSession > 1) stats.repeats++;
     const message = localFallbackMessage();
     shownTitles.push(message.title);
     bumpGlobalCount();
-    showCardWithMessage(message);
+    playVendingSequence(message);
   });
 
   /* ================= scratch card logic ================= */

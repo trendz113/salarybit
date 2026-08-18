@@ -704,6 +704,138 @@ def verify_rupee_surprise_payment():
     return jsonify(response)
 
 
+# ── RECHARGE VALUE ANALYZER: live plan data ──────────────────────────
+# Jio and Airtel's own sites render plans via client-side JS (no public
+# API), so instead of scraping them directly (fragile, likely to get
+# bot-blocked) we pull from Bajaj Finserv's recharge pages, which render
+# the same plan data as plain server-side HTML tables. Cached for 24h so
+# every page load doesn't re-scrape; refreshed lazily on the next request
+# after the cache goes stale. If a scrape fails for one operator, that
+# operator's last good cached data is kept rather than wiping everything.
+try:
+    from bs4 import BeautifulSoup
+    _BS4_AVAILABLE = True
+except ImportError:
+    _BS4_AVAILABLE = False
+
+RECHARGE_SOURCES = {
+    "Jio": "https://www.bajajfinserv.in/jio-prepaid-mobile-recharge",
+    "Airtel": "https://www.bajajfinserv.in/airtel-prepaid-mobile-recharge",
+    "Vi": "https://www.bajajfinserv.in/vodafone-idea-prepaid-mobile-recharge",
+}
+RECHARGE_CACHE_SECONDS = 24 * 3600
+_recharge_cache = {"per_operator": {}, "last_updated": None}
+
+
+def _parse_recharge_tables(html, operator):
+    """Generic table parser: works on any table with recognisable Price
+    and Validity column headers, so it doesn't depend on exact CSS
+    classes (which can change without notice on a page we don't own)."""
+    soup = BeautifulSoup(html, "html.parser")
+    plans = []
+    for table in soup.find_all("table"):
+        rows = table.find_all("tr")
+        if len(rows) < 2:
+            continue
+        header_cells = [c.get_text(strip=True).lower() for c in rows[0].find_all(["th", "td"])]
+        if not header_cells:
+            continue
+
+        def find_col(keywords):
+            for i, h in enumerate(header_cells):
+                if any(kw in h for kw in keywords):
+                    return i
+            return None
+
+        price_idx = find_col(["price", "plan"])
+        validity_idx = find_col(["validity"])
+        data_idx = find_col(["data"])
+        if price_idx is None or validity_idx is None:
+            continue  # e.g. talktime top-up tables have no validity — skip
+
+        extra_idx = [i for i in range(len(header_cells)) if i not in (price_idx, validity_idx, data_idx)]
+
+        for row in rows[1:]:
+            cells = row.find_all(["td", "th"])
+            if len(cells) <= max(price_idx, validity_idx):
+                continue
+            texts = [c.get_text(" ", strip=True) for c in cells]
+            price_match = re.search(r"[\d,]+", texts[price_idx]) if price_idx < len(texts) else None
+            if not price_match:
+                continue
+            try:
+                price = int(price_match.group(0).replace(",", ""))
+            except ValueError:
+                continue
+            validity = texts[validity_idx] if validity_idx < len(texts) else "—"
+            data = texts[data_idx] if (data_idx is not None and data_idx < len(texts)) else "—"
+            extras_parts = [texts[i] for i in extra_idx if i < len(texts) and texts[i] and texts[i] not in ("-", "—")]
+            extras = ", ".join(extras_parts)[:160] or "—"
+            plans.append({"op": operator, "price": price, "validity": validity, "data": data, "extras": extras})
+    # de-dupe identical rows a table might repeat, keep cheapest-first
+    seen = set()
+    unique_plans = []
+    for p in sorted(plans, key=lambda x: x["price"]):
+        key = (p["op"], p["price"], p["validity"], p["data"])
+        if key not in seen:
+            seen.add(key)
+            unique_plans.append(p)
+    return unique_plans[:25]
+
+
+def _scrape_recharge_plans():
+    if not _BS4_AVAILABLE:
+        print("recharge scrape skipped: beautifulsoup4 not installed")
+        return {}
+    results = {}
+    for operator, url in RECHARGE_SOURCES.items():
+        try:
+            r = http_requests.get(
+                url,
+                headers={"User-Agent": "Mozilla/5.0 (compatible; SalaryBitBot/1.0; +https://salarybit.in)"},
+                timeout=12,
+            )
+            r.raise_for_status()
+            plans = _parse_recharge_tables(r.text, operator)
+            if plans:
+                results[operator] = plans
+        except Exception as e:
+            print(f"recharge scrape failed for {operator}: {e}")
+    return results
+
+
+@app.route("/api/recharge-plans", methods=["GET", "OPTIONS"])
+def get_recharge_plans():
+    if request.method == "OPTIONS":
+        return "", 204
+    now = _time.time()
+    is_stale = (
+        _recharge_cache["last_updated"] is None
+        or (now - _recharge_cache["last_updated"]) > RECHARGE_CACHE_SECONDS
+    )
+    if is_stale:
+        fresh = _scrape_recharge_plans()
+        if fresh:
+            _recharge_cache["per_operator"].update(fresh)
+            _recharge_cache["last_updated"] = now
+
+    all_plans = []
+    for op_plans in _recharge_cache["per_operator"].values():
+        all_plans.extend(op_plans)
+
+    return jsonify({
+        "success": bool(all_plans),
+        "plans": all_plans,
+        "last_updated": (
+            datetime.utcfromtimestamp(_recharge_cache["last_updated"]).isoformat() + "Z"
+            if _recharge_cache["last_updated"] else None
+        ),
+        "operators_loaded": list(_recharge_cache["per_operator"].keys()),
+        "source_name": "Bajaj Finserv (aggregated Jio / Airtel / Vi listings)",
+        "source_note": "Refreshed automatically at most once per day. Always confirm on the operator's own app before recharging.",
+    })
+
+
 # ── EMBED HTML ────────────────────────────────────────────
 EMBED_HTML = """<!DOCTYPE html>
 <html lang="en">

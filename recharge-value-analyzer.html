@@ -152,7 +152,7 @@
 
   <div class="card">
     <h2>Current Plan Comparison</h2>
-    <div class="hint">Real plans, verified as of August 2026 — prices can vary slightly by telecom circle, confirm on your operator's app before recharging.</div>
+    <div class="hint" id="planCompareHint">Loading current plans…</div>
     <div style="overflow-x:auto;">
     <table style="width:100%;border-collapse:collapse;font-size:13px;">
       <thead>
@@ -167,7 +167,7 @@
       <tbody id="planCompareBody"></tbody>
     </table>
     </div>
-    <div style="font-size:11px;color:var(--muted);margin-top:10px;">Sources: operator plan pages and TelecomTalk.info coverage, checked August 2026. This is a snapshot for reference, not a live feed — always confirm the exact current plan on your operator's own app before recharging.</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:10px;" id="planCompareSource">Loading source info…</div>
   </div>
 
   <div class="card">
@@ -243,39 +243,64 @@
 </div>
 
 <script>
-// Snapshot of real plans, manually verified via operator coverage as of Aug 2026.
-// NOT a live feed — prices/benefits change and vary by circle. Refresh this list
-// periodically by checking telecomtalk.info or the operator's own plan page.
-const PLAN_COMPARISON = [
-  { op: 'Jio', price: 123, validity: 28, data: '0.5GB/day', extras: 'JioSaavn, JioTV (no major OTT bundle)' },
-  { op: 'Jio', price: 299, validity: 28, data: '1.5GB/day', extras: 'JioTV, JioAICloud, 18mo Gemini Pro' },
-  { op: 'Jio', price: 349, validity: 28, data: '2GB/day + Unlimited 5G', extras: 'JioHotstar (3mo), 50GB cloud, Gemini Pro' },
-  { op: 'Jio', price: 445, validity: 28, data: '2GB/day + Unlimited 5G', extras: '10 OTTs (SonyLIV, ZEE5, Discovery+...), JioHotstar, cloud, Gemini Pro' },
-  { op: 'Jio', price: 545, validity: 28, data: '2GB/day + 5GB extra + 5G', extras: 'JioGames Cloud, BGMI skin, FanCode, JioHotstar, cloud, Gemini Pro' },
-  { op: 'Airtel', price: 299, validity: 28, data: '~2GB/day', extras: 'Basic data + calling, light bundles' },
-  { op: 'Airtel', price: 449, validity: 28, data: '2.5-3GB/day', extras: 'Xstream Play OTT bundle (select circles)' },
-  { op: 'Airtel', price: 598, validity: 28, data: '2GB/day + 5G', extras: 'Netflix included (premium tier plan)' },
-  { op: 'Airtel', price: 899, validity: 84, data: '1.5-2GB/day', extras: '"Truly Unlimited" long-validity pack' },
-  { op: 'Vi', price: 299, validity: 28, data: '1.5GB/day', extras: 'Vi Movies & TV, Binge All Night, weekend rollover' },
-  { op: 'Vi', price: 696, validity: 56, data: '2GB/day', extras: 'Amazon Prime Lite (56 days)' },
-  { op: 'Vi', price: 795, validity: 56, data: '3GB/day', extras: 'Vi Movies & TV Super — SonyLIV, ZEE5, FanCode +16 more OTTs' },
-  { op: 'Vi', price: 1005, validity: 84, data: 'Unlimited (4G+5G)', extras: 'NonStop Hero — unlimited data, unlimited calls' },
-];
-
+const API_BASE = 'https://web-production-456eb.up.railway.app';
 const OP_COLORS = { Jio: '#00e676', Airtel: '#ff6b5e', Vi: '#ffb84d' };
 const planCompareBody = document.getElementById('planCompareBody');
-PLAN_COMPARISON.forEach(p => {
-  const tr = document.createElement('tr');
-  tr.style.borderBottom = '1px solid var(--line)';
-  tr.innerHTML = `
-    <td style="padding:8px 6px;font-weight:700;color:${OP_COLORS[p.op] || 'var(--ink)'};">${p.op}</td>
-    <td style="padding:8px 6px;">₹${p.price}</td>
-    <td style="padding:8px 6px;">${p.validity}d</td>
-    <td style="padding:8px 6px;">${p.data}</td>
-    <td style="padding:8px 6px;color:var(--muted);">${p.extras}</td>
-  `;
-  planCompareBody.appendChild(tr);
-});
+const planCompareHint = document.getElementById('planCompareHint');
+const planCompareSource = document.getElementById('planCompareSource');
+
+// Small built-in backup — used only if the live fetch fails entirely
+// (e.g. offline), so the page never shows a completely empty table.
+// Clearly relabelled as a fallback, not presented as current data.
+const FALLBACK_PLANS = [
+  { op: 'Jio', price: 299, validity: '28 days', data: '2GB/day', extras: 'JioTV, JioCloud' },
+  { op: 'Airtel', price: 299, validity: '28 days', data: '2GB/day', extras: 'Basic data + calling' },
+  { op: 'Vi', price: 349, validity: '28 days', data: '1.5GB/day', extras: 'Vi Movies & TV' },
+];
+
+function renderPlanTable(plans) {
+  planCompareBody.innerHTML = '';
+  plans.forEach(p => {
+    const tr = document.createElement('tr');
+    tr.style.borderBottom = '1px solid var(--line)';
+    tr.innerHTML = `
+      <td style="padding:8px 6px;font-weight:700;color:${OP_COLORS[p.op] || 'var(--ink)'};">${p.op}</td>
+      <td style="padding:8px 6px;">₹${p.price}</td>
+      <td style="padding:8px 6px;">${p.validity}</td>
+      <td style="padding:8px 6px;">${p.data}</td>
+      <td style="padding:8px 6px;color:var(--muted);">${p.extras}</td>
+    `;
+    planCompareBody.appendChild(tr);
+  });
+}
+
+function fmtVerifiedDate(iso) {
+  if (!iso) return null;
+  try {
+    const d = new Date(iso);
+    return d.toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' }) + ' IST';
+  } catch (e) { return null; }
+}
+
+fetch(API_BASE + '/api/recharge-plans')
+  .then(r => r.json())
+  .then(data => {
+    if (data && data.success && Array.isArray(data.plans) && data.plans.length) {
+      renderPlanTable(data.plans);
+      const verified = fmtVerifiedDate(data.last_updated);
+      planCompareHint.textContent = verified
+        ? `Live-pulled plans — last refreshed ${verified}. Prices can vary slightly by telecom circle, confirm on your operator's app before recharging.`
+        : `Live-pulled plans. Prices can vary slightly by telecom circle, confirm on your operator's app before recharging.`;
+      planCompareSource.textContent = `Source: ${data.source_name || 'Bajaj Finserv (aggregated Jio/Airtel/Vi listings)'}. ${data.source_note || 'Always confirm the exact current plan on your operator\'s own app before recharging.'}`;
+    } else {
+      throw new Error('empty or unsuccessful response');
+    }
+  })
+  .catch(() => {
+    renderPlanTable(FALLBACK_PLANS);
+    planCompareHint.textContent = `Couldn't reach the live plan feed right now — showing a small backup sample instead. Always check your operator's app for current plans.`;
+    planCompareSource.textContent = `Backup data shown — not live. Refresh the page to try the live feed again.`;
+  });
 
 const FEATURES = [
   { key: 'ott', label: 'OTT Subscription (Hotstar/Netflix/etc.)', icon: '🎬' },

@@ -724,7 +724,33 @@ RECHARGE_SOURCES = {
     "Vi": "https://www.bajajfinserv.in/vodafone-idea-prepaid-mobile-recharge",
 }
 RECHARGE_CACHE_SECONDS = 24 * 3600
-_recharge_cache = {"per_operator": {}, "last_updated": None}
+_recharge_cache = {
+    "per_operator": {
+        # Seed data so /api/recharge-plans never returns empty before the
+        # first successful live scrape completes. Hand-verified from
+        # Jio/Airtel/Vi's published plan listings — Aug 19, 2026. Overwritten
+        # automatically by _scrape_recharge_plans() on the first request.
+        "Jio": [
+            {"op": "Jio", "price": 209, "validity": "28 days", "data": "1 GB/day", "extras": "Unlimited calls, 100 SMS/day"},
+            {"op": "Jio", "price": 299, "validity": "28 days", "data": "2 GB/day", "extras": "Unlimited calls, 100 SMS/day"},
+            {"op": "Jio", "price": 719, "validity": "84 days", "data": "1.5 GB/day", "extras": "Unlimited calls, 100 SMS/day"},
+            {"op": "Jio", "price": 2999, "validity": "365 days", "data": "2.5 GB/day", "extras": "Unlimited calls, 100 SMS/day"},
+        ],
+        "Airtel": [
+            {"op": "Airtel", "price": 199, "validity": "28 days", "data": "2GB", "extras": "Adobe Express Premium"},
+            {"op": "Airtel", "price": 299, "validity": "28 days", "data": "1GB/day", "extras": "Adobe Express Premium"},
+            {"op": "Airtel", "price": 449, "validity": "28 days", "data": "4GB/day", "extras": "Unlimited 5G Data"},
+            {"op": "Airtel", "price": 979, "validity": "84 days", "data": "2GB/day", "extras": "Aha Premium + 18 OTTs (Xstream Play)"},
+        ],
+        "Vi": [
+            {"op": "Vi", "price": 349, "validity": "28 days", "data": "1.5GB/day", "extras": "Unlimited calls, 100 SMS/day"},
+            {"op": "Vi", "price": 408, "validity": "28 days", "data": "2GB/day", "extras": "SonyLIV"},
+            {"op": "Vi", "price": 449, "validity": "28 days", "data": "3GB/day", "extras": "Vi Movies & TV bundle"},
+            {"op": "Vi", "price": 979, "validity": "84 days", "data": "2GB/day", "extras": "Vi Movies & TV bundle"},
+        ],
+    },
+    "last_updated": None,  # None on purpose — forces a real live scrape on first request
+}
 
 
 def _parse_recharge_tables(html, operator):

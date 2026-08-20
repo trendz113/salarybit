@@ -79,6 +79,7 @@
   input:focus { border-color: var(--accent); }
   input::placeholder { color: #a8adba; }
   .item-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .item-icon { flex: 0 0 30px; font-size: 20px; text-align: center; user-select: none; }
   .item-name { flex: 2; }
   .item-amt { flex: 1; }
   .item-row .del {
@@ -205,6 +206,49 @@ const SAVINGS_OPTIONS = [
   'Emergency Fund'
 ];
 
+// Auto-matched icon per item, based on keywords in the name — since the
+// generated bill is shared as plain WhatsApp text (no photo attachments
+// possible through that share flow), an emoji is the actual practical
+// stand-in for a product picture, both on-screen and in the shared text.
+// Ordered most-specific-first so e.g. "sambar powder" matches spice, not
+// a generic fallback.
+const ITEM_ICONS = [
+  [['sambar', 'rasam', 'masala', 'powder', 'chilli', 'chili', 'spice', 'turmeric', 'haldi', 'jeera', 'dhania'], '🌶️'],
+  [['paneer', 'cheese'], '🧀'],
+  [['ghee', 'butter'], '🧈'],
+  [['curd', 'yogurt', 'yoghurt'], '🥣'],
+  [['milk', 'dairy'], '🥛'],
+  [['egg'], '🥚'],
+  [['chicken', 'mutton', 'meat', 'fish', 'prawn'], '🍗'],
+  [['bread'], '🍞'],
+  [['rice'], '🍚'],
+  [['wheat', 'atta', 'flour', 'maida'], '🌾'],
+  [['dal', 'lentil', 'pulses', 'rajma', 'chana'], '🫘'],
+  [['sugar'], '🍬'],
+  [['salt'], '🧂'],
+  [['oil', 'ghee'], '🫒'],
+  [['tea', 'chai', 'coffee'], '☕'],
+  [['carrot', 'tomato', 'onion', 'potato', 'vegetable', 'veggies', 'sabzi', 'sabji'], '🥕'],
+  [['fruit', 'apple', 'banana', 'mango', 'orange', 'grapes'], '🍎'],
+  [['pooja', 'puja', 'agarbatti', 'incense', 'temple'], '🪔'],
+  [['soap', 'shampoo', 'detergent', 'toiletries', 'toothpaste'], '🧼'],
+  [['medicine', 'pharmacy', 'medical', 'tablet'], '💊'],
+  [['electricity', 'current bill', 'power bill'], '💡'],
+  [['petrol', 'diesel', 'fuel'], '⛽'],
+  [['gas', 'cylinder', 'lpg'], '🛢️'],
+  [['water bill', 'water can'], '💧'],
+  [['wifi', 'internet', 'broadband', 'recharge', 'mobile bill'], '📶'],
+  [['rent', 'house rent'], '🏠'],
+  [['mart', 'store', 'provision', 'grocery', 'groceries', 'kirana', 'supermarket'], '🛒'],
+];
+function pickItemIcon(name) {
+  const n = (name || '').toLowerCase();
+  for (const [keywords, icon] of ITEM_ICONS) {
+    if (keywords.some(k => n.includes(k))) return icon;
+  }
+  return '🛍️';
+}
+
 function todayStr() { return new Date().toISOString().split('T')[0]; }
 
 function setPeriod(p) {
@@ -232,6 +276,10 @@ function removeItem(id) {
 function updateItem(id, field, value) {
   const item = items.find(i => i.id === id);
   if (item) item[field] = value;
+  if (field === 'name') {
+    const iconEl = document.getElementById('icon-' + id);
+    if (iconEl) iconEl.textContent = pickItemIcon(value);
+  }
   renderTotal();
 }
 
@@ -242,6 +290,7 @@ function renderItems() {
     const row = document.createElement('div');
     row.className = 'item-row';
     row.innerHTML = `
+      <span class="item-icon" id="icon-${item.id}">${pickItemIcon(item.name)}</span>
       <input type="text" class="item-name" placeholder="Item name" value="${escapeAttr(item.name)}"
         oninput="updateItem('${item.id}','name',this.value)" />
       <input type="number" class="item-amt" placeholder="₹" value="${escapeAttr(item.amt)}"
@@ -288,7 +337,7 @@ function generateBill() {
   const includeTip = document.getElementById('includeTip').checked;
 
   let text = `🏠 *${period} Household Expenses*\n📅 ${period === 'Monthly' ? 'Month' : period === 'Daily' ? 'Date' : 'Week ending'}: ${formatDate(dateVal)}\n\n`;
-  validItems.forEach(i => { text += `• ${i.name} — ₹${parseFloat(i.amt).toLocaleString('en-IN')}\n`; });
+  validItems.forEach(i => { text += `${pickItemIcon(i.name)} ${i.name} — ₹${parseFloat(i.amt).toLocaleString('en-IN')}\n`; });
   text += `\n💰 *Total: ₹${total.toLocaleString('en-IN')}*`;
 
   if (includeTip) {
@@ -391,13 +440,26 @@ function renderHistory() {
 }
 
 // init with a few dummy sample entries — user can delete or edit any of them
-document.getElementById('billDate').value = todayStr();
+function setDefaultBillDate() {
+  const el = document.getElementById('billDate');
+  const t = todayStr();
+  el.setAttribute('value', t); // set the HTML attribute, not just the JS property —
+  el.value = t;                // some mobile browsers' native calendar picker reads
+}                               // the attribute for its initial displayed month.
+setDefaultBillDate();
 setPeriod('Weekly');
 addItem('Groceries', 500);
 addItem('Petrol', 200);
 addItem('Milk & Dairy', 150);
 addItem('Electricity Bill', 300);
 renderHistory();
+
+// If this page is restored from the phone's back/forward cache (e.g. tapping
+// the back button after leaving), re-apply today's date — otherwise some
+// mobile browsers can show a stale date from an earlier visit.
+window.addEventListener('pageshow', function (e) {
+  if (e.persisted) setDefaultBillDate();
+});
 </script>
 <script src="/assets/js/site-widgets.js"></script>
 </body>

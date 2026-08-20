@@ -1834,6 +1834,195 @@ def verify_pfdecoder_payment():
     return jsonify({"success": True, "payment_id": payment_id, "report": report})
 
 
+# ── LOAN & CREDIT CARD REJECTION DECODER ─────────────────────
+# Same pattern as PF Rejection Decoder above: free static instant-read
+# category explanation, paid (₹199) Claude-generated CA-grade report
+# personalised to the client's exact case.
+CREDITDECODER_PRICE_PAISE = 19900  # Rs 199
+
+CREDITDECODER_REASON_LABELS = {
+    "low_cibil": "Low CIBIL / credit score",
+    "high_dti": "High debt-to-income ratio — too many existing EMIs",
+    "recent_inquiries": "Too many recent credit inquiries (credit-hungry flag)",
+    "thin_credit": "No or very limited credit history",
+    "dpd_default": "Past missed payment / default on credit report",
+    "income_insufficient": "Income too low or unstable for the amount requested",
+    "employment_tenure": "Job tenure too short / employer not on approved list",
+    "kyc_mismatch": "KYC document mismatch (name, address, or PAN)",
+    "existing_relationship": "Issue with an existing account at the same bank",
+    "too_many_lines": "Already holding too many active loans/cards",
+    "age_criteria": "Age outside the lender's eligible range",
+    "pincode": "Location/pincode not serviceable by this lender",
+    "other": "Reason not in the standard list — see the user's own description",
+}
+
+CREDITDECODER_SYSTEM_PROMPT = """You are a senior credit/lending consultant preparing a formal case
+resolution report for a paying client whose loan or credit card application was rejected. The client
+has paid Rs 199 for a CA-grade, personalised report — write with the precision, structure and
+professional tone of a report a financial consultant would hand a client, not a generic FAQ answer.
+
+You will be given: what they applied for (credit card / personal loan / home loan / car loan /
+business loan), the closest-matching standard rejection category, any exact reason text the bank
+gave, the amount requested if given, the client's name if given, and any free-text context they
+added about their situation.
+
+Ground your analysis in these known rejection categories and their standard resolution paths (use
+this as your factual base — do not contradict it, but DO personalise the specific steps, likely
+timeline, and framing to what the client actually described):
+""" + json.dumps(CREDITDECODER_REASON_LABELS, indent=2) + """
+
+Rules:
+- Do NOT invent specific bank policies, exact score thresholds, or statistics you are not certain of
+  — reference well-known, standard mechanisms plainly (CIBIL/Experian/Equifax credit report, debt-to-
+  income ratio, hard inquiries, KYC verification, RBI Banking Ombudsman) rather than fabricating
+  precise numbers or citations.
+- If the client's free-text context reveals something that changes the diagnosis (e.g. they mention a
+  specific old default now resolved, a recent salary hike, multiple parallel applications), address
+  that directly and adjust the guidance — this personalisation is the entire value of the paid report
+  over the free static explanation.
+- Be direct and specific about what to check, whom to contact, and what to do next — a client paying
+  for this expects an action plan, not general reassurance.
+- Explicitly call out anything the client should AVOID doing right now (e.g. applying to multiple
+  other lenders immediately, which can compound the problem via more hard inquiries).
+- This is educational/procedural guidance, not financial or legal advice or a guarantee of approval —
+  say so once, briefly, in the disclaimer field only; do not hedge throughout the report.
+
+Respond ONLY with a single JSON object (no markdown fences, no preamble), matching this exact shape:
+
+{
+  "case_summary": "2-3 sentence professional restatement of the client's specific case",
+  "root_cause": "1-2 paragraph plain-English explanation of why this was likely rejected, personalised using whatever the client told you",
+  "resolution_steps": [
+    {"step": "short imperative title", "detail": "1-3 sentences of specific instruction"}
+  ],
+  "documents_required": ["specific document or evidence useful for reapplying, if any — empty list if none"],
+  "timeline_estimate": "concrete, realistic estimate in weeks/months before reapplying makes sense",
+  "reapply_guidance": "exactly when and how to reapply, and whether a different lender type suits them better",
+  "risk_flags": ["anything about THIS specific case worth flagging, including what to avoid doing — empty list if nothing stands out"],
+  "escalation_path": "where to go if they believe the rejection was made in error (credit bureau dispute process, or RBI Banking Ombudsman for unfair lending practice complaints)",
+  "disclaimer": "one sentence noting this is procedural guidance based on standard lending practice, not a guarantee of approval, and not a substitute for direct confirmation from the lender or a financial advisor in unusual cases"
+}"""
+
+
+def _call_claude_creditdecoder_report(case):
+    claude_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not claude_key:
+        raise RuntimeError("Server not configured. Missing ANTHROPIC_API_KEY.")
+
+    user_content = json.dumps(case, indent=2)
+
+    payload = json.dumps({
+        "model": "claude-sonnet-4-6",
+        "max_tokens": 3000,
+        "system": CREDITDECODER_SYSTEM_PROMPT,
+        "messages": [{"role": "user", "content": user_content}]
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": claude_key,
+            "anthropic-version": "2023-06-01"
+        },
+        method="POST"
+    )
+
+    with urllib.request.urlopen(req, timeout=90) as resp:
+        result = json.loads(resp.read().decode("utf-8"))
+
+    raw = "".join(
+        block.get("text", "") for block in result.get("content", []) if block.get("type") == "text"
+    ).strip()
+    if raw.startswith("```"):
+        raw = raw.strip("`")
+        if raw.lower().startswith("json"):
+            raw = raw[4:]
+    return json.loads(raw)
+
+
+@app.route("/api/create-creditdecoder-order", methods=["POST", "OPTIONS"])
+def create_creditdecoder_order():
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": CREDITDECODER_PRICE_PAISE,
+            "currency": "INR",
+            "receipt": f"creditdecoder_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
+    except Exception as e:
+        print(f"create-creditdecoder-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/verify-creditdecoder-payment", methods=["POST", "OPTIONS"])
+def verify_creditdecoder_payment():
+    """Verifies payment (or a promo bypass code for testing), then runs the
+    Claude-generated CA-grade report on the client's case details and
+    returns it in the same response — same pattern as verify-pfdecoder-payment."""
+    if request.method == "OPTIONS":
+        return "", 200
+    data = request.get_json(silent=True) or {}
+
+    promo_code = (data.get("promo_code") or "").strip()
+    payment_id = None
+
+    if promo_code and promo_code == PROMO_BYPASS_CODE:
+        payment_id = f"promo_{os.urandom(4).hex()}"
+        print(f"[creditdecoder] PROMO bypass unlock | code used")
+    else:
+        order_id = data.get("razorpay_order_id")
+        payment_id = data.get("razorpay_payment_id")
+        signature = data.get("razorpay_signature")
+
+        if not all([order_id, payment_id, signature]):
+            return jsonify({"success": False, "error": "Missing required fields."}), 400
+
+        body = f"{order_id}|{payment_id}"
+        expected = hmac.new(
+            os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+            body.encode(),
+            hashlib.sha256
+        ).hexdigest()
+        if expected != signature:
+            return jsonify({"success": False, "error": "Payment verification failed."}), 400
+
+        print(f"[creditdecoder] paid unlock | payment_id={payment_id}")
+
+    case = {
+        "applied_for": data.get("claim_type") or "Not specified",
+        "rejection_category": CREDITDECODER_REASON_LABELS.get(
+            data.get("remark_key"), data.get("remark_key") or "Not specified"
+        ),
+        "exact_reason_text": data.get("remark_text") or None,
+        "amount_requested_inr": data.get("claimed_amount") or None,
+        "client_name": data.get("client_name") or None,
+        "additional_context": data.get("extra_context") or None,
+    }
+
+    try:
+        report = _call_claude_creditdecoder_report(case)
+    except Exception as e:
+        print(f"creditdecoder report generation error: {type(e).__name__}: {e}")
+        return jsonify({
+            "success": True,
+            "payment_id": payment_id,
+            "error": "Payment succeeded, but report generation failed. You will not be "
+                     "charged again — contact support with this payment ID and we'll get "
+                     "your report to you directly."
+        })
+
+    return jsonify({"success": True, "payment_id": payment_id, "report": report})
+
+
 # ── PAN CORRECTION NAVIGATOR ─────────────────────────────────
 # Upgraded from a pure client-side wizard to a paid, Claude-generated
 # CA-grade resolution report. The free wizard stays as the instant

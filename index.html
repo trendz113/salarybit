@@ -185,6 +185,8 @@ html{overflow-x:hidden}
 .hero-tools{display:flex;flex-wrap:wrap;gap:.375rem;margin-top:1rem}
 .hero-chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;color:rgba(255,255,255,.7);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:4px 10px;border-radius:20px;cursor:pointer;transition:.15s;text-decoration:none}
 .hero-chip:hover{background:rgba(255,255,255,.13);color:#fff}
+.hero-see-all{display:inline-flex;align-items:center;gap:5px;margin-top:.875rem;font-size:12.5px;font-weight:700;color:#fff;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.28);padding:8px 16px;border-radius:20px;text-decoration:none;transition:.15s}
+.hero-see-all:hover{background:rgba(255,255,255,.22);border-color:rgba(255,255,255,.4)}
 .hero-stats{display:flex;gap:1.5rem;flex-shrink:0}
 .hero-stat{text-align:center}
 .hero-stat-val{font-family:var(--display);font-size:26px;color:#fff;line-height:1}
@@ -462,7 +464,6 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   .regime-grid{grid-template-columns:1fr}
   .frow{grid-template-columns:1fr}
   .nav-links{display:none}
-  .hero-tools{display:none}
   .visitor-strip{display:none}
 }
 
@@ -505,6 +506,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
   .hero-stat-val{font-size:18px!important}
   .hero-stat-label{font-size:9px!important}
   .stamp-badge{width:56px!important;height:56px!important;font-size:7px!important;border-width:1.5px!important}
+  .hero-see-all{display:flex!important;justify-content:center;width:100%;box-sizing:border-box;margin-top:.75rem!important}
   /* section nav scroll */
   .sec-nav-wrap{padding:0 20px}
   .sec-nav-arrow{display:flex}
@@ -844,46 +846,14 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
         <h1>India's complete <span class="hl">salary &amp;<br>financial intelligence</span> platform</h1>
         <p class="hero-sub">CTC → in-hand, tax regime comparison, insurance, capital gains, EMI, EPF, Labour Code &amp; employee rights — all in one place.</p>
         <div class="hero-tools">
-          <a class="hero-chip" href="/itr-assistant.html" style="background:rgba(91,106,240,.18);border-color:rgba(91,106,240,.4)">📝 ITR Filing Assistant</a>
-          <a class="hero-chip" href="/fix-your-finance.html" style="background:rgba(179,58,46,.15);border-color:rgba(179,58,46,.35)">🧮 Fix Your Finance</a>
-          <a class="hero-chip" href="/life-passbook.html" style="background:rgba(184,137,46,.18);border-color:rgba(184,137,46,.4)">📖 Life Passbook — Days You've Lived</a>
-          <a class="hero-chip" href="/patience-passbook.html" style="background:rgba(24,42,68,.1);border-color:rgba(24,42,68,.3)">🏦 Patience Passbook — Loan Closure</a>
-          <a class="hero-chip" href="/notice-shield.html" style="background:rgba(224,92,92,.15);border-color:rgba(224,92,92,.35)">🛡️ Notice Shield</a>
-          <a class="hero-chip" href="/insurance-mitra.html" style="background:rgba(14,165,160,.15);border-color:rgba(14,165,160,.35)">🏥 Insurance Mitra</a>
-          <a class="hero-chip" href="/insurance-reality-check.html" style="background:rgba(184,117,44,.15);border-color:rgba(184,117,44,.35)">🚗 Insurance Reality Check</a>
-          <a class="hero-chip" href="/unfreeze-my-account.html" style="background:rgba(165,63,63,.15);border-color:rgba(165,63,63,.35)">🔓 Unfreeze My Account</a>
-          <a class="hero-chip" href="/subscription-leak-finder.html" style="background:rgba(91,106,240,.15);border-color:rgba(91,106,240,.3)">🔍 Subscription Leak Finder</a>
-          <a class="hero-chip" href="/payslip-comparer.html" style="background:rgba(0,166,86,.15);border-color:rgba(0,166,86,.3)">📄 Payslip Comparer</a>
-          <a class="hero-chip" href="/mf-analyzer-bot.html" style="background:rgba(22,163,74,.15);border-color:rgba(22,163,74,.3)">📊 MF Analyzer</a>
-          <a class="hero-chip" href="/family-passbook.html" style="background:rgba(139,58,43,.15);border-color:rgba(139,58,43,.35)">📔 Family Passbook — In Case of Emergency</a>
-          <a class="hero-chip" href="/tools/household-expense-bill.html" style="background:rgba(13,148,136,.15);border-color:rgba(13,148,136,.35)">🧾 Household Expense Bill</a>
           <a class="hero-chip" href="/pf-rejection-decoder.html" style="background:rgba(192,57,43,.15);border-color:rgba(192,57,43,.35)">📋 PF Rejection Decoder</a>
           <a class="hero-chip" href="/credit-rejection-decoder.html" style="background:rgba(31,58,95,.15);border-color:rgba(31,58,95,.35)">💳 Loan/Credit Rejection Decoder</a>
-          <a class="hero-chip" href="/pan-correction-navigator.html" style="background:rgba(37,99,235,.15);border-color:rgba(37,99,235,.35)">🪪 PAN Correction Navigator</a>
-          <a class="hero-chip" href="/superannuation-navigator.html" style="background:rgba(202,138,4,.15);border-color:rgba(202,138,4,.35)">🏛️ Superannuation Navigator</a>
-          <a class="hero-chip" href="/relieving-letter-kit.html" style="background:rgba(14,116,144,.15);border-color:rgba(14,116,144,.35)">📨 Relieving Letter Kit</a>
-          <a class="hero-chip" href="/tools/accident-cover-checker.html" style="background:rgba(91,106,240,.15);border-color:rgba(91,106,240,.35)">💳 Accident Cover Checker</a>
-          <a class="hero-chip" href="/tools/salary-calculator.html">💰 Salary Calculator (Free)</a>
-          <a class="hero-chip" href="/tools/old-vs-new-tax-regime.html">📋 Old vs New Regime</a>
-          <a class="hero-chip" href="/tools/capital-gains-calculator.html">📈 Capital Gains Tax</a>
-          <a class="hero-chip" href="/tools/home-loan-emi-calculator.html">🏠 Home Loan EMI</a>
-          <a class="hero-chip" href="/tools/home-loan-rate-check.html">📉 Home Loan Rate Check</a>
-          <a class="hero-chip" href="/tools/huf-tax-calculator.html">👪 HUF Tax Calculator</a>
-          <a class="hero-chip" href="/tools/sip-calculator.html">📊 SIP Calculator</a>
-          <a class="hero-chip" href="/tools/fd-calculator.html">💵 FD Calculator</a>
-          <a class="hero-chip" href="/tools/car-loan-emi-calculator.html">🚗 Car Loan EMI</a>
-          <a class="hero-chip" href="/tools/retirement-calculator.html">🏖️ Retirement Planner</a>
-          <a class="hero-chip" href="/tools/gratuity-calculator.html">🏆 Gratuity</a>
-          <a class="hero-chip" href="/tools/salary-hike-calculator.html">📊 Salary Hike</a>
-          <a class="hero-chip" href="/tools/epf-calculator.html">🏦 EPF / PF</a>
-          <a class="hero-chip" href="/tools/notice-period-calculator.html">📋 Notice Pay</a>
-          <a class="hero-chip" href="/tools/labour-code-impact-calculator.html">⚖️ Labour Code Impact</a>
-          <a class="hero-chip" href="/tools/employee-rights-calculator.html">🏛️ Employee Rights</a>
-          <a class="hero-chip" href="/tools/gst-calculator.html">🧾 GST Calculator</a>
-          <a class="hero-chip" href="/tools/professional-tax-calculator.html">🏛️ Professional Tax</a>
-          <a class="hero-chip" href="/pdf-signature-validator.html" style="background:rgba(217,119,6,.15);border-color:rgba(217,119,6,.3)">📄 PDF Validator</a>
-          <a class="hero-chip" href="/travel-rewards.html">✈️ Travel Rewards</a>
+          <a class="hero-chip" href="/notice-shield.html" style="background:rgba(224,92,92,.15);border-color:rgba(224,92,92,.35)">🛡️ Notice Shield</a>
+          <a class="hero-chip" href="/unfreeze-my-account.html" style="background:rgba(165,63,63,.15);border-color:rgba(165,63,63,.35)">🔓 Unfreeze My Account</a>
+          <a class="hero-chip" href="/payslip-comparer.html" style="background:rgba(0,166,86,.15);border-color:rgba(0,166,86,.3)">📄 Payslip Comparer</a>
+          <a class="hero-chip" href="/family-passbook.html" style="background:rgba(139,58,43,.15);border-color:rgba(139,58,43,.35)">📔 Family Passbook</a>
         </div>
+        <a href="#tools-section" class="hero-see-all">See all 19+ free tools ↓</a>
         <!-- Mobile CTA (shown only on mobile) -->
         <div style="display:none" class="hero-mob-cta">
           <a href="#calc-section" style="display:inline-flex;align-items:center;gap:5px;background:#fff;color:var(--accent);font-weight:700;font-size:13px;padding:9px 16px;border-radius:9px;text-decoration:none;box-shadow:0 4px 12px rgba(0,0,0,.15)">💰 Salary Calculator</a>

@@ -43,8 +43,7 @@ function doPost(e) {
 
     if (sheet.getLastRow() === 0) {
       sheet.appendRow([
-        "Timestamp", "Owner Name", "Mobile", "Owner Email",
-        "Documents", "Notes", "Full Data (JSON)"
+        "Timestamp", "Owner Email", "Documents", "Full Data (JSON)"
       ]);
     }
 
@@ -52,11 +51,8 @@ function doPost(e) {
 
     sheet.appendRow([
       new Date(),
-      data["Owner Name"] || "",
-      data["Mobile"] || "",
       data["Owner Email"] || "",
       data["Documents"] || "",
-      data["Notes"] || "",
       JSON.stringify(data)
     ]);
 

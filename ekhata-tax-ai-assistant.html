@@ -156,7 +156,7 @@
 <div class="hero">
   <span class="badge">💬 Quick tax payment assistant</span>
   <h1>Let's find out what tax <em>you actually owe</em></h1>
-  <p>Upload a document you already have — a previous tax receipt, khata, or sale deed — plus your contact details. We'll check it and get back to you with the exact amount, usually within 1–2 working days.</p>
+  <p>Upload a document you already have — a previous tax receipt, khata, or sale deed — and your email. We'll check it and get back to you with the exact amount, usually within 1–2 working days.</p>
 </div>
 
 <div class="scope-box">
@@ -204,11 +204,8 @@
 
 <script>
 const steps = [
-  {key:'Documents', q:"Do you have any of these handy? A previous property tax receipt, khata/Form 9, or sale deed — upload whichever you have. Even one is enough for us to check and quote you the exact amount.", type:'file', skippable:true},
-  {key:'Owner Name', q:"What's your name?", type:'text', ph:'Full name'},
-  {key:'Mobile', q:"Mobile number, so we can reach you if needed.", type:'tel', ph:'10-digit mobile'},
-  {key:'Owner Email', q:"And your email — this is where we'll send your quote and updates.", type:'email', ph:'you@example.com'},
-  {key:'Notes', q:"Anything else — your area/ward, or details about the property? Skip if your documents already cover it.", type:'text', ph:'Optional', skippable:true},
+  {key:'Documents', q:"Upload your previous property tax receipt, khata/Form 9, or sale deed — whichever you have. We'll check it and get back to you with the exact amount.", type:'file', skippable:true},
+  {key:'Owner Email', q:"Your email — this is where we'll send your quote.", type:'email', ph:'you@example.com'},
 ];
 
 let idx = 0;
@@ -321,6 +318,16 @@ function finish(){
   // move the real file input (with any chosen files) into the actual submitted form
   const fileEl = document.getElementById('fileStep');
   if(fileEl){ document.getElementById('hiddenFields').appendChild(fileEl); fileEl.style.display='none'; }
+
+  // formsubmit.co's own auto-reply-to only triggers on a field literally
+  // named "email" — ours is "Owner Email", so set it explicitly. This is
+  // the only contact channel now, so hitting Reply must reach the customer.
+  if(answers['Owner Email']){
+    const replyTo = document.createElement('input');
+    replyTo.type='hidden'; replyTo.name='_replyto'; replyTo.value=answers['Owner Email'];
+    hiddenEl.appendChild(replyTo);
+  }
+
   document.getElementById('summary').scrollIntoView({behavior:'smooth', block:'start'});
 
   // Durable side-copy for manual admin review (see /ekhata-admin-review) —

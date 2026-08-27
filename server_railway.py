@@ -3616,7 +3616,7 @@ def ekhata_submit():
     existing formsubmit.co email — see the big comment block above.
 
     Stores the raw field dict as-is (the frontend already uses readable
-    keys like 'Owner Name', 'Mobile', 'Documents', etc. — same keys shown in the
+    keys like 'Owner Email', 'Documents', etc. — same keys shown in the
     formsubmit.co email table), plus a server-side timestamp. No
     validation/allow-listing of fields here since this is an internal
     admin-review copy, not something rendered back to any customer.
@@ -3734,7 +3734,7 @@ function render(subs){
     const fieldRows = Object.entries(s).filter(([k]) => k !== '_ts')
       .map(([k,v]) => `<div><b>${k}:</b> ${v || '—'}</div>`).join('');
     div.innerHTML = `
-      <div><b>${s['Owner Name'] || 'Unnamed'}</b>
+      <div><b>${s['Owner Email'] || 'Unknown'}</b>
         <span class="doc-badge ${hasDocs ? '' : 'none'}">${hasDocs ? docs : 'No documents attached'}</span>
         <span class="ts">${s._ts||''}</span></div>
       <div class="fields">${fieldRows}</div>

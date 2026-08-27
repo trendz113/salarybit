@@ -3614,41 +3614,6 @@ EKHATA_CASE_TYPE_LABELS = {
     "no_records": "No records found",
 }
 
-EKHATA_PRICING_TABLE_TEXT = """- Standard, current year: ₹1,000
-- Standard, 2–5 years pending: ₹1,800
-- Standard, 6–10 years pending: ₹3,000
-- Layout bifurcation (individual khata from combined layout khata): ₹4,000–7,000, depends on layout approval status
-- PID/records mismatch requiring re-verification: ₹1,500–2,500 (mostly verification labor, not tax calculation)"""
-
-EKHATA_REVIEW_SYSTEM_PROMPT = """You are reviewing a property tax facilitation case submitted through the intake
-form. Your job is to summarize the case and flag anything that needs the
-owner's manual attention before any figure is sent to the customer.
-
-Rules:
-- Never state a tax amount, khata status, or PID as confirmed unless it was
-  explicitly retrieved from the government portal itself in this case's
-  record — a customer-reported number is not confirmed.
-- If case_type is "layout_bifurcation": flag clearly that this requires
-  checking the layout's DC conversion and layout-plan approval status before
-  any individual khata or tax figure can be estimated. Do not attempt to
-  estimate tax for this case type.
-- If case_type is "pid_mismatch": flag this as a verification case, not a
-  standard case. Never repeat the customer-reported PID as if it were
-  correct. State plainly that the PID needs to be re-derived from the sale
-  deed's registration number before proceeding.
-- If ward, block, or any core location field is missing: flag "needs GP
-  office confirmation" rather than guessing or leaving it blank silently.
-- If the customer's stated owner name doesn't match a document they
-  uploaded, flag this explicitly — do not silently proceed or assume it's a
-  minor discrepancy.
-- Write your summary for the business owner, not the customer. Be direct
-  about risk and missing information rather than reassuring.
-- End every summary with a suggested case_type-appropriate pricing tier and
-  a one-line reason why.
-
-Current pricing tiers (use these numbers, don't invent your own):
-""" + EKHATA_PRICING_TABLE_TEXT
-
 
 @app.route("/api/ekhata-submit", methods=["POST", "OPTIONS"])
 def ekhata_submit():
@@ -3743,9 +3708,6 @@ h1 { font-size: 1.3rem; margin-bottom: 4px; }
 .case-badge.layout_bifurcation, .case-badge.pid_mismatch, .case-badge.no_records { background: #fbede9; color: #b23a2e; }
 .fields { font-size: 13px; color: #444; margin: 10px 0; }
 .fields b { color: #1c2430; }
-.review-box { white-space: pre-wrap; font-size: 13.5px; line-height: 1.6; background: #f5f1e6; border: 1px solid #e2ddd0; border-radius: 8px; padding: 14px; margin-top: 10px; }
-button.review-btn { background: #2f6f5e; color: #fff; border: none; border-radius: 6px; padding: 8px 16px; font-size: 13px; cursor: pointer; }
-button.review-btn:disabled { background: #aaa; cursor: wait; }
 .ts { color: #999; font-size: 11px; }
 </style>
 </head>
@@ -3757,7 +3719,7 @@ button.review-btn:disabled { background: #aaa; cursor: wait; }
 </div>
 <div id="app" style="display:none;max-width:800px;margin:0 auto;">
   <h1>e-Khata Tax Assistant — Submissions</h1>
-  <p class="hint">Most recent first. "Run AI Review" summarizes the case and flags anything to check before quoting the customer — it never sends anything to the customer itself.</p>
+  <p class="hint">Most recent first. Review case_type and details manually before quoting the customer.</p>
   <div id="list"></div>
 </div>
 <script>
@@ -3785,25 +3747,9 @@ function render(subs){
         <span class="case-badge ${badgeClass}">${caseLabels[ct]||ct}</span>
         <span class="ts">${s._ts||''}</span></div>
       <div class="fields">${fieldRows}</div>
-      <button class="review-btn" onclick="runReview(${i}, this)">Run AI Review</button>
-      <div class="review-box" id="review-${i}" style="display:none;"></div>
     `;
     list.appendChild(div);
-    div._submission = s;
   });
-  window._subs = subs;
-}
-function runReview(i, btn){
-  btn.disabled = true; btn.innerText = 'Reviewing...';
-  fetch('/api/ekhata-ai-review?key=' + encodeURIComponent(ADMIN_KEY), {
-    method: 'POST', headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({submission: window._subs[i]})
-  }).then(r => r.json()).then(data => {
-    btn.disabled = false; btn.innerText = 'Re-run AI Review';
-    const box = document.getElementById('review-'+i);
-    box.style.display = 'block';
-    box.innerText = data.review || data.error || 'No response.';
-  }).catch(() => { btn.disabled = false; btn.innerText = 'Run AI Review'; alert('Review failed — try again.'); });
 }
 </script>
 </body>

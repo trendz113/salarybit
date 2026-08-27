@@ -3588,6 +3588,294 @@ def site_feedback():
 
 
 # ═══════════════════════════════════════════════════════════
+# EKHATA TAX PAYMENT ASSISTANT — case-type detection + AI Review Assist
+# (per ekhata-tool-build-spec-addendum-edge-cases.md)
+#
+# The intake form (ekhata-tax-ai-assistant.html, served via GitHub Pages)
+# still emails each submission via formsubmit.co exactly as before — that
+# is left completely unchanged. On top of that, the form's JS also fires
+# a fetch() to /api/ekhata-submit (fire-and-forget, doesn't block or
+# affect the formsubmit.co submission) so a durable, structured copy of
+# every submission — including the new case_type and its follow-up
+# fields — lands somewhere this server can read it back for AI review.
+#
+# Storage: same pattern as capture_lead()/site_feedback() above — a
+# Google Sheet via EKHATA_SHEET_WEBHOOK_URL (durable) plus a local
+# ekhata-submissions.jsonl fallback (ephemeral on Railway, lost on
+# redeploy — set the Sheet webhook for the real copy).
+# ═══════════════════════════════════════════════════════════
+
+EKHATA_SUBMISSIONS_FILE = os.path.join(os.path.dirname(__file__), "ekhata-submissions.jsonl")
+
+EKHATA_CASE_TYPE_LABELS = {
+    "standard": "Standard",
+    "layout_bifurcation": "Layout bifurcation (combined khata)",
+    "pid_mismatch": "PID / records mismatch",
+    "no_records": "No records found",
+}
+
+EKHATA_PRICING_TABLE_TEXT = """- Standard, current year: ₹1,000
+- Standard, 2–5 years pending: ₹1,800
+- Standard, 6–10 years pending: ₹3,000
+- Layout bifurcation (individual khata from combined layout khata): ₹4,000–7,000, depends on layout approval status
+- PID/records mismatch requiring re-verification: ₹1,500–2,500 (mostly verification labor, not tax calculation)"""
+
+EKHATA_REVIEW_SYSTEM_PROMPT = """You are reviewing a property tax facilitation case submitted through the intake
+form. Your job is to summarize the case and flag anything that needs the
+owner's manual attention before any figure is sent to the customer.
+
+Rules:
+- Never state a tax amount, khata status, or PID as confirmed unless it was
+  explicitly retrieved from the government portal itself in this case's
+  record — a customer-reported number is not confirmed.
+- If case_type is "layout_bifurcation": flag clearly that this requires
+  checking the layout's DC conversion and layout-plan approval status before
+  any individual khata or tax figure can be estimated. Do not attempt to
+  estimate tax for this case type.
+- If case_type is "pid_mismatch": flag this as a verification case, not a
+  standard case. Never repeat the customer-reported PID as if it were
+  correct. State plainly that the PID needs to be re-derived from the sale
+  deed's registration number before proceeding.
+- If ward, block, or any core location field is missing: flag "needs GP
+  office confirmation" rather than guessing or leaving it blank silently.
+- If the customer's stated owner name doesn't match a document they
+  uploaded, flag this explicitly — do not silently proceed or assume it's a
+  minor discrepancy.
+- Write your summary for the business owner, not the customer. Be direct
+  about risk and missing information rather than reassuring.
+- End every summary with a suggested case_type-appropriate pricing tier and
+  a one-line reason why.
+
+Current pricing tiers (use these numbers, don't invent your own):
+""" + EKHATA_PRICING_TABLE_TEXT
+
+
+@app.route("/api/ekhata-submit", methods=["POST", "OPTIONS"])
+def ekhata_submit():
+    """
+    Durable side-copy of an e-Khata Tax Assistant intake submission. Called
+    by ekhata-tax-ai-assistant.html's JS alongside (not instead of) its
+    existing formsubmit.co email — see the big comment block above.
+
+    Stores the raw field dict as-is (the frontend already uses readable
+    keys like 'Case Type', 'Ward', etc. — same keys shown in the
+    formsubmit.co email table), plus a server-side timestamp. No
+    validation/allow-listing of fields here since this is an internal
+    admin-review copy, not something rendered back to any customer.
+    """
+    if request.method == "OPTIONS":
+        return "", 200
+
+    data = request.get_json(silent=True) or {}
+    if not data:
+        return jsonify({"error": "No submission data received."}), 400
+
+    entry = {**data, "_ts": datetime.utcnow().isoformat() + "Z"}
+
+    sheet_webhook_url = os.environ.get("EKHATA_SHEET_WEBHOOK_URL", "").strip()
+    sheet_ok = False
+    if sheet_webhook_url:
+        try:
+            req = urllib.request.Request(
+                sheet_webhook_url,
+                data=json.dumps(entry, ensure_ascii=False).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            with urllib.request.urlopen(req, timeout=8) as resp:
+                resp.read()
+            sheet_ok = True
+        except Exception:
+            sheet_ok = False  # fall through to local file below
+
+    try:
+        with open(EKHATA_SUBMISSIONS_FILE, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    except Exception:
+        if not sheet_ok:
+            return jsonify({"error": "Could not save right now."}), 500
+
+    return jsonify({"status": "ok"}), 200
+
+
+def _ekhata_load_submissions(limit=100):
+    """Most-recent-first, capped at `limit`. Local-file-only — if you've
+    set EKHATA_SHEET_WEBHOOK_URL for durable storage, that Sheet is your
+    real record; this admin page reads only the local ephemeral copy."""
+    if not os.path.exists(EKHATA_SUBMISSIONS_FILE):
+        return []
+    rows = []
+    with open(EKHATA_SUBMISSIONS_FILE, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rows.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+    rows.reverse()
+    return rows[:limit]
+
+
+def _ekhata_check_admin_key(supplied):
+    expected = os.environ.get("EKHATA_ADMIN_KEY", "")
+    return bool(expected) and hmac.compare_digest(supplied or "", expected)
+
+
+EKHATA_ADMIN_PAGE_TEMPLATE = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>e-Khata Admin Review — SalaryBit</title>
+<style>
+* { box-sizing: border-box; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f3ec; color: #1c2430; margin: 0; padding: 24px; }
+h1 { font-size: 1.3rem; margin-bottom: 4px; }
+.hint { color: #6b6458; font-size: 0.85rem; margin-bottom: 20px; }
+.gate { max-width: 360px; margin: 60px auto; background: #fff; border: 1px solid #e2ddd0; border-radius: 10px; padding: 24px; }
+.gate input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+.gate button { width: 100%; padding: 10px; background: #2f6f5e; color: #fff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+.case { background: #fff; border: 1px solid #e2ddd0; border-radius: 10px; padding: 16px 20px; margin-bottom: 14px; }
+.case-badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-left: 8px; }
+.case-badge.standard { background: #f3e7cc; color: #a9762e; }
+.case-badge.layout_bifurcation, .case-badge.pid_mismatch, .case-badge.no_records { background: #fbede9; color: #b23a2e; }
+.fields { font-size: 13px; color: #444; margin: 10px 0; }
+.fields b { color: #1c2430; }
+.review-box { white-space: pre-wrap; font-size: 13.5px; line-height: 1.6; background: #f5f1e6; border: 1px solid #e2ddd0; border-radius: 8px; padding: 14px; margin-top: 10px; }
+button.review-btn { background: #2f6f5e; color: #fff; border: none; border-radius: 6px; padding: 8px 16px; font-size: 13px; cursor: pointer; }
+button.review-btn:disabled { background: #aaa; cursor: wait; }
+.ts { color: #999; font-size: 11px; }
+</style>
+</head>
+<body>
+<div id="gate" class="gate">
+  <h2>e-Khata Admin Review</h2>
+  <input type="password" id="keyInput" placeholder="Admin key">
+  <button onclick="unlock()">Enter</button>
+</div>
+<div id="app" style="display:none;max-width:800px;margin:0 auto;">
+  <h1>e-Khata Tax Assistant — Submissions</h1>
+  <p class="hint">Most recent first. "Run AI Review" summarizes the case and flags anything to check before quoting the customer — it never sends anything to the customer itself.</p>
+  <div id="list"></div>
+</div>
+<script>
+let ADMIN_KEY = '';
+function unlock(){
+  ADMIN_KEY = document.getElementById('keyInput').value;
+  fetch('/api/ekhata-submissions?key=' + encodeURIComponent(ADMIN_KEY))
+    .then(r => { if(!r.ok) throw new Error('bad key'); return r.json(); })
+    .then(data => { document.getElementById('gate').style.display='none'; document.getElementById('app').style.display='block'; render(data.submissions); })
+    .catch(() => alert('Wrong key, or none set on the server (EKHATA_ADMIN_KEY).'));
+}
+function render(subs){
+  const list = document.getElementById('list');
+  if(!subs.length){ list.innerHTML = '<p>No submissions on file yet (or the local copy was lost on a Railway redeploy — check EKHATA_SHEET_WEBHOOK_URL for the durable copy).</p>'; return; }
+  subs.forEach((s, i) => {
+    const ct = s['Case Type'] || 'standard';
+    const badgeClass = ct === 'standard' ? 'standard' : ct;
+    const caseLabels = {standard:'Standard', layout_bifurcation:'Layout bifurcation', pid_mismatch:'PID mismatch', no_records:'No records'};
+    const div = document.createElement('div');
+    div.className = 'case';
+    const fieldRows = Object.entries(s).filter(([k]) => k !== '_ts' && k !== 'Documents')
+      .map(([k,v]) => `<div><b>${k}:</b> ${v || '—'}</div>`).join('');
+    div.innerHTML = `
+      <div><b>${(s['Owner First Name']||'')+' '+(s['Owner Surname']||'') || 'Unnamed'}</b>
+        <span class="case-badge ${badgeClass}">${caseLabels[ct]||ct}</span>
+        <span class="ts">${s._ts||''}</span></div>
+      <div class="fields">${fieldRows}</div>
+      <button class="review-btn" onclick="runReview(${i}, this)">Run AI Review</button>
+      <div class="review-box" id="review-${i}" style="display:none;"></div>
+    `;
+    list.appendChild(div);
+    div._submission = s;
+  });
+  window._subs = subs;
+}
+function runReview(i, btn){
+  btn.disabled = true; btn.innerText = 'Reviewing...';
+  fetch('/api/ekhata-ai-review?key=' + encodeURIComponent(ADMIN_KEY), {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({submission: window._subs[i]})
+  }).then(r => r.json()).then(data => {
+    btn.disabled = false; btn.innerText = 'Re-run AI Review';
+    const box = document.getElementById('review-'+i);
+    box.style.display = 'block';
+    box.innerText = data.review || data.error || 'No response.';
+  }).catch(() => { btn.disabled = false; btn.innerText = 'Run AI Review'; alert('Review failed — try again.'); });
+}
+</script>
+</body>
+</html>"""
+
+
+@app.route("/ekhata-admin-review", methods=["GET"])
+def ekhata_admin_review_page():
+    return Response(EKHATA_ADMIN_PAGE_TEMPLATE, mimetype="text/html")
+
+
+@app.route("/api/ekhata-submissions", methods=["GET"])
+def ekhata_submissions_list():
+    if not _ekhata_check_admin_key(request.args.get("key")):
+        return jsonify({"error": "Unauthorized"}), 401
+    return jsonify({"submissions": _ekhata_load_submissions()})
+
+
+def _call_claude_ekhata_review(submission):
+    claude_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not claude_key:
+        raise RuntimeError("Server not configured. Missing ANTHROPIC_API_KEY.")
+
+    case_text = "\n".join(f"{k}: {v}" for k, v in submission.items() if k != "_ts")
+
+    payload = json.dumps({
+        "model": "claude-sonnet-4-6",
+        "max_tokens": 900,
+        "system": EKHATA_REVIEW_SYSTEM_PROMPT,
+        "messages": [{"role": "user", "content": case_text}]
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": claude_key,
+            "anthropic-version": "2023-06-01"
+        },
+        method="POST"
+    )
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        result = json.loads(resp.read().decode("utf-8"))
+
+    return "".join(
+        block.get("text", "") for block in result.get("content", []) if block.get("type") == "text"
+    ).strip() or "(The AI returned an empty response — try again.)"
+
+
+@app.route("/api/ekhata-ai-review", methods=["POST", "OPTIONS"])
+def ekhata_ai_review():
+    if request.method == "OPTIONS":
+        return "", 200
+    if not _ekhata_check_admin_key(request.args.get("key")):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    data = request.get_json(silent=True) or {}
+    submission = data.get("submission")
+    if not submission:
+        return jsonify({"error": "No submission provided."}), 400
+
+    try:
+        review = _call_claude_ekhata_review(submission)
+    except Exception as e:
+        print(f"[ekhata-ai-review] error: {type(e).__name__}: {e}")
+        return jsonify({"error": str(e)}), 500
+
+    return jsonify({"review": review})
+
+
+# ═══════════════════════════════════════════════════════════
 # ITR FILING ASSISTANT — BETA (promo-code gated, no real charge yet)
 # Deterministic tax math (never left to the model) + Claude-generated
 # step-by-step filing instructions. Single-request flow (upload → parse →

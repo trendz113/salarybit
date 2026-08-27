@@ -47,14 +47,11 @@
   .hero h1 em{color:var(--gold);font-style:normal;}
   .hero p{color:var(--text-soft);max-width:460px;margin:0 auto;font-size:14.5px;}
 
-  .scope-box{
-    max-width:640px;margin:20px auto 0;padding:14px 18px;
+  .scope-line{
+    max-width:640px;margin:16px auto 0;padding:12px 18px;
     background:var(--emerald-soft);border:1px solid #BFDCCB;border-radius:10px;
-    font-size:13px;color:#1F4A38;display:flex;gap:10px;
+    font-size:13px;color:#1F4A38;text-align:center;
   }
-  .scope-box b{color:var(--emerald);}
-  .scope-box.not{background:#FBEDE9;border-color:#E8C4B8;color:#7A2E1F;margin-top:10px;}
-  .scope-box.not b{color:var(--red);}
 
   /* CHAT */
   .chat{margin-top:32px;}
@@ -159,14 +156,7 @@
   <p>Upload a document you already have — a previous tax receipt, khata, or sale deed — and your email. We'll check it and get back to you with the exact amount, usually within 1–2 working days.</p>
 </div>
 
-<div class="scope-box">
-  <span>✅</span>
-  <span><b>What we help with:</b> if your site has no khata, or you don't know how to pay pending property tax, we calculate what's owed, send you the official challan, and guide you to pay it — you get a government payment acknowledgment/receipt at the end.</span>
-</div>
-<div class="scope-box not">
-  <span>✕</span>
-  <span><b>What we don't do:</b> we do not file or process the e-Khata application itself. This service covers the tax payment step only. Our facilitation fee is for that — payable once your tax is paid and you have your receipt.</span>
-</div>
+<div class="scope-line">🧾 We work out your pending property tax and get you the government challan to pay it. Don't have a khata or any document at all? That's fine — just give your email below and we'll take it from there.</div>
 
 <div class="wrap">
 
@@ -184,7 +174,7 @@
       <input type="hidden" name="_template" value="table">
       <input type="hidden" name="_captcha" value="false">
       <div id="hiddenFields"></div>
-      <button type="submit" class="submit-btn">Send This — Get My Challan</button>
+      <button type="submit" class="submit-btn">Send &amp; Get My Quote</button>
     </form>
     <div class="form-note">We reply by email only, usually within 1–2 working days. If anything's missing, we'll write back asking for it.</div>
   </div>
@@ -195,7 +185,7 @@
       <li><span class="ni">1</span><span><b>We check what's pending</b> — every year of unpaid tax on your property, calculated properly.</span></li>
       <li><span class="ni">2</span><span><b>You get an email</b> with the exact amount and the official challan to pay.</span></li>
       <li><span class="ni">3</span><span><b>You pay the government directly</b> and get your payment acknowledgment/receipt — we never collect government tax ourselves.</span></li>
-      <li><span class="ni">4</span><span><b>You pay our facilitation fee</b> (₹1,000–₹3,000 depending on how many years were pending) once your tax is settled. That's where our involvement ends — e-Khata filing is a separate step you'd do yourself or with a separate service.</span></li>
+      <li><span class="ni">4</span><span><b>You pay our facilitation fee</b> (₹1,000–₹3,000 depending on how many years were pending) once your tax is settled. That's where our involvement ends — we don't file or process e-Khata itself, that's a separate step you'd do yourself or with a separate service.</span></li>
     </ul>
   </div>
 
@@ -204,7 +194,7 @@
 
 <script>
 const steps = [
-  {key:'Documents', q:"Upload your previous property tax receipt, khata/Form 9, or sale deed — whichever you have. We'll check it and get back to you with the exact amount.", type:'file', skippable:true},
+  {key:'Documents', q:"Have a previous tax receipt, khata/Form 9, or sale deed? Upload whichever you have.", sub:"Don't have any of these? No problem — just skip and give your email next. Used only to work out your tax, never stored or shared.", type:'file', skippable:true},
   {key:'Owner Email', q:"Your email — this is where we'll send your quote.", type:'email', ph:'you@example.com'},
 ];
 
@@ -243,7 +233,7 @@ function renderStep(){
     return;
   }
 
-  addMsg(s.q, 'ai');
+  addMsg(s.q, 'ai', s.sub);
 
   if(s.type === 'choice'){
     const row = document.createElement('div');

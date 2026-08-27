@@ -3607,13 +3607,6 @@ def site_feedback():
 
 EKHATA_SUBMISSIONS_FILE = os.path.join(os.path.dirname(__file__), "ekhata-submissions.jsonl")
 
-EKHATA_CASE_TYPE_LABELS = {
-    "standard": "Standard",
-    "layout_bifurcation": "Layout bifurcation (combined khata)",
-    "pid_mismatch": "PID / records mismatch",
-    "no_records": "No records found",
-}
-
 
 @app.route("/api/ekhata-submit", methods=["POST", "OPTIONS"])
 def ekhata_submit():
@@ -3623,7 +3616,7 @@ def ekhata_submit():
     existing formsubmit.co email — see the big comment block above.
 
     Stores the raw field dict as-is (the frontend already uses readable
-    keys like 'Case Type', 'Ward', etc. — same keys shown in the
+    keys like 'Owner Name', 'Mobile', 'Documents', etc. — same keys shown in the
     formsubmit.co email table), plus a server-side timestamp. No
     validation/allow-listing of fields here since this is an internal
     admin-review copy, not something rendered back to any customer.
@@ -3703,9 +3696,8 @@ h1 { font-size: 1.3rem; margin-bottom: 4px; }
 .gate input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
 .gate button { width: 100%; padding: 10px; background: #2f6f5e; color: #fff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
 .case { background: #fff; border: 1px solid #e2ddd0; border-radius: 10px; padding: 16px 20px; margin-bottom: 14px; }
-.case-badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-left: 8px; }
-.case-badge.standard { background: #f3e7cc; color: #a9762e; }
-.case-badge.layout_bifurcation, .case-badge.pid_mismatch, .case-badge.no_records { background: #fbede9; color: #b23a2e; }
+.doc-badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-left: 8px; background: #eaf2ee; color: #2f6f5e; }
+.doc-badge.none { background: #fbede9; color: #b23a2e; }
 .fields { font-size: 13px; color: #444; margin: 10px 0; }
 .fields b { color: #1c2430; }
 .ts { color: #999; font-size: 11px; }
@@ -3713,13 +3705,13 @@ h1 { font-size: 1.3rem; margin-bottom: 4px; }
 </head>
 <body>
 <div id="gate" class="gate">
-  <h2>e-Khata Admin Review</h2>
+  <h2>Property Tax Admin Review</h2>
   <input type="password" id="keyInput" placeholder="Admin key">
   <button onclick="unlock()">Enter</button>
 </div>
 <div id="app" style="display:none;max-width:800px;margin:0 auto;">
-  <h1>e-Khata Tax Assistant — Submissions</h1>
-  <p class="hint">Most recent first. Review case_type and details manually before quoting the customer.</p>
+  <h1>Property Tax Assistant — Submissions</h1>
+  <p class="hint">Most recent first. Check the attached documents, then reply to the customer's email with a quote.</p>
   <div id="list"></div>
 </div>
 <script>
@@ -3734,17 +3726,16 @@ function unlock(){
 function render(subs){
   const list = document.getElementById('list');
   if(!subs.length){ list.innerHTML = '<p>No submissions on file yet (or the local copy was lost on a Railway redeploy — check EKHATA_SHEET_WEBHOOK_URL for the durable copy).</p>'; return; }
-  subs.forEach((s, i) => {
-    const ct = s['Case Type'] || 'standard';
-    const badgeClass = ct === 'standard' ? 'standard' : ct;
-    const caseLabels = {standard:'Standard', layout_bifurcation:'Layout bifurcation', pid_mismatch:'PID mismatch', no_records:'No records'};
+  subs.forEach((s) => {
+    const docs = s['Documents'] || '';
+    const hasDocs = docs && docs !== '(none attached)';
     const div = document.createElement('div');
     div.className = 'case';
-    const fieldRows = Object.entries(s).filter(([k]) => k !== '_ts' && k !== 'Documents')
+    const fieldRows = Object.entries(s).filter(([k]) => k !== '_ts')
       .map(([k,v]) => `<div><b>${k}:</b> ${v || '—'}</div>`).join('');
     div.innerHTML = `
-      <div><b>${(s['Owner First Name']||'')+' '+(s['Owner Surname']||'') || 'Unnamed'}</b>
-        <span class="case-badge ${badgeClass}">${caseLabels[ct]||ct}</span>
+      <div><b>${s['Owner Name'] || 'Unnamed'}</b>
+        <span class="doc-badge ${hasDocs ? '' : 'none'}">${hasDocs ? docs : 'No documents attached'}</span>
         <span class="ts">${s._ts||''}</span></div>
       <div class="fields">${fieldRows}</div>
     `;

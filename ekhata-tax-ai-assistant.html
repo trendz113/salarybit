@@ -154,9 +154,9 @@
 <body>
 
 <div class="hero">
-  <span class="badge">💬 Guided tax payment assistant</span>
+  <span class="badge">💬 Quick tax payment assistant</span>
   <h1>Let's find out what tax <em>you actually owe</em></h1>
-  <p>Answer a few quick questions — like chatting with an assistant — and we'll work out your pending property tax and how to pay it.</p>
+  <p>Upload a document you already have — a previous tax receipt, khata, or sale deed — plus your contact details. We'll check it and get back to you with the exact amount, usually within 1–2 working days.</p>
 </div>
 
 <div class="scope-box">
@@ -203,66 +203,12 @@
 </div>
 
 <script>
-// Case-type-specific note shown right after "Is your property tax
-// situation..." — before any type-specific follow-up questions.
-function caseTypeNote(a){
-  const ct = a['Case Type'];
-  if(ct === 'layout_bifurcation') return "This is a layout-level issue, not just a tax payment — it usually needs the layout's approval status checked before anything else. This may take longer and cost more than a standard case.";
-  if(ct === 'pid_mismatch') return "We'll verify this using your registration document, not the PID alone, since a mismatched PID can mean it's simply wrong — we won't proceed on an unverified PID.";
-  if(ct === 'no_records') return "No problem — we'll confirm your ward, block, and property records directly with your Gram Panchayat office. Just give us your address and any document you have (even an old paper tax receipt helps).";
-  return '';
-}
-
 const steps = [
-  {key:'Property Type', q:"First — is this a vacant site or a building?", type:'choice', options:['Vacant Site','Building']},
-
-  // ── Case-type detection ─────────────────────────────────────
-  {key:'Case Type', q:"Is your property tax situation...", type:'choice',
-    options:[
-      "Straightforward — I know my ward/block and just need to pay pending tax",
-      "My site is part of a layout with one combined khata, not an individual one",
-      "I have a Property ID but I'm not sure it's correct / it shows different details",
-      "I don't know my ward, block, or any property ID at all"
-    ],
-    codes:['standard','layout_bifurcation','pid_mismatch','no_records']},
-  {key:'Case Type Note', type:'note', text:caseTypeNote,
-    showIf:a=>a['Case Type'] && a['Case Type'] !== 'standard'},
-  {key:'Layout Khata No', q:"What's the khata/Form 9 number of the layout (not your individual site)?", type:'text', ph:'Layout khata/Form 9 no.',
-    showIf:a=>a['Case Type']==='layout_bifurcation'},
-  {key:'Layout DC Conversion', q:"Do you know if the layout has DC conversion and an approved layout plan?", type:'choice', options:['Yes','No','Not sure'],
-    showIf:a=>a['Case Type']==='layout_bifurcation'},
-  {key:'PID Shown Details', q:"What name and details does the PID currently show when you search it?", type:'text', ph:'What the PID search shows',
-    showIf:a=>a['Case Type']==='pid_mismatch'},
-  {key:'Registration Doc No', q:"Do you have your sale deed's registration/document number?", type:'text', ph:'Registration/document no.',
-    showIf:a=>a['Case Type']==='pid_mismatch'},
-  // ─────────────────────────────────────────────────────────────
-
-  {key:'Ward', q:"What's your Ward Number or Name?", type:'text', ph:'e.g. Ward 12',
-    skipIf:a=>a['Case Type']==='no_records'},
-  {key:'Block/Locality', q:"And the Block or Locality?", type:'text', ph:'e.g. Kannuradahalli',
-    skipIf:a=>a['Case Type']==='no_records'},
-  {key:'Street', q:"Street name? (skip if you're not sure)", type:'text', ph:'e.g. Main Road', skippable:true,
-    skipIf:a=>a['Case Type']==='no_records'},
-  {key:'House Number', q:"Property or house number, if you have one.", type:'text', ph:'Optional', skippable:true,
-    skipIf:a=>a['Case Type']==='no_records'},
-  {key:'Property ID', q:"Do you already have a Property ID (PID)? Type it in, or skip if you don't have one.", type:'text', ph:'Leave blank if none', skippable:true,
-    skipIf:a=>a['Case Type']==='no_records' || a['Case Type']==='pid_mismatch'},
-  {key:'Assessment No', q:"Any Municipal Assessment Number on file?", type:'text', ph:'Leave blank if none', skippable:true,
-    skipIf:a=>a['Case Type']==='no_records'},
-  {key:'Address', q:"What's the full address of the property?", type:'text', ph:'Full postal address'},
-  {key:'Pin Code', q:"Pin code?", type:'text', ph:'560067'},
-  {key:'Owner First Name', q:"Now the owner's details — first name?", type:'text', ph:'First name'},
-  {key:'Owner Surname', q:"And surname?", type:'text', ph:'Surname'},
-  {key:'Additional Owners', q:"Any other co-owners on the property? Type their names, or skip if it's just one owner.", type:'text', ph:'Names, or skip', skippable:true},
-  {key:'Mobile', q:"Your mobile number, so we can reach you if needed.", type:'tel', ph:'10-digit mobile'},
-  {key:'Owner Email', q:"And your email — this is where we'll send your challan and updates.", type:'email', ph:'you@example.com'},
-  {key:'Area sqft', q:"Roughly how big is the site, in square feet? (Skip if you're not sure — we can work it out later.)", type:'number', ph:'e.g. 956', skippable:true,
-    skipIf:a=>a['Case Type']==='pid_mismatch'},
-  {key:'Guidance Value', q:"Do you know the government guidance value per sq.ft. for your area? Skip if not.", type:'number', ph:'e.g. 2787', skippable:true,
-    skipIf:a=>a['Case Type']==='pid_mismatch'},
-  {key:'Purchase Year', q:"What year did you purchase or inherit the property?", type:'number', ph:'e.g. 2016'},
-  {key:'Notes', q:"Anything else we should know? For example, if it was inherited, or you've never received any tax notice at all.", type:'text', ph:'Optional notes', skippable:true},
-  {key:'Documents', q:"Last thing — if you have your sale deed, EC, or any related document handy, attach it here. Totally fine to skip and send later.", type:'file', skippable:true},
+  {key:'Documents', q:"Do you have any of these handy? A previous property tax receipt, khata/Form 9, or sale deed — upload whichever you have. Even one is enough for us to check and quote you the exact amount.", type:'file', skippable:true},
+  {key:'Owner Name', q:"What's your name?", type:'text', ph:'Full name'},
+  {key:'Mobile', q:"Mobile number, so we can reach you if needed.", type:'tel', ph:'10-digit mobile'},
+  {key:'Owner Email', q:"And your email — this is where we'll send your quote and updates.", type:'email', ph:'you@example.com'},
+  {key:'Notes', q:"Anything else — your area/ward, or details about the property? Skip if your documents already cover it.", type:'text', ph:'Optional', skippable:true},
 ];
 
 let idx = 0;
@@ -377,9 +323,9 @@ function finish(){
   if(fileEl){ document.getElementById('hiddenFields').appendChild(fileEl); fileEl.style.display='none'; }
   document.getElementById('summary').scrollIntoView({behavior:'smooth', block:'start'});
 
-  // Durable side-copy for the AI Review Assist admin page — fires
-  // alongside (not instead of) the formsubmit.co email below, so this
-  // page's existing email delivery is completely unaffected even if
+  // Durable side-copy for manual admin review (see /ekhata-admin-review) —
+  // fires alongside (not instead of) the formsubmit.co email below, so
+  // this page's existing email delivery is completely unaffected even if
   // this call fails. keepalive:true lets it finish even though the
   // form's own submit navigates the page away right after.
   document.getElementById('finalForm').addEventListener('submit', function(){

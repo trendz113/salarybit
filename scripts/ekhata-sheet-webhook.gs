@@ -7,7 +7,7 @@
  * on Railway is lost on every redeploy, so this Sheet is the real record.
  *
  * This is a SEPARATE Sheet/script from the existing lead-sheet-webhook.gs
- * — Ekhata submissions have a completely different shape (Ward, Case
+ * — Ekhata submissions have a different shape (Owner Name, Documents,
  * Type, PID, etc.) from leads/feedback rows, so they don't belong in the
  * same sheet.
  *
@@ -43,40 +43,19 @@ function doPost(e) {
 
     if (sheet.getLastRow() === 0) {
       sheet.appendRow([
-        "Timestamp", "Case Type", "Owner Name", "Mobile", "Owner Email",
-        "Property Type", "Ward", "Block/Locality", "Address", "Pin Code",
-        "Property ID", "Assessment No",
-        "Layout Khata No", "Layout DC Conversion",
-        "PID Shown Details", "Registration Doc No",
-        "Area sqft", "Guidance Value", "Purchase Year", "Notes",
-        "Full Data (JSON)"
+        "Timestamp", "Owner Name", "Mobile", "Owner Email",
+        "Documents", "Notes", "Full Data (JSON)"
       ]);
     }
 
     var data = JSON.parse(e.postData.contents);
-    var ownerName = [data["Owner First Name"], data["Owner Surname"]]
-      .filter(function (v) { return v; }).join(" ");
 
     sheet.appendRow([
       new Date(),
-      data["Case Type"] || "standard",
-      ownerName,
+      data["Owner Name"] || "",
       data["Mobile"] || "",
       data["Owner Email"] || "",
-      data["Property Type"] || "",
-      data["Ward"] || "",
-      data["Block/Locality"] || "",
-      data["Address"] || "",
-      data["Pin Code"] || "",
-      data["Property ID"] || "",
-      data["Assessment No"] || "",
-      data["Layout Khata No"] || "",
-      data["Layout DC Conversion"] || "",
-      data["PID Shown Details"] || "",
-      data["Registration Doc No"] || "",
-      data["Area sqft"] || "",
-      data["Guidance Value"] || "",
-      data["Purchase Year"] || "",
+      data["Documents"] || "",
       data["Notes"] || "",
       JSON.stringify(data)
     ]);

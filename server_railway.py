@@ -3734,7 +3734,7 @@ function render(subs){
     const fieldRows = Object.entries(s).filter(([k]) => k !== '_ts')
       .map(([k,v]) => `<div><b>${k}:</b> ${v || '—'}</div>`).join('');
     div.innerHTML = `
-      <div><b>${s['Owner Email'] || 'Unknown'}</b>
+      <div><b>${s['Owner Name'] || s['Owner Email'] || 'Unknown'}</b>
         <span class="doc-badge ${hasDocs ? '' : 'none'}">${hasDocs ? docs : 'No documents attached'}</span>
         <span class="ts">${s._ts||''}</span></div>
       <div class="fields">${fieldRows}</div>

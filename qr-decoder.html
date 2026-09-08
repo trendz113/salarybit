@@ -3,181 +3,178 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>e-Khata QR Decoder — SalaryBit</title>
-  <meta name="description" content="Decode the digital signature QR code embedded in Indian government property documents (E-Khata, E-Aasthi) instantly and securely with SalaryBit's QR Decoder.">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<title>How to Download &amp; Verify Your Issued e-Khata via QR Code | SalaryBit</title>
+<meta name="description" content="Step-by-step: how to download, decode and verify the QR code on your issued e-Khata (BBMP / BBSCC / e-Aasthi) PDF. Extract the digital signature string in seconds — for property verification, bank loans, or Kaveri Online."/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,600&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
 :root {
-  --bg: #0a0a0a;
-  --surface: #111111;
-  --surface2: #1a1a1a;
-  --border: #222222;
-  --border2: #2e2e2e;
-  --green: #00e676;
-  --green-dim: #00e67620;
-  --green-mid: #00e67640;
-  --text: #f0f0f0;
-  --text2: #888;
-  --text3: #555;
-  --blue: #4fc3f7;
-  --amber: #ffb74d;
-  --red: #ef5350;
-  --font: 'Syne', sans-serif;
-  --mono: 'JetBrains Mono', monospace;
+  --ink: #12192B;
+  --ink2: #1B2540;
+  --ink3: #49577E;
+  --mist: #7986AA;
+  --fog: #AAB4CE;
+  --cloud: #D9DFEC;
+  --pale: #F0F2F8;
+  --snow: #FAFAFD;
+  --white: #ffffff;
+  --accent: #FF6A33;
+  --accent2: #FF9466;
+  --accent-bg: rgba(255,106,51,.08);
+  --accent-border: rgba(255,106,51,.22);
+  --teal: #0EA5A0;
+  --teal-bg: rgba(14,165,160,.08);
+  --amber: #D4A017;
+  --amber-bg: rgba(212,160,23,.1);
+  --rose: #C0392B;
+  --rose-bg: rgba(192,57,43,.08);
+  --green: #0F9D63;
+  --green-bg: rgba(15,157,99,.08);
+  --border: #e2e2f0;
+  --shadow: 0 1px 4px rgba(18,25,43,.06), 0 4px 16px rgba(18,25,43,.08);
+  --shadow-lg: 0 8px 32px rgba(18,25,43,.14);
+  --r: 12px;
+  --r-sm: 8px;
+  --r-lg: 18px;
+  --body: 'DM Sans', sans-serif;
+  --display: 'Fraunces', serif;
+  --mono: 'Space Mono', monospace;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font);
+  background: var(--snow);
+  color: var(--ink);
+  font-family: var(--body);
+  line-height: 1.6;
   min-height: 100vh;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(var(--border) 1px, transparent 1px),
-    linear-gradient(90deg, var(--border) 1px, transparent 1px);
-  background-size: 48px 48px;
-  opacity: 0.3;
-  pointer-events: none;
-  z-index: 0;
-}
-.glow-orb {
-  position: fixed;
-  width: 600px; height: 600px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #00e67610 0%, transparent 70%);
-  top: -200px; left: 50%;
-  transform: translateX(-50%);
-  pointer-events: none;
-  z-index: 0;
-}
-.wrap { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 0 20px; }
+.wrap { position: relative; max-width: 760px; margin: 0 auto; padding: 0 20px; }
 
-/* TEST MODE BANNER */
+/* TEST MODE BANNER — hidden by default in HTML; only shown if CONFIG.isTestMode is true */
 .test-banner {
-  background: #ff980015;
-  border: 1px solid #ff980040;
-  border-radius: 10px;
+  display: none;
+  background: var(--amber-bg);
+  border: 1px solid rgba(212,160,23,.35);
+  border-radius: var(--r-sm);
   padding: 10px 16px;
   margin-top: 16px;
   font-family: var(--mono);
   font-size: 12px;
-  color: #ffb74d;
-  display: flex;
+  color: #8a6a10;
   align-items: center;
   gap: 10px;
 }
-.test-banner::before {
-  content: '⚠';
-  font-size: 14px;
-}
-.test-banner b { color: #ffd54f; }
+.test-banner::before { content: '⚠'; font-size: 14px; }
+.test-banner b { color: #6b5108; }
 
 header {
   padding: 28px 0 0;
   display: flex; align-items: center; justify-content: space-between;
 }
-.logo { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; color: var(--text); }
-.logo span { color: var(--green); }
+.logo { font-family: var(--display); font-size: 19px; font-weight: 800; letter-spacing: -0.3px; color: var(--ink); }
+.logo span { color: var(--accent); }
 .badge-live {
   font-family: var(--mono); font-size: 10px;
   padding: 3px 10px; border-radius: 20px;
-  border: 1px solid #ff9800;
-  color: #ff9800; background: #ff980015;
+  border: 1px solid var(--green);
+  color: var(--green); background: var(--green-bg);
   display: flex; align-items: center; gap: 6px;
 }
 .badge-live::before {
   content: ''; width: 6px; height: 6px; border-radius: 50%;
-  background: #ff9800;
-  animation: pulse 1.5s infinite;
+  background: var(--green);
 }
+.badge-live.test { border-color: var(--amber); color: #8a6a10; background: var(--amber-bg); }
+.badge-live.test::before { background: var(--amber); animation: pulse 1.5s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-.hero { padding: 72px 0 48px; text-align: center; }
+.hero { padding: 56px 0 44px; text-align: center; }
 .hero-tag {
-  font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em;
-  color: var(--green); text-transform: uppercase;
-  margin-bottom: 20px; display: block;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+  color: var(--accent); text-transform: uppercase;
+  margin-bottom: 18px; display: block; font-weight: 700;
 }
 .hero h1 {
-  font-size: clamp(36px, 6vw, 58px);
-  font-weight: 800; line-height: 1.1;
-  letter-spacing: -1.5px; margin-bottom: 18px;
+  font-family: var(--display);
+  font-size: clamp(30px, 5.4vw, 46px);
+  font-weight: 700; line-height: 1.18;
+  letter-spacing: -0.5px; margin-bottom: 16px;
+  color: var(--ink);
 }
-.hero h1 em { color: var(--green); font-style: normal; }
-.hero p { font-size: 16px; color: var(--text2); line-height: 1.6; max-width: 480px; margin: 0 auto 36px; }
+.hero h1 em { color: var(--accent); font-style: normal; }
+.hero p { font-size: 16px; color: var(--ink3); line-height: 1.65; max-width: 500px; margin: 0 auto 30px; }
 .price-pill {
   display: inline-flex; align-items: center; gap: 10px;
-  background: var(--surface); border: 1px solid var(--border2);
+  background: var(--white); border: 1px solid var(--border);
+  box-shadow: var(--shadow);
   border-radius: 100px; padding: 8px 20px 8px 12px;
-  font-size: 13px; color: var(--text2); margin-bottom: 16px;
+  font-size: 13px; color: var(--ink3); margin-bottom: 8px;
 }
-.price-pill strong { color: var(--green); font-size: 18px; font-weight: 700; }
+.price-pill strong { color: var(--accent); font-size: 18px; font-weight: 700; }
 
-.steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 48px; }
-.step { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 16px; text-align: center; }
-.step-num { font-family: var(--mono); font-size: 11px; color: var(--green); margin-bottom: 8px; display: block; }
-.step-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-.step-sub { font-size: 12px; color: var(--text3); }
+.steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 44px; }
+.step { background: var(--white); border: 1px solid var(--border); border-radius: var(--r); padding: 20px 16px; text-align: center; box-shadow: var(--shadow); }
+.step-num { font-family: var(--mono); font-size: 11px; color: var(--accent); margin-bottom: 8px; display: block; font-weight: 700; }
+.step-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; color: var(--ink); }
+.step-sub { font-size: 12px; color: var(--mist); }
 
-.main-card { background: var(--surface); border: 1px solid var(--border2); border-radius: 16px; overflow: hidden; margin-bottom: 48px; }
+.main-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; margin-bottom: 44px; box-shadow: var(--shadow-lg); }
 .card-top { padding: 20px 24px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-.card-top h2 { font-size: 15px; font-weight: 700; }
-.card-top span { font-family: var(--mono); font-size: 11px; color: var(--text3); }
+.card-top h2 { font-family: var(--display); font-size: 16px; font-weight: 700; color: var(--ink); }
+.card-top span { font-family: var(--mono); font-size: 11px; color: var(--mist); }
 .card-body { padding: 24px; }
 
 .upload-zone {
-  border: 1.5px dashed var(--border2);
-  border-radius: 12px; padding: 40px 20px;
+  border: 1.5px dashed var(--fog);
+  border-radius: var(--r); padding: 40px 20px;
   text-align: center; cursor: pointer;
-  transition: all 0.2s; background: var(--surface2); position: relative;
+  transition: all 0.2s; background: var(--pale); position: relative;
 }
-.upload-zone:hover, .upload-zone.drag { border-color: var(--green); background: var(--green-dim); }
-.upload-zone.has-file { border-color: var(--green); background: var(--green-dim); }
-.uz-icon { font-size: 36px; margin-bottom: 12px; }
-.uz-main { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-.uz-sub { font-size: 12px; color: var(--text3); }
+.upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: var(--accent-bg); }
+.upload-zone.has-file { border-color: var(--green); background: var(--green-bg); }
+.uz-icon { font-size: 34px; margin-bottom: 12px; }
+.uz-main { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: var(--ink); }
+.uz-sub { font-size: 12px; color: var(--mist); }
 .uz-filename { font-family: var(--mono); font-size: 12px; color: var(--green); margin-top: 8px; }
 
 .pay-btn {
-  width: 100%; margin-top: 16px; padding: 16px; border-radius: 12px;
-  background: var(--green); color: #0a0a0a;
-  font-family: var(--font); font-size: 15px; font-weight: 800;
-  border: none; cursor: pointer; transition: all 0.2s; letter-spacing: -0.3px;
+  width: 100%; margin-top: 16px; padding: 16px; border-radius: var(--r);
+  background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff;
+  font-family: var(--body); font-size: 15px; font-weight: 700;
+  border: none; cursor: pointer; transition: all 0.2s; letter-spacing: -0.2px;
   display: flex; align-items: center; justify-content: center; gap: 10px;
+  box-shadow: 0 4px 16px rgba(255,106,51,.28);
 }
-.pay-btn:hover { background: #00ff80; transform: translateY(-1px); }
-.pay-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
-.pay-btn .price-tag { background: #0a0a0a20; border-radius: 6px; padding: 2px 10px; font-size: 13px; }
+.pay-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,106,51,.36); }
+.pay-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+.pay-btn .price-tag { background: rgba(255,255,255,.2); border-radius: 6px; padding: 2px 10px; font-size: 13px; }
 
-/* Test card hint */
+/* Test card hint — hidden by default */
 .test-hint {
+  display: none;
   margin-top: 10px;
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
+  background: var(--pale);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
   padding: 12px 16px;
   font-family: var(--mono);
   font-size: 11px;
-  color: var(--text3);
+  color: var(--ink3);
   line-height: 1.8;
 }
 .test-hint b { color: var(--amber); }
 
 .status-bar {
-  margin-top: 14px; padding: 12px 16px; border-radius: 10px; font-size: 13px;
+  margin-top: 14px; padding: 12px 16px; border-radius: var(--r-sm); font-size: 13px;
   display: flex; align-items: center; gap: 10px;
-  background: var(--surface2); border: 1px solid var(--border); color: var(--text2);
+  background: var(--pale); border: 1px solid var(--border); color: var(--ink3);
 }
 .spinner {
   width: 16px; height: 16px; border-radius: 50%;
-  border: 2px solid var(--border2); border-top-color: var(--green);
+  border: 2px solid var(--cloud); border-top-color: var(--accent);
   animation: spin 0.6s linear infinite; flex-shrink: 0;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -186,78 +183,128 @@ header {
 .result-header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 10px 14px;
-  background: var(--green-dim); border: 1px solid var(--green);
-  border-radius: 10px 10px 0 0;
+  background: var(--green-bg); border: 1px solid var(--green);
+  border-radius: var(--r-sm) var(--r-sm) 0 0;
 }
-.result-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); display: flex; align-items: center; gap: 8px; }
+.result-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--green); display: flex; align-items: center; gap: 8px; }
 .copy-btn {
   font-family: var(--mono); font-size: 11px; padding: 4px 14px; border-radius: 20px;
   border: 1px solid var(--green); background: transparent; color: var(--green);
   cursor: pointer; font-weight: 500; transition: all 0.15s;
 }
-.copy-btn:hover { background: var(--green-mid); }
-.copy-btn.copied { background: var(--green); color: #0a0a0a; }
-.result-body { background: var(--surface2); border: 1px solid var(--border2); border-top: none; border-radius: 0 0 10px 10px; padding: 16px; }
-.raw-string { font-family: var(--mono); font-size: 11.5px; color: var(--text2); word-break: break-all; line-height: 1.85; white-space: pre-wrap; }
-.doc-part { color: var(--blue); font-weight: 600; }
+.copy-btn:hover { background: var(--green-bg); }
+.copy-btn.copied { background: var(--green); color: #fff; }
+.result-body { background: var(--pale); border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--r-sm) var(--r-sm); padding: 16px; }
+.raw-string { font-family: var(--mono); font-size: 11.5px; color: var(--ink2); word-break: break-all; line-height: 1.85; white-space: pre-wrap; }
+.doc-part { color: var(--teal); font-weight: 700; }
 .sep-part { color: var(--amber); font-weight: 700; }
-.sig-part { color: #aaa; }
-.result-meta { display: flex; gap: 16px; flex-wrap: wrap; font-family: var(--mono); font-size: 11px; color: var(--text3); margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
-.result-meta b { color: var(--text2); }
+.sig-part { color: var(--ink3); }
+.result-meta { display: flex; gap: 16px; flex-wrap: wrap; font-family: var(--mono); font-size: 11px; color: var(--mist); margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+.result-meta b { color: var(--ink3); }
 
-.qr-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
-.qr-tab { font-size: 12px; padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; font-family: var(--font); transition: all 0.15s; }
-.qr-tab.active { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+.qr-tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+.qr-tab { font-size: 12px; padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--ink3); cursor: pointer; font-family: var(--body); transition: all 0.15s; }
+.qr-tab.active { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
 
-.error-box { margin-top: 14px; padding: 14px 16px; background: #ef535015; border: 1px solid #ef535040; border-radius: 10px; font-size: 13px; color: #ef9a9a; line-height: 1.6; }
+.error-box { margin-top: 14px; padding: 14px 16px; background: var(--rose-bg); border: 1px solid rgba(192,57,43,.3); border-radius: var(--r-sm); font-size: 13px; color: var(--rose); line-height: 1.6; }
 
-.trust-row { display: flex; align-items: center; justify-content: center; gap: 24px; padding: 20px 0; border-top: 1px solid var(--border); flex-wrap: wrap; }
-.trust-item { font-family: var(--mono); font-size: 11px; color: var(--text3); display: flex; align-items: center; gap: 6px; }
+.trust-row { display: flex; align-items: center; justify-content: center; gap: 22px; padding: 20px 0; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.trust-item { font-family: var(--mono); font-size: 11px; color: var(--mist); display: flex; align-items: center; gap: 6px; }
 .trust-item::before { content: '✓'; color: var(--green); font-weight: 700; }
 
-.faq { margin-bottom: 60px; }
+.faq { margin-bottom: 56px; }
 
-.why-section { margin-bottom: 48px; }
-.why-head { text-align: center; margin-bottom: 24px; }
-.why-head h2 { font-size: clamp(24px, 4vw, 32px); font-weight: 800; letter-spacing: -0.5px; margin-bottom: 10px; }
-.why-head h2 em { color: var(--green); font-style: normal; }
-.why-head p { font-size: 14px; color: var(--text2); max-width: 520px; margin: 0 auto; line-height: 1.6; }
+.howto-section, .why-section { margin-bottom: 44px; }
+.why-head { text-align: center; margin-bottom: 22px; }
+.why-head h2 { font-family: var(--display); font-size: clamp(22px, 3.6vw, 30px); font-weight: 700; letter-spacing: -0.3px; margin-bottom: 10px; color: var(--ink); }
+.why-head h2 em { color: var(--accent); font-style: normal; }
+.why-head p { font-size: 14px; color: var(--ink3); max-width: 520px; margin: 0 auto; line-height: 1.6; }
+
+.howto-list { list-style: none; counter-reset: howto; display: flex; flex-direction: column; gap: 10px; }
+.howto-list li {
+  counter-increment: howto;
+  background: var(--white); border: 1px solid var(--border); border-radius: var(--r);
+  padding: 16px 18px 16px 52px; position: relative; box-shadow: var(--shadow);
+  font-size: 13.5px; color: var(--ink2); line-height: 1.6;
+}
+.howto-list li::before {
+  content: counter(howto);
+  position: absolute; left: 16px; top: 16px;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  font-family: var(--mono); font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.howto-list li b { color: var(--ink); }
+
 .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-.why-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px; }
+.why-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px; box-shadow: var(--shadow); }
 .why-card.wide { grid-column: 1 / -1; }
 .why-icon { font-size: 22px; margin-bottom: 10px; }
-.why-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
-.why-desc { font-size: 13px; color: var(--text2); line-height: 1.65; }
-.why-desc code { font-family: var(--mono); font-size: 12px; color: var(--blue); background: var(--surface2); padding: 1px 5px; border-radius: 4px; }
+.why-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; color: var(--ink); }
+.why-desc { font-size: 13px; color: var(--ink3); line-height: 1.65; }
+.why-desc code { font-family: var(--mono); font-size: 12px; color: var(--teal); background: var(--teal-bg); padding: 1px 5px; border-radius: 4px; }
 .why-list { margin-top: 10px; padding-left: 18px; }
-.why-list li { font-size: 13px; color: var(--text2); line-height: 1.7; }
+.why-list li { font-size: 13px; color: var(--ink3); line-height: 1.7; }
 @media (max-width: 600px) { .why-grid { grid-template-columns: 1fr; } }
 
-.faq h3 { font-size: 13px; font-weight: 700; color: var(--text2); margin-bottom: 16px; letter-spacing: 0.05em; text-transform: uppercase; }
+.faq h3 { font-size: 13px; font-weight: 700; color: var(--ink3); margin-bottom: 16px; letter-spacing: 0.05em; text-transform: uppercase; }
 .faq-item { border-bottom: 1px solid var(--border); padding: 14px 0; }
-.faq-q { font-size: 14px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-.faq-q span { color: var(--text3); font-size: 16px; transition: transform 0.2s; }
+.faq-q { font-size: 14px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--ink); }
+.faq-q span { color: var(--mist); font-size: 16px; transition: transform 0.2s; }
 .faq-q.open span { transform: rotate(45deg); }
-.faq-a { font-size: 13px; color: var(--text2); line-height: 1.7; margin-top: 10px; display: none; }
+.faq-a { font-size: 13px; color: var(--ink3); line-height: 1.7; margin-top: 10px; display: none; }
 .faq-a.open { display: block; }
 
-footer { border-top: 1px solid var(--border); padding: 24px 0; text-align: center; font-size: 12px; color: var(--text3); font-family: var(--mono); }
-footer a { color: var(--text3); text-decoration: none; }
+footer { border-top: 1px solid var(--border); padding: 24px 0; text-align: center; font-size: 12px; color: var(--mist); font-family: var(--mono); }
+footer a { color: var(--mist); text-decoration: none; }
 
 @media (max-width: 600px) {
   .steps { grid-template-columns: 1fr; }
-  .hero h1 { font-size: 32px; }
+  .hero h1 { font-size: 30px; }
 }
 </style>
 <meta property="og:type" content="website">
-<meta property="og:title" content="e-Khata QR Decoder — SalaryBit">
-<meta property="og:description" content="Free tool from SalaryBit for Indian salaried professionals. No login, no data stored.">
+<meta property="og:title" content="How to Download &amp; Verify Your Issued e-Khata via QR Code | SalaryBit">
+<meta property="og:description" content="Step-by-step guide + instant tool: decode and verify the QR digital signature on your issued e-Khata / BBMP / BBSCC PDF. No login, no data stored.">
 <meta property="og:url" content="https://salarybit.in/qr-decoder.html">
+<meta property="og:site_name" content="SalaryBit">
+<meta property="og:image" content="https://salarybit.in/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How to Download & Verify Your Issued e-Khata via QR Code | SalaryBit">
+<meta name="twitter:description" content="Step-by-step guide + instant tool to decode and verify the QR digital signature on your e-Khata PDF.">
+<meta name="twitter:image" content="https://salarybit.in/og-image.png">
+<link rel="canonical" href="https://salarybit.in/qr-decoder.html">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to download and verify your issued e-Khata through the QR code",
+  "description": "Step-by-step guide to extracting and verifying the digital signature QR string on an issued e-Khata / BBMP / BBSCC PDF.",
+  "step": [
+    { "@type": "HowToStep", "name": "Download your issued e-Khata PDF", "text": "Log in to the Kaveri Online / e-Aasthi / BBMP / BBSCC portal and download the official e-Khata PDF for your property once it has been issued." },
+    { "@type": "HowToStep", "name": "Locate the QR code on the document", "text": "The QR code is printed on the e-Khata PDF, usually near the signature or footer section, and encodes a PKCS#7 digital signature string." },
+    { "@type": "HowToStep", "name": "Upload the PDF to the QR decoder", "text": "Upload the full e-Khata PDF (not a screenshot) to SalaryBit's QR String Extractor." },
+    { "@type": "HowToStep", "name": "Pay and decode", "text": "Pay the one-time ₹29 fee to run the server-side decode, which reads the embedded QR image and extracts the raw signature string." },
+    { "@type": "HowToStep", "name": "Copy and verify the QR string", "text": "Copy the exact decoded string and paste it into the portal, bank, or authority that requested it for verification." }
+  ]
+}
+</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I download my issued e-Khata before verifying the QR code?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Once your e-Khata is issued, download the official PDF from the Kaveri Online, e-Aasthi, BBMP, or BBSCC portal you applied through. This tool then decodes the QR digital signature embedded in that downloaded PDF — it does not fetch or issue the e-Khata itself."
+      }
+    },
     {
       "@type": "Question",
       "name": "What is the QR string used for?",
@@ -293,51 +340,55 @@ footer a { color: var(--text3); text-decoration: none; }
   ]
 }
 </script>
-<meta property="og:site_name" content="SalaryBit">
-<meta property="og:image" content="https://salarybit.in/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="e-Khata QR Decoder — SalaryBit">
-<meta name="twitter:description" content="Free tool from SalaryBit for Indian salaried professionals. No login, no data stored.">
-<meta name="twitter:image" content="https://salarybit.in/og-image.png">
-<link rel="canonical" href="https://salarybit.in/qr-decoder.html">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QFHT4BZTMF"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QFHT4BZTMF');</script>
 </head>
 <body>
 
-<div class="glow-orb"></div>
-
 <div class="wrap">
 
   <header>
     <div class="logo">salary<span>bit</span></div>
-    <!-- Badge shows TEST MODE in test, LIVE in production -->
-    <div class="badge-live" id="modeBadge">Test Mode</div>
+    <!-- Static default already matches CONFIG.isTestMode = false below, so there's no visible flash on load -->
+    <div class="badge-live" id="modeBadge">Service Live</div>
   </header>
 
-  <!-- Test mode warning banner — remove this entire div when going live -->
+  <!-- Test mode warning banner — stays hidden unless CONFIG.isTestMode is set to true -->
   <div class="test-banner" id="testBanner">
     <span><b>TEST MODE</b> — Payments are simulated. No real money is charged. Remove this banner before going live.</span>
   </div>
 
   <section class="hero">
-    <span class="hero-tag">e-Khata · BBMP · BBSCC · Any Govt. PDF</span>
-    <h1>Decode Your<br/><em>QR String</em> Instantly</h1>
-    <p>Upload any government PDF — we extract and decode the embedded QR string in seconds.</p>
+    <span class="hero-tag">e-Khata · BBMP · BBSCC · e-Aasthi · Any Govt. PDF</span>
+    <h1>How to Download &amp; <em>Verify</em><br/>Your Issued e-Khata via QR Code</h1>
+    <p>Already downloaded your issued e-Khata? Upload the PDF here — we extract and decode the embedded QR digital-signature string in seconds, so you can verify it or hand it to your bank.</p>
     <div class="price-pill">
       <strong>₹29</strong> per decode · instant result
     </div>
   </section>
 
   <section style="max-width:640px;margin:0 auto 40px;padding:0 20px;">
-    <div style="background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:20px 22px;">
-      <p style="margin:0 0 6px;font-weight:700;color:var(--text);font-size:15px;">💬 Got the property, but pending tax to pay?</p>
-      <p style="margin:0 0 14px;color:var(--text2);font-size:13.5px;line-height:1.5;">A separate step from decoding the QR above — our <a href="/ekhata-tax-ai-assistant.html" style="color:var(--amber);font-weight:600;">Tax Payment Assistant</a> helps you find out what property tax is pending and pay it with an official government challan.</p>
-      <a href="/ekhata-tax-ai-assistant.html" style="display:inline-flex;align-items:center;gap:6px;background:var(--amber);color:#1a1a1a;font-weight:700;font-size:13.5px;padding:9px 16px;border-radius:8px;text-decoration:none;">Check My Property Tax →</a>
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:20px 22px;box-shadow:var(--shadow);">
+      <p style="margin:0 0 6px;font-weight:700;color:var(--ink);font-size:15px;">💬 Got the property, but pending tax to pay?</p>
+      <p style="margin:0 0 14px;color:var(--ink3);font-size:13.5px;line-height:1.5;">A separate step from decoding the QR above — our <a href="/ekhata-tax-ai-assistant.html" style="color:var(--accent);font-weight:600;">Tax Payment Assistant</a> helps you find out what property tax is pending and pay it with an official government challan.</p>
+      <a href="/ekhata-tax-ai-assistant.html" style="display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#fff;font-weight:700;font-size:13.5px;padding:9px 16px;border-radius:var(--r-sm);text-decoration:none;">Check My Property Tax →</a>
     </div>
+  </section>
+
+  <section class="howto-section">
+    <div class="why-head">
+      <h2>How to download &amp; <em>verify</em> your e-Khata QR</h2>
+      <p>Do this once your e-Khata has already been issued and you've downloaded the PDF to your device.</p>
+    </div>
+    <ol class="howto-list">
+      <li><b>Download the issued e-Khata PDF</b> from Kaveri Online, e-Aasthi, BBMP, or BBSCC — whichever portal you applied through. Save the full PDF, not a screenshot.</li>
+      <li><b>Find the QR code on the document</b> — it's usually near the signature block or footer, and encodes a PKCS#7 digital signature rather than a normal URL.</li>
+      <li><b>Upload the PDF below</b> using the QR String Extractor — drag & drop or click to browse.</li>
+      <li><b>Pay ₹29 to run the decode</b> — our server reads the embedded QR image (even the low-resolution ones phone scanner apps fail on) and extracts the full signature string.</li>
+      <li><b>Copy the verified string</b> and paste it wherever it's being asked for — Kaveri Online, your bank's loan desk, or a legal verification process.</li>
+    </ol>
+    <p style="margin-top:14px;font-size:12.5px;color:var(--mist);">Want the full walkthrough with screenshots? Read our guide: <a href="/blog/how-to-decode-ekhata-qr-string.html" style="color:var(--accent);font-weight:600;">How to Decode e-Khata QR String in India</a>.</p>
   </section>
 
   <section class="why-section">
@@ -425,7 +476,7 @@ footer a { color: var(--text3); text-decoration: none; }
         <span>Upload PDF to Continue</span>
       </button>
 
-      <!-- Test card details — visible only in test mode, remove when live -->
+      <!-- Test card details — hidden unless CONFIG.isTestMode is true -->
       <div class="test-hint" id="testHint">
         <b>Test card details:</b><br/>
         Card: <b>4111 1111 1111 1111</b> · Expiry: any future date · CVV: any 3 digits<br/>
@@ -447,6 +498,10 @@ footer a { color: var(--text3); text-decoration: none; }
 
   <div class="faq">
     <h3>Common Questions</h3>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">How do I download my issued e-Khata before verifying the QR code? <span>+</span></div>
+      <div class="faq-a">Once your e-Khata is issued, download the official PDF from the Kaveri Online, e-Aasthi, BBMP, or BBSCC portal you applied through. This tool then decodes the QR digital signature embedded in that downloaded PDF — it doesn't fetch or issue the e-Khata itself.</div>
+    </div>
     <div class="faq-item">
       <div class="faq-q" onclick="toggleFAQ(this)">What is the QR string used for? <span>+</span></div>
       <div class="faq-a">The QR string (e.g. <code style="font-family:var(--mono);font-size:12px;">2933699+++MIIB/AYJKoZIhvc...</code>) is a PKCS#7 digital signature embedded in government documents like e-Khata. It is used to verify document authenticity and is required by certain legal and banking processes.</div>
@@ -481,19 +536,17 @@ const CONFIG = {
 };
 // ═══════════════════════════════════════════════════════════
 
-// Show/hide test UI based on config
-if (!CONFIG.isTestMode) {
-  document.getElementById('testBanner').style.display = 'none';
-  document.getElementById('testHint').style.display = 'none';
-  document.getElementById('modeBadge').textContent = 'Service Live';
-  document.getElementById('modeBadge').style.borderColor = 'var(--green)';
-  document.getElementById('modeBadge').style.color = 'var(--green)';
-  document.getElementById('modeBadge').style.background = 'var(--green-dim)';
-  // Re-add pulse dot for live mode
-  document.getElementById('modeBadge').style.setProperty('--dot-bg', 'var(--green)');
+// Show/hide test UI based on config (static HTML already defaults to live mode,
+// so this only does anything if you flip isTestMode to true)
+if (CONFIG.isTestMode) {
+  document.getElementById('testBanner').style.display = 'flex';
+  document.getElementById('testHint').style.display = 'block';
+  const badge = document.getElementById('modeBadge');
+  badge.textContent = 'Test Mode';
+  badge.classList.add('test');
 }
 
-const PRICE_PAISE = 4900; // ₹29
+const PRICE_PAISE = 2900; // ₹29
 let uploadedFile = null;
 
 // Drag & drop
@@ -557,7 +610,7 @@ async function startPayment() {
       name: 'SalaryBit',
       description: 'e-Khata QR String Decode',
       order_id: order.order_id,
-      theme: { color: '#00e676' },
+      theme: { color: '#FF6A33' },
       handler: async function(response) {
         // Payment successful — verify and decode
         showStatus('Payment confirmed! Extracting QR string...');

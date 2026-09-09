@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Rent Receipt Generator for HRA Exemption (FY 2026-27) | SalaryBit</title>
+<meta name="description" content="Generate rent receipts for HRA exemption in seconds — print or download as PDF, one receipt or a full year at once. Includes the ₹1 revenue stamp rule and landlord PAN requirement. Free, no signup.">
+<meta name="keywords" content="rent receipt generator, rent receipt for hra, hra rent receipt format, rent receipt online free, rent receipt pdf download, house rent allowance proof, landlord pan for hra">
+<meta property="og:title" content="Free Rent Receipt Generator for HRA Exemption — SalaryBit">
+<meta property="og:description" content="Generate rent receipts for HRA exemption — print or download as PDF, one month or a full year at once. Free, no signup.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://salarybit.in/tools/rent-receipt-generator.html">
+<meta property="og:site_name" content="SalaryBit">
+<meta property="og:image" content="https://salarybit.in/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Rent Receipt Generator for HRA Exemption — SalaryBit">
+<meta name="twitter:description" content="Generate rent receipts for HRA exemption — print or download as PDF, one month or a full year at once. Free, no signup.">
+<meta name="twitter:image" content="https://salarybit.in/og-image.png">
+<meta name="theme-color" content="#0d9488">
+<link rel="canonical" href="https://salarybit.in/tools/rent-receipt-generator.html">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is landlord PAN mandatory on a rent receipt for HRA?",
+      "acceptedAnswer": { "@type": "Answer", "text": "If your total rent paid in a financial year exceeds ₹1,00,000 (about ₹8,333/month), the Income Tax Department requires your landlord's PAN to claim HRA exemption. If your landlord doesn't have a PAN, you'll typically need a signed declaration from them stating so." }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need a revenue stamp on a rent receipt?",
+      "acceptedAnswer": { "@type": "Answer", "text": "A ₹1 revenue stamp is required under the Indian Stamp Act when rent for that receipt is paid in cash and the amount exceeds ₹5,000. It's not required for bank transfer, UPI, or cheque payments." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I generate rent receipts for the whole year at once?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes — choose how many months you need and this tool generates one receipt per month, ready to print or save as a single PDF." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is this rent receipt valid for HRA exemption proof?",
+      "acceptedAnswer": { "@type": "Answer", "text": "This generates a standard-format rent receipt commonly accepted by employers for HRA proof. Some employers additionally ask for a copy of the rent agreement, especially for higher rent amounts — check your company's specific HR policy." }
+    }
+  ]
+}
+</script>
+<style>
+  :root {
+    --bg: #f6f7fb;
+    --card: #ffffff;
+    --border: #e4e7ee;
+    --text: #1a1d29;
+    --muted: #6b7280;
+    --accent: #0d9488;
+    --accent-dark: #0f766e;
+    --danger: #ef4444;
+    --tip-bg: #fff7ed;
+    --tip-border: #fed7aa;
+    --tip-text: #9a3412;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .container { max-width: 620px; margin: 0 auto; padding: 16px 14px 60px; }
+  header.site { text-align: center; padding: 18px 0 8px; }
+  header.site .brand { font-size: 13px; font-weight: 700; color: var(--accent-dark); letter-spacing: 0.06em; text-transform: uppercase; }
+  h1 { font-size: 22px; font-weight: 800; margin: 8px 0 4px; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); font-size: 14px; margin-bottom: 4px; }
+  .ad-slot { background: #eef0f5; border: 1px dashed #cfd4e0; border-radius: 10px; color: #9aa1b2; font-size: 12px; text-align: center; padding: 10px; margin: 16px 0; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 2px rgba(16,24,40,0.03); }
+  label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; }
+  .field { margin-bottom: 12px; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  input[type="text"], input[type="number"], input[type="month"], select, textarea {
+    background: #fbfbfd; border: 1px solid var(--border); color: var(--text);
+    border-radius: 10px; padding: 11px 12px; font-size: 15px; width: 100%; outline: none; font-family: inherit;
+  }
+  textarea { resize: vertical; min-height: 54px; }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+  input::placeholder { color: #a8adba; }
+  .period-toggle { display: flex; gap: 8px; margin-bottom: 4px; }
+  .period-btn { flex: 1; background: #fbfbfd; border: 1px solid var(--border); color: var(--muted); border-radius: 10px; padding: 10px; font-size: 13px; font-weight: 700; text-align: center; cursor: pointer; }
+  .period-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  button { cursor: pointer; border: none; font-size: 14px; font-weight: 700; border-radius: 10px; padding: 12px 14px; }
+  .btn-primary { background: var(--accent); color: #fff; width: 100%; font-size: 15px; padding: 14px; }
+  .btn-primary:active { background: var(--accent-dark); }
+  .btn-secondary { background: #f2f3f7; color: var(--text); border: 1px solid var(--border); width: 100%; margin-top: 8px; }
+  .hint { font-size: 11.5px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+  .tip-card { background: var(--tip-bg); border: 1px solid var(--tip-border); border-radius: 12px; padding: 14px; margin-top: 12px; font-size: 13.5px; color: var(--tip-text); line-height: 1.55; }
+  .tip-card .tip-title { font-weight: 800; margin-bottom: 4px; display: block; }
+  .checkbox-row { display: flex; align-items: flex-start; gap: 8px; margin-top: 10px; font-size: 12.5px; color: var(--muted); }
+  .checkbox-row input { width: auto; margin-top: 2px; }
+  footer.site { text-align: center; color: var(--muted); font-size: 12px; margin-top: 24px; }
+  footer.site a { color: var(--accent-dark); text-decoration: none; font-weight: 600; }
+
+  /* Receipt output */
+  #receiptsArea { display: none; }
+  .receipt {
+    background: #fff; border: 1px solid var(--border); border-radius: 10px;
+    padding: 22px; margin-bottom: 16px; font-size: 14px; line-height: 1.7; position: relative;
+  }
+  .receipt .rhead { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--text); padding-bottom: 10px; margin-bottom: 12px; }
+  .receipt .rhead h3 { margin: 0; font-size: 16px; letter-spacing: 0.03em; }
+  .receipt .rhead .rmonth { font-size: 13px; color: var(--muted); font-weight: 700; }
+  .receipt .rrow { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+  .receipt .rrow .rlabel { color: var(--muted); flex: 0 0 150px; }
+  .receipt .rrow .rval { font-weight: 600; text-align: right; flex: 1; }
+  .receipt .ramt { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--border); display: flex; justify-content: space-between; align-items: baseline; }
+  .receipt .ramt .rval { font-size: 20px; font-weight: 800; color: var(--accent-dark); }
+  .receipt .rstamp { position: absolute; right: 22px; bottom: 22px; width: 56px; height: 56px; border: 1.5px dashed var(--muted); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: var(--muted); text-align: center; line-height: 1.3; }
+  .receipt .rsign { margin-top: 26px; display: flex; justify-content: flex-end; }
+  .receipt .rsign .rsline { border-top: 1px solid var(--text); width: 180px; text-align: center; font-size: 11px; color: var(--muted); padding-top: 4px; }
+
+  @media print {
+    body * { visibility: hidden; }
+    #receiptsArea, #receiptsArea * { visibility: visible; }
+    #receiptsArea { display: block !important; position: absolute; left: 0; top: 0; width: 100%; }
+    .receipt { page-break-after: always; border: none; box-shadow: none; }
+    .receipt .rstamp { border-style: dashed; }
+  }
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QFHT4BZTMF"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QFHT4BZTMF');</script>
+</head>
+<body>
+<div class="container">
+
+  <header class="site">
+    <div class="brand">SalaryBit Tools</div>
+    <h1>🧾 Rent Receipt Generator for HRA</h1>
+    <div class="sub">Fill in once, generate one month or a full year of rent receipts — ready to print or save as PDF for your HRA exemption proof.</div>
+  </header>
+
+  <div class="ad-slot">Ad Slot — Top Banner (e.g. AdSense 320×100)</div>
+
+  <div class="card">
+    <div class="field">
+      <label>Tenant (your) full name</label>
+      <input type="text" id="tenantName" placeholder="e.g. Rahul Sharma">
+    </div>
+    <div class="field">
+      <label>Landlord's full name</label>
+      <input type="text" id="landlordName" placeholder="e.g. Suresh Kumar">
+    </div>
+    <div class="field">
+      <label>Landlord's PAN <span style="text-transform:none;font-weight:400;">(required if annual rent &gt; ₹1,00,000)</span></label>
+      <input type="text" id="landlordPan" placeholder="e.g. ABCDE1234F" maxlength="10" style="text-transform:uppercase">
+      <div class="hint" id="panHint"></div>
+    </div>
+    <div class="field">
+      <label>Rented property address</label>
+      <textarea id="propAddress" placeholder="Full address of the rented property"></textarea>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Monthly rent (₹)</label>
+        <input type="number" id="rentAmt" placeholder="e.g. 25000" oninput="updatePanHint()">
+      </div>
+      <div class="field">
+        <label>Payment mode</label>
+        <select id="payMode" onchange="updatePanHint()">
+          <option value="Bank Transfer / UPI">Bank Transfer / UPI</option>
+          <option value="Cheque">Cheque</option>
+          <option value="Cash">Cash</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <label>How many receipts?</label>
+    <div class="period-toggle">
+      <button type="button" class="period-btn active" id="modeSingle" onclick="setMode('single')">Single Month</button>
+      <button type="button" class="period-btn" id="modeRange" onclick="setMode('range')">Multiple Months</button>
+    </div>
+
+    <div id="singleFields" style="margin-top:12px;">
+      <div class="field">
+        <label>Month</label>
+        <input type="month" id="singleMonth">
+      </div>
+    </div>
+
+    <div id="rangeFields" style="margin-top:12px; display:none;">
+      <div class="row2">
+        <div class="field">
+          <label>Starting month</label>
+          <input type="month" id="startMonth">
+        </div>
+        <div class="field">
+          <label>Number of months</label>
+          <input type="number" id="numMonths" value="12" min="1" max="24">
+        </div>
+      </div>
+      <div class="hint">Common use: pick April as the starting month and 12 months to cover a full financial year.</div>
+    </div>
+  </div>
+
+  <button class="btn-primary" onclick="generateReceipts()">Generate Receipt(s)</button>
+
+  <div class="tip-card" id="panWarning" style="display:none;">
+    <span class="tip-title">⚠️ Landlord PAN required</span>
+    Your annual rent works out to more than ₹1,00,000. To claim HRA exemption, the Income Tax Department requires your landlord's PAN — enter it above, or ask your landlord for a signed no-PAN declaration.
+  </div>
+
+  <div id="afterGenerate" style="display:none;">
+    <button class="btn-secondary" onclick="window.print()">🖨️ Print / Save as PDF</button>
+  </div>
+
+  <div class="ad-slot">Ad Slot — In-content (e.g. AdSense 300×250)</div>
+
+  <div class="card" style="font-size:13px;color:var(--muted);line-height:1.7;">
+    <div class="section-title" style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--muted);margin-bottom:8px;">Good to know</div>
+    ✓ A ₹1 revenue stamp is legally required only when a receipt's rent is paid in <b>cash and exceeds ₹5,000</b> — not for bank transfer, UPI, or cheque.<br>
+    ✓ Landlord PAN becomes mandatory once your <b>annual rent crosses ₹1,00,000</b> (~₹8,333/month).<br>
+    ✓ Read the full walkthrough on our <a href="/blog/article6-hra-exemption-guide.html" style="color:var(--accent-dark);font-weight:600;">HRA Exemption Guide</a>, or check exactly what you'll save with the <a href="/tools/old-vs-new-tax-regime.html" style="color:var(--accent-dark);font-weight:600;">Old vs New Regime Calculator</a>.
+  </div>
+
+  <footer class="site">
+    Made with ❤️ by <a href="https://salarybit.in">SalaryBit</a> — free tools for salaried India.
+  </footer>
+
+</div>
+
+<div id="receiptsArea"></div>
+
+<script>
+let mode = 'single';
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('modeSingle').classList.toggle('active', m === 'single');
+  document.getElementById('modeRange').classList.toggle('active', m === 'range');
+  document.getElementById('singleFields').style.display = m === 'single' ? 'block' : 'none';
+  document.getElementById('rangeFields').style.display = m === 'range' ? 'block' : 'none';
+}
+
+function updatePanHint() {
+  const rent = parseFloat(document.getElementById('rentAmt').value) || 0;
+  const annual = rent * 12;
+  const hint = document.getElementById('panHint');
+  if (annual > 100000) {
+    hint.textContent = `At ₹${rent.toLocaleString('en-IN')}/month, your annual rent is ₹${annual.toLocaleString('en-IN')} — landlord PAN is required for HRA exemption.`;
+    hint.style.color = 'var(--danger)';
+  } else {
+    hint.textContent = '';
+  }
+}
+
+function monthLabel(monthStr) {
+  // monthStr like "2026-04"
+  const [y, m] = monthStr.split('-').map(Number);
+  const d = new Date(y, m - 1, 1);
+  return d.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+}
+
+function addMonths(monthStr, n) {
+  let [y, m] = monthStr.split('-').map(Number);
+  m += n;
+  while (m > 12) { m -= 12; y += 1; }
+  return `${y}-${String(m).padStart(2, '0')}`;
+}
+
+function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+function buildReceiptHTML(monthStr, index) {
+  const tenant = document.getElementById('tenantName').value.trim() || '__________________';
+  const landlord = document.getElementById('landlordName').value.trim() || '__________________';
+  const pan = document.getElementById('landlordPan').value.trim().toUpperCase();
+  const address = document.getElementById('propAddress').value.trim() || '__________________';
+  const rent = parseFloat(document.getElementById('rentAmt').value) || 0;
+  const payMode = document.getElementById('payMode').value;
+  const label = monthLabel(monthStr);
+  const receiptNo = `SB-${monthStr.replace('-', '')}-${String(index + 1).padStart(3, '0')}`;
+  const showStamp = payMode === 'Cash' && rent > 5000;
+
+  return `
+    <div class="receipt">
+      <div class="rhead">
+        <div><h3>RENT RECEIPT</h3><div style="font-size:11px;color:var(--muted);">Receipt No: ${esc(receiptNo)}</div></div>
+        <div class="rmonth">${esc(label)}</div>
+      </div>
+      <div class="rrow"><span class="rlabel">Received from</span><span class="rval">${esc(tenant)}</span></div>
+      <div class="rrow"><span class="rlabel">Towards rent for</span><span class="rval">${esc(address)}</span></div>
+      <div class="rrow"><span class="rlabel">For the month of</span><span class="rval">${esc(label)}</span></div>
+      <div class="rrow"><span class="rlabel">Payment mode</span><span class="rval">${esc(payMode)}</span></div>
+      <div class="rrow"><span class="rlabel">Landlord name</span><span class="rval">${esc(landlord)}</span></div>
+      ${pan ? `<div class="rrow"><span class="rlabel">Landlord PAN</span><span class="rval">${esc(pan)}</span></div>` : ''}
+      <div class="ramt"><span class="rlabel">Rent Amount</span><span class="rval">₹${rent.toLocaleString('en-IN')}</span></div>
+      ${showStamp ? `<div class="rstamp">Revenue<br>Stamp<br>₹1</div>` : ''}
+      <div class="rsign"><div class="rsline">Landlord's Signature</div></div>
+    </div>`;
+}
+
+function generateReceipts() {
+  const rent = parseFloat(document.getElementById('rentAmt').value) || 0;
+  if (!rent) { alert('Please enter the monthly rent amount.'); return; }
+
+  let months = [];
+  if (mode === 'single') {
+    const m = document.getElementById('singleMonth').value;
+    if (!m) { alert('Please select a month.'); return; }
+    months = [m];
+  } else {
+    const start = document.getElementById('startMonth').value;
+    const n = parseInt(document.getElementById('numMonths').value) || 1;
+    if (!start) { alert('Please select a starting month.'); return; }
+    for (let i = 0; i < n; i++) months.push(addMonths(start, i));
+  }
+
+  const annual = rent * 12;
+  document.getElementById('panWarning').style.display = (annual > 100000 && !document.getElementById('landlordPan').value.trim()) ? 'block' : 'none';
+
+  const area = document.getElementById('receiptsArea');
+  area.innerHTML = months.map((m, i) => buildReceiptHTML(m, i)).join('');
+  document.getElementById('afterGenerate').style.display = 'block';
+  document.getElementById('afterGenerate').scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+<script src="/assets/js/site-widgets.js"></script>
+</body>
+</html>

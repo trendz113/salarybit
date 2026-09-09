@@ -339,7 +339,7 @@ function generateBill() {
   const suggestion = pickSavingsSuggestion(total);
   const includeTip = document.getElementById('includeTip').checked;
 
-  let text = `🏠 *${period} Household Expenses*\n📅 ${period === 'Monthly' ? 'Month' : period === 'Daily' ? 'Date' : 'Week ending'}: ${formatDate(dateVal)}\n\n`;
+  let text = `🏠 *${period} Household Expenses*\n${period === 'Monthly' ? 'Month' : period === 'Daily' ? 'Date' : 'Week ending'}: ${formatDate(dateVal)}\n\n`;
   validItems.forEach(i => { text += `${pickItemIcon(i.name)} ${i.name} — ₹${parseFloat(i.amt).toLocaleString('en-IN')}\n`; });
   text += `\n💰 *Total: ₹${total.toLocaleString('en-IN')}*`;
 

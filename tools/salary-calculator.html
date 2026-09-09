@@ -32,6 +32,7 @@
   "creator": { "@type": "Organization", "name": "SalaryBit", "url": "https://salarybit.in/" }
 }
 </script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8336334158316485" crossorigin="anonymous"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QFHT4BZTMF"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QFHT4BZTMF');</script>
@@ -128,6 +129,31 @@ select.fld{cursor:pointer}
 .mob-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:9px;font-weight:600;color:var(--mist);text-decoration:none;padding:.375rem .25rem .5rem}
 .mob-tab.active{color:var(--accent)}
 .mob-tab-icon{font-size:19px;line-height:1}
+/* AI REPORT UPSELL */
+.ai-upsell{margin-top:.75rem;background:linear-gradient(135deg,#0d9488,#0f766e);border-radius:var(--r);padding:1rem 1.1rem;color:#fff}
+.ai-upsell-top{display:flex;align-items:center;gap:8px;margin-bottom:.4rem}
+.ai-upsell-badge{font-size:9px;font-weight:700;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:2px 9px;letter-spacing:.05em;text-transform:uppercase}
+.ai-upsell h4{font-family:var(--display);font-size:15px;font-weight:700;margin:0}
+.ai-upsell p{font-size:12px;color:rgba(255,255,255,.75);line-height:1.55;margin-bottom:.7rem}
+.ai-upsell-cta{width:100%;height:38px;background:#fff;color:#0f766e;border:none;border-radius:var(--r-sm);font-family:var(--body);font-size:13px;font-weight:700;cursor:pointer;transition:.15s}
+.ai-upsell-cta:hover{opacity:.92}
+.ai-upsell-cta:disabled{opacity:.5;cursor:not-allowed}
+.ai-form{margin-top:.7rem;display:none;flex-direction:column;gap:.5rem}
+.ai-form.open{display:flex}
+.ai-form textarea,.ai-form input{width:100%;border:1.5px solid rgba(255,255,255,.3);border-radius:var(--r-sm);padding:8px 10px;font-family:var(--body);font-size:12.5px;background:rgba(255,255,255,.1);color:#fff;outline:none}
+.ai-form textarea::placeholder,.ai-form input::placeholder{color:rgba(255,255,255,.55)}
+.ai-form textarea{min-height:56px;resize:vertical}
+.ai-status{font-size:11.5px;color:rgba(255,255,255,.8);margin-top:.5rem;display:flex;align-items:center;gap:8px}
+.ai-spin{width:13px;height:13px;border-radius:50%;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;animation:aispin .6s linear infinite;flex-shrink:0}
+@keyframes aispin{to{transform:rotate(360deg)}}
+.ai-error{font-size:11.5px;color:#fecaca;margin-top:.5rem;line-height:1.5}
+.ai-report{margin-top:.75rem;background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:1rem;color:var(--ink)}
+.ai-report h5{font-family:var(--display);font-size:12.5px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.04em;margin:.75rem 0 .3rem}
+.ai-report h5:first-child{margin-top:0}
+.ai-report p,.ai-report li{font-size:12.5px;color:var(--ink3);line-height:1.65}
+.ai-report .oi{background:var(--pale);border-radius:var(--r-sm);padding:.6rem .75rem;margin-bottom:.4rem}
+.ai-report .oi b{display:block;font-size:12.5px;color:var(--ink);margin-bottom:2px}
+.ai-report .disc{font-size:10.5px;color:var(--mist);margin-top:.7rem;padding-top:.5rem;border-top:1px solid var(--border)}
 </style>
 </head>
 <body>
@@ -304,6 +330,11 @@ function calcSal(){
   const monthlyTax=Math.round(annualTax/12);
   const inhand=gross-pf-pt-monthlyTax;
   const annualInhand=inhand*12;
+
+  // Stored for the optional paid AI report below — the free calculation
+  // above is completely unaffected by this.
+  window.__lastBreakdown={gross,basic,hra,specialOther:special+other,pf,pt,tax:monthlyTax,inhand,regime,city};
+
   document.getElementById('s-result').innerHTML=`
     <div class="result-hero">
       <div class="result-label">Monthly In-Hand Salary</div>
@@ -321,7 +352,141 @@ function calcSal(){
       <div class="rrow g"><span>Take-Home (In-Hand)</span><span>${fmtI(inhand)}</span></div>
     </div>
     <div class="insight blue"><span class="insight-icon">💡</span><div>Your effective take-home is <strong>${((inhand/gross)*100).toFixed(0)}% of gross</strong>. ${monthlyTax>5000?'Switching regimes or optimising deductions could save you ₹'+Math.round(monthlyTax*0.15).toLocaleString('en-IN')+'/mo.':''}</div></div>
-    ${annualGross>2000000?`<div class="insight blue" style="margin-top:10px;"><span class="insight-icon">🧾</span><div>Package over ₹20L usually means RSUs, ESOPs, or a dual Form-16 year. <a href="/tools/esop-rsu-tax-calculator.html" style="color:var(--accent);font-weight:600;">Check your ESOP/RSU tax</a> or <a href="/tools/job-switch-tax-calculator.html" style="color:var(--accent);font-weight:600;">run a job-switch tax analysis</a> to avoid surprises at filing time.</div></div>`:''}`;
+    ${annualGross>2000000?`<div class="insight blue" style="margin-top:10px;"><span class="insight-icon">🧾</span><div>Package over ₹20L usually means RSUs, ESOPs, or a dual Form-16 year. <a href="/tools/esop-rsu-tax-calculator.html" style="color:var(--accent);font-weight:600;">Check your ESOP/RSU tax</a> or <a href="/tools/job-switch-tax-calculator.html" style="color:var(--accent);font-weight:600;">run a job-switch tax analysis</a> to avoid surprises at filing time.</div></div>`:''}
+
+    <div class="ai-upsell" id="aiUpsell">
+      <div class="ai-upsell-top"><span class="ai-upsell-badge">🤖 AI · ₹29</span></div>
+      <h4>Get your personalised AI report</h4>
+      <p>Where your money's really going, whether your regime choice fits, optimisation ideas, and negotiation talking points — written for your exact numbers above.</p>
+      <button class="ai-upsell-cta" id="aiUpsellBtn" onclick="toggleAIForm()">Get My AI Report — ₹29</button>
+      <div class="ai-form" id="aiForm">
+        <input type="text" id="ai-role" placeholder="Current role / title (optional)">
+        <input type="text" id="ai-exp" placeholder="Years of experience (optional)">
+        <textarea id="ai-context" placeholder="Anything else? e.g. an offer you're comparing, or that you're asking for a raise (optional)"></textarea>
+        <button class="ai-upsell-cta" onclick="startAIPayment()">Pay ₹29 &amp; Generate Report →</button>
+      </div>
+      <div id="aiStatus"></div>
+    </div>
+    <div id="aiReportArea"></div>`;
+}
+</script>
+<script>
+// ═══════════════════════════════════════════════════════════
+// AI SALARY REPORT — optional ₹29 add-on to the free calculator above.
+// Nothing here touches calcSal() or the free breakdown output.
+// ═══════════════════════════════════════════════════════════
+const AI_API_BASE = "https://web-production-456eb.up.railway.app";
+const AI_PRICE_PAISE = 2900; // ₹29
+
+function toggleAIForm(){
+  const f=document.getElementById('aiForm');
+  if(f) f.classList.toggle('open');
+}
+
+function aiStatus(msg){
+  const el=document.getElementById('aiStatus');
+  if(!el) return;
+  el.innerHTML = msg ? `<div class="ai-status"><div class="ai-spin"></div>${msg}</div>` : '';
+}
+
+function aiError(msg){
+  const el=document.getElementById('aiStatus');
+  if(el) el.innerHTML = `<div class="ai-error">${msg}</div>`;
+  const btn=document.getElementById('aiUpsellBtn');
+  if(btn) btn.disabled=false;
+}
+
+async function startAIPayment(){
+  if(!window.__lastBreakdown){ aiError('Please calculate your salary first.'); return; }
+  const btn=document.getElementById('aiUpsellBtn');
+  if(btn) btn.disabled=true;
+  aiStatus('Creating payment order...');
+
+  try{
+    const orderRes = await fetch(`${AI_API_BASE}/api/create-salaryai-order`, {method:'POST'});
+    if(!orderRes.ok) throw new Error('Could not create payment order.');
+    const order = await orderRes.json();
+    if(!order.order_id || !order.razorpay_key) throw new Error('Payment setup failed. Please try again.');
+
+    aiStatus('Opening payment window...');
+
+    const options = {
+      key: order.razorpay_key,
+      amount: order.amount,
+      currency: 'INR',
+      name: 'SalaryBit',
+      description: 'AI Salary Optimisation & Negotiation Report',
+      order_id: order.order_id,
+      theme: { color: '#0d9488' },
+      handler: async function(response){
+        aiStatus('Payment confirmed! Generating your report...');
+        await generateAIReport(response);
+      },
+      modal: {
+        ondismiss: function(){
+          if(btn) btn.disabled=false;
+          aiStatus('');
+        }
+      }
+    };
+    new Razorpay(options).open();
+
+  }catch(err){
+    aiError('Payment failed: '+err.message);
+  }
+}
+
+async function generateAIReport(paymentResponse){
+  try{
+    const res = await fetch(`${AI_API_BASE}/api/verify-salaryai-payment`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        razorpay_order_id: paymentResponse.razorpay_order_id,
+        razorpay_payment_id: paymentResponse.razorpay_payment_id,
+        razorpay_signature: paymentResponse.razorpay_signature,
+        breakdown: window.__lastBreakdown,
+        role: document.getElementById('ai-role')?.value || '',
+        experience: document.getElementById('ai-exp')?.value || '',
+        context: document.getElementById('ai-context')?.value || ''
+      })
+    });
+    if(!res.ok) throw new Error('Server error generating report.');
+    const result = await res.json();
+
+    if(result.error){
+      aiError(result.error);
+      return;
+    }
+    if(result.success && result.report){
+      aiStatus('');
+      renderAIReport(result.report);
+      const upsell=document.getElementById('aiUpsell');
+      if(upsell) upsell.style.display='none';
+    } else {
+      aiError('Something went wrong generating your report. Contact support@salarybit.in with payment ID: '+(paymentResponse.razorpay_payment_id||'unknown'));
+    }
+  }catch(err){
+    aiError('Error: '+err.message+'<br/>If payment was charged, contact support@salarybit.in with payment ID: '+(paymentResponse.razorpay_payment_id||'unknown'));
+  }
+}
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderAIReport(r){
+  const ideas=(r.optimization_ideas||[]).map(i=>`<div class="oi"><b>${esc(i.idea)}</b>${esc(i.detail)}</div>`).join('');
+  document.getElementById('aiReportArea').innerHTML = `
+    <div class="ai-report">
+      <h5>Your Money Story</h5>
+      <p>${esc(r.money_story)}</p>
+      <h5>Regime Check</h5>
+      <p>${esc(r.regime_check)}</p>
+      ${ideas?`<h5>Optimisation Ideas</h5>${ideas}`:''}
+      ${r.negotiation_notes?`<h5>Negotiation Notes</h5><p>${esc(r.negotiation_notes)}</p>`:''}
+      <h5>One-Year Outlook</h5>
+      <p>${esc(r.one_year_outlook)}</p>
+      <div class="disc">${esc(r.disclaimer)}</div>
+    </div>`;
 }
 </script>
 <script src="/assets/js/site-widgets.js"></script>

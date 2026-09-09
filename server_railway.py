@@ -5100,6 +5100,177 @@ def claim_kit_pdf():
     )
 
 
+# ── SALARY CALCULATOR — AI OPTIMIZATION & NEGOTIATION REPORT ──
+# The free calculator on /tools/salary-calculator.html stays free and
+# untouched. This is an optional paid (Rs 29) add-on: the user's already-
+# computed breakdown + a bit of context gets turned into a personalised AI
+# report — same verify-then-generate pattern as the PF/Credit Rejection
+# Decoders above.
+SALARYAI_PRICE_PAISE = 2900  # Rs 29
+
+SALARYAI_SYSTEM_PROMPT = """You are a senior compensation and personal-finance advisor in India,
+preparing a short personalised report for a paying client who has just calculated their exact
+in-hand salary breakdown using an online calculator and paid Rs 29 for an AI-written analysis of it.
+
+You will be given: their computed monthly gross, basic, HRA, special+other allowances, employee PF,
+professional tax, monthly income tax TDS, monthly in-hand salary, the tax regime used (old/new), the
+city type (metro/non-metro), and optionally their years of experience, current role/title, and any
+free-text context they added (e.g. an offer they're comparing against, or that they're negotiating a
+raise).
+
+Rules:
+- Ground everything in the numbers actually given — do not invent CTC figures, company names, or
+  market benchmarks you are not confident about. If you reference typical market ranges, caveat them
+  as general and approximate.
+- Be concrete and specific to their numbers (cite actual rupee figures back to them), not generic
+  advice that could apply to anyone.
+- If there's an obvious inefficiency in their specific numbers (e.g. old regime chosen but HRA/80C
+  usage looks low so new regime may suit them better), call it out plainly.
+- If they gave negotiation context (a competing offer, a raise ask, a promotion), give concrete
+  talking points anchored to their actual take-home gap — not generic "know your worth" filler.
+- This is general financial education, not tax, legal, or HR/negotiation advice — say so once,
+  briefly, in the disclaimer field only.
+
+Respond ONLY with a single JSON object (no markdown fences, no preamble), matching this exact shape:
+
+{
+  "money_story": "2-3 sentence plain-English narrative of where their money is actually going each month, using their real numbers",
+  "regime_check": "1-2 sentences on whether their chosen regime (old/new) looks right for their numbers, or worth revisiting — say so plainly if you can't tell without more info",
+  "optimization_ideas": [
+    {"idea": "short imperative title", "detail": "1-2 sentences, specific to their numbers, with an estimated rupee impact where reasonable"}
+  ],
+  "negotiation_notes": "if the client gave negotiation/offer-comparison context, 2-4 concrete, numbers-anchored talking points; if not, a short note on what to bring next time for negotiation-specific advice (empty string is fine)",
+  "one_year_outlook": "1-2 sentences: if they keep this exact structure for a year, what does that mean in real terms — stay strictly within what the numbers support",
+  "disclaimer": "one sentence noting this is general financial education based on the numbers provided, not tax, legal, or HR advice"
+}"""
+
+
+def _call_claude_salaryai_report(case):
+    claude_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not claude_key:
+        raise RuntimeError("Server not configured. Missing ANTHROPIC_API_KEY.")
+
+    user_content = json.dumps(case, indent=2)
+
+    payload = json.dumps({
+        "model": "claude-sonnet-4-6",
+        "max_tokens": 1800,
+        "system": SALARYAI_SYSTEM_PROMPT,
+        "messages": [{"role": "user", "content": user_content}]
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.anthropic.com/v1/messages",
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": claude_key,
+            "anthropic-version": "2023-06-01"
+        },
+        method="POST"
+    )
+
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        result = json.loads(resp.read().decode("utf-8"))
+
+    raw = "".join(
+        block.get("text", "") for block in result.get("content", []) if block.get("type") == "text"
+    ).strip()
+    if raw.startswith("```"):
+        raw = raw.strip("`")
+        if raw.lower().startswith("json"):
+            raw = raw[4:]
+    return json.loads(raw)
+
+
+@app.route("/api/create-salaryai-order", methods=["POST", "OPTIONS"])
+def create_salaryai_order():
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": SALARYAI_PRICE_PAISE,
+            "currency": "INR",
+            "receipt": f"salaryai_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
+    except Exception as e:
+        print(f"create-salaryai-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/verify-salaryai-payment", methods=["POST", "OPTIONS"])
+def verify_salaryai_payment():
+    """Verifies payment (or a promo bypass code for testing), then runs the
+    Claude-generated salary optimisation & negotiation report on the client's
+    computed breakdown and returns it in the same response — same pattern as
+    verify-pfdecoder-payment."""
+    if request.method == "OPTIONS":
+        return "", 200
+    data = request.get_json(silent=True) or {}
+
+    promo_code = (data.get("promo_code") or "").strip()
+    payment_id = None
+
+    if promo_code and promo_code == PROMO_BYPASS_CODE:
+        payment_id = f"promo_{os.urandom(4).hex()}"
+        print(f"[salaryai] PROMO bypass unlock | code used")
+    else:
+        order_id = data.get("razorpay_order_id")
+        payment_id = data.get("razorpay_payment_id")
+        signature = data.get("razorpay_signature")
+
+        if not all([order_id, payment_id, signature]):
+            return jsonify({"success": False, "error": "Missing required fields."}), 400
+
+        body = f"{order_id}|{payment_id}"
+        expected = hmac.new(
+            os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+            body.encode(),
+            hashlib.sha256
+        ).hexdigest()
+        if expected != signature:
+            return jsonify({"success": False, "error": "Payment verification failed."}), 400
+
+        print(f"[salaryai] paid unlock | payment_id={payment_id}")
+
+    breakdown = data.get("breakdown") or {}
+    case = {
+        "monthly_gross": breakdown.get("gross"),
+        "basic_salary": breakdown.get("basic"),
+        "hra": breakdown.get("hra"),
+        "special_and_other_allowances": breakdown.get("specialOther"),
+        "employee_pf": breakdown.get("pf"),
+        "professional_tax": breakdown.get("pt"),
+        "monthly_income_tax_tds": breakdown.get("tax"),
+        "monthly_inhand": breakdown.get("inhand"),
+        "tax_regime": breakdown.get("regime"),
+        "city_type": breakdown.get("city"),
+        "years_of_experience": data.get("experience") or None,
+        "current_role": data.get("role") or None,
+        "additional_context": data.get("context") or None,
+    }
+
+    try:
+        report = _call_claude_salaryai_report(case)
+    except Exception as e:
+        print(f"salaryai report generation error: {type(e).__name__}: {e}")
+        return jsonify({
+            "success": True,
+            "payment_id": payment_id,
+            "error": "Payment succeeded, but report generation failed. You will not be "
+                     "charged again — contact support with this payment ID and we'll get "
+                     "your report to you directly."
+        })
+
+    return jsonify({"success": True, "payment_id": payment_id, "report": report})
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)

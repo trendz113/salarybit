@@ -880,461 +880,6 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
 
 
-<!-- MAIN -->
-<main class="main" id="calc-section">
-  <div class="layout">
-
-    <!-- INPUT PANEL -->
-    <aside>
-      <div class="panel">
-        <div class="panel-head">
-          <div class="panel-title">Enter your details</div>
-          <div class="panel-sub">Fill from your monthly salary slip</div>
-        </div>
-        <div class="panel-body">
-
-          <!-- SALARY SLIP -->
-          <div class="field-group">
-            <div class="fg-label">Monthly Salary Slip</div>
-            <div class="field">
-              <label>Basic Salary <span id="basicHint" style="color:var(--accent);font-weight:700"></span></label>
-              <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="sl-basic" value="" placeholder="e.g. 50000" oninput="onSlipChange()"></div>
-            </div>
-            <div class="frow">
-              <div class="field">
-                <label>HRA <span id="hraAutoTag" style="font-size:9px;font-weight:700;background:var(--teal-bg);color:var(--teal);border:1px solid rgba(14,165,160,.2);padding:1px 6px;border-radius:10px;letter-spacing:.04em;display:none">AUTO</span></label>
-                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="sl-hra" value="" placeholder="Auto-calculated" oninput="onHraManualEdit()"></div>
-                <div class="fld-hint" id="hraHint" style="color:var(--teal)"></div>
-              </div>
-              <div class="field">
-                <label>Special Allowance</label>
-                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="sl-special" value="" placeholder="e.g. 10000" oninput="onSlipChange()"></div>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="field">
-                <label>LTA <span style="font-size:9px;font-weight:700;background:var(--teal-bg);color:var(--teal);border:1px solid rgba(14,165,160,.2);padding:1px 6px;border-radius:10px;letter-spacing:.04em">FIXED</span></label>
-                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="sl-lta" value="" placeholder="Auto: 16.67% of Basic" oninput="onSlipChange()"></div>
-                <div class="fld-hint">New Labour Code: Fixed at 16.67% of Basic (2 months Basic/yr)</div>
-              </div>
-              <div class="field">
-                <label>Conveyance <span style="font-size:9px;font-weight:700;background:#e0f2fe;color:#0284c7;border:1px solid rgba(2,132,199,.2);padding:1px 6px;border-radius:10px;letter-spacing:.04em">NEW</span></label>
-                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="sl-conveyance" value="" placeholder="Auto: 5% of Basic" oninput="onSlipChange()"></div>
-                <div class="fld-hint">New Labour Code: Fixed at 5% of Basic, max ₹15,000/mo</div>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="field">
-                <label>Variable Pay / Bonus <span style="font-size:9px;font-weight:600;color:var(--mist)">(one-time annual)</span></label>
-                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="sl-bonus" value="" placeholder="e.g. 50000" oninput="onSlipChange()"></div>
-                <div class="fld-hint">Enter total annual amount — added once, not multiplied</div>
-              </div>
-              <div class="field">
-                <label>Professional Dev. Allowance (PDA) <span style="font-size:9px;font-weight:700;background:#e0f2fe;color:#0284c7;border:1px solid rgba(2,132,199,.2);padding:1px 6px;border-radius:10px;letter-spacing:.04em">NEW</span></label>
-                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="sl-pda" value="" placeholder="Auto: 17% of Base Pay" oninput="onSlipChange()"></div>
-                <div class="fld-hint">New Labour Code: 17% of Base Pay (skill development allowance)</div>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="field">
-                <label>Employee PF (slip)</label>
-                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="sl-pf" value="" placeholder="e.g. 1800"></div>
-              </div>
-              <div class="field">
-                <label>Other deductions</label>
-                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="sl-otherded" value="" placeholder="0"></div>
-              </div>
-            </div>
-            <div class="slip-gross">
-              <span>Gross Monthly</span>
-              <span id="slipGrossDisplay">—</span>
-            </div>
-          </div>
-
-          <!-- PERSONAL -->
-          <div class="field-group">
-            <div class="fg-label">Personal Details</div>
-            <div class="frow">
-              <div class="field">
-                <label>Age</label>
-                <input class="fld-inp bare" type="number" id="age" value="32" min="22" max="65" oninput="onSlipChange()">
-              </div>
-              <div class="field">
-                <label>Dependents</label>
-                <input class="fld-inp bare" type="number" id="deps" value="1" min="0" max="10">
-              </div>
-            </div>
-            <div class="field">
-              <label>City type</label>
-              <select class="fld-inp bare" id="citySelect" onchange="setCityFromSelect(this.value)">
-                <option value="metro">Metro (Delhi, Mumbai, Kolkata, Chennai)</option>
-                <option value="nonmetro">Non-Metro</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- OLD REGIME DEDUCTIONS -->
-          <div class="field-group">
-            <div class="fg-label">Old Regime Deductions</div>
-            <div class="field">
-              <label>Monthly rent paid <span style="font-size:9px;font-weight:600;color:var(--teal)">→ HRA exemption</span></label>
-              <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="rent" value="15000"></div>
-              <div class="fld-hint">Used to calculate HRA exemption (Sec 10(13A)) — only applicable under Old Regime</div>
-            </div>
-            <div class="frow">
-              <div class="field">
-                <label>80C investments</label>
-                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="d80c" value="150000"></div>
-              </div>
-              <div class="field">
-                <label>80D health premium</label>
-                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="d80d" value="25000"></div>
-              </div>
-            </div>
-            <div class="frow">
-              <div class="field">
-                <label>Home loan interest <span style="font-size:9px;font-weight:600;color:var(--mist)">Sec 24b</span></label>
-                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="hloan" value="0"></div>
-                <div class="fld-hint">Annual interest portion only (not EMI), max ₹2L deduction</div>
-              </div>
-              <div class="field">
-                <label>NPS 80CCD(1B)</label>
-                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="nps" value="0"></div>
-              </div>
-            </div>
-            <div class="field">
-              <label>Other deductions</label>
-              <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="dother" value="0"></div>
-            </div>
-          </div>
-
-          <button class="calc-cta pulse" id="calcBtn" onclick="calc()">Calculate my take-home →</button>
-          <button class="reset-btn" onclick="resetAll()">Reset all values</button>
-        </div>
-      </div>
-    </aside>
-
-    <!-- RESULTS -->
-    <div class="results-area">
-
-      <!-- PLACEHOLDER -->
-      <div class="results-placeholder" id="resultsPlaceholder">
-        <div class="rp-icon">📊</div>
-        <div class="rp-title">Your results will appear here</div>
-        <p class="rp-sub">Fill in your salary slip details and click<br><strong>Calculate my take-home</strong></p>
-      </div>
-
-      <!-- RESULTS CONTENT -->
-      <div id="resultsContent" style="display:none">
-
-        <!-- TAKE HOME CARD -->
-        <div class="th-card">
-          <div class="th-label">Monthly In-Hand Salary</div>
-          <div class="th-amount" id="th-monthly">—</div>
-          <div class="th-sub" id="th-pct"></div>
-          <div class="th-grid">
-            <div class="th-item">
-              <div class="th-label">Annual In-Hand</div>
-              <div class="th-val" id="th-annual">—</div>
-            </div>
-            <div class="th-item">
-              <div class="th-label">Gross Monthly</div>
-              <div class="th-val" id="th-gross">—</div>
-            </div>
-          </div>
-          <div class="regime-note" id="th-regime-note"></div>
-        </div>
-
-        <!-- ADVISOR -->
-        <div class="advisor-card">
-          <div class="advisor-ava">🤖</div>
-          <div>
-            <div class="advisor-text" id="advisorText">—</div>
-            <div class="advisor-name">SalaryBit Advisor</div>
-          </div>
-        </div>
-
-        <!-- Google AdSense — in-results unit -->
-        <ins class="adsbygoogle"
-          style="display:block;margin:1.25rem 0"
-          data-ad-client="ca-pub-8336334158316485"
-          data-ad-slot="6518505601"
-          data-ad-format="auto"
-          data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
-
-        <!-- SECTION NAV -->
-        <div class="sec-nav-wrap">
-          <button type="button" class="sec-nav-arrow left is-hidden" id="secNavLeft" onclick="scrollSecNav(-1)" aria-label="Scroll left">
-            <svg viewBox="0 0 12 12" fill="none"><path d="M8 2L4 6l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-          <div class="sec-nav" id="secNav">
-            <button class="sec-btn on" onclick="showSection('salary',this)">💰 Salary</button>
-            <button class="sec-btn" onclick="showSection('tax',this)">📋 Tax Regime</button>
-            <button class="sec-btn" onclick="showSection('insurance',this)" id="insurance-section">🛡️ Insurance</button>
-            <button class="sec-btn" onclick="showSection('roadmap',this)">🗺️ Roadmap</button>
-            <button class="sec-btn" onclick="showSection('labour',this)" id="labour-section">⚖️ Labour Code</button>
-            <button class="sec-btn" onclick="showSection('rights',this)" id="rights-section">🏛️ Your Rights</button>
-            <button class="sec-btn" onclick="window.location='/tools/capital-gains-calculator.html';return false;//({behavior:'smooth'})" id="sharetax-section">📈 Share Tax</button>
-            <button class="sec-btn" onclick="window.location='/tools/esop-rsu-tax-calculator.html';return false;//({behavior:'smooth'})" id="esop-section">🏢 ESOP Tax</button>
-          </div>
-          <button type="button" class="sec-nav-arrow right" id="secNavRight" onclick="scrollSecNav(1)" aria-label="Scroll right">
-            <svg viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-        </div>
-
-        <!-- ── SALARY SECTION ── -->
-        <div class="results-section on" id="sec-salary">
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">Where does your CTC go?</div>
-              <div class="card-aside" id="ctcAside"></div>
-            </div>
-            <div class="chart-box h180" style="margin-bottom:1rem"><canvas id="ctcChart"></canvas></div>
-            <div id="ctcRows"></div>
-            <div style="font-size:11px;font-weight:700;color:var(--mist);margin-top:.5rem;text-align:right">Total CTC: <span id="ctcTotal" style="color:var(--ink)"></span></div>
-            <div class="insight blue" id="ctcInsight"><span class="insight-icon">ℹ️</span><div id="ctcInsightText"></div></div>
-          </div>
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">Deductions breakdown</div>
-              <div class="card-aside" id="deductAside"></div>
-            </div>
-            <div id="deductRows"></div>
-            <div style="font-size:11px;font-weight:700;color:var(--mist);margin-top:.5rem;text-align:right">Total deductions: <span id="deductTotal" style="color:var(--rose)"></span></div>
-            <div class="insight green" style="margin-top:.875rem"><span class="insight-icon">💡</span><div id="deductInsight"></div></div>
-          </div>
-        </div>
-
-        <!-- ── TAX SECTION ── -->
-        <div class="results-section" id="sec-tax">
-          <div class="card">
-            <div class="card-title" style="margin-bottom:1rem">Old vs New Regime — which is better for you?</div>
-            <div class="regime-grid" id="regimeGrid"></div>
-            <div id="regimeRows"></div>
-            <div class="chart-box h200" style="margin:1rem 0"><canvas id="regimeChart"></canvas></div>
-            <div id="regimeInsight"><span class="insight-icon">📊</span><div id="regimeInsightText"></div></div>
-          </div>
-        </div>
-
-        <!-- ── INSURANCE SECTION ── -->
-        <div class="results-section" id="sec-insurance">
-          <div class="card">
-            <div class="ins-tabs">
-              <button class="ins-tab on" onclick="showInsTab('term',this)">🛡️ Term Insurance</button>
-              <button class="ins-tab" onclick="showInsTab('health',this)">🏥 Health Insurance</button>
-              <button class="ins-tab" onclick="showInsTab('emergency',this)">🏦 Emergency Fund</button>
-            </div>
-
-            <!-- TERM -->
-            <div class="ins-pane on" id="pane-term">
-              <div class="card-header">
-                <div class="card-title">Recommended term cover</div>
-                <div class="card-aside" id="term-cover"></div>
-              </div>
-              <div class="field-group">
-                <div class="frow">
-                  <div class="field">
-                    <label>Outstanding loans</label>
-                    <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="ins-loan" value="0" oninput="calcIns()"></div>
-                  </div>
-                  <div class="field">
-                    <label>Existing assets / savings</label>
-                    <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="ins-assets" value="0" oninput="calcIns()"></div>
-                  </div>
-                </div>
-              </div>
-              <div id="term-result-rows"></div>
-              <div id="term-premium-box"></div>
-              <div id="termInsight"><span class="insight-icon">🚨</span><div id="termInsightText"></div></div>
-            </div>
-
-            <!-- HEALTH -->
-            <div class="ins-pane" id="pane-health">
-              <div class="card-header">
-                <div class="card-title">Recommended health cover</div>
-                <div class="card-aside" id="health-cover"></div>
-              </div>
-              <div class="field-group">
-                <div class="frow">
-                  <div class="field">
-                    <label>Your age</label>
-                    <input class="fld-inp bare" type="number" id="h-age" value="32" oninput="calcHealth()">
-                  </div>
-                  <div class="field">
-                    <label>Family members</label>
-                    <select class="fld-inp bare" id="h-family" onchange="calcHealth()">
-                      <option value="1">Self only</option>
-                      <option value="2">Self + Spouse</option>
-                      <option value="3" selected>Self + Spouse + 1 child</option>
-                      <option value="4">Self + Spouse + 2 children</option>
-                      <option value="5">Self + Spouse + Parents</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="frow">
-                  <div class="field">
-                    <label>Pre-existing conditions</label>
-                    <select class="fld-inp bare" id="h-condition" onchange="calcHealth()">
-                      <option value="none">None</option>
-                      <option value="mild">Mild (BP/Diabetes)</option>
-                      <option value="serious">Serious (heart, cancer history)</option>
-                    </select>
-                  </div>
-                  <div class="field">
-                    <label>Company cover</label>
-                    <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="h-company" value="500000" oninput="calcHealth()"></div>
-                  </div>
-                </div>
-              </div>
-              <div id="health-result-rows"></div>
-              <div id="healthInsight"><span class="insight-icon">🏥</span><div id="healthInsightText"></div></div>
-            </div>
-
-            <!-- EMERGENCY -->
-            <div class="ins-pane" id="pane-emergency">
-              <div class="card-header">
-                <div class="card-title">Emergency fund target</div>
-                <div class="card-aside" id="ef-target"></div>
-              </div>
-              <div class="field-group">
-                <div class="frow">
-                  <div class="field">
-                    <label>Monthly expenses</label>
-                    <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="ef-expenses" value="40000" oninput="calcEmergency()"></div>
-                  </div>
-                  <div class="field">
-                    <label>Current savings</label>
-                    <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="ef-savings" value="0" oninput="calcEmergency()"></div>
-                  </div>
-                </div>
-                <div class="frow">
-                  <div class="field">
-                    <label>Months buffer target</label>
-                    <input class="fld-inp bare" type="number" id="ef-months" value="6" min="3" max="24" oninput="calcEmergency()">
-                  </div>
-                  <div class="field">
-                    <label>Job security</label>
-                    <select class="fld-inp bare" id="ef-security" onchange="calcEmergency()">
-                      <option value="high">High (government / MNC)</option>
-                      <option value="medium" selected>Medium (stable private)</option>
-                      <option value="low">Low (startup / freelance)</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div id="ef-result-rows"></div>
-              <div id="efInsight"><span class="insight-icon">🏦</span><div id="efInsightText"></div></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ── ROADMAP SECTION ── -->
-        <div class="results-section" id="sec-roadmap">
-          <div class="card">
-            <div class="card-title" style="margin-bottom:.75rem">🗺️ Your personalised financial roadmap</div>
-            <p class="roadmap-intro" id="roadmapIntro"></p>
-            <div class="pri-list" id="priorityList"></div>
-          </div>
-        </div>
-
-        <!-- ── LABOUR CODE SECTION ── -->
-        <div class="results-section" id="sec-labour">
-          <div class="card">
-            <div class="card-title" style="margin-bottom:1rem">⚖️ New Labour Code — impact on your salary</div>
-            <div class="lc-grid" id="lcImpactGrid"></div>
-            <div class="card-title" style="margin-bottom:.75rem;font-size:13px">India's 4 Labour Codes — what changes for you</div>
-            <div class="lc-code-block">
-              <div class="lc-code-title">Code on Wages, 2019</div>
-              <div class="lc-code-desc">Basic wage must be ≥50% of total pay. Minimum wages now cover all workers. Overtime at 2× the rate.</div>
-              <span class="lc-code-impact" id="lcWagesImpact"></span>
-            </div>
-            <div class="lc-code-block">
-              <div class="lc-code-title">Code on Social Security, 2020</div>
-              <div class="lc-code-desc">PF and gratuity will be linked to the new higher Basic wage base. Gig workers also get social security coverage.</div>
-              <span class="lc-code-impact" id="lcSocialImpact"></span>
-            </div>
-            <div class="lc-code-block">
-              <div class="lc-code-title">Code on Industrial Relations, 2020</div>
-              <div class="lc-code-desc">Establishments with &lt;300 workers can hire/fire without government permission. Fixed-term employment standardised.</div>
-              <span class="lc-code-impact" style="background:var(--amber-bg);color:var(--amber)">Pending notification — watch for updates</span>
-            </div>
-            <div class="lc-code-block">
-              <div class="lc-code-title">Code on Occupational Safety, Health & Working Conditions, 2020</div>
-              <div class="lc-code-desc">Maximum 48 hrs/week, 8 hrs/day. Mandatory annual health check-ups. Better protection for migrant and contract workers.</div>
-              <span class="lc-code-impact" style="background:var(--green-bg);color:var(--green)">Benefit — protects employee rights</span>
-            </div>
-            <div class="insight" id="lcInsight"><span class="insight-icon">⚖️</span><div id="lcInsightText"></div></div>
-          </div>
-        </div>
-
-        <!-- ── RIGHTS SECTION ── -->
-        <div class="results-section" id="sec-rights">
-          <div class="card">
-            <div class="rights-banner">
-              <div class="rights-banner-title">Fired from your job? Know your rights.</div>
-              <div class="rights-banner-sub">You are not powerless. Indian labour law provides strong protections. Most employers will settle rather than go to a Labour Court.</div>
-            </div>
-            <div class="insight gold" style="margin-bottom:1rem"><span class="insight-icon">⚠️</span><div><strong>Key laws protecting you:</strong> Industrial Disputes Act 1947 (wrongful termination), Payment of Gratuity Act 1972, EPF & Miscellaneous Provisions Act 1952, Payment of Wages Act 1936. If your employer has 10+ workers and you're a "workman", these laws apply to you.</div></div>
-            <div class="rights-grid">
-              <div class="rights-card">
-                <div class="rc-icon">💸</div>
-                <div class="rc-title">Notice Pay entitlement</div>
-                <div class="rc-body">If terminated without serving notice, you're entitled to salary for the entire notice period. Usually 1–3 months depending on contract.</div>
-              </div>
-              <div class="rights-card">
-                <div class="rc-icon">🏆</div>
-                <div class="rc-title">Gratuity (5+ years)</div>
-                <div class="rc-body">If you've worked 5+ years, you're legally entitled to gratuity = (Basic × 15 × years) ÷ 26. It cannot be withheld on termination.</div>
-              </div>
-              <div class="rights-card">
-                <div class="rc-icon">💼</div>
-                <div class="rc-title">PF withdrawal rights</div>
-                <div class="rc-body">Your entire employee PF share is yours always. After 2 months of unemployment, you can withdraw full PF balance from EPFO.</div>
-              </div>
-              <div class="rights-card">
-                <div class="rc-icon">⚖️</div>
-                <div class="rc-title">Wrongful termination</div>
-                <div class="rc-body">If terminated without cause, file under Section 25F of the Industrial Disputes Act. You may be entitled to retrenchment compensation.</div>
-              </div>
-            </div>
-            <div class="card-title" style="margin-bottom:.75rem">Step-by-step: what to do if fired</div>
-            <div class="rights-steps">
-              <div class="rights-step">
-                <div class="rs-num"></div>
-                <div class="rs-body"><strong>Get termination in writing within 48 hrs</strong>Ask for a formal termination letter with reason, last working day, and settlement details.</div>
-              </div>
-              <div class="rights-step">
-                <div class="rs-num"></div>
-                <div class="rs-body"><strong>Calculate dues owed to you</strong>Add up: notice pay + pending salary + gratuity (if 5 yrs) + leave encashment + bonus. Get it in writing from HR.</div>
-              </div>
-              <div class="rights-step">
-                <div class="rs-num"></div>
-                <div class="rs-body"><strong>File PF withdrawal claim</strong>Go to EPFO Unified Member Portal (uanmembers.epfindia.gov.in). After 2 months unemployment, claim full PF. Transfer if re-employed.</div>
-              </div>
-              <div class="rights-step">
-                <div class="rs-num"></div>
-                <div class="rs-body"><strong>If dues not paid within 2 months</strong>File a complaint with the Labour Commissioner of your state. This is free and fast — most employers settle promptly.</div>
-              </div>
-              <div class="rights-step">
-                <div class="rs-num"></div>
-                <div class="rs-body"><strong>Escalate if needed</strong>Approach the Industrial Tribunal or Labour Court for wrongful termination / non-payment. Hire a labour lawyer — fee is often contingency-based.</div>
-              </div>
-            </div>
-            <div class="law-pills">
-              <span class="law-pill">Industrial Disputes Act 1947</span>
-              <span class="law-pill">Payment of Gratuity Act 1972</span>
-              <span class="law-pill">EPF Act 1952</span>
-              <span class="law-pill">Payment of Wages Act 1936</span>
-              <span class="law-pill">Shops & Establishment Act</span>
-            </div>
-          </div>
-        </div>
-
-      </div><!-- /resultsContent -->
-    </div><!-- /results-area -->
-  </div><!-- /layout -->
-</main>
 
 <!-- ═══════════════════════════════════════
      AI TOOLS + COMMUNITY SHOWCASE
@@ -1821,6 +1366,461 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     </div>
   </div>
 </section>
+<!-- MAIN -->
+<main class="main" id="calc-section">
+  <div class="layout">
+
+    <!-- INPUT PANEL -->
+    <aside>
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">Enter your details</div>
+          <div class="panel-sub">Fill from your monthly salary slip</div>
+        </div>
+        <div class="panel-body">
+
+          <!-- SALARY SLIP -->
+          <div class="field-group">
+            <div class="fg-label">Monthly Salary Slip</div>
+            <div class="field">
+              <label>Basic Salary <span id="basicHint" style="color:var(--accent);font-weight:700"></span></label>
+              <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="sl-basic" value="" placeholder="e.g. 50000" oninput="onSlipChange()"></div>
+            </div>
+            <div class="frow">
+              <div class="field">
+                <label>HRA <span id="hraAutoTag" style="font-size:9px;font-weight:700;background:var(--teal-bg);color:var(--teal);border:1px solid rgba(14,165,160,.2);padding:1px 6px;border-radius:10px;letter-spacing:.04em;display:none">AUTO</span></label>
+                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="sl-hra" value="" placeholder="Auto-calculated" oninput="onHraManualEdit()"></div>
+                <div class="fld-hint" id="hraHint" style="color:var(--teal)"></div>
+              </div>
+              <div class="field">
+                <label>Special Allowance</label>
+                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="sl-special" value="" placeholder="e.g. 10000" oninput="onSlipChange()"></div>
+              </div>
+            </div>
+            <div class="frow">
+              <div class="field">
+                <label>LTA <span style="font-size:9px;font-weight:700;background:var(--teal-bg);color:var(--teal);border:1px solid rgba(14,165,160,.2);padding:1px 6px;border-radius:10px;letter-spacing:.04em">FIXED</span></label>
+                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="sl-lta" value="" placeholder="Auto: 16.67% of Basic" oninput="onSlipChange()"></div>
+                <div class="fld-hint">New Labour Code: Fixed at 16.67% of Basic (2 months Basic/yr)</div>
+              </div>
+              <div class="field">
+                <label>Conveyance <span style="font-size:9px;font-weight:700;background:#e0f2fe;color:#0284c7;border:1px solid rgba(2,132,199,.2);padding:1px 6px;border-radius:10px;letter-spacing:.04em">NEW</span></label>
+                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="sl-conveyance" value="" placeholder="Auto: 5% of Basic" oninput="onSlipChange()"></div>
+                <div class="fld-hint">New Labour Code: Fixed at 5% of Basic, max ₹15,000/mo</div>
+              </div>
+            </div>
+            <div class="frow">
+              <div class="field">
+                <label>Variable Pay / Bonus <span style="font-size:9px;font-weight:600;color:var(--mist)">(one-time annual)</span></label>
+                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="sl-bonus" value="" placeholder="e.g. 50000" oninput="onSlipChange()"></div>
+                <div class="fld-hint">Enter total annual amount — added once, not multiplied</div>
+              </div>
+              <div class="field">
+                <label>Professional Dev. Allowance (PDA) <span style="font-size:9px;font-weight:700;background:#e0f2fe;color:#0284c7;border:1px solid rgba(2,132,199,.2);padding:1px 6px;border-radius:10px;letter-spacing:.04em">NEW</span></label>
+                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="sl-pda" value="" placeholder="Auto: 17% of Base Pay" oninput="onSlipChange()"></div>
+                <div class="fld-hint">New Labour Code: 17% of Base Pay (skill development allowance)</div>
+              </div>
+            </div>
+            <div class="frow">
+              <div class="field">
+                <label>Employee PF (slip)</label>
+                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="sl-pf" value="" placeholder="e.g. 1800"></div>
+              </div>
+              <div class="field">
+                <label>Other deductions</label>
+                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="sl-otherded" value="" placeholder="0"></div>
+              </div>
+            </div>
+            <div class="slip-gross">
+              <span>Gross Monthly</span>
+              <span id="slipGrossDisplay">—</span>
+            </div>
+          </div>
+
+          <!-- PERSONAL -->
+          <div class="field-group">
+            <div class="fg-label">Personal Details</div>
+            <div class="frow">
+              <div class="field">
+                <label>Age</label>
+                <input class="fld-inp bare" type="number" id="age" value="32" min="22" max="65" oninput="onSlipChange()">
+              </div>
+              <div class="field">
+                <label>Dependents</label>
+                <input class="fld-inp bare" type="number" id="deps" value="1" min="0" max="10">
+              </div>
+            </div>
+            <div class="field">
+              <label>City type</label>
+              <select class="fld-inp bare" id="citySelect" onchange="setCityFromSelect(this.value)">
+                <option value="metro">Metro (Delhi, Mumbai, Kolkata, Chennai)</option>
+                <option value="nonmetro">Non-Metro</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- OLD REGIME DEDUCTIONS -->
+          <div class="field-group">
+            <div class="fg-label">Old Regime Deductions</div>
+            <div class="field">
+              <label>Monthly rent paid <span style="font-size:9px;font-weight:600;color:var(--teal)">→ HRA exemption</span></label>
+              <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="rent" value="15000"></div>
+              <div class="fld-hint">Used to calculate HRA exemption (Sec 10(13A)) — only applicable under Old Regime</div>
+            </div>
+            <div class="frow">
+              <div class="field">
+                <label>80C investments</label>
+                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="d80c" value="150000"></div>
+              </div>
+              <div class="field">
+                <label>80D health premium</label>
+                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="d80d" value="25000"></div>
+              </div>
+            </div>
+            <div class="frow">
+              <div class="field">
+                <label>Home loan interest <span style="font-size:9px;font-weight:600;color:var(--mist)">Sec 24b</span></label>
+                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="hloan" value="0"></div>
+                <div class="fld-hint">Annual interest portion only (not EMI), max ₹2L deduction</div>
+              </div>
+              <div class="field">
+                <label>NPS 80CCD(1B)</label>
+                <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="nps" value="0"></div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Other deductions</label>
+              <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="dother" value="0"></div>
+            </div>
+          </div>
+
+          <button class="calc-cta pulse" id="calcBtn" onclick="calc()">Calculate my take-home →</button>
+          <button class="reset-btn" onclick="resetAll()">Reset all values</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RESULTS -->
+    <div class="results-area">
+
+      <!-- PLACEHOLDER -->
+      <div class="results-placeholder" id="resultsPlaceholder">
+        <div class="rp-icon">📊</div>
+        <div class="rp-title">Your results will appear here</div>
+        <p class="rp-sub">Fill in your salary slip details and click<br><strong>Calculate my take-home</strong></p>
+      </div>
+
+      <!-- RESULTS CONTENT -->
+      <div id="resultsContent" style="display:none">
+
+        <!-- TAKE HOME CARD -->
+        <div class="th-card">
+          <div class="th-label">Monthly In-Hand Salary</div>
+          <div class="th-amount" id="th-monthly">—</div>
+          <div class="th-sub" id="th-pct"></div>
+          <div class="th-grid">
+            <div class="th-item">
+              <div class="th-label">Annual In-Hand</div>
+              <div class="th-val" id="th-annual">—</div>
+            </div>
+            <div class="th-item">
+              <div class="th-label">Gross Monthly</div>
+              <div class="th-val" id="th-gross">—</div>
+            </div>
+          </div>
+          <div class="regime-note" id="th-regime-note"></div>
+        </div>
+
+        <!-- ADVISOR -->
+        <div class="advisor-card">
+          <div class="advisor-ava">🤖</div>
+          <div>
+            <div class="advisor-text" id="advisorText">—</div>
+            <div class="advisor-name">SalaryBit Advisor</div>
+          </div>
+        </div>
+
+        <!-- Google AdSense — in-results unit -->
+        <ins class="adsbygoogle"
+          style="display:block;margin:1.25rem 0"
+          data-ad-client="ca-pub-8336334158316485"
+          data-ad-slot="6518505601"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+
+        <!-- SECTION NAV -->
+        <div class="sec-nav-wrap">
+          <button type="button" class="sec-nav-arrow left is-hidden" id="secNavLeft" onclick="scrollSecNav(-1)" aria-label="Scroll left">
+            <svg viewBox="0 0 12 12" fill="none"><path d="M8 2L4 6l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="sec-nav" id="secNav">
+            <button class="sec-btn on" onclick="showSection('salary',this)">💰 Salary</button>
+            <button class="sec-btn" onclick="showSection('tax',this)">📋 Tax Regime</button>
+            <button class="sec-btn" onclick="showSection('insurance',this)" id="insurance-section">🛡️ Insurance</button>
+            <button class="sec-btn" onclick="showSection('roadmap',this)">🗺️ Roadmap</button>
+            <button class="sec-btn" onclick="showSection('labour',this)" id="labour-section">⚖️ Labour Code</button>
+            <button class="sec-btn" onclick="showSection('rights',this)" id="rights-section">🏛️ Your Rights</button>
+            <button class="sec-btn" onclick="window.location='/tools/capital-gains-calculator.html';return false;//({behavior:'smooth'})" id="sharetax-section">📈 Share Tax</button>
+            <button class="sec-btn" onclick="window.location='/tools/esop-rsu-tax-calculator.html';return false;//({behavior:'smooth'})" id="esop-section">🏢 ESOP Tax</button>
+          </div>
+          <button type="button" class="sec-nav-arrow right" id="secNavRight" onclick="scrollSecNav(1)" aria-label="Scroll right">
+            <svg viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+
+        <!-- ── SALARY SECTION ── -->
+        <div class="results-section on" id="sec-salary">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Where does your CTC go?</div>
+              <div class="card-aside" id="ctcAside"></div>
+            </div>
+            <div class="chart-box h180" style="margin-bottom:1rem"><canvas id="ctcChart"></canvas></div>
+            <div id="ctcRows"></div>
+            <div style="font-size:11px;font-weight:700;color:var(--mist);margin-top:.5rem;text-align:right">Total CTC: <span id="ctcTotal" style="color:var(--ink)"></span></div>
+            <div class="insight blue" id="ctcInsight"><span class="insight-icon">ℹ️</span><div id="ctcInsightText"></div></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Deductions breakdown</div>
+              <div class="card-aside" id="deductAside"></div>
+            </div>
+            <div id="deductRows"></div>
+            <div style="font-size:11px;font-weight:700;color:var(--mist);margin-top:.5rem;text-align:right">Total deductions: <span id="deductTotal" style="color:var(--rose)"></span></div>
+            <div class="insight green" style="margin-top:.875rem"><span class="insight-icon">💡</span><div id="deductInsight"></div></div>
+          </div>
+        </div>
+
+        <!-- ── TAX SECTION ── -->
+        <div class="results-section" id="sec-tax">
+          <div class="card">
+            <div class="card-title" style="margin-bottom:1rem">Old vs New Regime — which is better for you?</div>
+            <div class="regime-grid" id="regimeGrid"></div>
+            <div id="regimeRows"></div>
+            <div class="chart-box h200" style="margin:1rem 0"><canvas id="regimeChart"></canvas></div>
+            <div id="regimeInsight"><span class="insight-icon">📊</span><div id="regimeInsightText"></div></div>
+          </div>
+        </div>
+
+        <!-- ── INSURANCE SECTION ── -->
+        <div class="results-section" id="sec-insurance">
+          <div class="card">
+            <div class="ins-tabs">
+              <button class="ins-tab on" onclick="showInsTab('term',this)">🛡️ Term Insurance</button>
+              <button class="ins-tab" onclick="showInsTab('health',this)">🏥 Health Insurance</button>
+              <button class="ins-tab" onclick="showInsTab('emergency',this)">🏦 Emergency Fund</button>
+            </div>
+
+            <!-- TERM -->
+            <div class="ins-pane on" id="pane-term">
+              <div class="card-header">
+                <div class="card-title">Recommended term cover</div>
+                <div class="card-aside" id="term-cover"></div>
+              </div>
+              <div class="field-group">
+                <div class="frow">
+                  <div class="field">
+                    <label>Outstanding loans</label>
+                    <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="ins-loan" value="0" oninput="calcIns()"></div>
+                  </div>
+                  <div class="field">
+                    <label>Existing assets / savings</label>
+                    <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="ins-assets" value="0" oninput="calcIns()"></div>
+                  </div>
+                </div>
+              </div>
+              <div id="term-result-rows"></div>
+              <div id="term-premium-box"></div>
+              <div id="termInsight"><span class="insight-icon">🚨</span><div id="termInsightText"></div></div>
+            </div>
+
+            <!-- HEALTH -->
+            <div class="ins-pane" id="pane-health">
+              <div class="card-header">
+                <div class="card-title">Recommended health cover</div>
+                <div class="card-aside" id="health-cover"></div>
+              </div>
+              <div class="field-group">
+                <div class="frow">
+                  <div class="field">
+                    <label>Your age</label>
+                    <input class="fld-inp bare" type="number" id="h-age" value="32" oninput="calcHealth()">
+                  </div>
+                  <div class="field">
+                    <label>Family members</label>
+                    <select class="fld-inp bare" id="h-family" onchange="calcHealth()">
+                      <option value="1">Self only</option>
+                      <option value="2">Self + Spouse</option>
+                      <option value="3" selected>Self + Spouse + 1 child</option>
+                      <option value="4">Self + Spouse + 2 children</option>
+                      <option value="5">Self + Spouse + Parents</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="frow">
+                  <div class="field">
+                    <label>Pre-existing conditions</label>
+                    <select class="fld-inp bare" id="h-condition" onchange="calcHealth()">
+                      <option value="none">None</option>
+                      <option value="mild">Mild (BP/Diabetes)</option>
+                      <option value="serious">Serious (heart, cancer history)</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>Company cover</label>
+                    <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="h-company" value="500000" oninput="calcHealth()"></div>
+                  </div>
+                </div>
+              </div>
+              <div id="health-result-rows"></div>
+              <div id="healthInsight"><span class="insight-icon">🏥</span><div id="healthInsightText"></div></div>
+            </div>
+
+            <!-- EMERGENCY -->
+            <div class="ins-pane" id="pane-emergency">
+              <div class="card-header">
+                <div class="card-title">Emergency fund target</div>
+                <div class="card-aside" id="ef-target"></div>
+              </div>
+              <div class="field-group">
+                <div class="frow">
+                  <div class="field">
+                    <label>Monthly expenses</label>
+                    <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="ef-expenses" value="40000" oninput="calcEmergency()"></div>
+                  </div>
+                  <div class="field">
+                    <label>Current savings</label>
+                    <div class="fld-wrap"><span class="fld-pre">₹</span><input class="fld-inp" type="number" id="ef-savings" value="0" oninput="calcEmergency()"></div>
+                  </div>
+                </div>
+                <div class="frow">
+                  <div class="field">
+                    <label>Months buffer target</label>
+                    <input class="fld-inp bare" type="number" id="ef-months" value="6" min="3" max="24" oninput="calcEmergency()">
+                  </div>
+                  <div class="field">
+                    <label>Job security</label>
+                    <select class="fld-inp bare" id="ef-security" onchange="calcEmergency()">
+                      <option value="high">High (government / MNC)</option>
+                      <option value="medium" selected>Medium (stable private)</option>
+                      <option value="low">Low (startup / freelance)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div id="ef-result-rows"></div>
+              <div id="efInsight"><span class="insight-icon">🏦</span><div id="efInsightText"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── ROADMAP SECTION ── -->
+        <div class="results-section" id="sec-roadmap">
+          <div class="card">
+            <div class="card-title" style="margin-bottom:.75rem">🗺️ Your personalised financial roadmap</div>
+            <p class="roadmap-intro" id="roadmapIntro"></p>
+            <div class="pri-list" id="priorityList"></div>
+          </div>
+        </div>
+
+        <!-- ── LABOUR CODE SECTION ── -->
+        <div class="results-section" id="sec-labour">
+          <div class="card">
+            <div class="card-title" style="margin-bottom:1rem">⚖️ New Labour Code — impact on your salary</div>
+            <div class="lc-grid" id="lcImpactGrid"></div>
+            <div class="card-title" style="margin-bottom:.75rem;font-size:13px">India's 4 Labour Codes — what changes for you</div>
+            <div class="lc-code-block">
+              <div class="lc-code-title">Code on Wages, 2019</div>
+              <div class="lc-code-desc">Basic wage must be ≥50% of total pay. Minimum wages now cover all workers. Overtime at 2× the rate.</div>
+              <span class="lc-code-impact" id="lcWagesImpact"></span>
+            </div>
+            <div class="lc-code-block">
+              <div class="lc-code-title">Code on Social Security, 2020</div>
+              <div class="lc-code-desc">PF and gratuity will be linked to the new higher Basic wage base. Gig workers also get social security coverage.</div>
+              <span class="lc-code-impact" id="lcSocialImpact"></span>
+            </div>
+            <div class="lc-code-block">
+              <div class="lc-code-title">Code on Industrial Relations, 2020</div>
+              <div class="lc-code-desc">Establishments with &lt;300 workers can hire/fire without government permission. Fixed-term employment standardised.</div>
+              <span class="lc-code-impact" style="background:var(--amber-bg);color:var(--amber)">Pending notification — watch for updates</span>
+            </div>
+            <div class="lc-code-block">
+              <div class="lc-code-title">Code on Occupational Safety, Health & Working Conditions, 2020</div>
+              <div class="lc-code-desc">Maximum 48 hrs/week, 8 hrs/day. Mandatory annual health check-ups. Better protection for migrant and contract workers.</div>
+              <span class="lc-code-impact" style="background:var(--green-bg);color:var(--green)">Benefit — protects employee rights</span>
+            </div>
+            <div class="insight" id="lcInsight"><span class="insight-icon">⚖️</span><div id="lcInsightText"></div></div>
+          </div>
+        </div>
+
+        <!-- ── RIGHTS SECTION ── -->
+        <div class="results-section" id="sec-rights">
+          <div class="card">
+            <div class="rights-banner">
+              <div class="rights-banner-title">Fired from your job? Know your rights.</div>
+              <div class="rights-banner-sub">You are not powerless. Indian labour law provides strong protections. Most employers will settle rather than go to a Labour Court.</div>
+            </div>
+            <div class="insight gold" style="margin-bottom:1rem"><span class="insight-icon">⚠️</span><div><strong>Key laws protecting you:</strong> Industrial Disputes Act 1947 (wrongful termination), Payment of Gratuity Act 1972, EPF & Miscellaneous Provisions Act 1952, Payment of Wages Act 1936. If your employer has 10+ workers and you're a "workman", these laws apply to you.</div></div>
+            <div class="rights-grid">
+              <div class="rights-card">
+                <div class="rc-icon">💸</div>
+                <div class="rc-title">Notice Pay entitlement</div>
+                <div class="rc-body">If terminated without serving notice, you're entitled to salary for the entire notice period. Usually 1–3 months depending on contract.</div>
+              </div>
+              <div class="rights-card">
+                <div class="rc-icon">🏆</div>
+                <div class="rc-title">Gratuity (5+ years)</div>
+                <div class="rc-body">If you've worked 5+ years, you're legally entitled to gratuity = (Basic × 15 × years) ÷ 26. It cannot be withheld on termination.</div>
+              </div>
+              <div class="rights-card">
+                <div class="rc-icon">💼</div>
+                <div class="rc-title">PF withdrawal rights</div>
+                <div class="rc-body">Your entire employee PF share is yours always. After 2 months of unemployment, you can withdraw full PF balance from EPFO.</div>
+              </div>
+              <div class="rights-card">
+                <div class="rc-icon">⚖️</div>
+                <div class="rc-title">Wrongful termination</div>
+                <div class="rc-body">If terminated without cause, file under Section 25F of the Industrial Disputes Act. You may be entitled to retrenchment compensation.</div>
+              </div>
+            </div>
+            <div class="card-title" style="margin-bottom:.75rem">Step-by-step: what to do if fired</div>
+            <div class="rights-steps">
+              <div class="rights-step">
+                <div class="rs-num"></div>
+                <div class="rs-body"><strong>Get termination in writing within 48 hrs</strong>Ask for a formal termination letter with reason, last working day, and settlement details.</div>
+              </div>
+              <div class="rights-step">
+                <div class="rs-num"></div>
+                <div class="rs-body"><strong>Calculate dues owed to you</strong>Add up: notice pay + pending salary + gratuity (if 5 yrs) + leave encashment + bonus. Get it in writing from HR.</div>
+              </div>
+              <div class="rights-step">
+                <div class="rs-num"></div>
+                <div class="rs-body"><strong>File PF withdrawal claim</strong>Go to EPFO Unified Member Portal (uanmembers.epfindia.gov.in). After 2 months unemployment, claim full PF. Transfer if re-employed.</div>
+              </div>
+              <div class="rights-step">
+                <div class="rs-num"></div>
+                <div class="rs-body"><strong>If dues not paid within 2 months</strong>File a complaint with the Labour Commissioner of your state. This is free and fast — most employers settle promptly.</div>
+              </div>
+              <div class="rights-step">
+                <div class="rs-num"></div>
+                <div class="rs-body"><strong>Escalate if needed</strong>Approach the Industrial Tribunal or Labour Court for wrongful termination / non-payment. Hire a labour lawyer — fee is often contingency-based.</div>
+              </div>
+            </div>
+            <div class="law-pills">
+              <span class="law-pill">Industrial Disputes Act 1947</span>
+              <span class="law-pill">Payment of Gratuity Act 1972</span>
+              <span class="law-pill">EPF Act 1952</span>
+              <span class="law-pill">Payment of Wages Act 1936</span>
+              <span class="law-pill">Shops & Establishment Act</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /resultsContent -->
+    </div><!-- /results-area -->
+  </div><!-- /layout -->
+</main>
 
 <!-- SHARE TAX — redirect card to dedicated page -->
 <section id="sharetax-standalone" style="background:var(--snow);border-top:1px solid var(--border);padding:2rem 1.5rem">

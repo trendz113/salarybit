@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="description" content="Grab coins to pay off a loan early and watch your payoff timeline shrink in real time. Miss a payment and the bank charges you a late fee. A free 60-second money game from SalaryBit that shows how loan prepayment really works.">
+<title>Beat The Bank — Free Loan Payoff Game | SalaryBit</title>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org","@type":"WebApplication",
+  "name":"Beat The Bank — Loan Payoff Game",
+  "url":"https://salarybit.in/beat-the-bank.html",
+  "description":"A free endless-runner game where grabbing coins pays off a loan early and shrinks the payoff timeline, while missed payments add late fees and stretch it out.",
+  "applicationCategory":"Game","operatingSystem":"All",
+  "offers":{"@type":"Offer","price":"0","priceCurrency":"INR"},
+  "creator":{"@type":"Organization","name":"SalaryBit","url":"https://salarybit.in/"}
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Public+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16223B; --teal:#1EA896; --teal-d:#128577; --gold:#FFC61A; --red:#E5484D; --card:#FFFFFF; --muted:#5B6B86;
+  box-sizing:border-box;
+}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%;margin:0}
+body{display:grid;place-items:center;background:#0F1B2D;color:var(--ink);
+  font:600 16px/1.4 "Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+[hidden]{display:none!important}
+.app{position:relative;width:min(100vw,480px);height:min(100dvh,900px);overflow:hidden;background:#74C7FF;touch-action:none}
+@media (min-width:520px) and (min-height:700px){.app{border-radius:22px;box-shadow:0 20px 60px rgba(0,0,0,.45)}}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+/* HUD */
+.hud{position:absolute;left:0;right:0;top:0;display:flex;align-items:flex-start;gap:6px;
+  padding:calc(env(safe-area-inset-top,0px) + 8px) 8px 0;pointer-events:none}
+.pill{background:rgba(255,255,255,.94);border-radius:14px;padding:6px 9px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.hearts{font-size:1rem;letter-spacing:1px;white-space:nowrap;text-align:center}
+.hearts .lbl{display:block;font-size:.62rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.bankbox{flex:1;min-width:0}
+.bankrow{display:flex;align-items:center;gap:6px}
+.bankface{font-size:1.3rem;line-height:1;flex:none}
+.bankrow .lbl{font:800 .82rem "Bricolage Grotesque",system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.owe{font:800 1.05rem "Bricolage Grotesque",system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-left:auto}
+.track{height:9px;border-radius:5px;background:#DCE5F0;overflow:hidden;margin-top:4px}
+.track i{display:block;height:100%;width:0;background:linear-gradient(90deg,#1EA896,#3DD9A4);transition:width .25s ease}
+.subrow{display:flex;justify-content:space-between;gap:6px;margin-top:3px;font-size:.68rem;color:var(--muted);font-weight:700}
+.subrow .good{color:var(--teal-d)} .subrow .bad{color:var(--red)}
+.speech{margin-top:3px;font-size:.72rem;font-style:italic;color:var(--ink);min-height:1.1em;transition:opacity .2s ease}
+.ctl{display:flex;flex-direction:column;gap:6px;pointer-events:auto}
+.ctl button{width:34px;height:34px;border:0;border-radius:11px;background:rgba(255,255,255,.94);font-size:.95rem;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+button:focus-visible,a:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+
+/* touch buttons */
+.touch{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);display:none;justify-content:space-between;align-items:flex-end;padding:0 16px;pointer-events:none}
+.touch button{pointer-events:auto;width:72px;height:72px;border-radius:50%;border:0;background:rgba(255,255,255,.55);
+  backdrop-filter:blur(4px);font-size:1.6rem;color:var(--ink);box-shadow:0 3px 12px rgba(0,0,0,.2)}
+.touch button:active{background:rgba(255,255,255,.85)}
+.touch #tJ{width:78px;height:78px;background:rgba(255,198,26,.8)}
+@media (pointer:coarse){.playing .touch{display:flex}}
+
+/* overlays */
+.ov{position:absolute;inset:0;display:grid;place-items:center;padding:16px;background:rgba(16,28,56,.55);backdrop-filter:blur(3px);overflow:auto}
+.panel{width:100%;max-width:400px;background:var(--card);border-radius:22px;padding:22px 20px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.35);margin:auto}
+.brand{font-size:.8rem;color:var(--muted);font-weight:700;letter-spacing:.02em}
+h1{font:800 clamp(2.1rem,9vw,2.9rem)/1 "Bricolage Grotesque",system-ui,sans-serif;letter-spacing:-.03em;margin:6px 0 6px}
+h2{font:800 1.8rem/1.05 "Bricolage Grotesque",system-ui,sans-serif;letter-spacing:-.02em;margin:0 0 8px}
+.sub{color:var(--muted);margin:0 0 14px}
+.rules{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:8px;text-align:left}
+.rules li{display:flex;align-items:center;gap:12px;background:#F2F6FB;border-radius:14px;padding:9px 12px;font-size:.92rem}
+.pic{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-weight:800;font-size:.75rem;color:#fff}
+.pic.coin{background:radial-gradient(circle at 35% 35%,#FFE27A,#FFB800);color:#7A5200;border-radius:50%;font-size:1.05rem}
+.pic.red{background:var(--red)}
+.pic.yel{background:repeating-linear-gradient(135deg,#FFC61A 0 7px,#222 7px 12px)}
+.pic.star{background:radial-gradient(circle at 35% 35%,#FFF3B0,#FFD400);color:#7A5200}
+.keys{color:var(--muted);font-size:.85rem;margin:0 0 14px}
+.btn{display:block;width:100%;border:0;border-radius:999px;padding:14px 20px;font:800 1.1rem "Bricolage Grotesque",system-ui,sans-serif;
+  background:var(--teal);color:#fff;cursor:pointer;text-decoration:none;text-align:center}
+.btn:hover{background:var(--teal-d)}
+.btn.alt{background:transparent;color:var(--ink);border:2px solid #D5DEEB;margin-top:10px;font-size:.95rem;padding:11px 20px}
+.btn.alt:hover{border-color:var(--teal)}
+.btn.love{background:#FFF3C4;color:#7A5200;margin-top:10px;font-size:.95rem;padding:11px 20px}
+.btn.love:hover{background:#FFE79A}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.stats div{flex:1;min-width:84px;background:#F2F6FB;border-radius:14px;padding:8px 6px}
+.stats b{display:block;font:800 1.15rem "Bricolage Grotesque",system-ui,sans-serif}
+.stats span{font-size:.72rem;color:var(--muted)}
+.tip{font-size:.88rem;color:var(--ink);background:#FFF6D6;border-radius:12px;padding:9px 12px;margin:0 0 14px;text-align:left}
+
+/* donation modal */
+.donatebox{text-align:left}
+.donatebox p{color:var(--muted);margin:0 0 12px;font-size:.92rem}
+.amts{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.amts span{background:#F2F6FB;border-radius:999px;padding:6px 14px;font-weight:800;font-size:.9rem}
+.qrbox{width:180px;height:180px;margin:0 auto 12px;border-radius:16px;background:#F2F6FB;display:grid;place-items:center;position:relative;overflow:hidden;border:2px dashed #C7D2E3}
+.qrbox img{width:100%;height:100%;object-fit:contain;border-radius:14px}
+.qrfallback{padding:14px;text-align:center;font-size:.78rem;color:var(--muted);line-height:1.35}
+.qrfallback b{display:block;color:var(--ink);font-size:.85rem;margin-bottom:4px}
+.upirow{display:flex;align-items:center;gap:8px;background:#F2F6FB;border-radius:12px;padding:10px 12px;margin:0 0 6px}
+.upirow code{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 .9rem monospace;color:var(--ink)}
+.upirow button{flex:none;border:0;background:var(--teal);color:#fff;border-radius:999px;padding:6px 12px;font-weight:700;font-size:.8rem;cursor:pointer}
+.copied{font-size:.78rem;color:var(--teal-d);font-weight:700;min-height:1.1em;margin:0 0 8px}
+</style>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Beat The Bank — Free Loan Payoff Game | SalaryBit">
+<meta property="og:description" content="Grab coins to pay off a loan early and watch your payoff timeline shrink in real time. Miss a payment and the bank charges you a late fee. A free 60-second money game from SalaryBit that shows how loan prepayment really works.">
+<meta property="og:url" content="https://salarybit.in/beat-the-bank.html">
+<meta property="og:site_name" content="SalaryBit">
+<meta property="og:image" content="https://salarybit.in/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Beat The Bank — Free Loan Payoff Game | SalaryBit">
+<meta name="twitter:description" content="Grab coins to pay off a loan early and watch your payoff timeline shrink in real time. Miss a payment and the bank charges you a late fee. A free 60-second money game from SalaryBit that shows how loan prepayment really works.">
+<meta name="twitter:image" content="https://salarybit.in/og-image.png">
+<link rel="canonical" href="https://salarybit.in/beat-the-bank.html">
+</head>
+<body>
+<div class="app" id="app">
+  <canvas id="cv" aria-label="Beat The Bank game" role="img"></canvas>
+
+  <div class="hud" id="hud" hidden>
+    <div class="pill hearts"><span class="lbl">Strikes</span><span id="hearts"></span></div>
+    <div class="pill bankbox">
+      <div class="bankrow">
+        <span class="bankface" id="bankFace">😏</span>
+        <span class="lbl">You owe the bank</span>
+        <span class="owe" id="owe"></span>
+      </div>
+      <div class="track"><i id="oweFill"></i></div>
+      <div class="subrow"><span id="timeLeft"></span><span id="timeSaved"></span></div>
+      <div class="speech" id="speech">Take your time... more interest for me.</div>
+    </div>
+    <div class="ctl">
+      <button id="bSnd" type="button" aria-label="Sound on or off" aria-pressed="true">🔊</button>
+      <button id="bPause" type="button" aria-label="Pause">⏸</button>
+    </div>
+  </div>
+
+  <div class="touch" id="touch">
+    <button id="tL" type="button" aria-label="Move left">◀</button>
+    <button id="tJ" type="button" aria-label="Jump">▲</button>
+    <button id="tR" type="button" aria-label="Move right">▶</button>
+  </div>
+
+  <div class="ov" id="ovStart">
+    <div class="panel">
+      <div class="brand" id="brandTop">SalaryBit</div>
+      <h1>Beat The Bank</h1>
+      <p class="sub">Every rupee you grab makes the bank a little sadder. Every payment you skip makes them richer. Who wins today?</p>
+      <ul class="rules">
+        <li><span class="pic coin">₹</span><span><b>Grab money bags.</b> Pay the bank early — your loan timeline shrinks.</span></li>
+        <li><span class="pic star">★</span><span><b>Grab stars.</b> A big lump-sum payment — the bank really hates this one.</span></li>
+        <li><span class="pic red">%</span><span><b>Dodge red LATE FEE blocks.</b> Miss a payment and the bank charges you — your timeline grows.</span></li>
+        <li><span class="pic yel"></span><span><b>Jump over yellow FEE bars.</b></span></li>
+      </ul>
+      <p class="keys">Arrow keys or swipe. ◀ ▶ to move, ▲ to jump.</p>
+      <button class="btn" id="bPlay" type="button">Play</button>
+      <button class="btn love" id="bLoveStart" type="button">💛 Support this project</button>
+    </div>
+  </div>
+
+  <div class="ov" id="ovPause" hidden>
+    <div class="panel">
+      <h2>Paused</h2>
+      <button class="btn" id="bResume" type="button">Keep running</button>
+      <button class="btn alt" id="bRestart" type="button">Start over</button>
+    </div>
+  </div>
+
+  <div class="ov" id="ovEnd" hidden>
+    <div class="panel">
+      <h2 id="endTitle"></h2>
+      <p class="sub" id="endText"></p>
+      <div class="stats">
+        <div><b id="stPaid">₹0</b><span>you paid early</span></div>
+        <div><b id="stFee">₹0</b><span>late fees</span></div>
+        <div><b id="stTime">0 mo</b><span>time saved</span></div>
+        <div><b id="stBest">0 mo</b><span>your best</span></div>
+      </div>
+      <p class="tip" id="endTip"></p>
+      <button class="btn" id="bAgain" type="button">Play again</button>
+      <button class="btn love" id="bLoveEnd" type="button">💛 Support this project</button>
+      <a class="btn alt" id="siteLink" href="https://salarybit.in" target="_blank" rel="noopener">Visit SalaryBit</a>
+    </div>
+  </div>
+
+  <div class="ov" id="ovLove" hidden>
+    <div class="panel donatebox">
+      <h2 style="text-align:center">💛 Keep this free</h2>
+      <p>SalaryBit and this game are built by one person, in spare time. If it helped you, any amount — starting from ₹10 — helps keep it going and growing.</p>
+      <div class="amts"><span>₹10</span><span>₹50</span><span>₹100</span><span>Any amount</span></div>
+      <div class="qrbox">
+        <img id="qrImg" alt="UPI QR code to donate">
+        <div class="qrfallback" id="qrFallback" hidden><b>Scan to pay</b>Add your UPI QR code image, named <code>donate-qr.png</code>, in the same folder as this game file — it will appear here automatically.</div>
+      </div>
+      <div class="upirow"><code id="upiId"></code><button id="bCopyUpi" type="button">Copy</button></div>
+      <p class="copied" id="copiedMsg" aria-live="polite"></p>
+      <button class="btn alt" id="bLoveClose" type="button">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  /* ============================================================
+     EASY SETTINGS — change these to match your product / branding.
+     ============================================================ */
+  var CONFIG = {
+    bankName: 'The Bank',
+    // A sample loan the game is built around (all amounts in ₹).
+    principal: 200000,   // starting amount owed
+    rate: 12,             // interest rate, % per year
+    termMonths: 24,       // original loan term in months
+    coinValue: 2000,      // ₹ paid off per money bag collected
+    starValue: 10000,     // ₹ paid off per star (lump sum) collected
+    lateFeeValue: 5000,   // ₹ added to the loan when you hit a red block
+    lives: 3,
+    siteName: 'SalaryBit',
+    siteUrl: 'https://salarybit.in',
+    // Donation section — replace with your own details.
+    // Drop a file named "donate-qr.png" next to this HTML file and it
+    // will show up automatically in the Support popup.
+    qrImage: 'donate-qr.png',
+    upiId: 'your-upi-id@bank'
+  };
+  var TIPS = [
+    'True to life: paying extra towards a loan cuts real months off it, because you owe less interest each day after.',
+    'Missing a payment is expensive twice over — a late fee now, and more interest later because the balance stayed higher.',
+    'A bonus or a tax refund is a great time to make a part-payment on a real loan.',
+    'Ask your bank for a shorter tenure (not a smaller EMI) when you prepay — that is what actually saves you time.'
+  ];
+  var QUOTES = {
+    coin: ['Hey, that\'s my interest!', 'Please stop paying me back.', 'No no no...', 'You\'re ruining my quarter.'],
+    star: ['WHAT. All at once?!', 'My manager is going to ask questions.', 'That\'s... a lot of rupees.'],
+    fee: ['Ka-ching! Late fee, please 😈', 'Thank you for the extra interest!', 'Miss more payments, I insist.'],
+    win: ['Nooo... my interest income!', 'Fine. You win. Go be free.', '😭😭😭'],
+    idleGood: ['Take your time... more interest for me.', 'Most people never pay me early.', 'I\'ve got nowhere to be.'],
+    idleBad: ['This is going great for me.', 'Keep this up, please.', 'My favourite customer.']
+  };
+
+  var i100 = CONFIG.rate/1200;
+  function pmt(P, n){ return P*i100/(1 - Math.pow(1 + i100, -n)); }
+  function remaining(bal){
+    if (bal <= 0.5) return 0;
+    var x = 1 - bal*i100/EMI;
+    if (x <= 0) return Infinity;
+    return Math.ceil(-Math.log(x)/Math.log(1 + i100));
+  }
+  var EMI = Math.ceil(pmt(CONFIG.principal, CONFIG.termMonths));
+  var BASE_MONTHS = remaining(CONFIG.principal);
+
+  var $ = function(id){ return document.getElementById(id); };
+  var app = $('app'), cv = $('cv'), ctx = cv.getContext('2d');
+  var W = 0, H = 0, dpr = 1, cx = 0, horizon = 0, playerY = 0, laneStep = 0;
+  var K = 0.45, SPAWN_D = 16;
+  var sc = function(d){ return 1 / (1 + K*d); };
+  var yAt = function(d){ return horizon + (playerY - horizon)*sc(d); };
+  var xAt = function(lane, d){ return cx + (lane - 1)*laneStep*sc(d); };
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  $('brandTop').textContent = CONFIG.siteName;
+  $('siteLink').href = CONFIG.siteUrl;
+  $('siteLink').textContent = 'Visit ' + CONFIG.siteName;
+  $('upiId').textContent = CONFIG.upiId;
+  $('qrImg').src = CONFIG.qrImage;
+  $('qrImg').addEventListener('error', function(){ $('qrImg').style.display = 'none'; $('qrFallback').hidden = false; });
+
+  /* ---------- money helpers ---------- */
+  var fmt = function(n){ return Math.round(n).toLocaleString('en-IN'); };
+  var inr = function(n){ return '₹' + fmt(Math.max(0, n)); };
+  function dur(m){
+    m = Math.round(m); var neg = m < 0; m = Math.abs(m);
+    var y = Math.floor(m/12), r = m % 12, s;
+    if (!m) s = '0 mo'; else if (!y) s = r + ' mo'; else if (!r) s = y + ' yr'; else s = y + 'y ' + r + 'mo';
+    return (neg ? '−' : '') + s;
+  }
+
+  /* ---------- sound ---------- */
+  var AC = null, sndOn = true;
+  function tone(f, d, type, v, slide, delay){
+    if (!sndOn) return;
+    var go = function(){
+      try {
+        AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+        var o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime;
+        o.type = type || 'sine'; o.frequency.setValueAtTime(f, t);
+        if (slide) o.frequency.linearRampToValueAtTime(f + slide, t + d);
+        g.gain.setValueAtTime(v || 0.07, t); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+        o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + d);
+      } catch (e) {}
+    };
+    if (delay) setTimeout(go, delay); else go();
+  }
+  var sfx = {
+    coin: function(){ tone(988, .08, 'square', .045); tone(1319, .12, 'square', .045, 0, 60); },
+    jump: function(){ tone(320, .16, 'sine', .08, 260); },
+    hit: function(){ tone(160, .32, 'sawtooth', .12, -90); },
+    star: function(){ tone(660, .1, 'triangle', .09); tone(880, .1, 'triangle', .09, 0, 90); tone(1320, .18, 'triangle', .09, 0, 180); },
+    win: function(){ [523, 659, 784, 1047, 1319].forEach(function(f, i){ tone(f, .22, 'triangle', .1, 0, i*130); }); },
+    lose: function(){ tone(300, .25, 'sawtooth', .09, -120); tone(200, .35, 'sawtooth', .09, -100, 220); }
+  };
+
+  /* ---------- state ---------- */
+  var state = 'menu';
+  var S = null;
+
+  function reset(){
+    S = { t:0, travel:0, speed:4.2, bal:CONFIG.principal, paidEarly:0, feesTotal:0, lives:CONFIG.lives,
+      lane:1, target:1, jy:0, vy:0, onGround:true, inv:0, star:0, objs:[], bld:[], fx:[], conf:[],
+      spawnAcc:0, gap:3.6, bldAcc:0, shake:0, flash:0, run:0, over:false, won:false, hint:5,
+      speechT:0, mood:'ok' };
+    for (var d = 0; d < SPAWN_D + 2; d += 1.5){ spawnBld(d, -1); spawnBld(d, 1); }
+  }
+
+  function spawnBld(d, side){
+    var cols = ['#5C7CFA','#7950F2','#20C997','#339AF0','#845EF7','#3BC9DB','#4C6EF5'];
+    S.bld.push({ d: d + Math.random()*0.4, side: side, w: 0.9 + Math.random()*0.9, h: 1.4 + Math.random()*3.2, c: cols[Math.floor(Math.random()*cols.length)] });
+  }
+  function add(o){ o.ph = Math.random()*6; S.objs.push(o); }
+  function addCoin(lane, d){ add({ type:'coin', lane:lane, d:d }); }
+
+  function spawnChunk(d0){
+    var r = Math.random(), lanes = [0,1,2];
+    var pick = function(){ return lanes[Math.floor(Math.random()*3)]; };
+    var i;
+    if (S.star > 0 && r > 0.92) r = 0.1;
+    if (r < 0.26){
+      var l = pick(), n = 5 + Math.floor(Math.random()*3);
+      for (i = 0; i < n; i++) addCoin(l, d0 + i*0.6);
+    } else if (r < 0.56){
+      var freeL = pick(), two = Math.random() < 0.4;
+      var others = lanes.filter(function(x){ return x !== freeL; });
+      var bl = two ? others : [others[Math.floor(Math.random()*2)]];
+      bl.forEach(function(x){ add({ type:'block', lane:x, d:d0 + 1.2 }); });
+      for (i = 0; i < 6; i++) addCoin(freeL, d0 + i*0.6 - 0.3);
+    } else if (r < 0.76){
+      var cnt = 1 + Math.floor(Math.random()*3), ls = lanes.slice().sort(function(){ return Math.random() - 0.5; }).slice(0, cnt);
+      ls.forEach(function(x){ add({ type:'hurdle', lane:x, d:d0 + 1.0 }); });
+      var cl = ls[0];
+      for (i = 0; i < 4; i++) addCoin(cl, d0 + 1.9 + i*0.6);
+      if (cnt < 3){
+        var fl = lanes.filter(function(x){ return ls.indexOf(x) < 0; })[0];
+        for (i = 0; i < 3; i++) addCoin(fl, d0 + i*0.6);
+      }
+    } else if (r < 0.92){
+      var zl = pick();
+      for (i = 0; i < 8; i++){ addCoin(zl, d0 + i*0.6); if (i % 2 === 1) zl = Math.max(0, Math.min(2, zl + (Math.random() < 0.5 ? -1 : 1))); }
+    } else {
+      var sl = pick();
+      add({ type:'star', lane:sl, d:d0 });
+      for (i = 1; i < 5; i++) addCoin(sl, d0 + i*0.6);
+    }
+  }
+
+  /* ---------- HUD ---------- */
+  function renderHearts(){
+    var full = '', empty = '';
+    for (var i = 0; i < S.lives; i++) full += '❤️';
+    for (var j = S.lives; j < CONFIG.lives; j++) empty += '🤍';
+    $('hearts').textContent = full + empty;
+  }
+  function moodFace(frac){
+    if (S.bal <= 0.5) return '😭';
+    if (frac <= -0.08) return '😈';
+    if (frac < 0.05) return '😏';
+    if (frac < 0.2) return '😐';
+    if (frac < 0.4) return '😟';
+    if (frac < 0.6) return '😢';
+    return '😭';
+  }
+  function say(list, hold){
+    $('speech').textContent = list[Math.floor(Math.random()*list.length)];
+    S.speechT = hold || 2.4;
+  }
+  function idleSpeech(){
+    if (S.speechT > 0) return;
+    var frac = (BASE_MONTHS - remaining(S.bal))/Math.max(1, BASE_MONTHS);
+    $('speech').textContent = frac > 0.15 ? QUOTES.idleGood[Math.floor(Math.random()*QUOTES.idleGood.length)] : QUOTES.idleBad[Math.floor(Math.random()*QUOTES.idleBad.length)];
+    S.speechT = 3.5;
+  }
+  function renderLoan(){
+    var monthsLeft = remaining(S.bal), saved = BASE_MONTHS - monthsLeft;
+    var frac = saved/Math.max(1, BASE_MONTHS);
+    $('owe').textContent = inr(S.bal);
+    $('oweFill').style.width = (Math.max(0, Math.min(1, (CONFIG.principal - S.bal)/CONFIG.principal))*100) + '%';
+    $('timeLeft').textContent = isFinite(monthsLeft) ? dur(monthsLeft) + ' left' : 'never ending';
+    var ts = $('timeSaved');
+    if (saved >= 0){ ts.textContent = dur(saved) + ' saved'; ts.className = 'good'; }
+    else { ts.textContent = dur(-saved) + ' added'; ts.className = 'bad'; }
+    $('bankFace').textContent = moodFace(frac);
+  }
+  function float(x, y, txt, color){ S.fx.push({ x:x, y:y, txt:txt, color:color, life:1 }); }
+
+  /* ---------- flow ---------- */
+  function start(){
+    reset(); state = 'play';
+    app.classList.add('playing');
+    $('ovStart').hidden = true; $('ovEnd').hidden = true; $('ovPause').hidden = true; $('ovLove').hidden = true;
+    $('hud').hidden = false;
+    renderHearts(); renderLoan();
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  }
+  function pause(){
+    if (state !== 'play') return;
+    state = 'paused'; $('ovPause').hidden = false;
+  }
+  function resume(){
+    if (state !== 'paused') return;
+    state = 'play'; $('ovPause').hidden = true; last = performance.now();
+  }
+  function fmtTime(t){ var m = Math.floor(t/60), s = Math.floor(t % 60); return m + ':' + (s < 10 ? '0' : '') + s; }
+  function endGame(win){
+    state = 'end'; S.over = true; S.won = win;
+    app.classList.remove('playing');
+    var monthsLeft = remaining(S.bal), saved = BASE_MONTHS - monthsLeft;
+    var best = 0;
+    try { best = +localStorage.getItem('beatbank_best') || 0; } catch (e) {}
+    if (saved > best){ best = saved; try { localStorage.setItem('beatbank_best', String(best)); } catch (e) {} }
+    $('endTitle').textContent = win ? 'You beat the bank! 🎉' : (S.lives <= 0 ? 'The bank caught up with you' : 'Run over');
+    $('endText').textContent = win
+      ? 'The loan is fully paid off. The bank is in tears. You are debt-free!'
+      : (saved >= 0
+        ? 'You paid off the loan ' + dur(saved) + ' faster than planned before the bank stopped you. Real prepayments do exactly this.'
+        : 'Missed payments added ' + dur(-saved) + ' to the timeline. That is what late fees really do to a loan.');
+    $('stPaid').textContent = inr(S.paidEarly); $('stFee').textContent = inr(S.feesTotal);
+    $('stTime').textContent = (saved >= 0 ? '' : '−') + dur(Math.abs(saved)); $('stBest').textContent = dur(best);
+    $('endTip').textContent = TIPS[Math.floor(Math.random()*TIPS.length)];
+    setTimeout(function(){ $('ovEnd').hidden = false; }, win ? 900 : 500);
+    if (win){
+      sfx.win(); say(QUOTES.win, 999);
+      if (!reduced) for (var i = 0; i < 120; i++) S.conf.push({ x: Math.random()*W, y: -20 - Math.random()*H*0.6, vx: (Math.random() - .5)*90, vy: 90 + Math.random()*140, s: 5 + Math.random()*6, r: Math.random()*6, vr: (Math.random() - .5)*8, c: ['#FFC61A','#1EA896','#FFFFFF','#7950F2','#3DD9A4'][i % 5] });
+    } else sfx.lose();
+  }
+
+  /* ---------- input ---------- */
+  function move(dir){ if (state !== 'play') return; S.target = Math.max(0, Math.min(2, S.target + dir)); }
+  function jump(){ if (state !== 'play' || !S.onGround) return; S.vy = 6.0; S.onGround = false; sfx.jump(); }
+  window.addEventListener('keydown', function(e){
+    var k = e.key;
+    if (state === 'play'){
+      if (k === 'ArrowLeft' || k === 'a' || k === 'A'){ move(-1); e.preventDefault(); }
+      else if (k === 'ArrowRight' || k === 'd' || k === 'D'){ move(1); e.preventDefault(); }
+      else if (k === 'ArrowUp' || k === 'w' || k === 'W' || k === ' '){ jump(); e.preventDefault(); }
+      else if (k === 'p' || k === 'P' || k === 'Escape') pause();
+    } else if (state === 'paused'){
+      if (k === 'p' || k === 'P' || k === 'Escape') resume();
+    } else if (k === 'Enter'){
+      if (!$('ovStart').hidden) start(); else if (state === 'end' && !$('ovEnd').hidden) start();
+    }
+  });
+  var sx = 0, sy = 0, tracking = false;
+  cv.addEventListener('pointerdown', function(e){ sx = e.clientX; sy = e.clientY; tracking = true; });
+  cv.addEventListener('pointerup', function(e){
+    if (!tracking) return; tracking = false;
+    var dx = e.clientX - sx, dy = e.clientY - sy;
+    if (Math.abs(dx) > 28 && Math.abs(dx) > Math.abs(dy)) move(dx > 0 ? 1 : -1);
+    else if (dy < -28) jump();
+  });
+  cv.addEventListener('pointercancel', function(){ tracking = false; });
+  $('tL').addEventListener('click', function(){ move(-1); });
+  $('tR').addEventListener('click', function(){ move(1); });
+  $('tJ').addEventListener('click', jump);
+  $('bPlay').addEventListener('click', start);
+  $('bAgain').addEventListener('click', start);
+  $('bRestart').addEventListener('click', start);
+  $('bResume').addEventListener('click', resume);
+  $('bPause').addEventListener('click', function(){ state === 'paused' ? resume() : pause(); });
+  $('bSnd').addEventListener('click', function(){
+    sndOn = !sndOn; $('bSnd').textContent = sndOn ? '🔊' : '🔇'; $('bSnd').setAttribute('aria-pressed', String(sndOn));
+  });
+  document.addEventListener('visibilitychange', function(){ if (document.hidden) pause(); });
+
+  var wasPlayingBeforeLove = false;
+  function openLove(){ wasPlayingBeforeLove = state === 'play'; if (wasPlayingBeforeLove) pause(); $('copiedMsg').textContent = ''; $('ovLove').hidden = false; }
+  function closeLove(){ $('ovLove').hidden = true; if (wasPlayingBeforeLove) resume(); }
+  $('bLoveStart').addEventListener('click', openLove);
+  $('bLoveEnd').addEventListener('click', openLove);
+  $('bLoveClose').addEventListener('click', closeLove);
+  $('bCopyUpi').addEventListener('click', function(){
+    var done = function(){ $('copiedMsg').textContent = 'Copied! Paste it in your UPI app.'; };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(CONFIG.upiId).then(done, done);
+    else done();
+  });
+
+  /* ---------- update ---------- */
+  function hurt(o){
+    o.hit = true;
+    if (S.inv > 0) return;
+    S.lives--; S.inv = 1.6; S.shake = 0.35; S.flash = 0.3;
+    sfx.hit(); float(xAt(S.lane, 0), playerY - laneStep*0.9, 'Ouch!', '#E5484D');
+    renderHearts();
+    if (S.lives <= 0) endGame(false);
+  }
+  function applyLateFee(o){
+    o.hit = true;
+    if (S.inv > 0) return;
+    S.lives--; S.inv = 1.6; S.shake = 0.35; S.flash = 0.3;
+    S.bal += CONFIG.lateFeeValue; S.feesTotal += CONFIG.lateFeeValue;
+    sfx.hit(); say(QUOTES.fee);
+    float(xAt(S.lane, 0), playerY - laneStep*0.9, '+' + inr(CONFIG.lateFeeValue) + ' fee!', '#E5484D');
+    renderHearts(); renderLoan();
+    if (S.lives <= 0) endGame(false);
+  }
+  function payEarly(amount, o, big){
+    o.gone = true;
+    var mul = S.star > 0 ? 2 : 1, pay = Math.min(S.bal, amount*mul);
+    S.bal -= pay; S.paidEarly += pay;
+    sfx[big ? 'star' : 'coin']();
+    say(big ? QUOTES.star : QUOTES.coin);
+    float(xAt(o.lane, 0), playerY - laneStep*1.3, '−' + inr(pay), big ? '#7A5200' : '#B57F00');
+    renderLoan();
+    if (S.bal <= 0.5) endGame(true);
+  }
+  function moveWorld(v){
+    S.bld.forEach(function(b){ b.d -= v; });
+    S.bldAcc += v;
+    if (S.bldAcc >= 1.5){ S.bldAcc -= 1.5; spawnBld(SPAWN_D, -1); spawnBld(SPAWN_D, 1); }
+    S.bld = S.bld.filter(function(b){ return b.d > -2; });
+  }
+  function update(dt){
+    S.t += dt;
+    var paidFrac = Math.max(0, Math.min(1, (CONFIG.principal - S.bal)/CONFIG.principal));
+    S.speed = 4.2 + 2.4*paidFrac + Math.min(0.6, S.t*0.004);
+    var v = S.speed*dt; S.travel += v;
+    S.lane += (S.target - S.lane)*Math.min(1, 14*dt);
+    if (!S.onGround){
+      S.vy -= 17.1*dt; S.jy += S.vy*dt;
+      if (S.jy <= 0){ S.jy = 0; S.vy = 0; S.onGround = true; }
+    }
+    S.run += dt*(6 + S.speed);
+    if (S.inv > 0) S.inv -= dt;
+    if (S.star > 0) S.star -= dt;
+    if (S.shake > 0) S.shake -= dt;
+    if (S.flash > 0) S.flash -= dt;
+    if (S.hint > 0) S.hint -= dt;
+    if (S.speechT > 0) S.speechT -= dt; else idleSpeech();
+    S.objs.forEach(function(o){ o.d -= v; });
+    moveWorld(v);
+    S.spawnAcc += v;
+    if (S.spawnAcc >= S.gap){ S.spawnAcc -= S.gap; S.gap = 3.2 + S.speed*0.3 + Math.random()*0.6; spawnChunk(SPAWN_D); }
+    for (var i = 0; i < S.objs.length && state === 'play'; i++){
+      var o = S.objs[i];
+      if (o.gone || o.hit) continue;
+      var near = Math.abs(S.lane - o.lane) < 0.6;
+      if (o.type === 'coin' || o.type === 'star'){
+        if (near && Math.abs(o.d) < 0.38){
+          if (o.type === 'coin') payEarly(CONFIG.coinValue, o, false);
+          else payEarly(CONFIG.starValue, o, true);
+        }
+      } else if (near && Math.abs(o.d) < 0.28){
+        if (o.type === 'block') applyLateFee(o);
+        else if (o.type === 'hurdle'){ if (S.jy < 0.6) hurt(o); else o.hit = true; }
+      }
+    }
+    S.objs = S.objs.filter(function(o){ return o.d > -0.8 && !o.gone; });
+    S.fx.forEach(function(f){ f.life -= dt*1.3; f.y -= 40*dt; });
+    S.fx = S.fx.filter(function(f){ return f.life > 0; });
+  }
+  function ambient(dt){
+    S.t += dt; S.run += dt*8; var v = 2.6*dt; S.travel += v; moveWorld(v);
+  }
+  function endFx(dt){
+    if (S.shake > 0) S.shake -= dt;
+    if (S.flash > 0) S.flash -= dt;
+    S.fx.forEach(function(f){ f.life -= dt*1.3; f.y -= 40*dt; });
+    S.fx = S.fx.filter(function(f){ return f.life > 0; });
+    S.conf.forEach(function(p){ p.x += p.vx*dt; p.y += p.vy*dt; p.vy += 60*dt; p.r += p.vr*dt; });
+    S.conf = S.conf.filter(function(p){ return p.y < H + 30; });
+  }
+
+  /* ---------- drawing ---------- */
+  function ell(x, y, rx, ry){ ctx.beginPath(); ctx.ellipse(x, y, Math.max(0.1, rx), Math.max(0.1, ry), 0, 0, Math.PI*2); }
+  function rr(x, y, w, h, r){
+    r = Math.min(r, w/2, h/2); ctx.beginPath();
+    ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.arcTo(x + w, y, x + w, y + r, r);
+    ctx.lineTo(x + w, y + h - r); ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+    ctx.lineTo(x + r, y + h); ctx.arcTo(x, y + h, x, y + h - r, r);
+    ctx.lineTo(x, y + r); ctx.arcTo(x, y, x + r, y, r); ctx.closePath();
+  }
+  var fade = function(s){ return Math.max(0, Math.min(1, (s - 0.11)/0.1)); };
+  var font = function(px, w){ return (w || 'bold') + ' ' + Math.max(6, px) + 'px "Public Sans",system-ui,sans-serif'; };
+
+  function drawSky(){
+    var g = ctx.createLinearGradient(0, 0, 0, horizon);
+    g.addColorStop(0, '#5FB8FF'); g.addColorStop(1, '#FFF1C2');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, horizon + 1);
+    ctx.fillStyle = 'rgba(255,214,102,.9)'; ell(W*0.74, horizon*0.62, W*0.075, W*0.075); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.85)';
+    for (var i = 0; i < 3; i++){
+      var x = ((i*W*0.45 + S.t*8) % (W + 120)) - 60, y = horizon*(0.25 + i*0.17);
+      ell(x, y, 34, 11); ctx.fill(); ell(x + 22, y - 7, 22, 10); ctx.fill(); ell(x - 20, y - 4, 20, 9); ctx.fill();
+    }
+  }
+  function drawRoad(){
+    ctx.fillStyle = '#CDE8D2'; ctx.fillRect(0, horizon, W, H - horizon);
+    var sb = (H - horizon)/(playerY - horizon), hw = laneStep*1.62*sb;
+    var g = ctx.createLinearGradient(0, horizon, 0, H);
+    g.addColorStop(0, '#5A6688'); g.addColorStop(1, '#333E5C');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(cx, horizon); ctx.lineTo(cx + hw, H); ctx.lineTo(cx - hw, H); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 3; ctx.globalAlpha = .85;
+    ctx.beginPath(); ctx.moveTo(cx, horizon); ctx.lineTo(cx + hw, H); ctx.moveTo(cx, horizon); ctx.lineTo(cx - hw, H); ctx.stroke();
+    ctx.globalAlpha = 1;
+    var off = S.travel % 1.0;
+    ctx.strokeStyle = 'rgba(255,255,255,.85)';
+    for (var side = -1; side <= 1; side += 2){
+      for (var i = 0; i < 20; i++){
+        var d1 = Math.max(0, i - off), d2 = i - off + 0.5;
+        if (d2 <= 0) continue;
+        var s1 = sc(d1), s2 = sc(d2);
+        ctx.lineWidth = Math.max(1, laneStep*0.05*(s1 + s2)/2);
+        ctx.beginPath();
+        ctx.moveTo(cx + side*0.5*laneStep*s1, yAt(d1)); ctx.lineTo(cx + side*0.5*laneStep*s2, yAt(d2)); ctx.stroke();
+      }
+    }
+  }
+  function drawBld(b){
+    var s = sc(b.d); if (s < 0.05) return;
+    var w = laneStep*b.w*s, h = laneStep*b.h*s, base = yAt(b.d);
+    var xc = cx + b.side*(laneStep*1.95*s + w/2);
+    ctx.globalAlpha = fade(s) || (s > 0.2 ? 1 : 0);
+    ctx.fillStyle = b.c; rr(xc - w/2, base - h, w, h, 3*s); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.28)';
+    if (w > 16){
+      var cols = 3, cw = w/(cols*2 + 1), rows = Math.max(1, Math.floor(h/(cw*2.2)));
+      for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) ctx.fillRect(xc - w/2 + cw*(1 + c*2), base - h + cw*(0.8 + r*2.2), cw, cw*1.2);
+    }
+    ctx.globalAlpha = 1;
+  }
+  function drawCoin(o){
+    var s = sc(o.d), x = xAt(o.lane, o.d), y = yAt(o.d), r = laneStep*0.2*s, cy = y - r*1.7;
+    ctx.globalAlpha = fade(s);
+    ctx.fillStyle = 'rgba(0,0,0,.18)'; ell(x, y, r*0.9, r*0.28); ctx.fill();
+    var wob = Math.abs(Math.cos(S.t*5 + o.ph));
+    var g = ctx.createRadialGradient(x - r*0.3, cy - r*0.3, r*0.1, x, cy, r);
+    g.addColorStop(0, '#FFE98A'); g.addColorStop(1, '#FFB800');
+    ctx.fillStyle = g; ell(x, cy, r*(0.28 + 0.72*wob), r); ctx.fill();
+    ctx.strokeStyle = '#C98A00'; ctx.lineWidth = Math.max(1, r*0.12); ctx.stroke();
+    if (wob > 0.55 && r > 7){ ctx.fillStyle = '#8A5A00'; ctx.font = font(r*1.1); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('₹', x, cy + r*0.05); }
+    ctx.globalAlpha = 1;
+  }
+  function drawStar(o){
+    var s = sc(o.d), x = xAt(o.lane, o.d), y = yAt(o.d), r = laneStep*0.3*s, cy = y - r*1.5 - Math.sin(S.t*4 + o.ph)*r*0.15;
+    ctx.globalAlpha = fade(s);
+    ctx.fillStyle = 'rgba(0,0,0,.18)'; ell(x, y, r*0.9, r*0.28); ctx.fill();
+    ctx.fillStyle = 'rgba(255,214,0,.35)'; ell(x, cy, r*1.4, r*1.4); ctx.fill();
+    ctx.fillStyle = '#FFD400'; ctx.strokeStyle = '#C98A00'; ctx.lineWidth = Math.max(1, r*0.1);
+    ctx.beginPath();
+    for (var i = 0; i < 10; i++){ var a = -Math.PI/2 + i*Math.PI/5, rad = i % 2 ? r*0.45 : r; ctx.lineTo(x + Math.cos(a)*rad, cy + Math.sin(a)*rad); }
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+  function drawBlock(o){
+    var s = sc(o.d), x = xAt(o.lane, o.d), y = yAt(o.d), bw = laneStep*0.8*s, bh = laneStep*0.9*s, dp = bw*0.2;
+    ctx.globalAlpha = fade(s);
+    ctx.fillStyle = 'rgba(0,0,0,.22)'; ell(x, y, bw*0.62, bw*0.14); ctx.fill();
+    ctx.fillStyle = '#FF8A8D';
+    ctx.beginPath(); ctx.moveTo(x - bw/2, y - bh); ctx.lineTo(x - bw/2 + dp*0.5, y - bh - dp); ctx.lineTo(x + bw/2 - dp*0.5, y - bh - dp); ctx.lineTo(x + bw/2, y - bh); ctx.closePath(); ctx.fill();
+    var g = ctx.createLinearGradient(0, y - bh, 0, y); g.addColorStop(0, '#F0555A'); g.addColorStop(1, '#C93238');
+    ctx.fillStyle = g; rr(x - bw/2, y - bh, bw, bh, bw*0.08); ctx.fill();
+    ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = font(bw*0.38, '800'); ctx.fillText('LATE', x, y - bh*0.68);
+    ctx.font = font(bw*0.32, '800'); ctx.fillText('FEE', x, y - bh*0.32);
+    ctx.globalAlpha = 1;
+  }
+  function drawHurdle(o){
+    var s = sc(o.d), x = xAt(o.lane, o.d), y = yAt(o.d), bw = laneStep*0.9*s, bh = laneStep*0.5*s;
+    ctx.globalAlpha = fade(s);
+    ctx.fillStyle = 'rgba(0,0,0,.2)'; ell(x, y, bw*0.55, bw*0.1); ctx.fill();
+    ctx.fillStyle = '#222'; ctx.fillRect(x - bw/2, y - bh, bw*0.09, bh); ctx.fillRect(x + bw/2 - bw*0.09, y - bh, bw*0.09, bh);
+    var top = y - bh, bar = bh*0.5;
+    ctx.save(); rr(x - bw/2, top, bw, bar, bar*0.2); ctx.clip();
+    ctx.fillStyle = '#FFC61A'; ctx.fillRect(x - bw/2, top, bw, bar);
+    ctx.fillStyle = '#222'; var st = Math.max(4, bar*0.7);
+    for (var i = -2; i < bw/st + 2; i++){ ctx.beginPath(); ctx.moveTo(x - bw/2 + i*st*2, top + bar); ctx.lineTo(x - bw/2 + i*st*2 + st, top + bar); ctx.lineTo(x - bw/2 + i*st*2 + st + bar, top); ctx.lineTo(x - bw/2 + i*st*2 + bar, top); ctx.closePath(); ctx.fill(); }
+    ctx.restore();
+    ctx.fillStyle = '#FFFFFF'; rr(x - bw*0.17, top + bar*0.12, bw*0.34, bar*0.76, bar*0.15); ctx.fill();
+    ctx.fillStyle = '#222'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = font(bar*0.55, '800'); ctx.fillText('FEE', x, top + bar*0.52);
+    ctx.globalAlpha = 1;
+  }
+  function drawPlayer(){
+    var pu = laneStep*0.5, x = cx + (S.lane - 1)*laneStep, gy = playerY, y = gy - S.jy*laneStep*0.9;
+    if (S.inv > 0 && Math.floor(S.t*12) % 2 === 0) ctx.globalAlpha = 0.4;
+    ctx.fillStyle = 'rgba(0,0,0,.25)'; var shr = 1 - Math.min(0.5, S.jy*0.4); ell(x, gy, pu*0.5*shr, pu*0.13*shr); ctx.fill();
+    if (S.star > 0){ ctx.fillStyle = 'rgba(255,214,0,' + (0.25 + 0.1*Math.sin(S.t*10)) + ')'; ell(x, y - pu*1.1, pu*0.95, pu*1.15); ctx.fill(); }
+    var sw = S.onGround ? Math.sin(S.run) : 0.0, tuck = S.onGround ? 0 : 0.12;
+    ctx.fillStyle = '#26315A';
+    for (var side = -1; side <= 1; side += 2){
+      var ph = side*sw, lx = x + side*pu*0.15, ly = y - pu*0.62;
+      var len = pu*(0.6 - tuck) - Math.max(0, ph)*pu*0.14;
+      rr(lx - pu*0.1, ly, pu*0.2, len, pu*0.08); ctx.fill();
+      ctx.fillStyle = '#FFFFFF'; ell(lx, ly + len + pu*0.02, pu*0.14, pu*0.075); ctx.fill(); ctx.fillStyle = '#26315A';
+    }
+    ctx.fillStyle = '#17877A';
+    for (var s2 = -1; s2 <= 1; s2 += 2){
+      var ap = -s2*sw, ay = y - pu*1.34 + ap*pu*0.1;
+      rr(x + s2*pu*0.34 - pu*0.07, ay, pu*0.14, pu*0.5, pu*0.07); ctx.fill();
+    }
+    ctx.fillStyle = '#1EA896'; rr(x - pu*0.28, y - pu*1.4, pu*0.56, pu*0.8, pu*0.14); ctx.fill();
+    ctx.fillStyle = '#FFC61A'; rr(x - pu*0.2, y - pu*1.3, pu*0.4, pu*0.5, pu*0.1); ctx.fill();
+    ctx.fillStyle = '#8A5A00'; ctx.font = font(pu*0.3, '800'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('₹', x, y - pu*1.05);
+    ctx.fillStyle = '#F2C29B'; ell(x, y - pu*1.5, pu*0.13, pu*0.1); ctx.fill();
+    ctx.fillStyle = '#3B2A20'; ell(x, y - pu*1.68, pu*0.27, pu*0.27); ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+  function drawFx(){
+    S.fx.forEach(function(f){
+      ctx.globalAlpha = Math.max(0, Math.min(1, f.life*1.4));
+      ctx.font = font(laneStep*0.17, '800'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.strokeText(f.txt, f.x, f.y);
+      ctx.fillStyle = f.color; ctx.fillText(f.txt, f.x, f.y);
+    });
+    ctx.globalAlpha = 1;
+    S.conf.forEach(function(p){ ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c; ctx.fillRect(-p.s/2, -p.s/3, p.s, p.s*0.6); ctx.restore(); });
+  }
+  function drawHint(){
+    if (state !== 'play' || S.hint <= 0) return;
+    var a = Math.min(1, S.hint), txt = 'Move ◀ ▶      Jump ▲';
+    ctx.globalAlpha = a; ctx.font = font(15); var tw = ctx.measureText(txt).width + 30;
+    ctx.fillStyle = 'rgba(22,34,59,.75)'; rr(cx - tw/2, H*0.5, tw, 36, 18); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(txt, cx, H*0.5 + 19);
+    ctx.globalAlpha = 1;
+  }
+  function render(){
+    ctx.save();
+    ctx.clearRect(0, 0, W, H);
+    if (S.shake > 0 && !reduced){ var a = S.shake*16; ctx.translate((Math.random() - .5)*a, (Math.random() - .5)*a); }
+    drawSky(); drawRoad();
+    var list = [];
+    S.bld.forEach(function(b){ list.push({ d:b.d, f:function(){ drawBld(b); } }); });
+    S.objs.forEach(function(o){
+      if (o.gone) return;
+      list.push({ d:o.d, f:function(){
+        if (o.type === 'coin') drawCoin(o); else if (o.type === 'star') drawStar(o);
+        else if (o.type === 'block') drawBlock(o); else drawHurdle(o);
+      }});
+    });
+    list.sort(function(a, b){ return b.d - a.d; });
+    list.forEach(function(it){ it.f(); });
+    drawPlayer(); drawFx(); drawHint();
+    ctx.restore();
+    if (S.flash > 0 && !reduced){ ctx.fillStyle = 'rgba(229,72,77,' + Math.min(0.35, S.flash) + ')'; ctx.fillRect(0, 0, W, H); }
+  }
+
+  /* ---------- loop ---------- */
+  var last = performance.now();
+  function frame(now){
+    var dt = Math.min(0.05, (now - last)/1000); last = now;
+    if (state === 'play'){ update(dt); renderLoan(); }
+    else if (state === 'menu') ambient(dt);
+    else if (state === 'end') endFx(dt);
+    render();
+    requestAnimationFrame(frame);
+  }
+  function resize(){
+    var r = app.getBoundingClientRect();
+    W = Math.max(200, r.width); H = Math.max(300, r.height);
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.round(W*dpr); cv.height = Math.round(H*dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cx = W/2; horizon = H*0.3; playerY = H*0.76; laneStep = Math.min(W*0.27, H*0.19);
+  }
+  window.addEventListener('resize', resize);
+  resize(); reset(); renderHearts(); renderLoan();
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

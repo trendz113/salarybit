@@ -699,6 +699,16 @@
   const API_BASE = 'https://web-production-456eb.up.railway.app';
   let passbookUnlocked = false;
 
+  // ── DEV/TEST UNLOCK ───────────────────────────────────
+  // For testing print/PDF output without paying every time. This is a
+  // convenience, not real security — anyone reading the page source can
+  // see this key. Use it as: /family-passbook.html?promo=SB-DEEPAK-TEST-2026
+  const DEV_PROMO_CODE = 'SB-DEEPAK-TEST-2026';
+  if (new URLSearchParams(window.location.search).get('promo') === DEV_PROMO_CODE) {
+    passbookUnlocked = true;
+    window.addEventListener('DOMContentLoaded', () => showPbStatus('🔓 Test mode — print unlocked, no payment needed', true));
+  }
+
   function showPbStatus(msg, ok){
     const el = document.getElementById('pbStatus');
     el.textContent = msg;

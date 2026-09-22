@@ -18,6 +18,17 @@
 (function () {
   var API_BASE = "https://web-production-456eb.up.railway.app";
 
+  // These two widgets are position:fixed, so browsers repeat them on
+  // every physical page when printing a multi-page document — which can
+  // land them directly on top of content (e.g. a heading right after a
+  // page break). Hide both, plus the feedback panel, in print.
+  function injectPrintHideStyle() {
+    var style = document.createElement("style");
+    style.textContent =
+      "@media print { #sb-home-btn, #sb-fb-btn, #sb-fb-panel { display: none !important; } }";
+    document.head.appendChild(style);
+  }
+
   function alreadyHasHomeLink() {
     var candidates = document.querySelectorAll(
       'nav a[href="/"], nav a[href="https://salarybit.in/"], nav a[href="https://salarybit.in"], ' +
@@ -29,6 +40,7 @@
   function injectHomeButton() {
     if (alreadyHasHomeLink()) return;
     var a = document.createElement("a");
+    a.id = "sb-home-btn";
     a.href = "/";
     a.setAttribute("aria-label", "Back to SalaryBit home");
     a.textContent = "← SalaryBit";
@@ -49,6 +61,7 @@
 
   function injectFeedbackWidget() {
     var btn = document.createElement("button");
+    btn.id = "sb-fb-btn";
     btn.setAttribute("aria-label", "Report an issue or suggestion");
     btn.innerHTML = "💬";
     btn.style.cssText = [
@@ -64,6 +77,7 @@
     btn.onmouseout = function () { btn.style.transform = "scale(1)"; };
 
     var panel = document.createElement("div");
+    panel.id = "sb-fb-panel";
     panel.style.cssText = [
       "position:fixed", "bottom:76px", "right:18px", "z-index:9999",
       "width:min(320px, calc(100vw - 36px))", "background:#fff",
@@ -141,6 +155,7 @@
   }
 
   function init() {
+    injectPrintHideStyle();
     injectHomeButton();
     injectFeedbackWidget();
   }

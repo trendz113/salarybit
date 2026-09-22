@@ -97,9 +97,6 @@ h2{font:800 1.8rem/1.05 "Bricolage Grotesque",system-ui,sans-serif;letter-spacin
 .qrbox img{width:100%;height:100%;object-fit:contain;border-radius:14px}
 .qrfallback{padding:14px;text-align:center;font-size:.78rem;color:var(--muted);line-height:1.35}
 .qrfallback b{display:block;color:var(--ink);font-size:.85rem;margin-bottom:4px}
-.upirow{display:flex;align-items:center;gap:8px;background:#F2F6FB;border-radius:12px;padding:10px 12px;margin:0 0 6px}
-.upirow code{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 .9rem monospace;color:var(--ink)}
-.upirow button{flex:none;border:0;background:var(--teal);color:#fff;border-radius:999px;padding:6px 12px;font-weight:700;font-size:.8rem;cursor:pointer}
 .copied{font-size:.78rem;color:var(--teal-d);font-weight:700;min-height:1.1em;margin:0 0 8px}
 </style>
 <meta property="og:type" content="website">
@@ -192,11 +189,9 @@ h2{font:800 1.8rem/1.05 "Bricolage Grotesque",system-ui,sans-serif;letter-spacin
       <p>SalaryBit and this game are built by one person, in spare time. If it helped you, any amount — starting from ₹10 — helps keep it going and growing.</p>
       <div class="amts"><span>₹10</span><span>₹50</span><span>₹100</span><span>Any amount</span></div>
       <div class="qrbox">
-        <img id="qrImg" alt="UPI QR code to donate">
+        <img id="qrImg" alt="PhonePe QR code to donate — scan with any UPI app">
         <div class="qrfallback" id="qrFallback" hidden><b>Scan to pay</b>Add your UPI QR code image, named <code>donate-qr.png</code>, in the same folder as this game file — it will appear here automatically.</div>
       </div>
-      <div class="upirow"><code id="upiId"></code><button id="bCopyUpi" type="button">Copy</button></div>
-      <p class="copied" id="copiedMsg" aria-live="polite"></p>
       <button class="btn alt" id="bLoveClose" type="button">Close</button>
     </div>
   </div>
@@ -223,8 +218,7 @@ h2{font:800 1.8rem/1.05 "Bricolage Grotesque",system-ui,sans-serif;letter-spacin
     // Donation section — replace with your own details.
     // Drop a file named "donate-qr.png" next to this HTML file and it
     // will show up automatically in the Support popup.
-    qrImage: 'donate-qr.png',
-    upiId: 'your-upi-id@bank'
+    qrImage: 'donate-qr.png'
   };
   var TIPS = [
     'True to life: paying extra towards a loan cuts real months off it, because you owe less interest each day after.',
@@ -264,7 +258,6 @@ h2{font:800 1.8rem/1.05 "Bricolage Grotesque",system-ui,sans-serif;letter-spacin
   $('brandTop').textContent = CONFIG.siteName;
   $('siteLink').href = CONFIG.siteUrl;
   $('siteLink').textContent = 'Visit ' + CONFIG.siteName;
-  $('upiId').textContent = CONFIG.upiId;
   $('qrImg').src = CONFIG.qrImage;
   $('qrImg').addEventListener('error', function(){ $('qrImg').style.display = 'none'; $('qrFallback').hidden = false; });
 
@@ -474,16 +467,11 @@ h2{font:800 1.8rem/1.05 "Bricolage Grotesque",system-ui,sans-serif;letter-spacin
   document.addEventListener('visibilitychange', function(){ if (document.hidden) pause(); });
 
   var wasPlayingBeforeLove = false;
-  function openLove(){ wasPlayingBeforeLove = state === 'play'; if (wasPlayingBeforeLove) pause(); $('copiedMsg').textContent = ''; $('ovLove').hidden = false; }
+  function openLove(){ wasPlayingBeforeLove = state === 'play'; if (wasPlayingBeforeLove) pause(); $('ovLove').hidden = false; }
   function closeLove(){ $('ovLove').hidden = true; if (wasPlayingBeforeLove) resume(); }
   $('bLoveStart').addEventListener('click', openLove);
   $('bLoveEnd').addEventListener('click', openLove);
   $('bLoveClose').addEventListener('click', closeLove);
-  $('bCopyUpi').addEventListener('click', function(){
-    var done = function(){ $('copiedMsg').textContent = 'Copied! Paste it in your UPI app.'; };
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(CONFIG.upiId).then(done, done);
-    else done();
-  });
 
   /* ---------- update ---------- */
   function hurt(o){

@@ -288,6 +288,34 @@
     color:#C9D2DC;
     line-height:1.5;
   }
+  .promo-row{display:flex; gap:8px; margin-top:12px; max-width:320px;}
+  .promo-input{
+    flex:1;
+    font-family:'Courier Prime', monospace;
+    font-size:12px;
+    padding:8px 10px;
+    border:1px solid rgba(233,201,122,0.4);
+    background:rgba(255,255,255,0.06);
+    color:var(--paper);
+    border-radius:3px;
+  }
+  .promo-input::placeholder{color:rgba(243,236,217,0.45);}
+  .promo-input:focus{outline:none; border-color:#E8C97A;}
+  .promo-apply-btn{
+    font-family:'Courier Prime', monospace;
+    font-size:12px;
+    background:transparent;
+    border:1px solid #E8C97A;
+    color:#E8C97A;
+    padding:8px 14px;
+    border-radius:3px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .promo-apply-btn:hover{background:rgba(232,201,122,0.12);}
+  .promo-msg{font-family:'Courier Prime', monospace; font-size:11px; margin-top:6px; min-height:14px;}
+  .promo-msg.ok{color:#8fdb9a;}
+  .promo-msg.err{color:#f3a7a7;}
   .btn-premium{
     font-family:'Fraunces', serif;
     font-weight:700;
@@ -383,6 +411,11 @@
       <div class="pb-eyebrow">The Family Passbook</div>
       <div class="pb-title display">Fill it for free. Unlock printing for ₹19.</div>
       <div class="pb-desc">Take your time filling in every page below — that part costs nothing and nothing is saved or uploaded. When you're ready to print or save the finished passbook as a PDF, a one-time ₹19 payment unlocks your browser's print dialog so you can produce a copy to keep in a folder.</div>
+      <div class="promo-row">
+        <input type="text" id="promoInput" class="promo-input" placeholder="Have a promo code?" autocomplete="off">
+        <button type="button" class="promo-apply-btn" onclick="applyPromo()">Apply</button>
+      </div>
+      <div class="promo-msg" id="promoMsg"></div>
     </div>
     <button class="btn-premium" id="btnBuyPremium" onclick="unlockAndPrint()">
       Unlock &amp; Print — ₹19
@@ -702,12 +735,11 @@
   // ── DEV/TEST UNLOCK ───────────────────────────────────
   // For testing print/PDF output without paying every time. This is a
   // convenience, not real security — anyone reading the page source can
-  // see this key. Use it as: /family-passbook.html?promo=SB-DEEPAK-TEST-2026
+  // see this key. Razorpay stays the normal path for everyone else;
+  // this only bypasses payment when the exact code matches.
+  // Use via URL: /family-passbook.html?promo=SB-DEEPAK-TEST-2026
+  // Or type it into the on-page "Have a promo code?" box.
   const DEV_PROMO_CODE = 'SB-DEEPAK-TEST-2026';
-  if (new URLSearchParams(window.location.search).get('promo') === DEV_PROMO_CODE) {
-    passbookUnlocked = true;
-    window.addEventListener('DOMContentLoaded', () => showPbStatus('🔓 Test mode — print unlocked, no payment needed', true));
-  }
 
   function showPbStatus(msg, ok){
     const el = document.getElementById('pbStatus');
@@ -715,6 +747,42 @@
     el.classList.add('show');
     el.classList.toggle('ok', !!ok);
     if(ok){ setTimeout(()=> el.classList.remove('show'), 6000); }
+  }
+
+  function markUnlockedUI(){
+    const html = 'Print Now<span class="price">✓ Unlocked — no payment needed</span>';
+    const primary = document.getElementById('btnBuyPremium');
+    const footer = document.getElementById('btnPrintFooter');
+    if(primary) primary.innerHTML = html;
+    if(footer) footer.innerHTML = html;
+  }
+
+  function applyPromo(){
+    const input = document.getElementById('promoInput');
+    const msg = document.getElementById('promoMsg');
+    const code = input.value.trim().toUpperCase();
+    if(code && code === DEV_PROMO_CODE){
+      passbookUnlocked = true;
+      msg.textContent = '✓ Promo applied — printing is unlocked.';
+      msg.className = 'promo-msg ok';
+      input.disabled = true;
+      document.querySelector('.promo-apply-btn').disabled = true;
+      markUnlockedUI();
+    } else {
+      msg.textContent = '✗ Code not recognized.';
+      msg.className = 'promo-msg err';
+    }
+  }
+  document.getElementById('promoInput').addEventListener('keydown', (e) => {
+    if(e.key === 'Enter'){ e.preventDefault(); applyPromo(); }
+  });
+
+  if (new URLSearchParams(window.location.search).get('promo') === DEV_PROMO_CODE) {
+    passbookUnlocked = true;
+    window.addEventListener('DOMContentLoaded', () => {
+      showPbStatus('🔓 Test mode — print unlocked, no payment needed', true);
+      markUnlockedUI();
+    });
   }
 
   function setBuyButtonsBusy(busy, label){

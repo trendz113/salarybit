@@ -1581,6 +1581,66 @@ def verify_family_passbook_payment():
     return jsonify({"success": True, "payment_id": payment_id})
 
 
+# ── SIMPLE WILL MAKER ────────────────────────────────────────
+# Same pattern as the Family Passbook: filling the Will draft is free and
+# 100% client-side; printing/saving-as-PDF is a paid unlock (HMAC verify).
+# Nothing the person typed into the Will is ever sent to this server.
+SIMPLE_WILL_PRICE_PAISE = 1900  # Rs 19 (static generator, nominal fee)
+
+
+@app.route("/api/create-simple-will-order", methods=["POST", "OPTIONS"])
+def create_simple_will_order():
+    """Matches the existing create_*_order() pattern exactly."""
+    if request.method == "OPTIONS":
+        return "", 200
+    try:
+        order = rzp.order.create({
+            "amount": SIMPLE_WILL_PRICE_PAISE,
+            "currency": "INR",
+            "receipt": f"simplewill_{os.urandom(4).hex()}",
+        })
+        return jsonify({
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"],
+            "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")
+        })
+    except Exception as e:
+        print(f"create-simple-will-order error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/verify-simple-will-payment", methods=["POST", "OPTIONS"])
+def verify_simple_will_payment():
+    """
+    Matches the existing verify_*_payment() HMAC pattern exactly. No PDF is
+    generated here and no Will content is ever sent to the server — once
+    the signature checks out, the frontend unlocks window.print() itself.
+    """
+    if request.method == "OPTIONS":
+        return "", 200
+    data = request.get_json(silent=True) or {}
+    order_id = data.get("razorpay_order_id")
+    payment_id = data.get("razorpay_payment_id")
+    signature = data.get("razorpay_signature")
+
+    if not all([order_id, payment_id, signature]):
+        return jsonify({"success": False, "error": "Missing required fields."}), 400
+
+    body = f"{order_id}|{payment_id}"
+    expected = hmac.new(
+        os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+        body.encode(),
+        hashlib.sha256
+    ).hexdigest()
+    if expected != signature:
+        return jsonify({"success": False, "error": "Payment verification failed."}), 400
+
+    print(f"[simple-will] paid unlock | payment_id={payment_id}")
+
+    return jsonify({"success": True, "payment_id": payment_id})
+
+
 # ── JOB SWITCH TAX CALCULATOR ────────────────────────────────
 # Same pattern as passbook/family-passbook: the free calculator already runs
 # entirely client-side, so the paid unlock is just the HMAC-verified full

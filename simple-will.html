@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simple Will Maker India — Write Your Last Will &amp; Testament Free | SalaryBit</title>
+  <meta name="description" content="Draft a simple, legally-structured Will online for free — testator declaration, executor, guardian for minor children, asset bequests, residuary clause and witness attestation. Print or save as PDF for ₹19. Nothing you type is ever sent to a server.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B2A3D;
+    --paper:#F3ECD9;
+    --paper-line:#DED2AE;
+    --brass:#A9812F;
+    --brass-dark:#7A5C1F;
+    --stamp:#8B3A2B;
+    --sage:#5C6B62;
+    --white-ish:#FBF8F0;
+    --shadow: 0 8px 24px rgba(27,42,61,0.12);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:#E4DABF;
+    font-family:'Source Serif 4', serif;
+    color:var(--ink);
+  }
+  .display{font-family:'Fraunces', serif;}
+  .mono{font-family:'Courier Prime', monospace;}
+
+  /* ===== Top banner ===== */
+  .privacy-banner{
+    background:var(--ink);
+    color:var(--paper);
+    text-align:center;
+    font-family:'Courier Prime', monospace;
+    font-size:13px;
+    letter-spacing:0.03em;
+    padding:10px 16px;
+  }
+  .privacy-banner strong{color:#E8C97A;}
+
+  /* ===== App shell ===== */
+  .app{
+    max-width:1100px;
+    margin:28px auto 60px;
+    display:grid;
+    grid-template-columns:220px 1fr;
+    gap:0;
+    background:var(--white-ish);
+    box-shadow:var(--shadow);
+    border-radius:4px;
+    overflow:hidden;
+    min-height:80vh;
+  }
+
+  /* ===== Tab rail ===== */
+  .tab-rail{
+    background:var(--ink);
+    padding:22px 0 22px 0;
+    position:sticky;
+    top:0;
+    align-self:start;
+  }
+  .rail-title{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-style:italic;
+    color:var(--paper);
+    font-size:20px;
+    padding:0 20px 18px 24px;
+    border-bottom:1px solid rgba(243,236,217,0.15);
+    margin-bottom:6px;
+    line-height:1.25;
+  }
+  .rail-title span{display:block; font-family:'Courier Prime',monospace; font-style:normal; font-size:10px; letter-spacing:0.12em; color:#B9A46B; margin-top:6px;}
+  .tab-btn{
+    display:block;
+    width:100%;
+    text-align:left;
+    background:transparent;
+    border:none;
+    color:#D9CFAE;
+    font-family:'Courier Prime', monospace;
+    font-size:12.5px;
+    letter-spacing:0.03em;
+    padding:11px 14px 11px 24px;
+    cursor:pointer;
+    position:relative;
+    transition:background .15s, color .15s;
+    border-left:4px solid transparent;
+  }
+  .tab-btn .num{color:#8C9AA6; margin-right:8px;}
+  .tab-btn:hover{background:rgba(255,255,255,0.06); color:#fff;}
+  .tab-btn.active{
+    background:var(--paper);
+    color:var(--ink);
+    border-left:4px solid var(--stamp);
+    font-weight:700;
+  }
+  .tab-btn.active .num{color:var(--stamp);}
+
+  /* ===== Main ledger area ===== */
+  .ledger{
+    padding:0;
+    background:
+      repeating-linear-gradient(var(--white-ish) 0 38px, var(--paper-line) 38px 39px);
+    position:relative;
+  }
+  .ledger::before{
+    content:"";
+    position:absolute; left:64px; top:0; bottom:0; width:1px;
+    background:rgba(139,58,43,0.25);
+  }
+  .page{ display:none; padding:34px 30px 34px 84px; }
+  .page.active{ display:block; }
+
+  .page h2{
+    font-family:'Fraunces', serif;
+    font-weight:900;
+    font-size:28px;
+    margin:0 0 4px;
+  }
+  .page .kicker{
+    font-family:'Courier Prime', monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--stamp);
+    margin-bottom:14px;
+  }
+  .page .intro{
+    color:var(--sage);
+    font-size:15px;
+    line-height:1.6;
+    max-width:640px;
+    margin-bottom:22px;
+  }
+
+  .field-row{
+    display:grid;
+    grid-template-columns:200px 1fr;
+    gap:14px;
+    align-items:center;
+    padding:9px 0;
+  }
+  .field-row.wide{grid-template-columns:1fr;}
+  .field-row label{
+    font-family:'Courier Prime', monospace;
+    font-size:12px;
+    color:var(--ink);
+    line-height:1.4;
+  }
+  .field-row input, .field-row textarea, .field-row select{
+    font-family:'Source Serif 4', serif;
+    font-size:15px;
+    border:none;
+    border-bottom:1px solid var(--brass);
+    background:transparent;
+    padding:6px 4px;
+    width:100%;
+    color:var(--ink);
+  }
+  .field-row input:focus, .field-row textarea:focus, .field-row select:focus{
+    outline:none;
+    border-bottom:2px solid var(--stamp);
+  }
+  .field-row textarea{resize:vertical; min-height:44px;}
+
+  .block{
+    border:1px solid var(--paper-line);
+    background:rgba(233,222,190,0.35);
+    border-radius:3px;
+    padding:16px 18px 6px;
+    margin-bottom:22px;
+  }
+  .block-title{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:15px;
+    color:var(--brass-dark);
+    margin-bottom:6px;
+  }
+  .repeat-wrap{margin-bottom:8px;}
+  .add-row-btn{
+    font-family:'Courier Prime', monospace;
+    font-size:12px;
+    background:none;
+    border:1px dashed var(--brass);
+    color:var(--brass-dark);
+    padding:6px 12px;
+    border-radius:3px;
+    cursor:pointer;
+    margin:6px 0 18px;
+  }
+  .add-row-btn:hover{background:rgba(169,129,47,0.1);}
+
+  .note{
+    font-size:13px;
+    color:var(--sage);
+    font-style:italic;
+    margin-top:-6px;
+    margin-bottom:14px;
+  }
+
+  .urgent-tag{
+    display:inline-block;
+    font-family:'Courier Prime', monospace;
+    font-size:10.5px;
+    letter-spacing:0.08em;
+    color:#fff;
+    background:var(--stamp);
+    padding:2px 8px;
+    border-radius:2px;
+    transform:rotate(-2deg);
+    margin-bottom:10px;
+  }
+
+  .checklist{list-style:none; padding:0; margin:0 0 18px;}
+  .checklist li{
+    display:flex; gap:10px; align-items:flex-start;
+    padding:8px 0; border-bottom:1px dotted var(--paper-line);
+    font-size:14.5px; line-height:1.5;
+  }
+  .checklist input[type=checkbox]{margin-top:4px; accent-color:var(--stamp); width:16px; height:16px; flex:none;}
+
+  .legal-clause{
+    background:rgba(251,248,240,0.7);
+    border:1px solid var(--paper-line);
+    border-left:3px solid var(--brass);
+    padding:14px 16px;
+    font-size:14.5px;
+    line-height:1.7;
+    margin-bottom:16px;
+    color:var(--ink);
+  }
+  .legal-clause em{color:var(--stamp); font-style:normal; border-bottom:1px dotted var(--stamp);}
+
+  .sig-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+    margin-top:26px;
+  }
+  .sig-box{
+    border-top:1px solid var(--ink);
+    padding-top:6px;
+    font-family:'Courier Prime', monospace;
+    font-size:11px;
+    color:var(--sage);
+  }
+  .sig-line{height:52px;}
+
+  /* ===== Bottom action bar ===== */
+  .action-bar{
+    position:sticky;
+    bottom:0;
+    background:var(--ink);
+    padding:14px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    grid-column:1/-1;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .action-bar .msg{color:#B9A46B; font-family:'Courier Prime',monospace; font-size:12px;}
+  .btn-print{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    background:var(--stamp);
+    color:#fff;
+    border:none;
+    padding:11px 24px;
+    border-radius:3px;
+    font-size:15px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .btn-print:hover{background:#6f2d20;}
+  .btn-print:disabled{opacity:0.6; cursor:wait;}
+  .btn-print .price{font-family:'Courier Prime',monospace; font-size:11px; display:block; color:#F3D9C9; margin-top:2px; font-weight:400;}
+
+  /* ===== Top upsell banner ===== */
+  .premium-banner{
+    grid-column:1/-1;
+    background:linear-gradient(135deg, var(--ink) 0%, #24374F 100%);
+    color:var(--paper);
+    padding:16px 30px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    flex-wrap:wrap;
+    border-bottom:1px solid rgba(233,201,122,0.25);
+  }
+  .premium-banner .pb-copy{max-width:640px;}
+  .premium-banner .pb-eyebrow{
+    font-family:'Courier Prime', monospace;
+    font-size:10.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#E8C97A;
+    margin-bottom:4px;
+  }
+  .premium-banner .pb-title{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:17px;
+    margin-bottom:4px;
+  }
+  .premium-banner .pb-desc{
+    font-size:12.5px;
+    color:#C9D2DC;
+    line-height:1.5;
+  }
+  .btn-premium{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    background:#E8C97A;
+    color:var(--ink);
+    border:none;
+    padding:12px 22px;
+    border-radius:3px;
+    font-size:15px;
+    cursor:pointer;
+    white-space:nowrap;
+    box-shadow:0 4px 14px rgba(232,201,122,0.25);
+  }
+  .btn-premium:hover{background:#f0d68d;}
+  .btn-premium .price{font-family:'Courier Prime',monospace; font-size:11px; display:block; color:#5C4A1C; margin-top:2px;}
+  .btn-premium:disabled{opacity:0.6; cursor:wait;}
+
+  /* ===== Status toast ===== */
+  .pb-status{
+    position:fixed;
+    bottom:24px; right:24px;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Courier Prime', monospace;
+    font-size:13px;
+    padding:14px 18px;
+    border-radius:4px;
+    border-left:4px solid var(--stamp);
+    box-shadow:var(--shadow);
+    z-index:999;
+    max-width:320px;
+    display:none;
+  }
+  .pb-status.show{display:block;}
+  .pb-status.ok{border-left-color:#5C8B62;}
+
+  /* ===== Print styles ===== */
+  @media print{
+    .privacy-banner, .tab-rail, .action-bar, .premium-banner, .pb-status{display:none !important;}
+    .app{display:block; box-shadow:none; margin:0; max-width:100%;}
+    .ledger::before{display:none;}
+    .page{display:block !important; padding:14px 6px; page-break-after:always;}
+    .field-row input, .field-row textarea, .field-row select{border-bottom:1px solid #999;}
+    body{background:#fff;}
+  }
+
+  @media (max-width:800px){
+    .app{grid-template-columns:1fr; margin:0;}
+    .tab-rail{
+      position:static;
+      display:flex; overflow-x:auto; padding:14px 8px;
+    }
+    .rail-title{display:none;}
+    .tab-btn{
+      white-space:nowrap; border-left:none; border-bottom:4px solid transparent;
+      padding:8px 14px;
+    }
+    .tab-btn.active{border-left:none; border-bottom:4px solid var(--stamp);}
+    .page{padding:24px 16px;}
+    .ledger::before{display:none;}
+    .field-row{grid-template-columns:1fr;}
+    .sig-row{grid-template-columns:1fr;}
+  }
+</style>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Simple Will Maker India — Write Your Last Will &amp; Testament Free | SalaryBit">
+<meta property="og:description" content="A private, printable Will draft from SalaryBit — testator declaration, executor, guardian for minor children, asset bequests, residuary clause, witness attestation. Fill it in your browser — nothing is ever sent anywhere until you choose to unlock printing.">
+<meta property="og:url" content="https://salarybit.in/simple-will.html">
+<meta property="og:site_name" content="SalaryBit">
+<meta property="og:image" content="https://salarybit.in/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Simple Will Maker India — Write Your Last Will &amp; Testament Free | SalaryBit">
+<meta name="twitter:description" content="A private, printable Will draft from SalaryBit. Fill it in your browser — nothing is ever sent anywhere until you choose to unlock printing.">
+<meta name="twitter:image" content="https://salarybit.in/og-image.png">
+<link rel="canonical" href="https://salarybit.in/simple-will.html">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Simple Will Maker — SalaryBit",
+  "url": "https://salarybit.in/simple-will.html",
+  "applicationCategory": "LegalService",
+  "operatingSystem": "Any (Web browser)",
+  "description": "Free online tool to draft a simple Indian Will — testator declaration, executor, guardian for minor children, specific bequests, residuary clause and witness attestation. Print or save as PDF for a one-time ₹19 unlock.",
+  "offers": {
+    "@type": "Offer",
+    "price": "19",
+    "priceCurrency": "INR"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "SalaryBit",
+    "url": "https://salarybit.in/"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is a handwritten or self-drafted Will valid in India?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Under the Indian Succession Act, 1925, a Will is valid as long as it is signed by the testator and attested by at least two witnesses who see the testator sign. Registration is not compulsory, but a registered Will is harder to dispute and easier for your family to locate and prove."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need a lawyer to write a simple Will?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For a straightforward estate with clear beneficiaries, many people draft their own Will and have it reviewed by a lawyer before signing. For complex assets, disputes among heirs, or high-value estates, professional legal help is strongly recommended."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Should I register my Will?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Registration at the Sub-Registrar's office is optional in India but recommended. A registered Will is kept in government custody, is far harder to forge or misplace, and carries stronger evidentiary weight if ever contested."
+      }
+    }
+  ]
+}
+</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QFHT4BZTMF"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QFHT4BZTMF');</script>
+</head>
+<body>
+
+<div class="privacy-banner">
+  🔒 <strong>Nothing you type here is ever sent to a server.</strong> Drafting your Will happens entirely in your browser — no login, no autosave. When you're ready to print or save it as a PDF, a one-time ₹19 unlock opens your browser's print dialog; your entries still never leave this tab.
+</div>
+
+<div class="app">
+
+  <div class="premium-banner">
+    <div class="pb-copy">
+      <div class="pb-eyebrow">Simple Will Maker</div>
+      <div class="pb-title display">Draft it for free. Unlock printing for ₹19.</div>
+      <div class="pb-desc">Fill in every page below — that part costs nothing and nothing is saved or uploaded. When you're ready to print or save the finished draft as a PDF, a one-time ₹19 payment unlocks your browser's print dialog so you can sign it in front of witnesses.</div>
+    </div>
+    <button class="btn-premium" id="btnBuyPremium" onclick="unlockAndPrint()">
+      Unlock &amp; Print — ₹19
+      <span class="price">One-time · via Razorpay</span>
+    </button>
+  </div>
+
+  <nav class="tab-rail">
+    <div class="rail-title">Simple Will<br>Maker<span>SALARYBIT.IN</span></div>
+    <button class="tab-btn active" data-page="p0"><span class="num">00</span>About This Will</button>
+    <button class="tab-btn" data-page="p1"><span class="num">01</span>Testator Details</button>
+    <button class="tab-btn" data-page="p2"><span class="num">02</span>Declaration &amp; Revocation</button>
+    <button class="tab-btn" data-page="p3"><span class="num">03</span>Executor</button>
+    <button class="tab-btn" data-page="p4"><span class="num">04</span>Guardian for Minors</button>
+    <button class="tab-btn" data-page="p5"><span class="num">05</span>Specific Bequests</button>
+    <button class="tab-btn" data-page="p6"><span class="num">06</span>Residuary Clause</button>
+    <button class="tab-btn" data-page="p7"><span class="num">07</span>Funeral Wishes (optional)</button>
+    <button class="tab-btn" data-page="p8"><span class="num">08</span>Witnesses &amp; Signing</button>
+    <button class="tab-btn" data-page="p9"><span class="num">09</span>Registering Your Will</button>
+  </nav>
+
+  <main class="ledger">
+
+    <!-- PAGE 0: ABOUT -->
+    <section class="page active" id="p0">
+      <div class="kicker">Before you start</div>
+      <h2>Simple Will Maker</h2>
+      <p class="intro">A Will is the single document that decides who gets what — without it, your family can spend months (sometimes years) getting a legal heir or succession certificate, even when everyone agrees on who should inherit. This tool helps you draft a straightforward Will in the correct structure. Fill it once, review it with a lawyer if your estate is complex, then sign it in front of two witnesses.</p>
+
+      <div class="block">
+        <div class="block-title">What this tool is</div>
+        <div class="field-row wide" style="padding-top:0"><label></label></div>
+        <ul class="checklist" style="margin-top:-8px">
+          <li><span>✅ A correctly structured starting draft — testator declaration, executor, guardian, bequests, residuary clause and attestation block, in the order Indian Wills are usually written.</span></li>
+          <li><span>✅ 100% private — everything is typed and stored only in your browser tab. Nothing is uploaded until you choose to unlock printing, and even then only a payment confirmation is exchanged.</span></li>
+          <li><span>⚠️ Not a substitute for a lawyer if you have a complex estate, disputed family relationships, a business, assets abroad, or a very large estate — get this draft reviewed before you sign.</span></li>
+          <li><span>⚠️ Not legal advice, and SalaryBit is not a law firm. Registration guidance on the last page is general information, not a legal opinion.</span></li>
+        </ul>
+      </div>
+      <p class="note">Already filled our <a href="/family-passbook.html" style="color:var(--stamp)">Family Passbook</a>? Once your Will is signed, come back and log it there — under Section 08 "IDs &amp; Legal Papers" — so your family knows it exists and where to find it.</p>
+    </section>
+
+    <!-- PAGE 1: TESTATOR -->
+    <section class="page" id="p1">
+      <div class="kicker">Section 01</div>
+      <h2>Testator Details</h2>
+      <p class="intro">The "testator" is the person making the Will — that's you. These details go at the top of the document and are used to identify you unambiguously.</p>
+      <div class="block">
+        <div class="block-title">About you</div>
+        <div class="field-row"><label>Full name (as on ID)</label><input type="text" id="t_name"></div>
+        <div class="field-row"><label>Son/daughter/wife of</label><input type="text" id="t_parent"></div>
+        <div class="field-row"><label>Age</label><input type="number" id="t_age" min="18" max="120"></div>
+        <div class="field-row"><label>Occupation</label><input type="text" id="t_occ"></div>
+        <div class="field-row wide"><label>Residential address (full)</label><textarea id="t_addr"></textarea></div>
+        <div class="field-row"><label>City / State</label><input type="text" id="t_city"></div>
+      </div>
+      <p class="note">Use your name and address exactly as they appear on your Aadhaar/PAN, so there's no ambiguity about who this Will belongs to.</p>
+    </section>
+
+    <!-- PAGE 2: DECLARATION -->
+    <section class="page" id="p2">
+      <div class="kicker">Section 02</div>
+      <h2>Declaration &amp; Revocation</h2>
+      <p class="intro">This is the opening clause of the Will itself — it states that this document is your final Will, made willingly and in sound mind, and that it cancels any Will you may have made earlier.</p>
+      <div class="legal-clause" id="clauseDeclaration">
+        I, <em id="c_name">[your full name]</em>, <em id="c_parent">[son/daughter/wife of]</em>, aged <em id="c_age">[age]</em> years, residing at <em id="c_addr">[your address]</em>, being of sound mind and not acting under any coercion, fraud or undue influence, do hereby declare this to be my last Will and Testament, and I hereby revoke all former Wills, Codicils and testamentary dispositions made by me at any time before this date.
+      </div>
+      <p class="note">This clause fills itself in automatically from Section 01. Go back and complete your Testator Details if any placeholder above still shows brackets.</p>
+    </section>
+
+    <!-- PAGE 3: EXECUTOR -->
+    <section class="page" id="p3">
+      <div class="kicker">Section 03</div>
+      <h2>Executor</h2>
+      <p class="intro">The executor is the person you trust to carry out your Will — collect your assets, pay off debts/taxes, and distribute what remains as you've instructed. Choose someone practical, not necessarily your closest relative.</p>
+      <div class="block">
+        <div class="block-title">Primary executor</div>
+        <div class="field-row"><label>Full name</label><input type="text" id="e_name"></div>
+        <div class="field-row"><label>Relationship to you</label><input type="text" id="e_rel"></div>
+        <div class="field-row wide"><label>Address</label><textarea id="e_addr"></textarea></div>
+      </div>
+      <div class="block">
+        <div class="block-title">Alternate executor (if the primary is unable/unwilling to act)</div>
+        <div class="field-row"><label>Full name</label><input type="text" id="e2_name"></div>
+        <div class="field-row"><label>Relationship to you</label><input type="text" id="e2_rel"></div>
+      </div>
+      <p class="note">An executor doesn't need to be a lawyer — a spouse, adult child, or trusted sibling is common. Always ask the person before naming them.</p>
+    </section>
+
+    <!-- PAGE 4: GUARDIAN -->
+    <section class="page" id="p4">
+      <div class="kicker">Section 04</div>
+      <h2>Guardian for Minor Children</h2>
+      <p class="intro">If you have children under 18, this is the single most important clause in your Will — it names who raises them if both parents are unavailable. Leave this section blank if not applicable.</p>
+      <div id="guardianRows"></div>
+      <button class="add-row-btn" onclick="addRow('guardianRows', ['Child\'s name &amp; age','Proposed guardian (full name)','Guardian\'s relationship to child','Guardian\'s address'])">+ Add a child</button>
+      <p class="note">Courts generally respect a named guardian but retain the final say in the child's best interest — naming someone still strongly guides that decision and avoids family disputes.</p>
+    </section>
+
+    <!-- PAGE 5: BEQUESTS -->
+    <section class="page" id="p5">
+      <div class="kicker">Section 05</div>
+      <h2>Specific Bequests</h2>
+      <p class="intro">List each specific asset you want to leave to a specific person — property, bank balances, investments, jewellery, vehicles, or any named item. Be as precise as you can (e.g. "flat at [address]" rather than just "my flat").</p>
+      <div id="bequestRows"></div>
+      <button class="add-row-btn" onclick="addRow('bequestRows', ['Asset description','Beneficiary full name','Relationship to you','Share (e.g. 100%, or split with someone else)'])">+ Add a bequest</button>
+      <p class="note">Don't worry about listing every last item — anything not specifically mentioned here is covered by your Residuary Clause on the next page.</p>
+    </section>
+
+    <!-- PAGE 6: RESIDUARY -->
+    <section class="page" id="p6">
+      <div class="kicker">Section 06</div>
+      <h2>Residuary Clause</h2>
+      <p class="intro">This clause covers everything you own that isn't specifically named on the previous page — so nothing is left undecided.</p>
+      <div class="block">
+        <div class="field-row"><label>All remaining property goes to</label><input type="text" id="r_name"></div>
+        <div class="field-row"><label>Relationship to you</label><input type="text" id="r_rel"></div>
+        <div class="field-row wide"><label>If more than one person, describe the split</label><textarea id="r_split"></textarea></div>
+      </div>
+      <div class="legal-clause" id="clauseResiduary">
+        All the rest, residue and remainder of my property, whether movable or immovable, of whatsoever nature and wheresoever situated, not otherwise specifically disposed of by this Will, I give, devise and bequeath to <em id="c_rname">[residuary beneficiary]</em>.
+      </div>
+    </section>
+
+    <!-- PAGE 7: WISHES -->
+    <section class="page" id="p7">
+      <div class="kicker">Section 07 — Optional</div>
+      <h2>Funeral Wishes</h2>
+      <p class="intro">Entirely optional and not legally binding, but it spares your family from having to guess during a difficult time.</p>
+      <div class="field-row wide"><label>Funeral / last rites preference</label><textarea></textarea></div>
+      <div class="field-row"><label>Organ donation wishes</label><input type="text"></div>
+      <div class="field-row wide"><label>Any other wishes for your family</label><textarea></textarea></div>
+    </section>
+
+    <!-- PAGE 8: WITNESSES -->
+    <section class="page" id="p8">
+      <div class="kicker">Section 08</div>
+      <h2>Witnesses &amp; Signing</h2>
+      <p class="intro">A Will is only valid once signed by you and attested by at least two witnesses who watch you sign, and who are not themselves beneficiaries under the Will.</p>
+      <div class="block">
+        <div class="block-title">Place &amp; date of signing</div>
+        <div class="field-row"><label>Place</label><input type="text"></div>
+        <div class="field-row"><label>Date</label><input type="date"></div>
+      </div>
+      <div class="legal-clause">
+        IN WITNESS WHEREOF I have hereunto set my hand on the date and place mentioned above, in the presence of the witnesses below, who have signed in my presence and in the presence of each other.
+      </div>
+      <div class="sig-row">
+        <div>
+          <div class="sig-line"></div>
+          <div class="sig-box">Signature of Testator</div>
+        </div>
+        <div></div>
+      </div>
+      <div class="block" style="margin-top:20px">
+        <div class="block-title">Witness 1</div>
+        <div class="field-row"><label>Full name</label><input type="text"></div>
+        <div class="field-row wide"><label>Address</label><textarea></textarea></div>
+        <div class="sig-row"><div class="sig-line" style="border-bottom:1px solid var(--paper-line)"></div><div></div></div>
+      </div>
+      <div class="block">
+        <div class="block-title">Witness 2</div>
+        <div class="field-row"><label>Full name</label><input type="text"></div>
+        <div class="field-row wide"><label>Address</label><textarea></textarea></div>
+        <div class="sig-row"><div class="sig-line" style="border-bottom:1px solid var(--paper-line)"></div><div></div></div>
+      </div>
+      <p class="note">Neither witness should be a beneficiary named in this Will, or married to one — it doesn't invalidate the Will, but it can invalidate that person's own bequest.</p>
+    </section>
+
+    <!-- PAGE 9: REGISTRATION -->
+    <section class="page" id="p9">
+      <div class="kicker">Section 09</div>
+      <h2>Registering Your Will</h2>
+      <p class="intro">Registration is optional under Indian law, but it meaningfully reduces the chance of your Will being lost, tampered with, or contested.</p>
+      <ul class="checklist">
+        <li><input type="checkbox"><span>Print this draft, review it once more, and sign it in the presence of your two witnesses.</span></li>
+        <li><input type="checkbox"><span>Carry the signed Will, your ID proof, and your witnesses (or their signed consent) to your local Sub-Registrar's office.</span></li>
+        <li><input type="checkbox"><span>Pay the nominal registration fee — this varies by state but is typically a few hundred rupees.</span></li>
+        <li><input type="checkbox"><span>The registered Will is kept in the Registrar's custody; you receive a certified copy — store that copy wherever you keep your other important papers.</span></li>
+        <li><input type="checkbox"><span>Log this Will's existence and where it's kept in your <a href="/family-passbook.html" style="color:var(--stamp)">Family Passbook</a> so your family knows to look for it.</span></li>
+        <li><input type="checkbox"><span>Review and update your Will after any major life event — marriage, a child's birth, a new property, or a falling-out that changes who you'd want to inherit.</span></li>
+      </ul>
+      <p class="note">This page is general information, not legal advice — registration process and fees vary by state. For high-value, disputed, or complex estates, have a lawyer review this draft before you sign.</p>
+    </section>
+
+  </main>
+
+  <div class="action-bar">
+    <span class="msg">Fill every page you can — even a simple, complete Will is far better than none.</span>
+    <button class="btn-print" id="btnPrintFooter" onclick="unlockAndPrint()">
+      Unlock &amp; Print This Will
+      <span class="price">₹19 · one-time · via Razorpay</span>
+    </button>
+  </div>
+
+</div>
+
+<div class="pb-status mono" id="pbStatus"></div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  const tabs = document.querySelectorAll('.tab-btn');
+  const pages = document.querySelectorAll('.page');
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(b => b.classList.remove('active'));
+      pages.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.page).classList.add('active');
+      document.querySelector('.ledger').scrollTop = 0;
+    });
+  });
+
+  function addRow(containerId, labels){
+    const container = document.getElementById(containerId);
+    const wrap = document.createElement('div');
+    wrap.className = 'repeat-wrap';
+    labels.forEach(l => {
+      if(!l) return;
+      const row = document.createElement('div');
+      row.className = 'field-row';
+      row.innerHTML = `<label>${l}</label><input type="text">`;
+      wrap.appendChild(row);
+    });
+    const hr = document.createElement('div');
+    hr.style.borderBottom = '1px dotted var(--paper-line)';
+    hr.style.margin = '10px 0';
+    wrap.appendChild(hr);
+    container.appendChild(wrap);
+  }
+
+  // seed one row per repeatable block so the page isn't empty on load
+  addRow('guardianRows', ['Child\'s name &amp; age','Proposed guardian (full name)','Guardian\'s relationship to child','Guardian\'s address']);
+  addRow('bequestRows', ['Asset description','Beneficiary full name','Relationship to you','Share (e.g. 100%, or split with someone else)']);
+
+  // ── LIVE CLAUSE PREVIEW (client-side only; nothing leaves the tab) ──
+  function syncClause(){
+    const name = document.getElementById('t_name').value.trim();
+    const parent = document.getElementById('t_parent').value.trim();
+    const age = document.getElementById('t_age').value.trim();
+    const addr = document.getElementById('t_addr').value.trim();
+    document.getElementById('c_name').textContent = name || '[your full name]';
+    document.getElementById('c_parent').textContent = parent || '[son/daughter/wife of]';
+    document.getElementById('c_age').textContent = age || '[age]';
+    document.getElementById('c_addr').textContent = addr || '[your address]';
+  }
+  ['t_name','t_parent','t_age','t_addr'].forEach(id => {
+    document.getElementById(id).addEventListener('input', syncClause);
+  });
+
+  function syncResiduary(){
+    const rname = document.getElementById('r_name').value.trim();
+    document.getElementById('c_rname').textContent = rname || '[residuary beneficiary]';
+  }
+  document.getElementById('r_name').addEventListener('input', syncResiduary);
+
+  // ── PAID PRINT UNLOCK ─────────────────────────────────
+  // Filling the form above is completely free and 100% client-side.
+  // Printing/saving-as-PDF is gated behind a one-time ₹19 Razorpay
+  // payment. Nothing you typed into the Will is ever sent to the
+  // server — only the Razorpay order/payment IDs are exchanged to
+  // verify payment. Once verified, we call the browser's own
+  // window.print() locally.
+  const API_BASE = 'https://web-production-456eb.up.railway.app';
+  let willUnlocked = false;
+
+  function showPbStatus(msg, ok){
+    const el = document.getElementById('pbStatus');
+    el.textContent = msg;
+    el.classList.add('show');
+    el.classList.toggle('ok', !!ok);
+    if(ok){ setTimeout(()=> el.classList.remove('show'), 6000); }
+  }
+
+  function setBuyButtonsBusy(busy, label){
+    const primary = document.getElementById('btnBuyPremium');
+    const footer = document.getElementById('btnPrintFooter');
+    [primary, footer].forEach(b => { if(b) b.disabled = busy; });
+    if(primary) primary.innerHTML = busy
+      ? label
+      : 'Unlock &amp; Print — ₹19<span class="price">One-time · via Razorpay</span>';
+    if(footer) footer.innerHTML = busy
+      ? label
+      : 'Unlock &amp; Print This Will<span class="price">₹19 · one-time · via Razorpay</span>';
+  }
+
+  async function unlockAndPrint(){
+    if(willUnlocked){
+      window.print();
+      return;
+    }
+    try{
+      setBuyButtonsBusy(true, 'Preparing secure payment…');
+      showPbStatus('Setting up secure payment…');
+
+      const orderRes = await fetch(`${API_BASE}/api/create-simple-will-order`, { method: 'POST' });
+      const order = await orderRes.json();
+      if(!order.order_id) throw new Error(order.error || 'Could not start payment.');
+
+      const rzp = new Razorpay({
+        key: order.razorpay_key,
+        amount: order.amount,
+        currency: order.currency,
+        order_id: order.order_id,
+        name: 'SalaryBit — Simple Will Maker',
+        description: 'Unlock printing (one-time)',
+        theme: { color: '#8B3A2B' },
+        handler: async function(response){
+          try{
+            setBuyButtonsBusy(true, 'Verifying payment…');
+            showPbStatus('Payment received — verifying…');
+
+            const verifyRes = await fetch(`${API_BASE}/api/verify-simple-will-payment`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature
+              })
+            });
+            const result = await verifyRes.json().catch(() => ({}));
+            if(!verifyRes.ok || !result.success){
+              throw new Error(result.error || 'Payment could not be verified. Contact support with your payment ID: ' + response.razorpay_payment_id);
+            }
+
+            willUnlocked = true;
+            showPbStatus('✓ Unlocked — opening print dialog…', true);
+            setBuyButtonsBusy(false);
+            setTimeout(() => window.print(), 400);
+          } catch(err){
+            showPbStatus('⚠ ' + err.message);
+            setBuyButtonsBusy(false);
+          }
+        },
+        modal: {
+          ondismiss: function(){
+            setBuyButtonsBusy(false);
+            showPbStatus('Payment cancelled — no charge was made.');
+          }
+        }
+      });
+      rzp.on('payment.failed', function(resp){
+        setBuyButtonsBusy(false);
+        showPbStatus('⚠ Payment failed: ' + (resp.error?.description || 'please try again.'));
+      });
+      rzp.open();
+    } catch(err){
+      setBuyButtonsBusy(false);
+      showPbStatus('⚠ ' + err.message);
+    }
+  }
+</script>
+
+<script src="/assets/js/site-widgets.js"></script>
+</body>
+</html>

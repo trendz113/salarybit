@@ -41,6 +41,20 @@
   .es { background: rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 12px; }
   .es div:first-child { font-size: 0.8rem; color: #888; margin-bottom: 5px; } .es div:last-child { font-size: 1.5rem; font-weight: bold; }
   .controls-hint { position: absolute; bottom: 30px; left: 0; right: 0; text-align: center; color: rgba(255,255,255,0.4); font-size: 12px; pointer-events: none; z-index: 5; }
+
+  .btn.alt2 { background: transparent; border: 2px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.85); font-size: 0.95rem; padding: 12px 30px; box-shadow: none; }
+  .btn.alt2:active { transform: scale(0.95); }
+
+  #loveOverlay { position: absolute; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 35; backdrop-filter: blur(4px); padding: 20px; }
+  #loveOverlay.active { display: flex; }
+  #loveCard { background: #1a1a2e; border: 2px solid #f9a825; border-radius: 16px; padding: 25px; max-width: 380px; width: 100%; box-shadow: 0 0 30px rgba(249,168,37,0.2); text-align: center; }
+  #loveCard h2 { color: #f9a825; margin-bottom: 12px; font-size: 1.3rem; }
+  #loveCard p { color: #ddd; margin-bottom: 18px; line-height: 1.5; font-size: 0.9rem; }
+  .love-qrbox { width: 170px; height: 170px; margin: 0 auto 14px; border-radius: 14px; background: #F2F6FB; display: grid; place-items: center; overflow: hidden; border: 2px dashed rgba(0,0,0,0.15); }
+  .love-qrbox img { width: 100%; height: 100%; object-fit: contain; border-radius: 12px; }
+  .love-qrfallback { padding: 12px; text-align: center; font-size: 0.75rem; color: #667; line-height: 1.35; }
+  .love-qrfallback b { display: block; color: #223; font-size: 0.85rem; margin-bottom: 4px; }
+  .love-scanlabel { color: #bbb; font-size: 0.8rem; margin-bottom: 18px; }
 </style>
 <meta property="og:type" content="website">
 <meta property="og:title" content="Middle-Class Escape — Financial Life Survival Game">
@@ -93,6 +107,7 @@
     <h1>MIDDLE-CLASS ESCAPE</h1>
     <div class="sub">Dodge EMIs, collect SIPs, and survive the ultimate Indian financial rat race.</div>
     <button class="btn" id="startBtn">START ESCAPING</button>
+    <button class="btn alt2" id="bLoveMenu" type="button">💛 Support this project</button>
   </div>
 
   <div id="over" class="screen">
@@ -100,6 +115,20 @@
     <div class="sub" id="endReason">The loans got to you.</div>
     <div id="endStats"></div>
     <button class="btn" id="retryBtn">TRY AGAIN</button>
+    <button class="btn alt2" id="bLoveOver" type="button">💛 Support this project</button>
+  </div>
+
+  <div id="loveOverlay">
+    <div id="loveCard">
+      <h2>💛 Keep this free</h2>
+      <p>SalaryBit and this game are built by one person, in spare time. If it helped you, any amount — starting from ₹10 — helps keep it going and growing.</p>
+      <div class="love-qrbox">
+        <img id="loveQrImg" alt="PhonePe QR code to donate — scan with any UPI app">
+        <div class="love-qrfallback" id="loveQrFallback" hidden><b>Scan to pay</b>Add your UPI QR code image, named <code>donate-qr.png</code>, in the same folder as this game file — it will appear here automatically.</div>
+      </div>
+      <div class="love-scanlabel">Scan with any UPI app — PhonePe, GPay, Paytm</div>
+      <button class="btn alt2" id="bLoveClose" type="button">Close</button>
+    </div>
   </div>
 
   <div id="decOverlay">
@@ -286,6 +315,22 @@
 
   document.getElementById('startBtn').addEventListener('click', startGame);
   document.getElementById('retryBtn').addEventListener('click', startGame);
+
+  // --- Support / donate overlay ---
+  document.getElementById('loveQrImg').src = 'donate-qr.png';
+  document.getElementById('loveQrImg').addEventListener('error', function(){
+    this.style.display = 'none';
+    document.getElementById('loveQrFallback').hidden = false;
+  });
+  function openLove() {
+    document.getElementById('loveOverlay').classList.add('active');
+  }
+  function closeLove() {
+    document.getElementById('loveOverlay').classList.remove('active');
+  }
+  document.getElementById('bLoveMenu').addEventListener('click', openLove);
+  document.getElementById('bLoveOver').addEventListener('click', openLove);
+  document.getElementById('bLoveClose').addEventListener('click', closeLove);
 
   document.addEventListener('keydown', e => {
     if(e.code === 'ArrowLeft' || e.code === 'KeyA') queueInput('left');

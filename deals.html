@@ -81,7 +81,19 @@
   .products{display:flex; flex-direction:column; gap:18px; margin-top:20px;}
   .product-card{
     background:var(--cream); border:1px solid var(--rule); border-radius:10px;
-    padding:22px 24px;
+    padding:22px 24px; display:flex; gap:20px; align-items:flex-start;
+  }
+  .product-img{
+    flex:none; width:110px; height:110px; border-radius:8px; background:#fff;
+    border:1px solid var(--rule); display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .product-img img{width:100%; height:100%; object-fit:contain;}
+  .product-img .img-fallback{font-size:11px; color:var(--ink-light); text-align:center; padding:6px; line-height:1.3;}
+  .product-body{flex:1; min-width:0;}
+  @media (max-width:520px){
+    .product-card{flex-direction:column;}
+    .product-img{width:90px; height:90px;}
   }
   .product-card h3{font-size:1.15rem; margin-bottom:6px;}
   .product-meta{
@@ -163,38 +175,68 @@ function trackAffiliateClick(name){ if(typeof gtag==='function'){ gtag('event','
   <div class="products">
 
     <div class="product-card">
+      <div class="product-img">
+        <img src="assets/deals/IMG-1-dji-osmo-pocket-3.jpg" alt="DJI Osmo Pocket 3" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.hidden=false;">
+        <div class="img-fallback" hidden>Photo coming soon</div>
+      </div>
+      <div class="product-body">
       <h3>DJI Osmo Pocket 3</h3>
       <div class="product-meta"><span><b>Best for:</b> Vlogging, product videos, Instagram Reels</span><span><b>Price range:</b> ₹41,000 – ₹52,000</span></div>
       <p class="review">This is the closest thing to a "just press record and it looks professional" camera — the built-in 3-axis gimbal handles stabilization better than anything you'd get from a phone mount. Worth it once you're serious about video, not for a first ₹0-budget experiment. One honest limitation: battery life is short on long shoot days, so a second battery is a near-mandatory add-on.</p>
       <a class="btn-buy" href="https://www.amazon.in/s?k=DJI+Osmo+Pocket+3&tag=YOUR-ASSOCIATE-TAG-21" target="_blank" rel="sponsored nofollow" onclick="trackAffiliateClick('DJI Osmo Pocket 3')">Check Price on Amazon →</a>
+      </div>
     </div>
 
     <div class="product-card">
+      <div class="product-img">
+        <img src="assets/deals/IMG-2-boya-by-m1-mic.jpg" alt="Boya BY-M1 Lavalier Microphone" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.hidden=false;">
+        <div class="img-fallback" hidden>Photo coming soon</div>
+      </div>
+      <div class="product-body">
       <h3>Boya BY-M1 Lavalier Microphone</h3>
       <div class="product-meta"><span><b>Best for:</b> Clear voiceovers, interviews, talking-head videos</span><span><b>Price range:</b> ₹500 – ₹900</span></div>
       <p class="review">Audio quality matters more than video quality for viewer retention, and this clip-on mic fixes the single biggest giveaway of "shot on a phone" content — tinny, echoey sound. It's wired, not wireless, which is the honest trade-off at this price — but for sit-down recording (podcasts, tutorials, talking-to-camera) that's rarely a real limitation.</p>
       <a class="btn-buy" href="https://www.amazon.in/s?k=Boya+BY-M1+Lavalier+Microphone&tag=YOUR-ASSOCIATE-TAG-21" target="_blank" rel="sponsored nofollow" onclick="trackAffiliateClick('Boya BY-M1 Lavalier Microphone')">Check Price on Amazon →</a>
+      </div>
     </div>
 
     <div class="product-card">
+      <div class="product-img">
+        <img src="assets/deals/IMG-3-ring-light.jpg" alt="10-inch LED Ring Light with Tripod Stand" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.hidden=false;">
+        <div class="img-fallback" hidden>Photo coming soon</div>
+      </div>
+      <div class="product-body">
       <h3>10-inch LED Ring Light with Tripod Stand</h3>
       <div class="product-meta"><span><b>Best for:</b> Instagram Reels, at-home product shoots, video calls</span><span><b>Price range:</b> ₹800 – ₹1,800</span></div>
       <p class="review">The fastest, cheapest upgrade to how your videos look — even footage from an entry-level phone looks noticeably better with even, flattering light instead of whatever your ceiling bulb is doing. Buy one with an adjustable colour temperature dial; the fixed-white ones can wash out darker skin tones and look harsh on camera.</p>
       <a class="btn-buy" href="https://www.amazon.in/s?k=10+inch+LED+ring+light+with+tripod+stand&tag=YOUR-ASSOCIATE-TAG-21" target="_blank" rel="sponsored nofollow" onclick="trackAffiliateClick('10-inch LED Ring Light with Tripod Stand')">Check Price on Amazon →</a>
+      </div>
     </div>
 
     <div class="product-card">
+      <div class="product-img">
+        <img src="assets/deals/IMG-4-flexible-tripod.jpg" alt="Flexible Gorilla-Pod Style Phone Tripod" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.hidden=false;">
+        <div class="img-fallback" hidden>Photo coming soon</div>
+      </div>
+      <div class="product-body">
       <h3>Flexible Gorilla-Pod Style Phone Tripod</h3>
       <div class="product-meta"><span><b>Best for:</b> Stable phone shots, outdoor and travel content</span><span><b>Price range:</b> ₹400 – ₹900</span></div>
       <p class="review">The bendable legs wrap around railings, branches, or bike handles when a flat surface isn't available — genuinely more useful day-to-day than a rigid tripod for anyone filming outside a studio setup. Check the phone-clamp width before buying if you use a larger phone with a bulky case; cheaper clamps sometimes don't open wide enough.</p>
       <a class="btn-buy" href="https://www.amazon.in/s?k=flexible+tripod+for+phone&tag=YOUR-ASSOCIATE-TAG-21" target="_blank" rel="sponsored nofollow" onclick="trackAffiliateClick('Flexible Gorilla-Pod Style Phone Tripod')">Check Price on Amazon →</a>
+      </div>
     </div>
 
     <div class="product-card">
+      <div class="product-img">
+        <img src="assets/deals/IMG-5-laptop-stand.jpg" alt="Adjustable Aluminium Laptop Stand" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.hidden=false;">
+        <div class="img-fallback" hidden>Photo coming soon</div>
+      </div>
+      <div class="product-body">
       <h3>Adjustable Aluminium Laptop Stand</h3>
       <div class="product-meta"><span><b>Best for:</b> Freelance work setups, long editing sessions</span><span><b>Price range:</b> ₹900 – ₹2,000</span></div>
       <p class="review">Not glamorous, but if your side hustle means editing video or spreadsheets for an extra 2-3 hours after your day job, neck and wrist strain will end the hustle before the money does. Raises your screen to eye level and works with any laptop — the only thing to check is your desk depth, since some full-size stands need more room than a small work-from-home desk has.</p>
       <a class="btn-buy" href="https://www.amazon.in/s?k=adjustable+aluminium+laptop+stand&tag=YOUR-ASSOCIATE-TAG-21" target="_blank" rel="sponsored nofollow" onclick="trackAffiliateClick('Adjustable Aluminium Laptop Stand')">Check Price on Amazon →</a>
+      </div>
     </div>
 
   </div>

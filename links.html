@@ -89,6 +89,12 @@
     <span class="go">Open</span>
   </a>
 
+  <a class="btn featured" href="https://salarybit.in/tools/household-expense-bill.html">
+    <span class="ico">🧾</span>
+    <span class="txt"><span class="t">Household expense bill maker</span><span class="d">Log daily, weekly or monthly expenses and share a bill on WhatsApp. Free, no signup</span></span>
+    <span class="go">Try free</span>
+  </a>
+
   <a class="btn" href="https://salarybit.in/product-ad.html">
     <span class="ico">🎬</span>
     <span class="txt"><span class="t">10-second AI product ad, ₹499</span><span class="d">Send one photo, get your ad video in 24 hours</span></span>
@@ -97,6 +103,9 @@
 
   <h2>Books</h2>
   <div id="books"></div>
+
+  <h2>Games</h2>
+  <div id="games"></div>
 
   <h2>Free and paid tools</h2>
   <div id="tools"></div>
@@ -122,7 +131,12 @@
     , { icon: "🛕", title: "Book title", desc: "Short description", url: "https://www.amazon.in/dp/XXXXXXXXXX", cta: "Buy" } */
   ];
 
+  const GAMES = [
+    { icon: "🎮", title: "Beat the Bank", desc: "60-second game: pay off a loan early and beat the interest", url: "https://salarybit.in/beat-the-bank.html", cta: "Play" }
+  ];
+
   const TOOLS = [
+    { icon: "📜", title: "Simple Will maker", desc: "Draft a simple will online, then print or save as PDF", url: "https://salarybit.in/simple-will.html", cta: "Open" },
     { icon: "🏦", title: "Patience Passbook", desc: "Plan how to close your home loan sooner", url: "https://salarybit.in/patience-passbook.html", cta: "Open" },
     { icon: "🧾", title: "ITR filing assistant", desc: "Step-by-step help using your Form 16", url: "https://salarybit.in/itr-assistant.html", cta: "Open" },
     { icon: "📈", title: "Mutual fund analyzer", desc: "Upload your CAS statement and check your funds", url: "https://salarybit.in/mf-analyzer-bot.html", cta: "Open" },
@@ -157,6 +171,7 @@
     });
   }
   render("books", BOOKS, false);
+  render("games", GAMES, false);
   render("tools", TOOLS, false);
   render("affiliate", AFFILIATE, true);
   if (!AFFILIATE.some(i => i.url)) document.getElementById("affiliate-wrap").hidden = true;

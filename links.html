@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SalaryBit – Links | Money tools and books</title>
+<meta name="description" content="All SalaryBit links in one place: money tools for salaried professionals, Kindle books and recommended gear.">
+<link rel="canonical" href="https://salarybit.in/links.html">
+<meta property="og:title" content="SalaryBit – Links">
+<meta property="og:description" content="Money tools, Kindle books and recommended gear for salaried professionals.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://salarybit.in/links.html">
+<meta property="og:image" content="https://salarybit.in/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Libre+Franklin:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cover: #0F4C45;
+    --deep: #0A3833;
+    --paper: #EEF2EF;
+    --ink: #12201E;
+    --muted: #B5CCC6;
+    --gold: #C9A24B;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { background: var(--deep); }
+  body {
+    margin: 0; min-height: 100vh;
+    background: radial-gradient(1200px 500px at 50% -10%, #146157 0%, var(--deep) 60%);
+    color: #F4F1E6;
+    font-family: "Libre Franklin", system-ui, sans-serif;
+    display: flex; justify-content: center;
+    padding: 36px 16px 40px;
+  }
+  main { width: 100%; max-width: 480px; text-align: center; }
+
+  .logo {
+    width: 88px; height: 88px; margin: 0 auto 14px;
+    border-radius: 50%; background: var(--cover);
+    border: 2px solid var(--gold); outline: 1px solid var(--gold); outline-offset: -7px;
+    display: grid; place-items: center;
+    font-family: "Young Serif", Georgia, serif; font-size: 2.4rem; color: var(--gold);
+  }
+  h1 { font-family: "Young Serif", Georgia, serif; font-weight: 400; font-size: 1.8rem; margin: 0 0 6px; color: var(--gold); }
+  .bio { margin: 0 auto 26px; max-width: 34ch; font-size: 0.95rem; line-height: 1.5; color: var(--muted); }
+
+  h2 { font-size: 0.9rem; font-weight: 600; color: var(--gold); text-align: left; margin: 26px 4px 10px; }
+
+  .btn {
+    display: flex; align-items: center; gap: 14px;
+    width: 100%; margin: 0 0 12px; padding: 14px 18px;
+    background: var(--paper); color: var(--ink);
+    border-radius: 14px; text-decoration: none; text-align: left;
+    border: 2px solid transparent;
+    transition: transform .15s, border-color .15s;
+  }
+  .btn:hover { transform: translateY(-2px); border-color: var(--gold); }
+  .btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+  .ico { font-size: 1.5rem; line-height: 1; flex: none; }
+  .txt { flex: 1; min-width: 0; }
+  .t { display: block; font-weight: 600; font-size: 1rem; }
+  .d { display: block; font-size: 0.83rem; color: #55665F; margin-top: 2px; line-height: 1.35; }
+  .go { flex: none; font-size: 0.8rem; font-weight: 600; color: var(--cover); }
+  .btn.featured { background: var(--gold); }
+  .btn.featured .d, .btn.featured .go { color: #3A2E0C; }
+
+  .note { margin: 6px 6px 0; font-size: 0.76rem; line-height: 1.5; color: #8FB0A8; text-align: left; }
+  #affiliate-wrap[hidden] { display: none; }
+  footer { margin-top: 30px; font-size: 0.8rem; color: #8FB0A8; }
+  footer a { color: var(--gold); }
+  @media (prefers-reduced-motion: reduce) { .btn { transition: none; } .btn:hover { transform: none; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="logo" aria-hidden="true">S</div>
+  <h1>SalaryBit</h1>
+  <p class="bio">Money tools and books for salaried professionals. Loans, tax, insurance and family finance, made simple.</p>
+
+  <a class="btn featured" href="https://salarybit.in/">
+    <span class="ico">🏠</span>
+    <span class="txt"><span class="t">SalaryBit website</span><span class="d">All tools, guides and calculators</span></span>
+    <span class="go">Open</span>
+  </a>
+
+  <h2>Books</h2>
+  <div id="books"></div>
+
+  <h2>Free and paid tools</h2>
+  <div id="tools"></div>
+
+  <div id="affiliate-wrap">
+    <h2>Recommended on Amazon</h2>
+    <div id="affiliate"></div>
+    <p class="note">As an Amazon Associate, SalaryBit earns from qualifying purchases. You pay the same price.</p>
+  </div>
+
+  <footer><a href="https://salarybit.in/">salarybit.in</a></footer>
+</main>
+
+<script>
+  /* ============ EDIT THIS SECTION ============
+     Each item: { icon, title, desc, url, cta }
+     url "" = shows nothing (item is skipped), so you can prepare items in advance. */
+
+  const BOOKS = [
+    { icon: "📚", title: "My Kindle ebook", desc: "Available now on Amazon", url: "https://link.amazon/B06ygif4Q", cta: "Buy" },
+    { icon: "📒", title: "The Family Passbook", desc: "Family finance, one page at a time", url: "https://salarybit.in/family-passbook.html", cta: "Open" }
+    /* When a new book goes live on Amazon, add a line like:
+    , { icon: "🛕", title: "Book title", desc: "Short description", url: "https://www.amazon.in/dp/XXXXXXXXXX", cta: "Buy" } */
+  ];
+
+  const TOOLS = [
+    { icon: "🏦", title: "Patience Passbook", desc: "Plan how to close your home loan sooner", url: "https://salarybit.in/patience-passbook.html", cta: "Open" },
+    { icon: "🧾", title: "ITR filing assistant", desc: "Step-by-step help using your Form 16", url: "https://salarybit.in/itr-assistant.html", cta: "Open" },
+    { icon: "📈", title: "Mutual fund analyzer", desc: "Upload your CAS statement and check your funds", url: "https://salarybit.in/mf-analyzer-bot.html", cta: "Open" },
+    { icon: "🛡️", title: "Insurance reality check", desc: "Check what your policy really covers", url: "https://salarybit.in/insurance-reality-check.html", cta: "Open" },
+    { icon: "💼", title: "Payslip comparer", desc: "See how your pay stacks up", url: "https://salarybit.in/payslip-comparer.html", cta: "Open" }
+  ];
+
+  /* AMAZON AFFILIATE: paste product links with your Associates tag here.
+     The whole "Recommended on Amazon" section stays hidden until you add at least one item.
+     Example:
+     { icon: "🎙️", title: "Boya BY-M1 microphone", desc: "Clear audio for reels", url: "https://www.amazon.in/dp/XXXXXXXXXX?tag=YOURTAG-21", cta: "View" } */
+  const AFFILIATE = [
+    { icon: "🎥", title: "Gear I recommend", desc: "Camera, mic and tools for side income", url: "https://salarybit.in/deals.html", cta: "Open" }
+  ];
+  /* ============================================ */
+
+  function render(id, items, sponsored) {
+    const box = document.getElementById(id);
+    items.filter(i => i.url).forEach(i => {
+      const a = document.createElement("a");
+      a.className = "btn";
+      a.href = i.url;
+      const external = !i.url.startsWith("https://salarybit.in");
+      if (external) a.target = "_blank";
+      a.rel = "noopener" + (sponsored && external ? " sponsored nofollow" : "");
+      a.innerHTML = '<span class="ico"></span><span class="txt"><span class="t"></span><span class="d"></span></span><span class="go"></span>';
+      a.querySelector(".ico").textContent = i.icon || "🔗";
+      a.querySelector(".t").textContent = i.title;
+      a.querySelector(".d").textContent = i.desc || "";
+      a.querySelector(".go").textContent = i.cta || "Open";
+      box.appendChild(a);
+    });
+  }
+  render("books", BOOKS, false);
+  render("tools", TOOLS, false);
+  render("affiliate", AFFILIATE, true);
+  if (!AFFILIATE.some(i => i.url)) document.getElementById("affiliate-wrap").hidden = true;
+</script>
+</body>
+</html>

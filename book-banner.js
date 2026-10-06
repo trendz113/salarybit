@@ -55,6 +55,17 @@
     ".sb-banner .sb-mob{display:none}" +
     "#sb-banner-left{display:none}" +
     "@media(min-width:1200px){#sb-banner-left{display:block}}" +
+    "@media(min-width:769px){" +
+    ".sb-banner{width:190px;height:min(600px,calc(100vh - 24px));max-height:none;overflow:hidden;display:flex;flex-direction:column;box-sizing:border-box}" +
+    ".sb-banner .sb-h,.sb-banner .sb-n{flex:none}" +
+    ".sb-banner a.sb-c{flex:1 1 0;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center;margin-bottom:6px}" +
+    ".sb-banner a.sb-c .sb-i{flex:1 1 auto;min-height:30px;max-height:92px;height:auto;width:100%;object-fit:contain}" +
+    ".sb-banner a.sb-c .sb-tx{flex:none}" +
+    ".sb-banner a.sb-x{flex:1 1 0;min-height:0;display:flex;flex-direction:column;justify-content:center}" +
+    ".sb-banner a.sb-hk{flex:1.7 1 0;min-height:0;display:flex;flex-direction:column}" +
+    ".sb-banner a.sb-hk img{flex:1 1 auto;min-height:30px;height:auto;max-height:100px}" +
+    ".sb-banner a.sb-hk div{flex:none}" +
+    "}" +
     ".sb-close,.sb-dots{display:none}" +
     "@media(max-width:768px){" +
     "#sb-banner-left{display:none!important}" +

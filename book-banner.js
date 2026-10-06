@@ -1,9 +1,9 @@
 /* Floating side banner: recommended books (Amazon affiliate). Edit BOOKS to change titles/links. */
 (function () {
   var BOOKS = [
-    { title: "Recommended Book 1", url: "https://link.amazon/B0gXCEtHq" },
-    { title: "Recommended Book 2", url: "https://link.amazon/B0hvg7fFP" },
-    { title: "Recommended Book 3", url: "https://link.amazon/B0aRwUZZz" }
+    { title: "Fertility Temples of Tamil Nadu: Legends, Rituals & a Pilgrim's Guide", url: "https://link.amazon/B0gXCEtHq" },
+    { title: "BLUE TYGA Sunscreen Jacket 2.0 (UPF 50+)", url: "https://link.amazon/B0hvg7fFP" },
+    { title: "Samsung 7 kg 5 Star Fully-Automatic Top Load Washing Machine", url: "https://link.amazon/B0aRwUZZz" }
   ];
   if (document.getElementById("sb-book-banner")) return;
 
@@ -28,7 +28,7 @@
   var box = document.createElement("aside");
   box.id = "sb-book-banner";
   box.setAttribute("aria-label", "Recommended books");
-  var html = '<p class="sb-h">📚 Recommended reads</p>';
+  var html = '<p class="sb-h">🛒 Recommended on Amazon</p>';
   BOOKS.forEach(function (b) {
     html += '<a href="' + b.url + '" target="_blank" rel="sponsored nofollow noopener">' +
             b.title + '<span class="sb-s">View on Amazon →</span></a>';

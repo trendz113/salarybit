@@ -52,7 +52,7 @@
     ".sb-banner a.sb-hk span{display:block;font-size:10.5px;line-height:1.3;margin-top:2px}" +
     ".sb-banner a.sb-hk em{display:block;font-style:normal;font-size:10.5px;font-weight:700;color:#c2410c;margin-top:3px}" +
     ".sb-banner .sb-n{font-size:9.5px;color:#9ca3af;margin:2px 0 0;text-align:center}" +
-    ".sb-banner a.sb-mob{display:none}" +
+    ".sb-banner .sb-mob{display:none}" +
     "#sb-banner-left{display:none}" +
     "@media(min-width:1200px){#sb-banner-left{display:block}}" +
     ".sb-close,.sb-dots{display:none}" +
@@ -109,25 +109,29 @@
     var box = document.createElement("aside");
     box.id = id; box.className = "sb-banner";
     box.setAttribute("aria-label", "Recommended products and services");
-    box.innerHTML = amazonHtml() + innerB + '<p class="sb-n">Amazon links are affiliate links</p>';
+    box.innerHTML = innerB;
     document.body.appendChild(box);
     return box;
   }
 
-  // Right: Amazon + SalaryBit tools (+ Hoskote shown only in the mobile bar)
-  var rightB = '<p class="sb-h sb-h2">⚡ Free tools by SalaryBit</p><div class="sb-g sb-g-b">' +
-               toolHtml(SALARYBIT[0]) + toolHtml(SALARYBIT[1]) + hoskoteHtml("sb-mob") + '</div>';
-  // Left: Amazon + HoskoteConstruction + one more SalaryBit tool
-  var leftB = '<p class="sb-h sb-h2">🏠 Building in Hoskote?</p><div class="sb-g sb-g-b">' +
-              hoskoteHtml() + toolHtml(SALARYBIT[2]) + '</div>';
+  // RIGHT side: Amazon affiliate products only on desktop.
+  // (The cross-promo group below is hidden on desktop and only used by the mobile bottom bar.)
+  var rightHtml = amazonHtml() +
+      '<p class="sb-h sb-h2 sb-mob">⚡ Free tools by SalaryBit</p><div class="sb-g sb-g-b sb-mob">' +
+      toolHtml(SALARYBIT[0]) + toolHtml(SALARYBIT[1]) + hoskoteHtml() + '</div>' +
+      '<p class="sb-n">Amazon links are affiliate links</p>';
+  // LEFT side: HoskoteConstruction + SalaryBit cross-promotion
+  var leftHtml = '<p class="sb-h">🏠 Building in Hoskote?</p>' + hoskoteHtml() +
+      '<p class="sb-h sb-h2">⚡ Free tools by SalaryBit</p>' +
+      toolHtml(SALARYBIT[0]) + toolHtml(SALARYBIT[1]) + toolHtml(SALARYBIT[2]);
 
-  var right = build("sb-banner-right", rightB);
+  var right = build("sb-banner-right", rightHtml);
+  build("sb-banner-left", leftHtml);
   var closeBtn = document.createElement("button");
   closeBtn.className = "sb-close"; closeBtn.type = "button"; closeBtn.setAttribute("aria-label", "Close"); closeBtn.innerHTML = "&times;";
   var dots = document.createElement("div");
   dots.className = "sb-dots"; dots.innerHTML = '<i class="on"></i><i></i>';
   right.appendChild(dots); right.appendChild(closeBtn);
-  build("sb-banner-left", leftB);
 
   // ---- Mobile bottom bar behaviour ----
   var mq = window.matchMedia("(max-width:768px)");

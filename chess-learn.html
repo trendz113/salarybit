@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Learn Chess Step by Step — Free Fun Chess Game for Kids &amp; Beginners | SalaryBit</title>
+<meta name="description" content="Learn chess in 11 funny, hands-on lessons — pawns, rooks, knights, checkmate — then play the Robo. Free, no login, kid friendly.">
+<link rel="canonical" href="https://salarybit.in/chess-learn.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Chess Kingdom — Learn Chess Step by Step","url":"https://salarybit.in/chess-learn.html","applicationCategory":"Game","operatingSystem":"All","offers":{"@type":"Offer","price":"0","priceCurrency":"INR"}}</script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0F1B2D;color:#fff;font:600 15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+.w{max-width:520px;margin:0 auto;padding:12px 12px 40px}
+h1{font-size:21px;margin:6px 0 2px;text-align:center}.sub{text-align:center;color:#9fb0cc;font-size:13px;margin-bottom:10px}
+.back{color:#7dd3c8;text-decoration:none;font-size:13px}
+#chips{display:flex;gap:6px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none}
+#chips button{flex:none;min-width:36px;height:36px;border-radius:50%;border:2px solid #31456b;background:#16223B;color:#fff;font-weight:800;cursor:pointer}
+#chips button.on{border-color:#FFC61A;background:#FFC61A;color:#16223B}#chips button.ok{border-color:#1EA896}
+.say{display:flex;gap:10px;background:#16223B;border:1px solid #31456b;border-radius:16px;padding:12px;margin-bottom:10px}
+.say .e{font-size:38px;line-height:1;flex:none;animation:bob 2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-4px) rotate(-5deg)}}
+.say h2{font-size:16px;margin:0 0 3px;color:#FFC61A}.say p{margin:0;font-size:14px;color:#dbe5f7;font-weight:600}
+#bd{display:grid;grid-template-columns:repeat(8,1fr);width:100%;aspect-ratio:1;border:4px solid #5a3a1e;border-radius:10px;overflow:hidden;touch-action:manipulation}
+.s{position:relative;display:grid;place-items:center;font-size:min(9.2vw,44px);line-height:1;cursor:pointer;user-select:none}
+.l{background:#f0d9b5}.d{background:#b58863}
+.s i{position:absolute;font:700 9px/1 system-ui;opacity:.65;font-style:normal;color:#5a3a1e}.s i.f{right:2px;bottom:1px}.s i.r{left:2px;top:2px}
+.pw{color:#fff;text-shadow:0 0 2px #000,0 0 2px #000,1px 1px 1px #000}.pb{color:#1a1a1a;text-shadow:0 0 1px #fff}
+.s.sel{background:#f7ec58!important}.s.chk{background:#ff6b6b!important}.s.hint{outline:4px solid #4ade80;outline-offset:-4px}
+.s .dot{position:absolute;width:30%;height:30%;border-radius:50%;background:rgba(30,168,150,.75)}.s.cap .dot{width:86%;height:86%;background:none;border:4px solid rgba(229,72,77,.85)}
+.s .star{position:absolute;font-size:min(7vw,32px);animation:pop 1s infinite}@keyframes pop{50%{transform:scale(1.25)}}
+#msg{min-height:44px;margin:10px 0;padding:10px 12px;border-radius:12px;background:#1b2b4a;font-size:14px}
+#msg.good{background:#0f5132;color:#d1fae5}#msg.bad{background:#5b1f27}
+.bt{display:flex;gap:8px;flex-wrap:wrap}.bt button{flex:1;min-width:90px;padding:11px;border:0;border-radius:12px;font-weight:800;font-size:14px;cursor:pointer;background:#31456b;color:#fff}
+.bt .go{background:#FFC61A;color:#16223B}.bt button[disabled]{opacity:.35}
+.cf{position:fixed;top:-30px;font-size:26px;pointer-events:none;animation:fall 2.2s linear forwards;z-index:9}@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+.note{text-align:center;color:#6f82a3;font-size:12px;margin-top:18px}
+</style></head><body><div class="w">
+<a class="back" href="/">← SalaryBit</a>
+<h1>♟️ Chess Kingdom</h1><div class="sub">Learn chess in 11 funny steps — then beat the Robo! 🤖</div>
+<div id="chips"></div>
+<div class="say"><div class="e" id="ce">🐣</div><div><h2 id="ct"></h2><p id="cx"></p></div></div>
+<div id="bd"></div><div id="msg"></div>
+<div class="bt"><button id="hb">💡 Hint</button><button id="rb">↺ Retry</button><button id="nb" class="go" disabled>Next →</button></div>
+<div class="note">Free • No login • Made with ❤️ by SalaryBit</div></div>
+<script>
+const $=s=>document.querySelector(s),G='♚♛♜♝♞♟',M={k:0,q:1,r:2,b:3,n:4,p:5},V={p:1,n:3,b:3,r:5,q:9,k:0};
+const N=[[1,2],[2,1],[-1,2],[-2,1],[1,-2],[2,-1],[-1,-2],[-2,-1]],R=[[1,0],[-1,0],[0,1],[0,-1]],B=[[1,1],[1,-1],[-1,1],[-1,-1]],K=R.concat(B);
+const W=p=>p!=='.'&&p===p.toUpperCase(),S0='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR';
+const sq=n=>(8-n[1])*8+'abcdefgh'.indexOf(n[0]);
+const parse=f=>f.replace(/\d/g,d=>'.'.repeat(d)).replace(/\//g,'').split('');
+function mv(b,i){const p=b[i],w=W(p),t=p.toLowerCase(),r=i>>3,c=i&7,o=[],en=j=>b[j]!=='.'&&W(b[j])!==w;
+ const add=(a,z)=>{if(a<0||a>7||z<0||z>7)return 0;const j=a*8+z;if(b[j]==='.'){o.push(j);return 1}if(en(j))o.push(j);return 0};
+ if(t==='p'){const d=w?-1:1,a=r+d;if(a>=0&&a<8){if(b[a*8+c]==='.'){o.push(a*8+c);if(r===(w?6:1)&&b[(a+d)*8+c]==='.')o.push((a+d)*8+c)}[-1,1].forEach(x=>{if(c+x>=0&&c+x<8&&en(a*8+c+x))o.push(a*8+c+x)})}}
+ else if(t==='n'||t==='k')(t==='n'?N:K).forEach(([x,y])=>add(r+x,c+y));
+ else(t==='r'?R:t==='b'?B:K).forEach(([x,y])=>{let a=r+x,z=c+y;while(add(a,z)){a+=x;z+=y}});return o}
+const ap=(b,i,j)=>{const n=b.slice();n[j]=n[i];n[i]='.';if(n[j]==='P'&&j<8)n[j]='Q';if(n[j]==='p'&&j>55)n[j]='q';return n};
+function chk(b,w){w=!!w;const k=b.indexOf(w?'K':'k');if(k<0)return 0;return b.some((p,i)=>p!=='.'&&W(p)!==w&&mv(b,i).includes(k))}
+const lg=(b,i)=>mv(b,i).filter(j=>!chk(ap(b,i,j),W(b[i])));
+const all=(b,w)=>{w=!!w;const o=[];b.forEach((p,i)=>{if(p!=='.'&&W(p)===w)lg(b,i).forEach(j=>o.push([i,j]))});return o};
+const mate=(b,w)=>chk(b,w)&&!all(b,w).length;
+const mat=b=>b.reduce((s,p)=>p==='.'?s:s+(W(p)?1:-1)*V[p.toLowerCase()],0);
+function pick(b,w){w=!!w;let best=null,bs=-1e9;for(const[i,j]of all(b,w)){const nb=ap(b,i,j);let s;
+ if(mate(nb,!w))s=1e3;else{s=1e9;b.length;nb.forEach((p,x)=>{if(p!=='.'&&W(p)!==w)mv(nb,x).forEach(y=>{const v=mat(ap(nb,x,y))*(w?1:-1);if(v<s)s=v})});if(s===1e9)s=mat(nb)*(w?1:-1)}
+ s+=Math.random()*2.5;if(s>bs){bs=s;best=[i,j]}}return best}
+const L=[
+{e:'🐣',n:'Welcome to the Board!',x:'Chess is played on 64 squares. Columns are letters (a–h), rows are numbers (1–8). So <b>e4</b> = column e, row 4. Easy! Tap the glowing ⭐ square <b>e4</b>.',f:S0,g:'e4',k:'tap',h:'Look at the letters under the board, then the numbers on the left. e is the 5th letter, 4 is the 4th row from the bottom!'},
+{e:'🐔',n:'Peppy the Pawn',x:'Pawns walk <b>forward only</b> (they hate reverse gear 🚫). One step at a time — but on their <i>very first</i> move they may leap two! Get Peppy to ⭐.',f:'8/8/8/8/8/8/4P3/8',g:'e4',k:'reach',h:'Tap the pawn, then tap a green dot. Try the two-step jump!'},
+{e:'🍪',n:'Pawns Eat Sideways!',x:'Pawns walk straight but <b>eat diagonally</b> — like sneaky cookie monsters. Eat a black cookie-pawn 🍪 (the red ring shows what you can eat).',f:'8/8/8/3p1p2/4P3/8/8/8',k:'eat',c:1,h:'Tap your pawn. A red ring means "yum, edible!"'},
+{e:'🏰',n:'Rocky the Rook',x:'Rooks zoom in <b>straight lines</b> — up, down, left, right — as far as they like. Vroom! Get Rocky to ⭐ (hint: you can use two moves).',f:'8/8/8/8/8/8/8/R7',g:'h5',k:'reach',h:'Go up the a-file first, then slide right!'},
+{e:'🧙',n:'Bizzy the Bishop',x:'Bishops slide <b>diagonally</b> and stay on their square colour forever (loyal little guys). Reach ⭐ — it takes two zig-zags!',f:'8/8/8/8/8/8/8/2B5',g:'e5',k:'reach',h:'Slide to f4 first, then hop to e5.'},
+{e:'🐴',n:'Hoppy the Knight',x:'Knights jump in an <b>L-shape</b> (2 steps + 1 step sideways) and can <b>hop over</b> anyone! Boing! Hop to ⭐ — three jumps needed.',f:'8/8/8/8/8/8/8/1N6',g:'f6',k:'reach',h:'b1 → c3 → e4 → f6. Boing, boing, boing!'},
+{e:'👸',n:'Queenie the Queen',x:'Queenie is the boss: she moves like a <b>rook + bishop</b> together! Eat all three cookies 🍪 — as fast as you like.',f:'8/3p4/8/8/p2Q2p1/8/8/8',k:'eat',h:'Try d7 first, then g4, then a4!'},
+{e:'🤴',n:'Kingo the King',x:'Kingo moves <b>one step</b> in any direction. Slow… but if he gets caught, the game is over! Walk Kingo to ⭐.',f:'8/8/8/8/8/8/8/4K3',g:'e4',k:'reach',h:'Three small steps straight up.'},
+{e:'🚨',n:'Check & Checkmate!',x:'When the king is attacked it is <b>CHECK</b>. If he can\'t escape — <b>CHECKMATE</b>, you win! Black\'s king is trapped by his own pawns. Find the move that wins!',f:'6k1/5ppp/8/8/8/8/8/R5K1',k:'mate',h:'Slide the rook all the way up to a8!'},
+{e:'🦸',n:'Pawn Power-Up!',x:'Reach the far end and a pawn <b>transforms</b> — usually into a Queen! Cinderella style ✨ Walk this pawn to ⭐.',f:'8/4P3/8/8/8/8/8/8',g:'e8',k:'reach',h:'Just one step forward!'},
+{e:'🎩',n:'Secret Moves',x:'<b>Castling</b>: king + rook swap places to hide safely. <b>En passant</b>: a pawn can eat one that just leaped past it. Fancy! (Robo game keeps it simple — no secret moves yet.) Ready to play?',f:S0,k:'info'}];
+let li=0,b,sel=-1,lm=[],won=0,pl=0,busy=0,hs=-1,ht=null,done=[];
+try{done=JSON.parse(localStorage.getItem('sbChess')||'[]')}catch(e){}
+const gl=p=>`<span class="${W(p)?'pw':'pb'}">${G[M[p.toLowerCase()]]}\uFE0E</span>`;
+const say=(t,c)=>{const m=$('#msg');m.className=c||'';m.innerHTML=t};
+function chipsR(){$('#chips').innerHTML=L.map((_,i)=>`<button class="${i===li&&!pl?'on':done.includes(i)?'ok':''}" onclick="go(${i})">${done.includes(i)?'✓':i+1}</button>`).join('')+`<button class="${pl?'on':''}" onclick="play()" title="Play Robo">🤖</button>`}
+function render(){const L0=L[li],g=!pl&&L0.g?sq(L0.g):-1,kg=pl||L0.k==='mate'?[b.indexOf('K'),b.indexOf('k')]:[];let h='';
+ for(let i=0;i<64;i++){const r=i>>3,c=i&7,p=b[i],cp=lm.includes(i)&&p!=='.';
+  const cls=`s ${(r+c)%2?'d':'l'}${i===sel?' sel':''}${cp?' cap':''}${i===hs?' hint':''}${(kg.includes(i)&&chk(b,W(b[i])))?' chk':''}`;
+  h+=`<div class="${cls}" onclick="tap(${i})">${c===0?`<i class="r">${8-r}</i>`:''}${r===7?`<i class="f">${'abcdefgh'[c]}</i>`:''}${p!=='.'?gl(p):''}${g===i&&p==='.'?'<span class="star">⭐</span>':''}${lm.includes(i)?'<span class="dot"></span>':''}</div>`}
+ $('#bd').innerHTML=h;chipsR()}
+function go(i){pl=0;li=i;b=parse(L[i].f);sel=-1;lm=[];won=0;busy=0;hs=-1;const x=L[i];$('#ce').textContent=x.e;$('#ct').textContent=`Step ${i+1}: ${x.n}`;$('#cx').innerHTML=x.x;
+ $('#nb').disabled=x.k!=='info';$('#nb').textContent=i===L.length-1?'Play Robo 🤖':'Next →';say('Your turn! Tap a piece 👆');render();window.scrollTo({top:0,behavior:'smooth'})}
+function play(){pl=1;b=parse(S0);sel=-1;lm=[];won=0;busy=0;hs=-1;$('#ce').textContent='🤖';$('#ct').textContent='Play vs Robo-Rook';$('#cx').textContent='You are White ⚪ and move first. Robo is a beginner too, so be brave! Press 💡 if you need a hint.';$('#nb').disabled=true;$('#nb').textContent='Next →';say('Your move! Tap a white piece.');render()}
+function boom(){for(let i=0;i<26;i++){const s=document.createElement('span');s.className='cf';s.textContent='🎉⭐🎈🥳✨'[Math.floor(Math.random()*5)];s.style.left=Math.random()*95+'vw';s.style.animationDelay=Math.random()*.5+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),3000)}}
+function win(){won=1;boom();const P=['Amazing! 🎉','You\'re a chess wizard! 🧙','Boom! Genius move! 🧠','Superstar! ⭐'];say(P[Math.floor(Math.random()*4)]+' Lesson complete!','good');if(!done.includes(li)){done.push(li);try{localStorage.setItem('sbChess',JSON.stringify(done))}catch(e){}}$('#nb').disabled=false;chipsR()}
+function tap(i){if(busy||won)return;hs=-1;const x=L[li];
+ if(!pl){if(x.k==='tap'){i===sq(x.g)?win():say('Not quite 🙈 — that square is not '+x.g+'. Check the letters and numbers on the edges!','bad');return}if(x.k==='info'){say('Tap "Play Robo" when you are ready! 🤖');return}}
+ if(sel>=0&&lm.includes(i)){move(sel,i);return}
+ if(b[i]!=='.'&&W(b[i])){sel=i;lm=lg(b,i);render();say(lm.length?'Green dots = where it can go. Tap one!':'This piece is stuck right now. Try another!');return}
+ if(sel>=0)say('Oops! 🙈 It can\'t go there. Tap a green dot.','bad');sel=-1;lm=[];render()}
+function move(i,j){b=ap(b,i,j);sel=-1;lm=[];render();const x=L[li];
+ if(!pl){const bl=b.filter(p=>p!=='.'&&!W(p)).length;
+  if(x.k==='reach'){W(b[sq(x.g)])?win():say('Nice move! Keep going toward the ⭐ 🌟')}
+  else if(x.k==='eat'){const need=x.c?1:0;const start=parse(x.f).filter(p=>p!=='.'&&!W(p)).length;(start-bl>=(x.c||start))?win():say('Yum! 😋 '+bl+' cookie'+(bl>1?'s':'')+' left!')}
+  else if(x.k==='mate'){mate(b,0)?win():say('Close! But the king can still wiggle free. Retry and look for a move that attacks him with no escape.','bad')}return}
+ if(over(0))return;busy=1;say('Robo is thinking… 🤔');setTimeout(()=>{const m=pick(b,0);b=ap(b,m[0],m[1]);busy=0;render();if(!over(1))say(chk(b,1)?'⚠️ You are in CHECK! Protect your king.':'Your move!',chk(b,1)?'bad':'')},600)}
+function over(w){const o=all(b,!w);if(o.length)return 0;won=1;if(chk(b,!w)){w?say('😢 Checkmate — Robo wins this time. Press Retry to try again!','bad'):(say('🏆 CHECKMATE! You beat the Robo! You are a chess champion!','good'),boom())}else say('🤝 Stalemate — a draw! (No legal moves but no check.)');return 1}
+$('#hb').onclick=()=>{if(pl){if(won||busy)return;const m=pick(b,1);if(m){sel=m[0];lm=[m[1]];hs=m[1];render();say('💡 Try moving the yellow piece to the green-ringed square.')}}else say('💡 '+(L[li].h||'Tap a piece and follow the dots!'))};
+$('#rb').onclick=()=>pl?play():go(li);
+$('#nb').onclick=()=>li===L.length-1&&!pl?play():go(li+1);
+go(0);
+</script></body></html>

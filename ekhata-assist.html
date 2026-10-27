@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Your e-Khata assistance form | SalaryBit</title><meta name="robots" content="noindex, nofollow">
+<style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:#f8fafc;color:#0b1f3a;line-height:1.55}.w{max-width:560px;margin:0 auto;padding:1.2rem}
+h1{font-size:1.4rem}label{display:block;font-weight:600;margin:.9rem 0 .25rem;font-size:14px}input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;font-family:inherit}
+.btn{margin-top:1.2rem;width:100%;border:0;border-radius:12px;background:#0d9488;color:#fff;font-weight:800;font-size:1.05rem;padding:14px;cursor:pointer}.btn[disabled]{opacity:.6}
+.note{font-size:13px;color:#475569}.err{color:#b91c1c;font-size:14px;margin-top:.6rem}.ok{background:#f0fdfa;border:1px solid #99f6e4;border-radius:12px;padding:1rem}</style></head><body>
+<div class="w" id="app"><p>Checking your payment…</p></div>
+<script>
+(function(){
+var API='https://web-production-456eb.up.railway.app',app=document.getElementById('app'),token=null;
+try{var m=location.hash.match(/t=([^&]+)/);if(m){token=decodeURIComponent(m[1]);localStorage.setItem('ekhata_token',token);history.replaceState(null,'',location.pathname);}else token=localStorage.getItem('ekhata_token');}catch(e){}
+function post(p,b){return fetch(API+p,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)}).then(function(r){return r.json().then(function(j){j._s=r.status;return j;});});}
+function locked(t){app.innerHTML='<h1>Payment required</h1><p>'+t+'</p><p><a href="/blog/ekhata-eaasthi-cmc-guide.html">Go to e-Khata assistance (₹99)</a></p>';}
+if(!token){locked('This form opens only after a verified ₹99 payment.');return;}
+post('/api/ekhata/session',{token:token}).then(function(j){
+  if(!j.valid){try{localStorage.removeItem('ekhata_token');}catch(e){}locked('We could not verify a payment for this link. If you have paid, email hello@salarybit.in with your payment ID.');return;}
+  if(j.submitted){done('You have already submitted your details. We will contact you.');return;}
+  show();
+}).catch(function(){locked('Could not check your payment right now. Please reload.');});
+function done(t){app.innerHTML='<div class="ok"><h1>Thank you</h1><p>'+t+'</p></div>';}
+function show(){
+app.innerHTML='<h1>Tell us a few details</h1><p class="note">Payment verified. Share only what is asked. Do not send Aadhaar numbers, OTPs or passwords.</p>'+
+'<form id="f" novalidate><label>Full name *</label><input name="name" autocomplete="name" required>'+
+'<label>Mobile number *</label><input name="mobile" inputmode="numeric" autocomplete="tel" required>'+
+'<label>Email *</label><input name="email" type="email" autocomplete="email" required>'+
+'<label>Property type *</label><select name="property_type"><option value="">Select</option><option value="urban-e-aasthi">City / urban (e-Aasthi)</option><option value="rural-e-swathu">Gram panchayat / rural (e-Swathu)</option><option value="not-sure">Not sure</option></select>'+
+'<label>Property location (area, city or village) *</label><input name="location" required>'+
+'<label>Khata / property ID / survey number (if you know it)</label><input name="property_id">'+
+'<label>Anything we should know? (optional)</label><textarea name="note" rows="3" maxlength="600"></textarea>'+
+'<label style="font-weight:400"><input type="checkbox" name="consent" style="width:auto"> I agree SalaryBit may use these details to contact me and provide this assistance. Government fees are separate and approval is not guaranteed. *</label>'+
+'<div class="err" id="e"></div><button class="btn" id="b" type="submit">Submit details</button></form>';
+document.getElementById('f').onsubmit=function(ev){ev.preventDefault();var f=ev.target,e=document.getElementById('e'),b=document.getElementById('b');
+ var d={};['name','mobile','email','property_type','location','property_id','note'].forEach(function(k){d[k]=f[k].value;});d.consent=f.consent.checked;
+ if(!d.name||!d.mobile||!d.email||!d.property_type||!d.location||!d.consent){e.textContent='Please fill all required fields and tick the consent box.';return;}
+ b.disabled=true;e.textContent='';
+ post('/api/ekhata/submit',{token:token,form:d}).then(function(j){
+  if(j.success){done('Your details are submitted. Reference: <b>'+j.reference+'</b>. We will contact you on the email or mobile you gave.');}
+  else if(j._s===409){done('You have already submitted your details. We will contact you.');}
+  else{e.textContent=j.error||'Something went wrong. Please try again; do not pay again.';b.disabled=false;}
+ }).catch(function(){e.textContent='Network problem. Please try again; do not pay again.';b.disabled=false;});};
+}
+})();
+</script></body></html>

@@ -5330,6 +5330,161 @@ def verify_salaryai_payment():
 
     return jsonify({"success": True, "payment_id": payment_id, "report": report})
 
+# ═══════════════════════════════════════════════════════════════════
+# e-Khata Form-Filling Assistance (₹99). Payment-gated intake.
+# Price is fixed server-side. Access = HMAC-signed token issued ONLY after
+# Razorpay signature check + payment fetch (captured, right order, ₹99).
+# Env needed for intake delivery: SMTP_HOST, SMTP_USER, SMTP_PASS, EKHATA_NOTIFY_EMAIL
+# (optional: SMTP_PORT [465], EKHATA_TOKEN_SECRET). If not configured, orders are
+# refused (fail closed) so nobody is charged for a service that cannot deliver.
+# ═══════════════════════════════════════════════════════════════════
+EKHATA_PRICE_PAISE = 9900
+EKHATA_TOKEN_TTL = 7 * 24 * 3600
+_ekhata_submitted = set()  # payment ids already submitted (in-memory; resets on restart)
+
+
+def _ekhata_secret():
+    return (os.environ.get("EKHATA_TOKEN_SECRET") or os.environ.get("RAZORPAY_KEY_SECRET") or "").encode()
+
+
+def _ekhata_make_token(order_id, payment_id):
+    exp = int(_time.time()) + EKHATA_TOKEN_TTL
+    body = f"{order_id}|{payment_id}|{exp}"
+    sig = hmac.new(_ekhata_secret(), body.encode(), hashlib.sha256).hexdigest()
+    return base64.urlsafe_b64encode(f"{body}|{sig}".encode()).decode().rstrip("=")
+
+
+def _ekhata_read_token(token):
+    """Returns (order_id, payment_id) for a valid, unexpired token, else None."""
+    try:
+        raw = base64.urlsafe_b64decode(str(token) + "=" * (-len(str(token)) % 4)).decode()
+        order_id, payment_id, exp, sig = raw.split("|")
+        body = f"{order_id}|{payment_id}|{exp}"
+        good = hmac.new(_ekhata_secret(), body.encode(), hashlib.sha256).hexdigest()
+        if not hmac.compare_digest(good, sig) or int(exp) < int(_time.time()):
+            return None
+        return order_id, payment_id
+    except Exception:
+        return None
+
+
+def _ekhata_mail_ready():
+    return all(os.environ.get(k) for k in ("SMTP_HOST", "SMTP_USER", "SMTP_PASS", "EKHATA_NOTIFY_EMAIL"))
+
+
+def _ekhata_send_mail(subject, body, reply_to=None):
+    import smtplib
+    from email.message import EmailMessage
+    msg = EmailMessage()
+    msg["Subject"] = subject
+    msg["From"] = os.environ["SMTP_USER"]
+    msg["To"] = os.environ["EKHATA_NOTIFY_EMAIL"]
+    if reply_to:
+        msg["Reply-To"] = reply_to
+    msg.set_content(body)
+    port = int(os.environ.get("SMTP_PORT", "465"))
+    if port == 465:
+        with smtplib.SMTP_SSL(os.environ["SMTP_HOST"], port, timeout=20) as s:
+            s.login(os.environ["SMTP_USER"], os.environ["SMTP_PASS"]); s.send_message(msg)
+    else:
+        with smtplib.SMTP(os.environ["SMTP_HOST"], port, timeout=20) as s:
+            s.starttls(); s.login(os.environ["SMTP_USER"], os.environ["SMTP_PASS"]); s.send_message(msg)
+
+
+@app.route("/api/ekhata/status", methods=["GET", "OPTIONS"])
+def ekhata_status():
+    return jsonify({"available": _ekhata_mail_ready()})
+
+
+@app.route("/api/ekhata/create-order", methods=["POST", "OPTIONS"])
+def ekhata_create_order():
+    if request.method == "OPTIONS":
+        return "", 200
+    if not _ekhata_mail_ready():
+        return jsonify({"error": "Service temporarily unavailable. You have not been charged."}), 503
+    try:
+        order = rzp.order.create({
+            "amount": EKHATA_PRICE_PAISE,  # hardcoded, never trust the client
+            "currency": "INR",
+            "receipt": f"ekhata_{os.urandom(5).hex()}",
+            "notes": {"service": "ekhata-assist"},
+        })
+        return jsonify({"order_id": order["id"], "amount": order["amount"],
+                        "currency": order["currency"], "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")})
+    except Exception as e:
+        print(f"ekhata create-order error: {e}")
+        return jsonify({"error": "Could not start payment. Please try again."}), 500
+
+
+@app.route("/api/ekhata/verify", methods=["POST", "OPTIONS"])
+def ekhata_verify():
+    """Idempotent: re-verifying the same payment returns a token again, never a second order."""
+    if request.method == "OPTIONS":
+        return "", 200
+    d = request.get_json(silent=True) or {}
+    order_id, payment_id, sig = d.get("razorpay_order_id"), d.get("razorpay_payment_id"), d.get("razorpay_signature")
+    if not all([order_id, payment_id, sig]):
+        return jsonify({"success": False, "error": "Missing fields."}), 400
+    expected = hmac.new(os.environ.get("RAZORPAY_KEY_SECRET", "").encode(),
+                        f"{order_id}|{payment_id}".encode(), hashlib.sha256).hexdigest()
+    if not hmac.compare_digest(str(expected), str(sig)):
+        return jsonify({"success": False, "error": "Payment verification failed."}), 400
+    try:
+        pay = rzp.payment.fetch(payment_id)
+        if pay.get("order_id") != order_id or pay.get("amount") != EKHATA_PRICE_PAISE or pay.get("currency") != "INR":
+            return jsonify({"success": False, "error": "Payment details do not match."}), 400
+        if pay.get("status") == "authorized":
+            try:
+                pay = rzp.payment.capture(payment_id, EKHATA_PRICE_PAISE)
+            except Exception as ce:
+                print(f"ekhata capture error: {ce}")
+        if pay.get("status") != "captured":
+            return jsonify({"success": False, "pending": True, "error": "Payment not confirmed yet."}), 202
+    except Exception as e:
+        print(f"ekhata verify error: {e}")
+        return jsonify({"success": False, "error": "Could not confirm payment. Please contact support with your payment ID."}), 502
+    return jsonify({"success": True, "token": _ekhata_make_token(order_id, payment_id), "payment_id": payment_id})
+
+
+@app.route("/api/ekhata/session", methods=["POST", "OPTIONS"])
+def ekhata_session():
+    if request.method == "OPTIONS":
+        return "", 200
+    t = _ekhata_read_token((request.get_json(silent=True) or {}).get("token"))
+    if not t:
+        return jsonify({"valid": False}), 401
+    return jsonify({"valid": True, "submitted": t[1] in _ekhata_submitted})
+
+
+@app.route("/api/ekhata/submit", methods=["POST", "OPTIONS"])
+def ekhata_submit():
+    if request.method == "OPTIONS":
+        return "", 200
+    d = request.get_json(silent=True) or {}
+    t = _ekhata_read_token(d.get("token"))
+    if not t:
+        return jsonify({"success": False, "error": "Payment required."}), 401
+    order_id, payment_id = t
+    if payment_id in _ekhata_submitted:
+        return jsonify({"success": False, "error": "Your details were already submitted. We will contact you."}), 409
+    f = d.get("form") or {}
+    clean = lambda k, n: str(f.get(k, "")).strip()[:n]
+    name, mobile, email = clean("name", 80), re.sub(r"\D", "", clean("mobile", 20)), clean("email", 120)
+    ptype, location, ident, note = clean("property_type", 40), clean("location", 160), clean("property_id", 120), clean("note", 600)
+    if len(name) < 2 or not re.fullmatch(r"(91)?[6-9]\d{9}", mobile) or not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", email) \
+            or ptype not in ("urban-e-aasthi", "rural-e-swathu", "not-sure") or len(location) < 3 or not f.get("consent"):
+        return jsonify({"success": False, "error": "Please fill all required fields correctly."}), 400
+    body = (f"e-Khata assistance request (PAID ₹99)\nPayment ID: {payment_id}\nOrder ID: {order_id}\n\n"
+            f"Name: {name}\nMobile: {mobile}\nEmail: {email}\nProperty type: {ptype}\nLocation: {location}\n"
+            f"Khata/Property/Survey no.: {ident or '-'}\nNote: {note or '-'}\n")
+    try:
+        _ekhata_send_mail(f"e-Khata assistance: {name} ({payment_id[-8:]})", body, reply_to=email)
+    except Exception as e:
+        print(f"ekhata mail error: {e}")
+        return jsonify({"success": False, "error": "Could not send your details. Please try again; do not pay again."}), 502
+    _ekhata_submitted.add(payment_id)
+    return jsonify({"success": True, "reference": payment_id[-8:]})
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

@@ -5334,7 +5334,7 @@ def verify_salaryai_payment():
 # e-Khata Form-Filling Assistance (₹99). Payment-gated intake.
 # Price is fixed server-side. Access = HMAC-signed token issued ONLY after
 # Razorpay signature check + payment fetch (captured, right order, ₹99).
-# Env needed for intake delivery: SMTP_HOST, SMTP_USER, SMTP_PASS, EKHATA_NOTIFY_EMAIL
+# Env needed for intake delivery: SMTP_HOST, SMTP_USER, SMTP_PASS (EKHATA_NOTIFY_EMAIL optional; defaults to tremendouscollections@gmail.com)
 # (optional: SMTP_PORT [465], EKHATA_TOKEN_SECRET). If not configured, orders are
 # refused (fail closed) so nobody is charged for a service that cannot deliver.
 # ═══════════════════════════════════════════════════════════════════
@@ -5369,7 +5369,7 @@ def _ekhata_read_token(token):
 
 
 def _ekhata_mail_ready():
-    return all(os.environ.get(k) for k in ("SMTP_HOST", "SMTP_USER", "SMTP_PASS", "EKHATA_NOTIFY_EMAIL"))
+    return all(os.environ.get(k) for k in ("SMTP_HOST", "SMTP_USER", "SMTP_PASS"))
 
 
 def _ekhata_send_mail(subject, body, reply_to=None):
@@ -5378,7 +5378,7 @@ def _ekhata_send_mail(subject, body, reply_to=None):
     msg = EmailMessage()
     msg["Subject"] = subject
     msg["From"] = os.environ["SMTP_USER"]
-    msg["To"] = os.environ["EKHATA_NOTIFY_EMAIL"]
+    msg["To"] = os.environ.get("EKHATA_NOTIFY_EMAIL") or "tremendouscollections@gmail.com"
     if reply_to:
         msg["Reply-To"] = reply_to
     msg.set_content(body)
@@ -5474,9 +5474,11 @@ def ekhata_submit():
     if len(name) < 2 or not re.fullmatch(r"(91)?[6-9]\d{9}", mobile) or not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", email) \
             or ptype not in ("urban-e-aasthi", "rural-e-swathu", "not-sure") or len(location) < 3 or not f.get("consent"):
         return jsonify({"success": False, "error": "Please fill all required fields correctly."}), 400
+    allowed = {"registration-number", "ec", "owner-photos", "property-photo", "aadhaar-mobile", "khata-certificate", "tax-receipt"}
+    docs = [x for x in (f.get("docs") or []) if x in allowed][:10] if isinstance(f.get("docs"), list) else []
     body = (f"e-Khata assistance request (PAID ₹99)\nPayment ID: {payment_id}\nOrder ID: {order_id}\n\n"
             f"Name: {name}\nMobile: {mobile}\nEmail: {email}\nProperty type: {ptype}\nLocation: {location}\n"
-            f"Khata/Property/Survey no.: {ident or '-'}\nNote: {note or '-'}\n")
+            f"Khata/Property/Survey no.: {ident or '-'}\nDocuments they have ready: {', '.join(docs) or '-'}\nNote: {note or '-'}\n")
     try:
         _ekhata_send_mail(f"e-Khata assistance: {name} ({payment_id[-8:]})", body, reply_to=email)
     except Exception as e:

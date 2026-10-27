@@ -185,11 +185,6 @@
     <ns0:priority>0.8</ns0:priority>
   </ns0:url>
   <ns0:url>
-    <ns0:loc>https://salarybit.in/blog/ekhata-eswathu-guide.html</ns0:loc>
-    <ns0:lastmod>2026-06-30</ns0:lastmod>
-    <ns0:priority>0.8</ns0:priority>
-  </ns0:url>
-  <ns0:url>
     <ns0:loc>https://salarybit.in/blog/how-to-decode-ekhata-qr-string.html</ns0:loc>
     <ns0:lastmod>2026-06-30</ns0:lastmod>
     <ns0:priority>0.8</ns0:priority>
@@ -418,8 +413,5 @@
   </ns0:url>
   <ns0:url>
     <ns0:loc>https://salarybit.in/blog/gratuity-calculation-formula-india.html</ns0:loc>
-  </ns0:url>
-  <ns0:url>
-    <ns0:loc>https://salarybit.in/guides/ekhata-eaasthi-apply-online-karnataka.html</ns0:loc>
   </ns0:url>
 </ns0:urlset>

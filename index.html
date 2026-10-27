@@ -559,103 +559,6 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
 
 @media(max-width:640px){.hero-mob-cta{display:flex!important;gap:8px;margin-top:12px;margin-bottom:2px}}
 
-/* ═══ SPIN THE WHEEL WIDGET ═══ */
-.wheel-fab{
-  position:fixed;right:22px;bottom:22px;z-index:9500;
-  width:66px;height:66px;border-radius:50%;
-  background:radial-gradient(circle at 32% 28%,#ffd76a,#d97706 65%,#92400e);
-  border:3px solid #fff;
-  box-shadow:0 8px 24px rgba(217,119,6,.5),0 0 0 0 rgba(217,119,6,.5);
-  color:#fff;font-size:26px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  animation:fabPulse 2.4s ease-in-out infinite;
-}
-.wheel-fab:hover{animation-play-state:paused;transform:scale(1.08)}
-.wheel-fab .fab-label{
-  position:absolute;right:76px;bottom:14px;
-  background:#1a1a2e;color:#fff;font-size:11px;font-weight:700;
-  padding:6px 12px;border-radius:16px;white-space:nowrap;
-  opacity:0;transform:translateX(6px);transition:.2s;
-  pointer-events:none;
-}
-.wheel-fab:hover .fab-label{opacity:1;transform:translateX(0)}
-@keyframes fabPulse{
-  0%,100%{box-shadow:0 8px 24px rgba(217,119,6,.5),0 0 0 0 rgba(217,119,6,.45)}
-  50%{box-shadow:0 8px 24px rgba(217,119,6,.5),0 0 0 12px rgba(217,119,6,0)}
-}
-
-.wheel-overlay{
-  position:fixed;inset:0;background:rgba(10,10,20,.72);backdrop-filter:blur(4px);
-  z-index:9600;display:none;align-items:center;justify-content:center;padding:20px;
-}
-.wheel-overlay.open{display:flex}
-.wheel-card{
-  background:#fff;border-radius:24px;padding:1.75rem 1.5rem 2rem;
-  max-width:380px;width:100%;text-align:center;position:relative;
-  box-shadow:0 30px 80px rgba(0,0,0,.4);
-  animation:wheelCardIn .35s cubic-bezier(.2,.8,.3,1.2);
-}
-@keyframes wheelCardIn{from{opacity:0;transform:scale(.85) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
-.wheel-close{
-  position:absolute;top:12px;right:14px;background:var(--pale,#eeeef6);
-  border:none;width:32px;height:32px;border-radius:50%;font-size:16px;
-  cursor:pointer;color:var(--ink,#1a1a2e);
-}
-.wheel-card h3{font-family:var(--display);font-size:19px;color:var(--ink,#1a1a2e);margin:.2rem 0 .2rem}
-.wheel-card .wheel-sub{font-size:12.5px;color:var(--mist,#7b7b9d);margin-bottom:1.1rem}
-
-.wheel-wrap{position:relative;width:250px;height:250px;margin:0 auto 1.25rem}
-.wheel-pointer{
-  position:absolute;top:-6px;left:50%;transform:translateX(-50%);
-  width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;
-  border-top:20px solid #1a1a2e;z-index:5;filter:drop-shadow(0 2px 3px rgba(0,0,0,.3));
-}
-.wheel-svg{width:100%;height:100%;transition:transform 3.2s cubic-bezier(.17,.89,.1,1.01);transform-origin:50% 50%}
-.wheel-hub{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:52px;height:52px;border-radius:50%;
-  background:radial-gradient(circle at 35% 30%,#ffe9a8,#d97706);
-  border:3px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,.3);
-  display:flex;align-items:center;justify-content:center;font-size:20px;z-index:4;
-}
-.wheel-seg-label{font-size:13px;font-weight:800;fill:#fff;pointer-events:none;font-family:var(--body,'DM Sans',sans-serif)}
-
-.spin-btn{
-  background:linear-gradient(135deg,var(--accent,#5b6af0),#4452d6);
-  color:#fff;border:none;font-weight:700;font-size:15px;
-  padding:12px 34px;border-radius:30px;cursor:pointer;
-  box-shadow:0 8px 20px rgba(91,106,240,.35);
-  transition:transform .15s;
-}
-.spin-btn:hover{transform:translateY(-2px)}
-.spin-btn:disabled{opacity:.6;cursor:default;transform:none}
-
-.wheel-result{
-  margin-top:1.1rem;padding:14px 16px;border-radius:14px;
-  background:var(--accent-bg,rgba(91,106,240,.08));
-  border:1px solid var(--accent-border,rgba(91,106,240,.2));
-  display:none;text-align:left;
-}
-.wheel-result.show{display:block;animation:resultIn .4s ease}
-@keyframes resultIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.wheel-result .wr-title{font-size:13px;font-weight:800;color:var(--ink,#1a1a2e);margin-bottom:4px}
-.wheel-result .wr-body{font-size:12.5px;color:var(--ink3,#4a4a6a);line-height:1.5;margin-bottom:10px}
-.wheel-result .wr-link{font-size:13px;font-weight:700;color:var(--accent,#5b6af0);text-decoration:none}
-
-.confetti-piece{
-  position:fixed;top:-10px;z-index:9700;border-radius:2px;pointer-events:none;
-  animation:confettiFall linear forwards;
-}
-@keyframes confettiFall{
-  to{transform:translateY(105vh) rotate(540deg);opacity:.2}
-}
-
-@media(max-width:480px){
-  .wheel-wrap{width:210px;height:210px}
-  .wheel-fab{width:58px;height:58px;font-size:22px;right:14px;bottom:14px}
-  .wheel-fab .fab-label{display:none}
-}
-
 </style>
 </head>
 <body>
@@ -931,64 +834,171 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
       </a></div></div></section>
 <footer>
   <div class="footer-brand">SalaryBit</div>
-  <div class="footer-tagline">Built by Indians, for salaried professionals · Free · No login · Calculators run in your browser</div>
-  <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.25rem">
-    <span style="font-size:11px;color:rgba(255,255,255,.4)">✓ Tax rules updated for FY 2026-27</span>
-    <span style="font-size:11px;color:rgba(255,255,255,.4)">✓ New Tax Regime defaults</span>
-    <span style="font-size:11px;color:rgba(255,255,255,.4)">✓ Labour Code 2019 included</span>
-    <span style="font-size:11px;color:rgba(255,255,255,.4)">✓ Calculators run locally</span>
-    <span style="font-size:11px;color:rgba(255,255,255,.35)">✓ 👥 <span id="footer-visitor-count">—</span> visitors today</span>
-  </div>
-  <div class="footer-links">
+  <div class="footer-tagline">Free tools and practical reports for money decisions in India · No login · Calculators run in your browser</div>
+  <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin:1.25rem 0;font-size:14px">
+    <a href="/all-tools.html">All tools</a>
+    <a href="/blog/ekhata-eaasthi-cmc-guide.html">e-Khata guides</a>
+    <a href="/about.html" onclick="openModal('modal-about');return false;">About</a>
     <a href="/privacy.html" onclick="openModal('modal-privacy');return false;">Privacy Policy</a>
     <a href="/disclaimer.html" onclick="openModal('modal-disclaimer');return false;">Disclaimer</a>
-    <a href="/about.html" onclick="openModal('modal-about');return false;">About</a>
     <a href="/contact.html" onclick="openModal('modal-contact');return false;">Contact</a>
-    <a href="/blog/">Blog</a>
-    <a href="/for-employers.html">🏢 For Employers</a>
-    <a href="/travel-rewards.html">✈️ Travel Rewards</a>
-    <a href="/itr-assistant.html">📝 ITR Filing Assistant</a>
-    <a href="/fix-your-finance.html">🧮 Fix Your Finance</a>
-    <a href="/notice-shield.html">🛡️ Notice Shield</a>
-    <a href="/insurance-mitra.html">🏥 Insurance Mitra</a>
-    <a href="/insurance-reality-check.html">🚗 Insurance Reality Check</a>
-    <a href="/unfreeze-my-account.html">🔓 Unfreeze My Account</a>
-    <a href="/subscription-leak-finder.html">🔍 Subscription Finder</a>
-    <a href="/payslip-comparer.html">📄 Payslip Comparer</a>
-    <a href="/pdf-signature-validator.html">📄 PDF Validator</a>
-    <a href="/qr-decoder.html">📱 QR Decoder</a>
-    <a href="/middle-class-escape.html">🏃 Middle-Class Escape (Game)</a>
-    <a href="/beat-the-bank.html">🏦 Beat The Bank (Game)</a>
-    <a href="/chess-learn.html">♟️ Chess Kingdom (Game)</a>
-    <a href="/deals.html">🛍️ Gear &amp; Deals</a>
-    <a href="/mf-analyzer-bot.html">📊 MF Analyzer</a>
-    <a href="/family-passbook.html">📔 Family Passbook</a>
-    <a href="/tools/household-expense-bill.html">🧾 Expense Bill Generator</a>
-    <a href="/pf-rejection-decoder.html">📋 PF Rejection Decoder</a>
-    <a href="/credit-rejection-decoder.html">💳 Loan/Credit Rejection Decoder</a>
-    <a href="/pan-correction-navigator.html">🪪 PAN Correction Navigator</a>
-    <a href="/superannuation-navigator.html">🏛️ Superannuation Navigator</a>
-    <a href="/relieving-letter-kit.html">📨 Relieving Letter Kit</a>
-    <a href="/blog/life-passbook-blog.html">📖 Life Passbook Guide</a>
-    <a href="/tools/salary-calculator.html">💰 Salary Guide</a>
-    <a href="/tools/income-tax-calculator.html">🧾 Income Tax Calculator</a>
-    <a href="/tools/old-vs-new-tax-regime.html">📋 Tax Regime Guide</a>
-    <a href="/tools/esop-rsu-tax-calculator.html">🏢 ESOP/RSU Guide</a>
-    <a href="/tools/capital-gains-calculator.html">📈 Capital Gains</a>
-    <a href="/tools/gratuity-calculator.html">🏆 Gratuity</a>
-    <a href="/tools/notice-period-calculator.html">📋 Notice Pay</a>
-    <a href="/tools/home-loan-emi-calculator.html">🏠 Home Loan EMI</a>
-    <a href="/tools/sip-calculator.html">📊 SIP</a>
-    <a href="/tools/retirement-calculator.html">🏖️ Retirement</a>
-    <a href="/tools/epf-calculator.html">🏦 EPF/PF</a>
-    <a href="/tools/rent-receipt-generator.html">🧾 Rent Receipt</a>
   </div>
-  <div class="footer-legal">
-    © 2026 SalaryBit. All rights reserved.<br>
-    Not affiliated with the Government of India, Income Tax Department, EPFO, SEBI, or any regulatory authority.<br>
-    All calculations are estimates. Consult a qualified CA before filing your ITR.
-  </div>
+  <p style="font-size:11px;color:rgba(255,255,255,.4);text-align:center">© 2026 SalaryBit. Not affiliated with the Government of India, Income Tax Department, EPFO, SEBI or any regulatory authority.<br>All results are estimates. Consult a qualified professional before making tax, legal or financial decisions.</p>
 </footer>
+<!-- ═══════════════════════════════════════
+     MODAL: PRIVACY POLICY
+════════════════════════════════════════ -->
+<div class="modal-backdrop" id="modal-privacy" onclick="closeModalIfBackdrop(event,'modal-privacy')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">Privacy Policy</div>
+      <button class="modal-close" onclick="closeModal('modal-privacy')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-badge">🔒 Last updated: April 2026</div>
+      <h3>1. Who We Are</h3>
+      <p>SalaryBit (<strong>salarybit.in</strong>) is a free, browser-based salary and financial calculator tool for Indian salaried employees. Our free calculators run entirely in your browser and do not send your inputs to our servers. Some optional tools (for example AI report, ITR, notice, payslip and statement tools) must send the details or documents you submit to our server and to an AI provider to produce your result; this is stated on each tool page.</p>
+      <h3>2. Data We Do Not Collect</h3>
+      <p>All calculations on SalaryBit are performed entirely in your browser. We do <strong>not</strong> collect, store, or share:</p>
+      <ul>
+        <li>Your salary figures, CTC, or any income data</li>
+        <li>Your name, email address, or contact details</li>
+        <li>Your tax regime preferences or deduction inputs</li>
+        <li>Any personally identifiable information whatsoever</li>
+      </ul>
+      <p><strong>Exceptions:</strong> if you use an AI or paid report tool, the information or file you submit is sent to our server and an AI service solely to generate your report. We do not use it to advertise to you. To ask for deletion of anything you submitted, email hello@salarybit.in. Payments are handled by the payment gateway; we never see or store card details.</p>
+      <h3>3. Analytics & Cookies</h3>
+      <p>We may use Google Analytics (GA4) to understand aggregate website usage patterns — for example, how many visitors use the tool, which sections are most popular, and geographic breakdown by region. This data is anonymised and aggregated; it does not identify you personally.</p>
+      <p>We may also use Google AdSense to display relevant advertisements. AdSense may use cookies to serve ads based on your prior visits to this or other websites. You can opt out of personalised advertising by visiting <strong>Google's Ads Settings</strong>.</p>
+      <h3>4. Third-Party Services</h3>
+      <p>SalaryBit embeds resources from Google Fonts and Cloudflare CDN to deliver fonts and JavaScript libraries. These third parties may log your IP address as part of standard web delivery. Please refer to their respective privacy policies for more information.</p>
+      <h3>5. Children's Privacy</h3>
+      <p>SalaryBit is intended for adults who are currently employed or planning employment. We do not knowingly collect data from children under 13.</p>
+      <h3>6. Changes to This Policy</h3>
+      <p>We may update this Privacy Policy from time to time. Changes will be reflected on this page with an updated date. Continued use of SalaryBit constitutes acceptance of any revised policy.</p>
+      <h3>7. Contact</h3>
+      <p>For any privacy-related questions, please reach us via the <strong>Contact</strong> section. We aim to respond within 5 business days.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MODAL: DISCLAIMER
+════════════════════════════════════════ -->
+<div class="modal-backdrop" id="modal-disclaimer" onclick="closeModalIfBackdrop(event,'modal-disclaimer')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">Disclaimer</div>
+      <button class="modal-close" onclick="closeModal('modal-disclaimer')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="disc-warning"><span style="font-size:18px;flex-shrink:0">⚠️</span><div><strong>For informational purposes only.</strong> SalaryBit does not provide financial, tax, legal, or investment advice. Consult a qualified CA or financial advisor before making decisions.</div></div>
+      <h3>1. Accuracy of Calculations</h3>
+      <p>SalaryBit makes every effort to provide accurate salary and tax computations based on publicly available Indian tax laws for FY 2026-27. However, tax rules are complex, subject to interpretation, and may change. <strong>Calculations on this platform are estimates only</strong> and should not be used as the sole basis for tax filing, salary negotiation, or financial planning.</p>
+      <h3>2. Not a Substitute for Professional Advice</h3>
+      <p>The results generated by SalaryBit do not constitute professional financial, tax, or legal advice. Always consult a qualified Chartered Accountant (CA), financial planner, or legal professional before making decisions based on this tool's output.</p>
+      <h3>3. No Guarantee of Completeness</h3>
+      <p>Indian salary structures vary widely by employer, industry, location, and contract. SalaryBit cannot account for every possible allowance, perk, stock option plan (ESOP), or employer-specific policy. Results may not match your actual in-hand salary exactly.</p>
+      <h3>4. Labour Code Information</h3>
+      <p>Information on the New Labour Codes (Code on Wages, Industrial Relations Code, Social Security Code, Occupational Safety Code) is based on publicly available information as of the date of this update. Implementation timelines and state-level notifications may vary. SalaryBit is not responsible for any discrepancy arising from state-specific rules or delayed implementation.</p>
+      <h3>5. Insurance Recommendations</h3>
+      <p>Insurance coverage recommendations are generic guidelines based on commonly accepted financial planning principles (e.g., 10–15x annual income for term cover). They are not personalised advice. Actual insurance needs depend on your family situation, liabilities, health status, and risk tolerance. Always consult a SEBI-registered advisor or IRDAI-licensed agent.</p>
+      <h3>6. Capital Gains Tax</h3>
+      <p>Share and capital gains tax computations are estimates based on current CBDT guidelines. Foreign tax credit (DTAA) calculations involve treaty interpretation that may differ by jurisdiction and individual circumstance. Consult your CA before filing ITR Schedule FA and Form 67.</p>
+      <h3>7. No Affiliation</h3>
+      <p>SalaryBit is not affiliated with the Government of India, the Income Tax Department, EPFO, IRDAI, SEBI, or any other regulatory authority. All trademarks mentioned belong to their respective owners.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MODAL: ABOUT
+════════════════════════════════════════ -->
+<div class="modal-backdrop" id="modal-about" onclick="closeModalIfBackdrop(event,'modal-about')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">About SalaryBit</div>
+      <button class="modal-close" onclick="closeModal('modal-about')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-badge">🇮🇳 Made for Indian Salaried Professionals</div>
+      <h3>Our Mission</h3>
+      <p>SalaryBit was built with a simple mission: <strong>give every salaried Indian employee the financial clarity they deserve</strong>. Most people receive a salary slip but have no idea where their money actually goes — or how to optimise it.</p>
+      <p>We believe that understanding your CTC, tax regime options, insurance needs, and employee rights should not require a CA or a finance degree. It should be instant, free, and beautiful.</p>
+      <h3>What We Built</h3>
+      <p>SalaryBit is a single-page, fully browser-based financial intelligence platform covering:</p>
+      <ul>
+        <li><strong>In-hand salary calculator</strong> — CTC to take-home breakdown</li>
+        <li><strong>Old vs New tax regime comparison</strong> — FY 2026-27 slabs</li>
+        <li><strong>Insurance planner</strong> — Term, health, and emergency fund</li>
+        <li><strong>Financial roadmap</strong> — Priority-ordered action steps</li>
+        <li><strong>Labour Code analyser</strong> — New Code on Wages impact</li>
+        <li><strong>Employee rights guide</strong> — What to do if fired</li>
+        <li><strong>Share & capital gains tax</strong> — Indian, US, and Euro stocks</li>
+        <li><strong>Bonus tools</strong> — EMI, PF, gratuity, notice period calculators</li>
+      </ul>
+      <h3>Our Promise</h3>
+      <p>Our core calculators are free, need no login, and run in your browser. Optional AI reports are paid and clearly priced before you pay. Your inputs to free calculators stay on your device. We earn revenue through non-intrusive display advertising to keep the service running.</p>
+      <h3>Technology</h3>
+      <p>SalaryBit is built with pure HTML, CSS, and JavaScript — lightweight pages with minimal tracking (Google Analytics and ads, see Privacy). It loads fast, works offline after first load, and respects your privacy by design.</p>
+      <div class="about-team-row"><div class="about-ava">🧑‍💻</div><div><div class="about-name">SalaryBit Team</div><div class="about-role">Independently built &amp; maintained · India</div></div></div>
+      <h3>Feedback &amp; Suggestions</h3>
+      <p>Found a bug? Have a feature request? Spotted an outdated tax rule? We'd love to hear from you. Use the Contact form to reach us directly.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MODAL: CONTACT
+════════════════════════════════════════ -->
+<div class="modal-backdrop" id="modal-contact" onclick="closeModalIfBackdrop(event,'modal-contact')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">Contact Us</div>
+      <button class="modal-close" onclick="closeModal('modal-contact')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-badge">📬 We typically respond within 5 business days</div>
+      <div class="modal-contact-grid">
+        <div class="contact-card"><div class="contact-card-icon">✉️</div><div class="contact-card-title">Email</div><div class="contact-card-val">hello@salarybit.in</div></div>
+        <div class="contact-card"><div class="contact-card-icon">🐦</div><div class="contact-card-title">Twitter / X</div><div class="contact-card-val">@salarybit_in</div></div>
+      </div>
+      <h3>Send Us a Message</h3>
+      <div style="background:var(--pale);border:1px solid var(--border);border-radius:var(--r-sm);padding:1.25rem">
+        <div class="field" style="margin-bottom:.75rem">
+          <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">Your Name</label>
+          <input id="contact-name" type="text" placeholder="e.g. Priya Sharma" style="width:100%;height:38px;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:0 12px;font-family:var(--body);font-size:13px;color:var(--ink);outline:none;background:#fff;transition:.15s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <div class="field" style="margin-bottom:.75rem">
+          <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">Email Address</label>
+          <input id="contact-email" type="email" placeholder="your@email.com" style="width:100%;height:38px;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:0 12px;font-family:var(--body);font-size:13px;color:var(--ink);outline:none;background:#fff;transition:.15s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <div class="field" style="margin-bottom:.75rem">
+          <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">Subject</label>
+          <select id="contact-subject" style="width:100%;height:38px;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:0 12px;font-family:var(--body);font-size:13px;color:var(--ink);outline:none;background:#fff;cursor:pointer">
+            <option>Bug report / calculation error</option>
+            <option>Feature request</option>
+            <option>Tax rule update</option>
+            <option>Advertising / partnership</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field" style="margin-bottom:1rem">
+          <label style="display:block;font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:4px">Message</label>
+          <textarea id="contact-msg" placeholder="Describe your question or feedback in detail…" rows="4" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-family:var(--body);font-size:13px;color:var(--ink);outline:none;background:#fff;resize:vertical;transition:.15s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+        </div>
+        <button onclick="submitContact()" style="width:100%;height:42px;background:linear-gradient(135deg,var(--accent),var(--teal));color:#fff;border:none;border-radius:var(--r-sm);font-family:var(--body);font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.01em;transition:.2s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">Send Message →</button>
+        <div id="contact-status" style="margin-top:.75rem;text-align:center;font-size:12px;font-weight:600;display:none"></div>
+      </div>
+      <p style="margin-top:1rem;font-size:11px;color:var(--mist);text-align:center">We read every message and aim to respond within 5 business days. For urgent tax-related queries, please consult a qualified CA.</p>
+    </div>
+  </div>
+</div>
+<script>function openModal(id){var m=document.getElementById(id);if(m){m.classList.add('open');document.body.style.overflow='hidden';}}
+function closeModal(id){var m=document.getElementById(id);if(m){m.classList.remove('open');document.body.style.overflow='';}}
+function closeModalIfBackdrop(e,id){if(e.target===e.currentTarget)closeModal(id);}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('.modal-backdrop.open').forEach(function(m){closeModal(m.id);});});</script>
+
 
 <script>
 // ── GLOBALS ──
@@ -1486,153 +1496,8 @@ function buildRoadmap(monthlyInHand,grossAnnual,bestRegime,regimeSaving,age,ctc)
 </script>
 
 <!-- ═══ SPIN THE WHEEL — FUN MONEY TIP WIDGET ═══ -->
-<button class="wheel-fab" onclick="openWheel()" aria-label="Spin for a money tip">
-  🎡
-  <span class="fab-label">Spin for a money tip 🎉</span>
-</button>
 
-<div class="wheel-overlay" id="wheelOverlay" onclick="if(event.target===this)closeWheel()">
-  <div class="wheel-card">
-    <button class="wheel-close" onclick="closeWheel()">✕</button>
-    <h3>🎡 Spin for a Money Tip</h3>
-    <div class="wheel-sub">One click. One tip. Maybe your favourite new tool.</div>
 
-    <div class="wheel-wrap">
-      <div class="wheel-pointer"></div>
-      <svg class="wheel-svg" id="wheelSvg" viewBox="0 0 200 200"></svg>
-      <div class="wheel-hub">💰</div>
-    </div>
-
-    <button class="spin-btn" id="spinBtn" onclick="spinWheel()">SPIN THE WHEEL</button>
-
-    <div class="wheel-result" id="wheelResult">
-      <div class="wr-title" id="wrTitle"></div>
-      <div class="wr-body" id="wrBody"></div>
-      <a class="wr-link" id="wrLink" href="#">Try it now →</a>
-    </div>
-  </div>
-</div>
-
-<script>// ═══════════════════════════════════════
-// FUN WIDGET 2 — SPIN THE WHEEL
-// ═══════════════════════════════════════
-const wheelSegments=[
-  {emoji:'📔',color:'#8B3A2B',title:'Family Passbook',body:'The one document your spouse will thank you for — free, private, 20 minutes.',link:'/family-passbook.html'},
-  {emoji:'🏠',color:'#5b6af0',title:'Home Loan Trick',body:'One extra EMI a year can shave years off your home loan. See the exact numbers.',link:'/tools/home-loan-emi-calculator.html'},
-  {emoji:'🛡️',color:'#0ea5a0',title:'₹1 Cr Term Cover',body:'Costs less than most people\'s monthly food delivery bill. Get a personalised quote.',link:'/insurance-mitra.html'},
-  {emoji:'🚗',color:'#b8752c',title:'Insurance Reality Check',body:'You might be paying twice for mandatory PA cover. Check in 30 seconds.',link:'/insurance-reality-check.html'},
-  {emoji:'🔓',color:'#a53f3f',title:'Unfreeze My Account',body:'Bank blocked over a cyber complaint? Find out who can actually fix it.',link:'/unfreeze-my-account.html'},
-  {emoji:'📈',color:'#16a34a',title:'SIP Power',body:'₹5,000/month for 20 years can grow to ₹50 Lakh+. Run your own numbers.',link:'/tools/sip-calculator.html'},
-  {emoji:'🔍',color:'#d97706',title:'Subscription Leak',body:'The average Indian loses ₹3,600/year to forgotten auto-payments. Find yours.',link:'/subscription-leak-finder.html'},
-  {emoji:'📄',color:'#00a656',title:'Payslip Comparer',body:'Upload 2-4 months of payslips and see exactly what changed and why — labour code, arrears, tax, or increment.',link:'/payslip-comparer.html'},
-  {emoji:'🧾',color:'#7c3aed',title:'Tax Regime Check',body:'Old vs New — most salaried folks are still on the wrong one. Compare in 30 seconds.',link:'/tools/old-vs-new-tax-regime.html'},
-  {emoji:'💰',color:'#e05c5c',title:'In-Hand Salary',body:'Know your exact take-home before you sign that offer letter.',link:'/tools/salary-calculator.html'},
-  {emoji:'🏦',color:'#182a44',title:'Unclaimed Money',body:'₹78,000+ crore sits unclaimed in Indian banks. Make sure none of it is yours.',link:'/family-passbook.html'},
-];
-
-let wheelBuilt=false, wheelSpinning=false, wheelCurrentRotation=0;
-
-function buildWheel(){
-  const svg=document.getElementById('wheelSvg');
-  const n=wheelSegments.length, cx=100, cy=100, r=98, segAngle=360/n;
-  let html='';
-  wheelSegments.forEach((s,i)=>{
-    const start=i*segAngle, end=start+segAngle;
-    const x1=cx+r*Math.cos(Math.PI*(start-90)/180), y1=cy+r*Math.sin(Math.PI*(start-90)/180);
-    const x2=cx+r*Math.cos(Math.PI*(end-90)/180), y2=cy+r*Math.sin(Math.PI*(end-90)/180);
-    html+=`<path d="M${cx},${cy} L${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 0,1 ${x2.toFixed(2)},${y2.toFixed(2)} Z" fill="${s.color}" stroke="#fff" stroke-width="1.5"/>`;
-    const mid=start+segAngle/2;
-    const lx=cx+(r*0.62)*Math.cos(Math.PI*(mid-90)/180), ly=cy+(r*0.62)*Math.sin(Math.PI*(mid-90)/180);
-    html+=`<text x="${lx.toFixed(2)}" y="${ly.toFixed(2)}" class="wheel-seg-label" text-anchor="middle" dominant-baseline="middle" transform="rotate(${mid},${lx.toFixed(2)},${ly.toFixed(2)})">${s.emoji}</text>`;
-  });
-  svg.innerHTML=html;
-  wheelBuilt=true;
-}
-
-function openWheel(){
-  if(!wheelBuilt) buildWheel();
-  document.getElementById('wheelOverlay').classList.add('open');
-  document.getElementById('wheelResult').classList.remove('show');
-  document.body.style.overflow='hidden';
-}
-function closeWheel(){
-  document.getElementById('wheelOverlay').classList.remove('open');
-  document.body.style.overflow='';
-}
-
-function spinWheel(){
-  if(wheelSpinning) return;
-  wheelSpinning=true;
-  const btn=document.getElementById('spinBtn');
-  btn.disabled=true;
-  btn.textContent='Spinning…';
-  document.getElementById('wheelResult').classList.remove('show');
-
-  const n=wheelSegments.length, segAngle=360/n;
-  const winnerIndex=Math.floor(Math.random()*n);
-  const targetMid=winnerIndex*segAngle+segAngle/2;
-  const extraSpins=5+Math.floor(Math.random()*3);
-  const finalRotation=wheelCurrentRotation - (wheelCurrentRotation%360) + extraSpins*360 + (360-targetMid);
-
-  const svg=document.getElementById('wheelSvg');
-  svg.style.transform=`rotate(${finalRotation}deg)`;
-  wheelCurrentRotation=finalRotation;
-
-  setTimeout(()=>{
-    const s=wheelSegments[winnerIndex];
-    document.getElementById('wrTitle').textContent=s.emoji+' '+s.title;
-    document.getElementById('wrBody').textContent=s.body;
-    const link=document.getElementById('wrLink');
-    link.textContent='Try it now →';
-    link.href=s.link;
-    document.getElementById('wheelResult').classList.add('show');
-    btn.disabled=false;
-    btn.textContent='SPIN AGAIN';
-    wheelSpinning=false;
-    launchConfetti();
-  },3300);
-}
-
-function launchConfetti(){
-  const colors=['#5b6af0','#0ea5a0','#d97706','#e05c5c','#16a34a','#7c3aed'];
-  for(let i=0;i<40;i++){
-    const p=document.createElement('div');
-    p.className='confetti-piece';
-    const size=(Math.random()*6+5);
-    p.style.width=size+'px';
-    p.style.height=(size*0.5)+'px';
-    p.style.left=(Math.random()*100)+'vw';
-    p.style.background=colors[Math.floor(Math.random()*colors.length)];
-    p.style.animationDuration=(Math.random()*1.6+1.8)+'s';
-    document.body.appendChild(p);
-    setTimeout(()=>p.remove(),3600);
-  }
-}
-
-document.addEventListener('keydown',(e)=>{
-  if(e.key==='Escape') closeWheel();
-});
-
-// ═══════════════════════════════════════
-// SIGNATURE — SCROLL REVEAL OBSERVER
-// ═══════════════════════════════════════
-(function(){
-  const els=document.querySelectorAll('.reveal');
-  if(!els.length || !('IntersectionObserver' in window)){
-    els.forEach(el=>el.classList.add('in'));
-    return;
-  }
-  const io=new IntersectionObserver((entries)=>{
-    entries.forEach(entry=>{
-      if(entry.isIntersecting){
-        entry.target.classList.add('in');
-        io.unobserve(entry.target);
-      }
-    });
-  },{threshold:0.15,rootMargin:'0px 0px -40px 0px'});
-  els.forEach(el=>io.observe(el));
-})();
-</script>
 <script src="/assets/js/site-widgets.js"></script>
 <style>#ai-grid.collapsed>a:nth-child(n+7){display:none}#ai-toggle{display:block;margin:1.5rem auto 0;padding:12px 24px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;font-weight:600;font-size:14px;cursor:pointer}</style>
 <script>(function(){var g=document.getElementById('ai-grid');if(!g)return;var n=g.children.length;if(n<=6)return;var b=document.createElement('button');b.id='ai-toggle';b.type='button';b.textContent='Show all '+n+' tools';b.setAttribute('aria-expanded','false');b.onclick=function(){var c=g.classList.toggle('collapsed');b.textContent=c?'Show all '+n+' tools':'Show fewer tools';b.setAttribute('aria-expanded',String(!c));};g.parentNode.insertBefore(b,g.nextSibling);})();</script>

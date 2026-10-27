@@ -18,7 +18,7 @@ Scope: homepage and server code only. No live checkout or Search Console data wa
 - Paid endpoints live on a separate Railway host (API_BASE) hardcoded in each page.
 
 ## Remaining (needs owner input)
-1. Funnel events (checkout_started, payment_success, report_delivered) inside each tool page.
+1. report_delivered event (needs per-tool backend/page edits). checkout_started, payment_completed_client, payment_failed, checkout_abandoned now come from assets/funnel-tracking.js on all 17 Razorpay pages. payment_completed_client is a browser-side signal, not verified revenue.
 2. Rewrite thin templated blog posts with real content.
 3. Search Console data to validate SEO topics.
 4. Sitemap uses an ns0: prefix from scripts/site_doctor.py (valid XML, cosmetic).

@@ -688,7 +688,7 @@ def verify_rupee_surprise_payment():
         body.encode(),
         hashlib.sha256
     ).hexdigest()
-    if expected != signature:
+    if not hmac.compare_digest(str(expected), str(signature)):
         return jsonify({"success": False, "error": "Payment verification failed."}), 400
 
     message, ai_failed = generate_rupee_surprise_message(avoid_titles)
@@ -958,7 +958,7 @@ def verify_and_decode():
         body.encode(),
         hashlib.sha256
     ).hexdigest()
-    if expected != signature:
+    if not hmac.compare_digest(str(expected), str(signature)):
         return jsonify({"success": False, "error": "Payment verification failed."}), 400
     with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
         pdf_path = tmp.name
@@ -1150,7 +1150,7 @@ def claude_proxy():
             f"{order_id}|{payment_id}".encode(),
             hashlib.sha256
         ).hexdigest()
-        if expected != signature:
+        if not hmac.compare_digest(str(expected), str(signature)):
             return jsonify({"error": "Payment verification failed."}), 402
 
     payload = json.dumps({
@@ -1225,7 +1225,7 @@ def verify_mf_payment():
         body.encode(),
         hashlib.sha256
     ).hexdigest()
-    if expected != signature:
+    if not hmac.compare_digest(str(expected), str(signature)):
         return jsonify({"success": False, "error": "Payment verification failed."}), 400
 
     return jsonify({"success": True})
@@ -1407,7 +1407,7 @@ def verify_subscription_payment():
         body.encode(),
         hashlib.sha256
     ).hexdigest()
-    if expected != signature:
+    if not hmac.compare_digest(str(expected), str(signature)):
         return jsonify({"success": False, "error": "Payment verification failed."}), 400
 
     if not scan_id:
@@ -1510,7 +1510,7 @@ def verify_passbook_payment():
         body.encode(),
         hashlib.sha256
     ).hexdigest()
-    if expected != signature:
+    if not hmac.compare_digest(str(expected), str(signature)):
         return jsonify({"success": False, "error": "Payment verification failed."}), 400
 
     # TODO: replace this with wherever you actually store leads.
@@ -1573,7 +1573,7 @@ def verify_family_passbook_payment():
         body.encode(),
         hashlib.sha256
     ).hexdigest()
-    if expected != signature:
+    if not hmac.compare_digest(str(expected), str(signature)):
         return jsonify({"success": False, "error": "Payment verification failed."}), 400
 
     print(f"[family-passbook] paid unlock | payment_id={payment_id}")
@@ -1633,7 +1633,7 @@ def verify_simple_will_payment():
         body.encode(),
         hashlib.sha256
     ).hexdigest()
-    if expected != signature:
+    if not hmac.compare_digest(str(expected), str(signature)):
         return jsonify({"success": False, "error": "Payment verification failed."}), 400
 
     print(f"[simple-will] paid unlock | payment_id={payment_id}")
@@ -1694,7 +1694,7 @@ def verify_jobswitch_payment():
         body.encode(),
         hashlib.sha256
     ).hexdigest()
-    if expected != signature:
+    if not hmac.compare_digest(str(expected), str(signature)):
         return jsonify({"success": False, "error": "Payment verification failed."}), 400
 
     print(f"[jobswitch] paid unlock | payment_id={payment_id}")
@@ -1863,7 +1863,7 @@ def verify_pfdecoder_payment():
             body.encode(),
             hashlib.sha256
         ).hexdigest()
-        if expected != signature:
+        if not hmac.compare_digest(str(expected), str(signature)):
             return jsonify({"success": False, "error": "Payment verification failed."}), 400
 
         print(f"[pfdecoder] paid unlock | payment_id={payment_id}")
@@ -2052,7 +2052,7 @@ def verify_creditdecoder_payment():
             body.encode(),
             hashlib.sha256
         ).hexdigest()
-        if expected != signature:
+        if not hmac.compare_digest(str(expected), str(signature)):
             return jsonify({"success": False, "error": "Payment verification failed."}), 400
 
         print(f"[creditdecoder] paid unlock | payment_id={payment_id}")
@@ -2277,7 +2277,7 @@ def verify_pancorrection_payment():
             body.encode(),
             hashlib.sha256
         ).hexdigest()
-        if expected != signature:
+        if not hmac.compare_digest(str(expected), str(signature)):
             return jsonify({"success": False, "error": "Payment verification failed."}), 400
 
         print(f"[pancorrection] paid unlock | payment_id={payment_id}")
@@ -2524,7 +2524,7 @@ def verify_insurancecheck_payment():
             body.encode(),
             hashlib.sha256
         ).hexdigest()
-        if expected != signature:
+        if not hmac.compare_digest(str(expected), str(signature)):
             return jsonify({"success": False, "error": "Payment verification failed."}), 400
 
         print(f"[insurancecheck] paid unlock | payment_id={payment_id}")
@@ -2750,7 +2750,7 @@ def verify_unfreeze_payment():
             body.encode(),
             hashlib.sha256
         ).hexdigest()
-        if expected != signature:
+        if not hmac.compare_digest(str(expected), str(signature)):
             return jsonify({"success": False, "error": "Payment verification failed."}), 400
 
         print(f"[unfreeze] paid unlock | payment_id={payment_id}")
@@ -2915,7 +2915,7 @@ def verify_unfreeze_stage2_payment():
             body.encode(),
             hashlib.sha256
         ).hexdigest()
-        if expected != signature:
+        if not hmac.compare_digest(str(expected), str(signature)):
             return jsonify({"success": False, "error": "Payment verification failed."}), 400
 
         print(f"[unfreeze-stage2] paid unlock | payment_id={payment_id}")
@@ -2991,7 +2991,7 @@ def verify_relievingletter_payment():
         body.encode(),
         hashlib.sha256
     ).hexdigest()
-    if expected != signature:
+    if not hmac.compare_digest(str(expected), str(signature)):
         return jsonify({"success": False, "error": "Payment verification failed."}), 400
 
     print(f"[relievingletter] paid unlock | payment_id={payment_id}")
@@ -3321,7 +3321,7 @@ def verify_payslip_payment():
         body.encode(),
         hashlib.sha256
     ).hexdigest()
-    if expected != signature:
+    if not hmac.compare_digest(str(expected), str(signature)):
         return jsonify({"success": False, "error": "Payment verification failed."}), 400
 
     print(f"[payslip-comparer] paid unlock | payment_id={payment_id}")
@@ -4456,7 +4456,7 @@ def verify_breakoutscanner_payment():
         body.encode(),
         hashlib.sha256
     ).hexdigest()
-    if expected != signature:
+    if not hmac.compare_digest(str(expected), str(signature)):
         return jsonify({"success": False, "error": "Payment verification failed."}), 400
 
     print(f"[breakoutscanner] paid unlock | payment_id={payment_id}")
@@ -4961,7 +4961,7 @@ def claim_kit_generate():
         body.encode(),
         hashlib.sha256
     ).hexdigest()
-    if expected_signature != razorpay_signature:
+    if not hmac.compare_digest(str(expected_signature), str(razorpay_signature)):
         return jsonify({
             "success": False,
             "error": "Payment verification failed. If you were charged, please contact "
@@ -5294,7 +5294,7 @@ def verify_salaryai_payment():
             body.encode(),
             hashlib.sha256
         ).hexdigest()
-        if expected != signature:
+        if not hmac.compare_digest(str(expected), str(signature)):
             return jsonify({"success": False, "error": "Payment verification failed."}), 400
 
         print(f"[salaryai] paid unlock | payment_id={payment_id}")

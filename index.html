@@ -907,7 +907,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
     </div>
 
     <!-- AI Tools + Document tools + Community (single continuous grid) -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem">
+    <div id="ai-grid" class="collapsed" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem">
 
       <a href="/tools/salary-calculator.html" style="text-decoration:none;display:flex;flex-direction:column;background:rgba(255,255,255,.04);border:1px solid rgba(13,148,136,.35);border-radius:18px;overflow:hidden;transition:transform .2s,background .2s,border-color .2s" onmouseover="this.style.background='rgba(13,148,136,.14)';this.style.borderColor='rgba(13,148,136,.7)';this.style.transform='translateY(-3px)'" onmouseout="this.style.background='rgba(255,255,255,.04)';this.style.borderColor='rgba(13,148,136,.35)';this.style.transform='translateY(0)'">
         <div style="background:linear-gradient(135deg,#0d9488,#0f766e);padding:1.5rem 1.5rem 1.25rem;position:relative;overflow:hidden">
@@ -967,7 +967,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
             <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#86efac">Interest Savings</span>
           </div>
           <div style="display:flex;align-items:center;justify-content:space-between;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.08)">
-            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.4)">Get debt-free faster</span>
+            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.4)">Free preview · ₹199 full report</span>
             <span style="font-size:13px;font-weight:700;color:#fca5a5">Fix My Finance →</span>
           </div>
         </div>
@@ -988,7 +988,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
             <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#fcd34d">Defective Return</span>
           </div>
           <div style="display:flex;align-items:center;justify-content:space-between;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.08)">
-            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.4)">Know your rights · Act fast</span>
+            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.4)">Free preview · ₹149 full report</span>
             <span style="font-size:13px;font-weight:700;color:#fca5a5">Decode Notice →</span>
           </div>
         </div>
@@ -1009,7 +1009,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.35);text-align:center;paddi
             <span style="font-size:10px;font-weight:600;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:3px 8px;border-radius:10px;color:#fcd34d">80C / 80D Savings</span>
           </div>
           <div style="display:flex;align-items:center;justify-content:space-between;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.08)">
-            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.4)">Personalised · Unbiased</span>
+            <span style="font-size:12px;font-weight:600;color:rgba(255,255,255,.4)">Free basics · ₹99 AI answer</span>
             <span style="font-size:13px;font-weight:700;color:#5eead4">Talk to Mitra →</span>
           </div>
         </div>
@@ -3586,5 +3586,7 @@ document.addEventListener('keydown',(e)=>{
 })();
 </script>
 <script src="/assets/js/site-widgets.js"></script>
+<style>#ai-grid.collapsed>a:nth-child(n+7){display:none}#ai-toggle{display:block;margin:1.5rem auto 0;padding:12px 24px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;font-weight:600;font-size:14px;cursor:pointer}</style>
+<script>(function(){var g=document.getElementById('ai-grid');if(!g)return;var n=g.children.length;if(n<=6)return;var b=document.createElement('button');b.id='ai-toggle';b.type='button';b.textContent='Show all '+n+' tools';b.setAttribute('aria-expanded','false');b.onclick=function(){var c=g.classList.toggle('collapsed');b.textContent=c?'Show all '+n+' tools':'Show fewer tools';b.setAttribute('aria-expanded',String(!c));};g.parentNode.insertBefore(b,g.nextSibling);})();</script>
 </body>
 </html>

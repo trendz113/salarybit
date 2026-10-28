@@ -1,0 +1,22 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Your e-Khata guide download | SalaryBit</title><meta name="robots" content="noindex, nofollow">
+<style>*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:#f8fafc;color:#0b1f3a;line-height:1.55}.w{max-width:520px;margin:0 auto;padding:1.4rem}
+h1{font-size:1.4rem}.btn{display:block;width:100%;border:0;border-radius:12px;background:#0d9488;color:#fff;font-weight:800;font-size:1.05rem;padding:15px;cursor:pointer;margin:1rem 0}.btn[disabled]{opacity:.6}
+.ok{background:#f0fdfa;border:1px solid #99f6e4;border-radius:12px;padding:1rem}.note{font-size:13px;color:#475569}.err{color:#b91c1c;font-size:14px}</style></head><body>
+<div class="w" id="app"><p>Checking your payment…</p></div>
+<script>
+(function(){
+var API='https://web-production-456eb.up.railway.app',app=document.getElementById('app'),token=null;
+try{var m=location.hash.match(/t=([^&]+)/);if(m){token=decodeURIComponent(m[1]);localStorage.setItem('ekhata_token',token);history.replaceState(null,'',location.pathname);}else token=localStorage.getItem('ekhata_token');}catch(e){}
+function locked(t){app.innerHTML='<h1>Payment required</h1><p>'+t+'</p><p><a href="/blog/ekhata-eaasthi-cmc-guide.html">Get the e-Khata guide (₹99)</a></p>';}
+if(!token){locked('The download opens only after a verified ₹99 payment.');return;}
+fetch(API+'/api/ekhata/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:token})}).then(function(r){return r.json();}).then(function(j){
+  if(!j.valid){try{localStorage.removeItem('ekhata_token');}catch(e){}locked('We could not verify a payment for this link. If you have paid, email hello@salarybit.in with your payment ID.');return;}
+  app.innerHTML='<div class="ok"><h1>Payment verified. Thank you!</h1><p>Your guide is ready: <b>e-Khata Made Easy (PDF, 33 pages)</b>.</p></div><button class="btn" id="d" type="button">Download the PDF</button><div class="err" id="e"></div><p class="note">Save the file to your phone or computer now. This page stays available on this device for 30 days. If you lose it, email hello@salarybit.in with your payment ID. Government fees are separate and approval is not guaranteed. Portal screens were documented in May 2026.</p>';
+  document.getElementById('d').onclick=function(){var b=this,e=document.getElementById('e');b.disabled=true;e.textContent='';
+    fetch(API+'/api/ekhata/download',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:token})}).then(function(r){if(!r.ok)throw 0;return r.blob();}).then(function(bl){
+      var u=URL.createObjectURL(bl),a=document.createElement('a');a.href=u;a.download='e-Khata-Made-Easy-Karnataka-Guide.pdf';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u);},5000);b.disabled=false;
+    }).catch(function(){e.textContent='Download failed. Please try again, or email hello@salarybit.in with your payment ID.';b.disabled=false;});};
+}).catch(function(){locked('Could not check your payment right now. Please reload.');});
+})();
+</script></body></html>

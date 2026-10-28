@@ -5331,16 +5331,14 @@ def verify_salaryai_payment():
     return jsonify({"success": True, "payment_id": payment_id, "report": report})
 
 # ═══════════════════════════════════════════════════════════════════
-# e-Khata Form-Filling Assistance (₹99). Payment-gated intake.
-# Price is fixed server-side. Access = HMAC-signed token issued ONLY after
+# e-Khata Guide (PDF) — paid download, ₹99.
+# Price is fixed server-side. Download access = HMAC-signed token issued ONLY after
 # Razorpay signature check + payment fetch (captured, right order, ₹99).
-# Env needed for intake delivery: SMTP_HOST, SMTP_USER, SMTP_PASS (EKHATA_NOTIFY_EMAIL optional; defaults to tremendouscollections@gmail.com)
-# (optional: SMTP_PORT [465], EKHATA_TOKEN_SECRET). If not configured, orders are
-# refused (fail closed) so nobody is charged for a service that cannot deliver.
+# The PDF lives in _private/ (not published by GitHub Pages) and is served only here.
 # ═══════════════════════════════════════════════════════════════════
 EKHATA_PRICE_PAISE = 9900
-EKHATA_TOKEN_TTL = 7 * 24 * 3600
-_ekhata_submitted = set()  # payment ids already submitted (in-memory; resets on restart)
+EKHATA_TOKEN_TTL = 30 * 24 * 3600
+EKHATA_PDF_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_private", "ekhata-guide.pdf")
 
 
 def _ekhata_secret():
@@ -5368,46 +5366,27 @@ def _ekhata_read_token(token):
         return None
 
 
-def _ekhata_mail_ready():
-    return all(os.environ.get(k) for k in ("SMTP_HOST", "SMTP_USER", "SMTP_PASS"))
-
-
-def _ekhata_send_mail(subject, body, reply_to=None):
-    import smtplib
-    from email.message import EmailMessage
-    msg = EmailMessage()
-    msg["Subject"] = subject
-    msg["From"] = os.environ["SMTP_USER"]
-    msg["To"] = os.environ.get("EKHATA_NOTIFY_EMAIL") or "tremendouscollections@gmail.com"
-    if reply_to:
-        msg["Reply-To"] = reply_to
-    msg.set_content(body)
-    port = int(os.environ.get("SMTP_PORT", "465"))
-    if port == 465:
-        with smtplib.SMTP_SSL(os.environ["SMTP_HOST"], port, timeout=20) as s:
-            s.login(os.environ["SMTP_USER"], os.environ["SMTP_PASS"]); s.send_message(msg)
-    else:
-        with smtplib.SMTP(os.environ["SMTP_HOST"], port, timeout=20) as s:
-            s.starttls(); s.login(os.environ["SMTP_USER"], os.environ["SMTP_PASS"]); s.send_message(msg)
+def _ekhata_ready():
+    return os.path.isfile(EKHATA_PDF_PATH) and bool(os.environ.get("RAZORPAY_KEY_ID")) and bool(os.environ.get("RAZORPAY_KEY_SECRET"))
 
 
 @app.route("/api/ekhata/status", methods=["GET", "OPTIONS"])
 def ekhata_status():
-    return jsonify({"available": _ekhata_mail_ready()})
+    return jsonify({"available": _ekhata_ready()})
 
 
 @app.route("/api/ekhata/create-order", methods=["POST", "OPTIONS"])
 def ekhata_create_order():
     if request.method == "OPTIONS":
         return "", 200
-    if not _ekhata_mail_ready():
+    if not _ekhata_ready():
         return jsonify({"error": "Service temporarily unavailable. You have not been charged."}), 503
     try:
         order = rzp.order.create({
             "amount": EKHATA_PRICE_PAISE,  # hardcoded, never trust the client
             "currency": "INR",
             "receipt": f"ekhata_{os.urandom(5).hex()}",
-            "notes": {"service": "ekhata-assist"},
+            "notes": {"product": "ekhata-guide-pdf"},
         })
         return jsonify({"order_id": order["id"], "amount": order["amount"],
                         "currency": order["currency"], "razorpay_key": os.environ.get("RAZORPAY_KEY_ID")})
@@ -5453,39 +5432,21 @@ def ekhata_session():
     t = _ekhata_read_token((request.get_json(silent=True) or {}).get("token"))
     if not t:
         return jsonify({"valid": False}), 401
-    return jsonify({"valid": True, "submitted": t[1] in _ekhata_submitted})
+    return jsonify({"valid": True})
 
 
-@app.route("/api/ekhata/submit", methods=["POST", "OPTIONS"])
-def ekhata_submit():
+@app.route("/api/ekhata/download", methods=["POST", "OPTIONS"])
+def ekhata_download():
+    """Serves the PDF only for a valid paid token."""
     if request.method == "OPTIONS":
         return "", 200
-    d = request.get_json(silent=True) or {}
-    t = _ekhata_read_token(d.get("token"))
-    if not t:
-        return jsonify({"success": False, "error": "Payment required."}), 401
-    order_id, payment_id = t
-    if payment_id in _ekhata_submitted:
-        return jsonify({"success": False, "error": "Your details were already submitted. We will contact you."}), 409
-    f = d.get("form") or {}
-    clean = lambda k, n: str(f.get(k, "")).strip()[:n]
-    name, mobile, email = clean("name", 80), re.sub(r"\D", "", clean("mobile", 20)), clean("email", 120)
-    ptype, location, ident, note = clean("property_type", 40), clean("location", 160), clean("property_id", 120), clean("note", 600)
-    if len(name) < 2 or not re.fullmatch(r"(91)?[6-9]\d{9}", mobile) or not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", email) \
-            or ptype not in ("urban-e-aasthi", "rural-e-swathu", "not-sure") or len(location) < 3 or not f.get("consent"):
-        return jsonify({"success": False, "error": "Please fill all required fields correctly."}), 400
-    allowed = {"registration-number", "ec", "owner-photos", "property-photo", "aadhaar-mobile", "khata-certificate", "tax-receipt"}
-    docs = [x for x in (f.get("docs") or []) if x in allowed][:10] if isinstance(f.get("docs"), list) else []
-    body = (f"e-Khata assistance request (PAID ₹99)\nPayment ID: {payment_id}\nOrder ID: {order_id}\n\n"
-            f"Name: {name}\nMobile: {mobile}\nEmail: {email}\nProperty type: {ptype}\nLocation: {location}\n"
-            f"Khata/Property/Survey no.: {ident or '-'}\nDocuments they have ready: {', '.join(docs) or '-'}\nNote: {note or '-'}\n")
-    try:
-        _ekhata_send_mail(f"e-Khata assistance: {name} ({payment_id[-8:]})", body, reply_to=email)
-    except Exception as e:
-        print(f"ekhata mail error: {e}")
-        return jsonify({"success": False, "error": "Could not send your details. Please try again; do not pay again."}), 502
-    _ekhata_submitted.add(payment_id)
-    return jsonify({"success": True, "reference": payment_id[-8:]})
+    if not _ekhata_read_token((request.get_json(silent=True) or {}).get("token")):
+        return jsonify({"error": "Payment required."}), 401
+    if not os.path.isfile(EKHATA_PDF_PATH):
+        return jsonify({"error": "File unavailable. Please contact support."}), 503
+    from flask import send_file
+    return send_file(EKHATA_PDF_PATH, mimetype="application/pdf", as_attachment=True,
+                     download_name="e-Khata-Made-Easy-Karnataka-Guide.pdf")
 
 
 if __name__ == "__main__":

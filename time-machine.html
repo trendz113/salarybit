@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The 15-Year Time Machine: what would you have missed? | SalaryBit</title>
+<meta name="description" content="Enter your salary and see two versions of you after 15 years: the one who forgot to invest and insure, and the slightly organised one. A funny, honest what-if. Illustration, not advice.">
+<link rel="canonical" href="https://salarybit.in/time-machine.html">
+<meta property="og:title" content="The 15-Year Time Machine | SalaryBit"><meta property="og:description" content="Two versions of you after 15 years. One forgot. One didn't. See the difference."><meta property="og:url" content="https://salarybit.in/time-machine.html"><meta property="og:type" content="website">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QFHT4BZTMF"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QFHT4BZTMF');</script>
+<style>
+:root{--navy:#0b1f3a;--teal:#0d9488;--lime:#b6ff3b;--bg:#f8fafc;--line:#e2e8f0;--mut:#475569}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--navy);background:var(--bg);line-height:1.5}
+.w{max-width:720px;margin:0 auto;padding:0 1rem}a{color:var(--teal)}
+header{background:var(--navy);padding:.8rem 0}header a{color:#fff;text-decoration:none;font-weight:700}
+.hero{background:linear-gradient(135deg,#0b1f3a,#14433f);color:#fff;padding:1.8rem 0 2rem}.hero h1{font-size:1.65rem;line-height:1.2;margin:0 0 .5rem}.hero p{color:#cbd5e1;margin:0}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:1rem;margin:1rem 0}
+label{display:block;font-weight:700;font-size:14px;margin:.8rem 0 .25rem}input[type=number],select{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:16px}input[type=range]{width:100%}
+.go{display:block;width:100%;border:0;border-radius:12px;background:var(--lime);color:#0b1f3a;font-weight:900;font-size:1.1rem;padding:15px;margin-top:1rem;cursor:pointer}
+.row{display:grid;gap:.8rem}.tl{border-radius:14px;padding:1rem;border:1px solid var(--line);background:#fff}.tl h3{margin:0 0 .2rem;font-size:1rem}.big{font-size:1.9rem;font-weight:900;margin:.1rem 0}.quip{font-size:14px;color:var(--mut);margin:.3rem 0 0}
+.good{border-color:#5eead4;background:#f0fdfa}.late{border-color:#fde68a;background:#fffbeb}.never{border-color:#fecaca;background:#fef2f2}
+.meter{height:14px;background:#e2e8f0;border-radius:99px;overflow:hidden}.meter>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#fde047,#ef4444);transition:width 1s}
+h2{font-size:1.2rem;margin:1.4rem 0 .4rem}.small{font-size:12.5px;color:var(--mut)}ul{margin:.4rem 0;padding-left:1.2rem}li{margin:.35rem 0}
+.steps{display:grid;gap:.6rem}.steps a{display:block;padding:12px 14px;border:1px solid var(--line);background:#fff;border-radius:12px;text-decoration:none;font-weight:700}.steps span{display:block;font-weight:400;font-size:13px;color:var(--mut)}
+.btn2{display:inline-block;border:1.5px solid var(--navy);background:#fff;color:var(--navy);font-weight:700;border-radius:10px;padding:10px 14px;cursor:pointer;font-size:14px}
+#out{display:none}footer{padding:1.5rem 0 3rem}
+@media(prefers-reduced-motion:reduce){.meter>i{transition:none}}
+</style></head><body>
+<header><div class="w"><a href="/">💰 SalaryBit</a></div></header>
+<div class="hero"><div class="w"><h1>The 15-Year Time Machine ⏳</h1><p>Start of your first salary. Fast-forward 15 years. Two versions of you. One forgot to invest and insure. One didn't. Let's see the damage.</p></div></div>
+<main class="w">
+<div class="card"><label for="sal">Monthly in-hand salary (₹)</label><input id="sal" type="number" inputmode="numeric" value="40000" min="5000" max="1000000">
+<label for="pct">Set aside for investing: <b id="pctv">10%</b> of salary</label><input id="pct" type="range" min="5" max="30" value="10">
+<label for="ret">Assumed yearly return</label><select id="ret"><option value="8">8% (cautious)</option><option value="10" selected>10% (middle)</option><option value="12">12% (optimistic)</option></select>
+<button class="go" id="go" type="button">Fast-forward 15 years ⏩</button></div>
+
+<div id="out" aria-live="polite">
+<div class="row">
+<div class="tl good"><h3>😎 Slightly Organised You</h3><div class="big" id="a">-</div><p class="small" id="ai"></p><p class="quip">Started the SIP in year 1. Did not feel it. Now feels like a genius.</p></div>
+<div class="tl late"><h3>🙂 "I'll start next year" You</h3><div class="big" id="b">-</div><p class="small" id="bi"></p><p class="quip">Said "next month" 60 times, started after 5 years. Missed <b id="gap"></b> by waiting.</p></div>
+<div class="tl never"><h3>🫠 Forgetful You</h3><div class="big">₹0</div><p class="small">Invested nothing.</p><p class="quip">Salary arrived. Salary left. Nobody saw where it went.</p></div></div>
+<div class="card"><b>Regret meter (for fun)</b> <span class="small">how much of the organised pile the late starter missed</span><div class="meter" style="margin-top:.5rem"><i id="m"></i></div><p class="small" id="mt"></p></div>
+
+<h2>The two things your salary slip never mentions</h2>
+<div class="card"><b>🏥 Medical cover that belongs to the job</b>
+<p class="small" style="margin-top:.3rem">Employer health cover typically ends when employment ends, and group cover often has a modest sum insured, commonly around ₹3 to 5 lakh. A fresh personal policy can restart waiting periods, and premiums rise with age.</p>
+<label for="bill">If a hospital bill of this size arrived in the gap between jobs:</label><select id="bill"><option value="300000">₹3 lakh</option><option value="500000" selected>₹5 lakh</option><option value="1000000">₹10 lakh</option></select>
+<p id="billt" style="font-weight:700;margin:.6rem 0 0"></p></div>
+<div class="card"><b>🛡️ Term life with accidental cover</b>
+<p class="small" style="margin-top:.3rem">Cover is usually easier and cheaper to get while you are young and healthy. A common rule of thumb is 10 to 15 times your yearly income. It is only a starting point: your loans, dependants and savings change the number.</p>
+<p id="termt" style="font-weight:700;margin:.6rem 0 0"></p></div>
+
+<h2>Do the slightly organised thing</h2>
+<div class="steps"><a href="/tools/sip-calculator.html" data-s="sip">📈 Start a SIP<span>Try your own numbers in the SIP calculator</span></a>
+<a href="/insurance-reality-check.html" data-s="insurance-check">🔍 Check your insurance<span>See what cover you really have</span></a>
+<a href="/insurance-mitra.html" data-s="mitra">🛡️ Insurance Mitra<span>Help understanding claims and cover</span></a></div>
+<p style="margin-top:1rem"><button class="btn2" id="share" type="button">Share my result 📲</button> <span class="small" id="sh"></span></p>
+</div>
+
+<p class="small" style="margin-top:1.4rem"><b>Illustration, not advice.</b> Numbers assume a fixed monthly investment, steady returns and no tax or fees. Real investment returns are not guaranteed and can be negative. Insurance terms, premiums and exclusions vary by insurer, so read the policy and ask a qualified professional. SalaryBit is an independent site and is not affiliated with any insurer, fund or government body.</p>
+</main>
+<footer><div class="w small"><a href="/">Home</a> · <a href="/all-tools.html">All tools</a></div></footer>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i);};
+function inr(n){n=Math.round(n);if(n>=1e7)return '₹'+(n/1e7).toFixed(2)+' crore';if(n>=1e5)return '₹'+(n/1e5).toFixed(1)+' lakh';return '₹'+n.toLocaleString('en-IN');}
+function fv(m,r,y){var i=r/12/100,n=y*12;return m*((Math.pow(1+i,n)-1)/i)*(1+i);}
+$('pct').oninput=function(){$('pctv').textContent=this.value+'%';};
+function count(el,to,dur){var s=null,red=window.matchMedia('(prefers-reduced-motion: reduce)').matches;if(red){el.textContent=inr(to);return;}
+ function f(t){if(!s)s=t;var p=Math.min(1,(t-s)/dur);el.textContent=inr(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f);}requestAnimationFrame(f);}
+var last='';
+$('go').onclick=function(){
+ var sal=Math.max(5000,Math.min(1000000,+$('sal').value||0)),pct=+$('pct').value,r=+$('ret').value,sip=Math.max(500,Math.round(sal*pct/100/500)*500);
+ var a=fv(sip,r,15),b=fv(sip,r,10),inv15=sip*180,inv10=sip*120;
+ $('out').style.display='block';
+ count($('a'),a,1200);count($('b'),b,1200);
+ $('ai').textContent='₹'+sip.toLocaleString('en-IN')+' a month for 15 years. You put in '+inr(inv15)+'.';
+ $('bi').textContent='Same SIP, but only 10 years. You put in '+inr(inv10)+'.';
+ $('gap').textContent=inr(a-b);
+ var reg=Math.round((a-b)/a*100);$('m').style.width='0';setTimeout(function(){$('m').style.width=reg+'%';},50);
+ $('mt').textContent='Waiting 5 years cost about '+reg+'% of the pile.';
+ $('bill').onchange=bill;function bill(){var v=+$('bill').value;$('billt').textContent=inr(v)+' is about '+(v/sal).toFixed(1)+' months of your entire salary.';}bill();
+ $('termt').textContent='10 to 15 times your yearly income is roughly '+inr(sal*12*10)+' to '+inr(sal*12*15)+'.';
+ last='My ₹'+sip.toLocaleString('en-IN')+'/month SIP could grow to about '+inr(a)+' in 15 years. Waiting 5 years would miss about '+inr(a-b)+'. Try the 15-Year Time Machine: https://salarybit.in/time-machine.html';
+ try{gtag('event','time_machine_run',{salary_band:sal<30000?'<30k':sal<60000?'30-60k':sal<100000?'60-100k':'100k+',return_pct:r});}catch(e){}
+ $('out').scrollIntoView({behavior:'smooth',block:'start'});
+};
+document.querySelectorAll('.steps a').forEach(function(x){x.addEventListener('click',function(){try{gtag('event','time_machine_next_step',{step:x.dataset.s});}catch(e){}});});
+$('share').onclick=function(){var t=last||'Try the 15-Year Time Machine: https://salarybit.in/time-machine.html';
+ if(navigator.share){navigator.share({text:t}).catch(function(){});}
+ else if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){$('sh').textContent='Copied!';},function(){$('sh').textContent='Copy not allowed here.';});}
+ try{gtag('event','time_machine_share');}catch(e){}};
+})();
+</script></body></html>

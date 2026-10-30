@@ -1,98 +1,133 @@
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>The 15-Year Time Machine: what would you have missed? | SalaryBit</title>
-<meta name="description" content="Enter your salary and see two versions of you after 15 years: the one who forgot to invest and insure, and the slightly organised one. A funny, honest what-if. Illustration, not advice.">
+<title>The 15-Year Money Game: can you beat Forgetful You? | SalaryBit</title>
+<meta name="description" content="Play 15 years of your salary life in 3 minutes. Pick SIPs, health cover and term insurance, survive layoffs, hospital bills and market crashes. A funny game. Not advice.">
 <link rel="canonical" href="https://salarybit.in/time-machine.html">
-<meta property="og:title" content="The 15-Year Time Machine | SalaryBit">
-<meta property="og:image" content="https://salarybit.in/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://salarybit.in/og-image.png"><meta property="og:description" content="Two versions of you after 15 years. One forgot. One didn't. See the difference."><meta property="og:url" content="https://salarybit.in/time-machine.html"><meta property="og:type" content="website">
+<meta property="og:title" content="The 15-Year Money Game | SalaryBit"><meta property="og:description" content="15 years. 15 decisions. Can you beat Forgetful You?"><meta property="og:url" content="https://salarybit.in/time-machine.html"><meta property="og:type" content="website">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QFHT4BZTMF"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QFHT4BZTMF');</script>
 <style>
-:root{--navy:#0b1f3a;--teal:#0d9488;--lime:#b6ff3b;--bg:#f8fafc;--line:#e2e8f0;--mut:#475569}
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--navy);background:var(--bg);line-height:1.5}
-.w{max-width:720px;margin:0 auto;padding:0 1rem}a{color:var(--teal)}
-header{background:var(--navy);padding:.8rem 0}header a{color:#fff;text-decoration:none;font-weight:700}
-.hero{background:linear-gradient(135deg,#0b1f3a,#14433f);color:#fff;padding:1.8rem 0 2rem}.hero h1{font-size:1.65rem;line-height:1.2;margin:0 0 .5rem}.hero p{color:#cbd5e1;margin:0}
-.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:1rem;margin:1rem 0}
-label{display:block;font-weight:700;font-size:14px;margin:.8rem 0 .25rem}input[type=number],select{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:16px}input[type=range]{width:100%}
-.go{display:block;width:100%;border:0;border-radius:12px;background:var(--lime);color:#0b1f3a;font-weight:900;font-size:1.1rem;padding:15px;margin-top:1rem;cursor:pointer}
-.row{display:grid;gap:.8rem}.tl{border-radius:14px;padding:1rem;border:1px solid var(--line);background:#fff}.tl h3{margin:0 0 .2rem;font-size:1rem}.big{font-size:1.9rem;font-weight:900;margin:.1rem 0}.quip{font-size:14px;color:var(--mut);margin:.3rem 0 0}
-.good{border-color:#5eead4;background:#f0fdfa}.late{border-color:#fde68a;background:#fffbeb}.never{border-color:#fecaca;background:#fef2f2}
-.meter{height:14px;background:#e2e8f0;border-radius:99px;overflow:hidden}.meter>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#fde047,#ef4444);transition:width 1s}
-h2{font-size:1.2rem;margin:1.4rem 0 .4rem}.small{font-size:12.5px;color:var(--mut)}ul{margin:.4rem 0;padding-left:1.2rem}li{margin:.35rem 0}
-.steps{display:grid;gap:.6rem}.steps a{display:block;padding:12px 14px;border:1px solid var(--line);background:#fff;border-radius:12px;text-decoration:none;font-weight:700}.steps span{display:block;font-weight:400;font-size:13px;color:var(--mut)}
-.btn2{display:inline-block;border:1.5px solid var(--navy);background:#fff;color:var(--navy);font-weight:700;border-radius:10px;padding:10px 14px;cursor:pointer;font-size:14px}
-#out{display:none}footer{padding:1.5rem 0 3rem}
-@media(prefers-reduced-motion:reduce){.meter>i{transition:none}}
-</style></head><body>
-<header><div class="w"><a href="/">💰 SalaryBit</a></div></header>
-<div class="hero"><div class="w"><h1>The 15-Year Time Machine ⏳</h1><p>Start of your first salary. Fast-forward 15 years. Two versions of you. One forgot to invest and insure. One didn't. Let's see the damage.</p></div></div>
-<main class="w">
-<div class="card"><label for="sal">Monthly in-hand salary (₹)</label><input id="sal" type="number" inputmode="numeric" value="40000" min="5000" max="1000000">
-<label for="pct">Set aside for investing: <b id="pctv">10%</b> of salary</label><input id="pct" type="range" min="5" max="30" value="10">
-<label for="ret">Assumed yearly return</label><select id="ret"><option value="8">8% (cautious)</option><option value="10" selected>10% (middle)</option><option value="12">12% (optimistic)</option></select>
-<button class="go" id="go" type="button">Fast-forward 15 years ⏩</button></div>
-
-<div id="out" aria-live="polite">
-<div class="row">
-<div class="tl good"><h3>😎 Slightly Organised You</h3><div class="big" id="a">-</div><p class="small" id="ai"></p><p class="quip">Started the SIP in year 1. Did not feel it. Now feels like a genius.</p></div>
-<div class="tl late"><h3>🙂 "I'll start next year" You</h3><div class="big" id="b">-</div><p class="small" id="bi"></p><p class="quip">Said "next month" 60 times, started after 5 years. Missed <b id="gap"></b> by waiting.</p></div>
-<div class="tl never"><h3>🫠 Forgetful You</h3><div class="big">₹0</div><p class="small">Invested nothing.</p><p class="quip">Salary arrived. Salary left. Nobody saw where it went.</p></div></div>
-<div class="card"><b>Regret meter (for fun)</b> <span class="small">how much of the organised pile the late starter missed</span><div class="meter" style="margin-top:.5rem"><i id="m"></i></div><p class="small" id="mt"></p></div>
-
-<h2>The two things your salary slip never mentions</h2>
-<div class="card"><b>🏥 Medical cover that belongs to the job</b>
-<p class="small" style="margin-top:.3rem">Employer health cover typically ends when employment ends, and group cover often has a modest sum insured, commonly around ₹3 to 5 lakh. A fresh personal policy can restart waiting periods, and premiums rise with age.</p>
-<label for="bill">If a hospital bill of this size arrived in the gap between jobs:</label><select id="bill"><option value="300000">₹3 lakh</option><option value="500000" selected>₹5 lakh</option><option value="1000000">₹10 lakh</option></select>
-<p id="billt" style="font-weight:700;margin:.6rem 0 0"></p></div>
-<div class="card"><b>🛡️ Term life with accidental cover</b>
-<p class="small" style="margin-top:.3rem">Cover is usually easier and cheaper to get while you are young and healthy. A common rule of thumb is 10 to 15 times your yearly income. It is only a starting point: your loans, dependants and savings change the number.</p>
-<p id="termt" style="font-weight:700;margin:.6rem 0 0"></p></div>
-
-<h2>Do the slightly organised thing</h2>
-<div class="steps"><a href="/tools/sip-calculator.html" data-s="sip">📈 Start a SIP<span>Try your own numbers in the SIP calculator</span></a>
-<a href="/insurance-reality-check.html" data-s="insurance-check">🔍 Check your insurance<span>See what cover you really have</span></a>
-<a href="/insurance-mitra.html" data-s="mitra">🛡️ Insurance Mitra<span>Help understanding claims and cover</span></a></div>
-<p style="margin-top:1rem"><button class="btn2" id="share" type="button">Share my result 📲</button> <span class="small" id="sh"></span></p>
+:root{--bg:#0b1020;--card:#151d3a;--line:#27315c;--tx:#eef2ff;--mut:#9aa7d6;--lime:#b6ff3b;--teal:#2dd4bf;--red:#ff6b6b;--gold:#ffd166}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.45}
+.w{max-width:560px;margin:0 auto;padding:0 14px 40px}a{color:var(--teal)}
+.top{display:flex;justify-content:space-between;align-items:center;padding:12px 0}.top a{color:#fff;text-decoration:none;font-weight:800}
+h1{font-size:1.7rem;line-height:1.15;margin:.4rem 0}.sub{color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
+.btn{display:block;width:100%;text-align:left;border:1.5px solid var(--line);background:#1b2547;color:var(--tx);border-radius:12px;padding:13px 14px;margin:9px 0;font-size:15px;cursor:pointer}
+.btn:hover,.btn:focus-visible{border-color:var(--lime);outline:none}.btn small{display:block;color:var(--mut);margin-top:2px}
+.go{background:var(--lime);color:#0b1020;font-weight:900;text-align:center;border:0;font-size:1.05rem}
+label{display:block;font-weight:700;font-size:14px;margin:12px 0 4px}input[type=number]{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#0f1630;color:var(--tx);font-size:16px}
+.hud{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:6px 0}.pill{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:7px 4px;text-align:center}.pill b{display:block;font-size:15px}.pill span{font-size:11px;color:var(--mut)}
+.bar{height:10px;background:#0f1630;border-radius:99px;overflow:hidden;border:1px solid var(--line)}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--lime));width:0;transition:width .5s}
+.meters{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}.m small{color:var(--mut)}.m .bar i{background:linear-gradient(90deg,#fb7185,#facc15)}.m.f .bar i{background:linear-gradient(90deg,#a78bfa,#f0abfc)}
+.emoji{font-size:44px;line-height:1}.res{border-left:4px solid var(--lime);padding:8px 12px;background:#0f1630;border-radius:8px;margin:10px 0}.res.bad{border-color:var(--red)}
+.chips span{display:inline-block;margin:3px 4px 0 0;padding:4px 10px;border-radius:99px;background:#26306a;font-size:12.5px}
+.grade{font-size:64px;font-weight:900;color:var(--gold);line-height:1}.row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)}
+.small{font-size:12px;color:var(--mut)}.steps a{display:block;padding:12px;margin:8px 0;border:1px solid var(--line);border-radius:12px;text-decoration:none;color:var(--tx);font-weight:700;background:#1b2547}.steps span{display:block;font-weight:400;color:var(--mut);font-size:13px}
+.pop{position:fixed;left:50%;top:38%;transform:translate(-50%,0);font-size:30px;font-weight:900;pointer-events:none;animation:up 1.1s ease-out forwards;z-index:9}@keyframes up{to{transform:translate(-50%,-90px);opacity:0}}
+@media(prefers-reduced-motion:reduce){.pop{animation:none;opacity:0}.bar i{transition:none}}
+</style></head><body><div class="w">
+<div class="top"><a href="/">💰 SalaryBit</a><a href="/all-tools.html" style="font-weight:600;color:var(--mut)">All tools</a></div>
+<div id="app"></div>
+<p class="small" style="margin-top:22px"><b>A game, not advice.</b> It assumes steady 10% yearly returns, salary rising 8% a year, health premium about 3% and term premium about 1.5% of yearly salary (higher if bought late), group health cover of ₹3 lakh and a ₹6 lakh hospital bill. These are game assumptions; real returns can be negative and real premiums, claims and exclusions vary. Check policies and talk to a qualified professional. SalaryBit is independent of any insurer or fund.</p>
 </div>
-
-<p class="small" style="margin-top:1.4rem"><b>Illustration, not advice.</b> Numbers assume a fixed monthly investment, steady returns and no tax or fees. Real investment returns are not guaranteed and can be negative. Insurance terms, premiums and exclusions vary by insurer, so read the policy and ask a qualified professional. SalaryBit is an independent site and is not affiliated with any insurer, fund or government body.</p>
-</main>
-<footer><div class="w small"><a href="/">Home</a> · <a href="/all-tools.html">All tools</a></div></footer>
 <script>
 (function(){
-var $=function(i){return document.getElementById(i);};
-function inr(n){n=Math.round(n);if(n>=1e7)return '₹'+(n/1e7).toFixed(2)+' crore';if(n>=1e5)return '₹'+(n/1e5).toFixed(1)+' lakh';return '₹'+n.toLocaleString('en-IN');}
-function fv(m,r,y){var i=r/12/100,n=y*12;return m*((Math.pow(1+i,n)-1)/i)*(1+i);}
-$('pct').oninput=function(){$('pctv').textContent=this.value+'%';};
-function count(el,to,dur){var s=null,red=window.matchMedia('(prefers-reduced-motion: reduce)').matches;if(red){el.textContent=inr(to);return;}
- function f(t){if(!s)s=t;var p=Math.min(1,(t-s)/dur);el.textContent=inr(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f);}requestAnimationFrame(f);}
-var last='';
-$('go').onclick=function(){
- var sal=Math.max(5000,Math.min(1000000,+$('sal').value||0)),pct=+$('pct').value,r=+$('ret').value,sip=Math.max(500,Math.round(sal*pct/100/500)*500);
- var a=fv(sip,r,15),b=fv(sip,r,10),inv15=sip*180,inv10=sip*120;
- $('out').style.display='block';
- count($('a'),a,1200);count($('b'),b,1200);
- $('ai').textContent='₹'+sip.toLocaleString('en-IN')+' a month for 15 years. You put in '+inr(inv15)+'.';
- $('bi').textContent='Same SIP, but only 10 years. You put in '+inr(inv10)+'.';
- $('gap').textContent=inr(a-b);
- var reg=Math.round((a-b)/a*100);$('m').style.width='0';setTimeout(function(){$('m').style.width=reg+'%';},50);
- $('mt').textContent='Waiting 5 years cost about '+reg+'% of the pile.';
- $('bill').onchange=bill;function bill(){var v=+$('bill').value;$('billt').textContent=inr(v)+' is about '+(v/sal).toFixed(1)+' months of your entire salary.';}bill();
- $('termt').textContent='10 to 15 times your yearly income is roughly '+inr(sal*12*10)+' to '+inr(sal*12*15)+'.';
- last='My ₹'+sip.toLocaleString('en-IN')+'/month SIP could grow to about '+inr(a)+' in 15 years. Waiting 5 years would miss about '+inr(a-b)+'. Try the 15-Year Time Machine: https://salarybit.in/time-machine.html';
- try{gtag('event','time_machine_run',{salary_band:sal<30000?'<30k':sal<60000?'30-60k':sal<100000?'60-100k':'100k+',return_pct:r});}catch(e){}
- $('out').scrollIntoView({behavior:'smooth',block:'start'});
-};
-document.querySelectorAll('.steps a').forEach(function(x){x.addEventListener('click',function(){try{gtag('event','time_machine_next_step',{step:x.dataset.s});}catch(e){}});});
-$('share').onclick=function(){var t=last||'Try the 15-Year Time Machine: https://salarybit.in/time-machine.html';
- if(navigator.share){navigator.share({text:t}).catch(function(){});}
- else if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){$('sh').textContent='Copied!';},function(){$('sh').textContent='Copy not allowed here.';});}
- try{gtag('event','time_machine_share');}catch(e){}};
+var $=function(i){return document.getElementById(i);},app=$('app'),R=0.10;
+function inr(n){n=Math.round(n);var s=n<0?'-':'';n=Math.abs(n);if(n>=1e7)return s+'₹'+(n/1e7).toFixed(2)+' cr';if(n>=1e5)return s+'₹'+(n/1e5).toFixed(1)+' L';return s+'₹'+n.toLocaleString('en-IN');}
+function ev(n,p){try{gtag('event',n,p||{});}catch(e){}}
+var EV=[null,
+{e:'💼',t:'Payroll day!',d:'First salary hits. Your phone buzzes. Your wallet does a happy dance.',best:1,c:[
+ {l:'Auto-invest 10% in a SIP',f:function(S){S.pct=10;S.xp+=15;S.peace+=5;return['SIP set. Future you nods quietly.',1];}},
+ {l:'Auto-invest 20% in a SIP',f:function(S){S.pct=20;S.xp+=25;S.fun-=5;return['Bold. Future you sends a thank-you biryani.',1];}},
+ {l:'Treat yourself first, invest "later"',f:function(S){S.pct=0;S.fun+=10;return['Later is a lovely place. Nobody has ever reached it.',0];}}]},
+{e:'🏥',t:'HR: "You have company health cover!"',d:'Congrats? That cover belongs to the job, not to you. It ends when the job does.',best:0,c:[
+ {l:'Also buy my own health policy',s:'costs about 3% of yearly salary (game assumption)',f:function(S){S.health=true;S.hm=1;S.peace+=12;S.xp+=25;return['Your cover now travels with you, even between jobs.',1];}},
+ {l:'Company cover is enough',f:function(S){S.peace-=2;return['Cover that belongs to the job. Noted. Hmm.',0];}}]},
+{e:'🎁',t:'Annual bonus!',d:'A bonus worth 1.5 months of salary lands. Everyone has a plan for it.',best:0,c:[
+ {l:'Invest all of it',f:function(S){S.cor+=S.sal*1.5;S.xp+=20;return['All in the pot. Gold star.',1];}},
+ {l:'Invest half, enjoy half',f:function(S){S.cor+=S.sal*.75;S.fun+=6;S.xp+=10;return['Balanced. Your CA is mildly proud.',1];}},
+ {l:'Splurge it all',f:function(S){S.fun+=14;return['Great weekend. Terrible compounding.',0];}}]},
+{e:'📱',t:'New flagship phone launches',d:'Everyone in the office has it. Your old phone has started whispering "please retire me".',best:2,c:[
+ {l:'Buy it (cost: 1 month of salary)',f:function(S){S.cor=Math.max(0,S.cor-S.sal);S.fun+=10;return['Camera: 200MP. Savings: ouch.',0];}},
+ {l:'Place a fake order on Phone Never Comes',f:function(S){S.badge('phone','📦 Phone Never Came');S.fun+=8;S.xp+=20;return['Rider is lost. Your money is not.',1];}},
+ {l:'Keep the old phone, invest the difference',f:function(S){S.cor+=S.sal*.5;S.xp+=18;return['The old phone lives on. So does the money.',1];}}]},
+{e:'🛡️',t:'A colleague\'s family is struggling',d:'After a sudden accident, there was no cover to fall back on. It makes you think.',best:0,c:[
+ {l:'Buy term life with accident cover',s:'costs about 1.5% of yearly salary (game assumption)',f:function(S){S.term=true;S.tm=1;S.peace+=14;S.xp+=25;return['Your family now has a safety net.',1];}},
+ {l:'Not now, I am young',f:function(S){S.peace-=3;return['Premiums usually rise with age. "Later" costs more.',0];}}]},
+{e:'📈',t:'Increment time!',d:'You get an 8% raise. HR calls it "a journey". Your SIP waits to hear from you.',best:0,c:[
+ {l:'Step the SIP up by 5 points',f:function(S){S.pct=Math.min(40,S.pct+5);S.xp+=15;return['Raise half-spent on future you. Nice move.',1];}},
+ {l:'Upgrade the lifestyle',f:function(S){S.fun+=10;return['New gadgets everywhere. Net worth unmoved.',0];}}]},
+{e:'📉',t:'Layoff. "Restructuring."',d:'Your company cover will end in 30 days. The group health policy leaves with you.',best:0,c:[
+ {l:'Buy my own health cover now',f:function(S){S.gap=true;var m=0;if(!S.health){S.health=true;S.hm=1.4;m=1;}S.peace+=8;S.xp+=15;return[m?'Done, though buying late costs more.':'Smart. You already had your own cover.',1];}},
+ {l:'Pause the SIP and panic',f:function(S){S.gap=true;S.pause=1;S.peace-=8;return['SIP paused. Stress meter: loud.',0];}},
+ {l:'Stay calm, hope the new job comes fast',f:function(S){S.gap=true;S.xp+=5;return['Brave. Let us see how the gap goes.',0];}}]},
+{e:'🚑',t:'Hospital emergency',d:'A ₹6 lakh hospital bill arrives in the gap between jobs. Time to see what you set up.',best:0,c:[
+ {l:'Face it',f:function(S){var bill=600000,pay,msg,good=0;
+   if(S.health){pay=30000;S.peace-=3;msg='Your own policy handled it. You paid only ₹30,000.';good=1;S.xp+=20;}
+   else if(!S.gap){pay=300000;S.peace-=10;msg='Company cover paid ₹3 lakh. The rest came from your pocket.';}
+   else{pay=bill;S.peace-=20;msg='No cover in the gap. The whole ₹6 lakh came from your savings.';}
+   var sh=pay-S.cor;S.cor=Math.max(0,S.cor-pay);if(sh>0){S.peace-=10;msg+=' Savings fell short by '+inr(sh)+', so you borrowed it.';}
+   S.gap=false;return[msg,good];}}]},
+{e:'💥',t:'Market crash! Everyone is screaming',d:'Your SIP value drops 25% on paper. WhatsApp uncles recommend gold, land and panic.',best:2,c:[
+ {l:'Panic. Sell everything',f:function(S){S.cor*=.75;S.pause=2;S.peace-=5;return['Loss locked in, SIP stopped. The market recovers without you.',0];}},
+ {l:'Hold and do nothing',f:function(S){S.cor*=.75;S.rec=.10;S.xp+=15;return['Held the line. Paper loss, nothing sold.',1];}},
+ {l:'Keep the SIP, buy the dip',f:function(S){S.cor*=.75;S.rec=.18;S.xp+=25;S.badge('hands','💎 Diamond Hands');return['Same money now buys more. This is how it works.',1];}}]},
+function(S){if(S.term)return{e:'📈',t:'Increment time again',d:'Another raise. The SIP is staring at you.',best:0,c:[
+ {l:'Step the SIP up by 5 points',f:function(S){S.pct=Math.min(40,S.pct+5);S.xp+=15;return['Steady climbing.',1];}},
+ {l:'Keep it as it is',f:function(S){return['Fine. Not bad, not great.',0];}}]};
+ return{e:'🛡️',t:'Term cover, again',d:'You skipped it earlier. The premium is now higher, and still worth thinking about.',best:0,c:[
+ {l:'Buy term + accident cover now',s:'costs more than it would have earlier',f:function(S){S.term=true;S.tm=1.8;S.peace+=12;S.xp+=15;return['Late, but covered. Earlier would have been cheaper.',1];}},
+ {l:'Skip it again',f:function(S){S.peace-=3;return['Brave. The premium keeps climbing.',0];}}]};},
+{e:'🚗',t:'Car showroom temptation',d:'The salesman says: "Sir, just a small EMI." Small is doing a lot of work here.',best:2,c:[
+ {l:'Big car loan, big dreams',f:function(S){S.pct=Math.max(0,S.pct-8);S.fun+=12;return['The EMI eats your SIP room.',0];}},
+ {l:'Buy a used car, keep the SIP',f:function(S){S.xp+=10;S.fun+=6;return['Wheels and wealth.',1];}},
+ {l:'Metro and cabs',f:function(S){S.cor+=S.sal*.4;S.xp+=15;return['No parking drama. Extra savings.',1];}}]},
+{e:'🤑',t:'"Guaranteed 3x returns!" tip',d:'A friend of a friend has a sure-shot tip. It comes with a screenshot and a rocket emoji.',best:1,c:[
+ {l:'Put 25% of my pot in it',f:function(S){S.cor*=.75;S.fun-=5;return['The tip vanished. So did the screenshot.',0];}},
+ {l:'Ignore it, keep the SIP',f:function(S){S.xp+=20;S.badge('tip','🚫 Tip Dodger');return['If it guarantees 3x, it is a trap.',1];}}]},
+{e:'📈',t:'Increment number three',d:'Another raise. The SIP waves hello.',best:0,c:[
+ {l:'Step the SIP up by 5 points',f:function(S){S.pct=Math.min(40,S.pct+5);S.xp+=15;return['Compounding is blushing.',1];}},
+ {l:'Skip this time',f:function(S){return['No harm. No boost either.',0];}}]},
+{e:'🏖️',t:'Family trip',d:'The family wants a holiday. You also want one.',best:1,c:[
+ {l:'Splurge: resorts and reels',f:function(S){S.cor=Math.max(0,S.cor-S.sal*1.2);S.fun+=12;S.peace+=5;return['Great memories. Heavy bill.',0];}},
+ {l:'Smart budget trip',f:function(S){S.cor=Math.max(0,S.cor-S.sal*.3);S.fun+=8;S.peace+=5;return['Same smiles, smaller bill.',1];}}]},
+{e:'🏁',t:'Year 15. Salary credited.',d:'You glance at the notification and smile. Let us see how the 15-year run went.',best:0,c:[
+ {l:'Show my results',f:function(S){S.xp+=10;return['Here we go.',1];}}]}
+];
+function newS(sal){var S={y:1,sal:sal,pct:0,cor:0,peace:55,fun:50,xp:0,health:false,hm:1,term:false,tm:1,gap:false,pause:0,rec:0,badges:{},
+ badge:function(k,t){S.badges[k]=t;}};return S;}
+function getEv(S){var e=EV[S.y];return typeof e==='function'?e(S):e;}
+function growYear(S){var sip=S.pause>0?0:Math.round(S.sal*S.pct/100/100)*100,i=R/12;
+ for(var m=0;m<12;m++)S.cor=S.cor*(1+i)+sip;if(S.rec){S.cor*=1+S.rec;S.rec=0;}if(S.pause>0)S.pause--;
+ var a=S.sal*12;if(S.health)S.cor=Math.max(0,S.cor-a*.03*S.hm);if(S.term)S.cor=Math.max(0,S.cor-a*.015*S.tm);
+ S.sal*=1.08;S.peace=Math.max(0,Math.min(100,S.peace));S.fun=Math.max(0,Math.min(100,S.fun));}
+function play(S,idx){var e=getEv(S),r=e.c[idx].f(S);growYear(S);S.y++;return r;}
+function ghost(sal){var S=newS(sal);while(S.y<=15){var e=getEv(S);play(S,e.best);}return S;}
+var S,cur,lastRes;
+function hud(){var lvl=Math.floor(S.xp/50)+1;return '<div class="hud"><div class="pill"><b>'+Math.min(S.y,15)+'/15</b><span>Year</span></div><div class="pill"><b>'+inr(S.cor)+'</b><span>Your pot</span></div><div class="pill"><b>Lv '+lvl+'</b><span>'+S.xp+' XP</span></div><div class="pill"><b>'+S.pct+'%</b><span>SIP</span></div></div><div class="bar" aria-label="progress"><i style="width:'+((S.y-1)/15*100)+'%"></i></div><div class="meters"><div class="m"><small>❤️ Peace of mind</small><div class="bar"><i style="width:'+S.peace+'%"></i></div></div><div class="m f"><small>😄 Fun</small><div class="bar"><i style="width:'+S.fun+'%"></i></div></div></div>';}
+function pop(t,c){var p=document.createElement('div');p.className='pop';p.style.color=c;p.textContent=t;document.body.appendChild(p);setTimeout(function(){p.remove();},1200);}
+function start(){app.innerHTML='<h1>The 15-Year Money Game ⏳</h1><p class="sub">Your first job. 15 years. 15 decisions. Invest, insure, survive layoffs, hospital bills and market crashes. Can you beat <b>Forgetful You</b>?</p><div class="card"><label for="sal">Your monthly in-hand salary (₹)</label><input id="sal" type="number" inputmode="numeric" value="40000" min="10000" max="500000"><button class="btn go" id="s" type="button" style="margin-top:14px">Start my career ▶</button></div><p class="small">3 minutes. Nothing is stored. Not advice, just a game with real lessons.</p>';
+ $('s').onclick=function(){var v=Math.max(10000,Math.min(500000,+$('sal').value||40000));S=newS(v);ev('game_start');render();};}
+function render(){if(S.y>15)return end();cur=getEv(S);var h=hud()+'<div class="card"><div class="emoji">'+cur.e+'</div><h2 style="margin:.4rem 0">'+cur.t+'</h2><p class="sub" style="margin:0 0 6px">'+cur.d+'</p>';
+ cur.c.forEach(function(c,i){h+='<button class="btn" data-i="'+i+'">'+c.l+(c.s?'<small>'+c.s+'</small>':'')+'</button>';});app.innerHTML=h+'</div>';
+ app.querySelectorAll('.btn').forEach(function(b){b.onclick=function(){choose(+b.dataset.i);};});window.scrollTo(0,0);}
+function choose(i){var before=S.cor,r=play(S,i);lastRes=r;pop(r[1]?'+XP ✨':'oops 😬',r[1]?'#b6ff3b':'#ff6b6b');
+ app.innerHTML=hud()+'<div class="card"><div class="res '+(r[1]?'':'bad')+'" aria-live="polite"><b>'+(r[1]?'Good move!':'Hmm.')+'</b><br>'+r[0]+'</div><p class="small">Year passed. Your pot: '+inr(before)+' → <b>'+inr(S.cor)+'</b></p><button class="btn go" id="n" type="button">'+(S.y>15?'See my 15-year result ▶':'Next year ▶')+'</button></div>';
+ $('n').onclick=render;window.scrollTo(0,0);}
+function end(){var G=ghost(+S.sal/Math.pow(1.08,15)),C=S.cor,ratio=G.cor?C/G.cor:0,g=ratio>=.85?'S':ratio>=.6?'A':ratio>=.35?'B':C>0?'C':'D',
+ titles={S:'Retire-at-a-Chai-Tapri Legend',A:'Slightly Organised Hero',B:'Getting There, Boss',C:'Forgetful You Waved at You',D:'Forgetful You Won. Oops.'};
+ if(S.pct>=10)S.badge('sip','🔁 SIP Samurai');if(S.health&&S.term)S.badge('cover','🛡️ Cover Hero');
+ var chips=Object.keys(S.badges).map(function(k){return '<span>'+S.badges[k]+'</span>';}).join('')||'<span>No badges yet. Play again!</span>';
+ var txt='I scored grade '+g+' ('+titles[g]+') in the 15-Year Money Game with a pot of '+inr(C)+'. Can you beat Forgetful You? https://salarybit.in/time-machine.html';
+ app.innerHTML='<div class="card" style="text-align:center"><div class="small">Your 15-year result</div><div class="grade">'+g+'</div><h2 style="margin:.3rem 0">'+titles[g]+'</h2><div style="font-size:1.8rem;font-weight:900;color:var(--lime)">'+inr(C)+'</div></div>'+
+ '<div class="card"><div class="row"><span>😎 Best possible run (same salary)</span><b>'+inr(G.cor)+'</b></div><div class="row"><span>🙂 You</span><b>'+inr(C)+'</b></div><div class="row"><span>🫠 Forgetful You</span><b>₹0</b></div><div class="row"><span>🏥 Own health cover</span><b>'+(S.health?'Yes ✅':'No ❌')+'</b></div><div class="row"><span>🛡️ Term + accident cover</span><b>'+(S.term?'Yes ✅':'No ❌')+'</b></div><div class="row"><span>❤️ Peace of mind</span><b>'+S.peace+'/100</b></div><div class="row"><span>😄 Fun</span><b>'+S.fun+'/100</b></div><div class="chips" style="margin-top:8px">'+chips+'</div></div>'+
+ '<div class="card"><b>Now do it for real</b><div class="steps"><a href="/tools/sip-calculator.html" data-s="sip">📈 Start a SIP<span>Try your own numbers</span></a><a href="/insurance-reality-check.html" data-s="check">🔍 Check your insurance<span>See what cover you really have</span></a><a href="/insurance-mitra.html" data-s="mitra">🛡️ Insurance Mitra<span>Understand cover and claims</span></a></div></div>'+
+ '<button class="btn go" id="p" type="button">Play again 🔁</button><button class="btn" id="sh" type="button" style="text-align:center">Share my score 📲</button><div class="small" id="shm"></div>';
+ $('p').onclick=start;$('sh').onclick=function(){ev('game_share');if(navigator.share){navigator.share({text:txt}).catch(function(){});}else if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){$('shm').textContent='Copied! Paste it anywhere.';},function(){$('shm').textContent='Copy blocked here.';});}};
+ app.querySelectorAll('.steps a').forEach(function(a){a.onclick=function(){ev('game_next_step',{step:a.dataset.s});};});
+ ev('game_complete',{grade:g});window.scrollTo(0,0);}
+window.__tm={newS:newS,ghost:ghost,play:play,getEv:getEv};start();
 })();
 </script></body></html>

@@ -63,7 +63,7 @@ footer{margin-top:28px;font-size:11px;color:var(--mut);text-align:center}
 <body>
 <h1>⚖️ AI Trading Arena</h1>
 <p class="sub">Bull pitches, Bear objects, the Judge decides. Every call is logged, wins and vetoes included.</p>
-<div class="note">Paper-trading experiment for learning and fun. This is not investment advice and not a tip service.</div>
+<div class="note" id="modenote">Paper-trading experiment for learning and fun. This is not investment advice and not a tip service.</div>
 <div class="note demo" id="demo">Showing demo data. Connect arena.json from the bot to go live.</div>
 
 <div class="score" id="score"></div>
@@ -112,6 +112,10 @@ async function load(){
 }
 
 function render(d, demo){
+  const isLive = !demo && d.mode === "live";
+  $("modenote").textContent = isLive
+    ? "💰 Real-money experiment: this bot trades a small amount of its owner’s own money on Bitget. Every result here is real, wins and losses included. This is not investment advice and not a tip service."
+    : "Paper-trading experiment for learning and fun. This is not investment advice and not a tip service.";
   $("demo").style.display = demo ? "block" : "none";
   const cases = d.cases || [];
   const closed = cases.filter(c => c.outcome && c.outcome.status === "closed");

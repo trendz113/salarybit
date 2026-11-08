@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AI Trading Arena | SalaryBit</title>
 <style>
-:root{color-scheme:dark;--bg:#0b0a1a;--card:#15132b;--line:#2a2750;--txt:#eaeaff;--mut:#9a98c8;--green:#2ee59d;--red:#ff4d6d;--gold:#ffd166;--neon:#7c9cff;--pink:#ff7ce5;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{color-scheme:dark;--bg:#0b0a1a;--card:#15132b;--line:#2a2750;--txt:#eaeaff;--mut:#9a98c8;--green:#2ee59d;--red:#ff4d6d;--gold:#ffd166;--neon:#7c9cff;--pink:#ff7ce5}
+body{padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 body{max-width:760px;margin:0 auto;padding:14px 14px 40px;background:radial-gradient(circle at 50% -10%,#241f5c 0,var(--bg) 55%) no-repeat}
@@ -48,7 +48,7 @@ footer{margin-top:28px;font-size:11px;color:var(--mut);text-align:center}
 </style>
 <meta property="og:type" content="website">
 <meta property="og:title" content="AI Trading Arena | SalaryBit">
-<meta property="og:description" content="Free tool from SalaryBit for Indian salaried professionals. No login, no data stored.">
+<meta property="og:description" content="An experimental AI crypto trading bot with every decision and result logged in public. Not investment advice.">
 <meta property="og:url" content="https://salarybit.in/trading-arena.html">
 <meta property="og:site_name" content="SalaryBit">
 <meta property="og:image" content="https://salarybit.in/og-image.png">
@@ -56,13 +56,13 @@ footer{margin-top:28px;font-size:11px;color:var(--mut);text-align:center}
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="AI Trading Arena | SalaryBit">
-<meta name="twitter:description" content="Free tool from SalaryBit for Indian salaried professionals. No login, no data stored.">
+<meta name="twitter:description" content="An experimental AI crypto trading bot with every decision and result logged in public. Not investment advice.">
 <meta name="twitter:image" content="https://salarybit.in/og-image.png">
 <link rel="canonical" href="https://salarybit.in/trading-arena.html">
 </head>
 <body>
 <h1>⚖️ AI Trading Arena</h1>
-<p class="sub">Bull pitches, Bear objects, the Judge decides. Every call is logged, wins and vetoes included.</p>
+<p class="sub">A fast scanner picks the setup, Claude screens the news, the risk engine protects the money. Every call is logged, wins and vetoes included.</p>
 <div class="note" id="modenote">Paper-trading experiment for learning and fun. This is not investment advice and not a tip service.</div>
 <div class="note demo" id="demo">Showing demo data. Connect arena.json from the bot to go live.</div>
 
@@ -75,15 +75,15 @@ footer{margin-top:28px;font-size:11px;color:var(--mut);text-align:center}
 
 <h2>The Cast</h2>
 <div class="cast">
-  <div class="char"><div class="av">🐂</div><b>Buyer Bull</b><div class="bub" id="b1"></div></div>
-  <div class="char"><div class="av">🐻</div><b>Seller Bear</b><div class="bub" id="b2"></div></div>
-  <div class="char"><div class="av">⚖️</div><b>Judge</b><div class="bub" id="b3"></div></div>
+  <div class="char"><div class="av">🐂</div><b>Scanner</b><div class="bub" id="b1"></div></div>
+  <div class="char"><div class="av">🐻</div><b>Risk engine</b><div class="bub" id="b2"></div></div>
+  <div class="char"><div class="av">⚖️</div><b>Claude gate</b><div class="bub" id="b3"></div></div>
 </div>
 
 <h2>Courtroom Feed</h2><div id="feed"></div>
 <h2>Trade Cards</h2><div class="grid" id="cards"></div>
 <h2>Badges</h2><div class="badges" id="badges"></div>
-<footer>Updates every minute. Not financial advice. Crypto is risky and you can lose money.</footer>
+<footer>Updates when the bot pushes new data (every few minutes). Not financial advice. Crypto is risky and you can lose money.</footer>
 
 <script>
 const DATA_URL = "arena.json";
@@ -122,8 +122,9 @@ function renderExtras(d, demo){
   if (demo) { h = "Demo data. The bot is not connected yet."; }
   else {
     h = (mins !== null && mins <= 25 ? "🟢 Bot online" : "🔴 No update for " + mins + " min") +
-        " · last check " + t + (mins !== null ? " (" + mins + " min ago)" : "") + " · it checks every 15 minutes";
+        " · last check " + t + (mins !== null ? " (" + mins + " min ago)" : "") + " · it scans every 2 minutes, the page refreshes when new data is pushed";
     if (d.daily_goal) h += "<br>Trades opened today: " + esc(d.daily_goal.entries_today) + " (daily goal " + esc(d.daily_goal.min_trades) + ")";
+    if (d.daily) h += "<br>Today after all costs: <b class='" + (d.daily.net_usdt >= 0 ? "up" : "down") + "'>" + (d.daily.net_usdt >= 0 ? "+" : "") + esc(d.daily.net_usdt) + " USDT</b> (goal +" + esc(d.daily.target) + ", stops at +" + esc(d.daily.stretch) + " or -" + esc(d.daily.max_loss) + ")";
     if (d.tuning) h += "<br>Self-tuning: confidence bar " + esc(d.tuning.min_conf) + ", trade size " + Math.round(d.tuning.trade_pct * 100) + "% of balance. " + esc(d.tuning.note || "");
   }
   document.getElementById("status").innerHTML = h;
@@ -142,6 +143,7 @@ function renderExtras(d, demo){
     if (a.bought) s += " · ✅ bought " + esc(a.bought);
     if (a.vetoed) s += " · 🚫 vetoed " + esc(a.vetoed);
     if (a.quota) s += " · daily-goal mode";
+    if (a.movers && a.movers.length) s += "<br>Movers watched: " + esc(a.movers.join(", "));
     if (a.note) s += "<br>" + esc(a.note);
     if (a.best && a.best.symbol) s += "<br>Closest idea: " + esc(a.best.symbol) + " (confidence " + esc(a.best.confidence) + ")";
     if (a.error) s += '<br><span class="down">Error: ' + esc(a.error) + "</span>";
@@ -164,12 +166,13 @@ function render(d, demo){
   const vetoes = cases.filter(c => c.judge && c.judge.verdict === "REJECT");
   const saves = vetoes.filter(c => c.outcome && c.outcome.would_have_pct < 0).length;
   const pnl = (d.equity / d.start_equity - 1) * 100;
-  const rate = closed.length ? Math.round(wins / closed.length * 100) + "%" : "-";
+  const st = d.stats, tot = st ? st.wins + st.losses : closed.length;
+  const rate = tot ? Math.round((st ? st.wins : wins) / tot * 100) + "%" : "-";
 
   $("score").innerHTML =
     `<div class="stat"><b>${d.equity.toFixed(1)}</b><span>Equity USDT</span></div>
      <div class="stat"><b class="${pnl >= 0 ? "up" : "down"}">${sgn(pnl)}%</b><span>Total P&amp;L</span></div>
-     <div class="stat"><b>${rate}</b><span>Win rate (${closed.length})</span></div>
+     <div class="stat"><b>${rate}</b><span>Win rate (${tot})</span></div>
      <div class="stat"><b>🔥 ${streak}</b><span>Win streak</span></div>
      <div class="stat"><b>🛡️ ${saves}</b><span>Judge saves</span></div>
      <div class="stat"><b>⚖️ ${vetoes.length}</b><span>Vetoes</span></div>`;
@@ -184,7 +187,7 @@ function render(d, demo){
 
   const last = cases[0];
   $("b1").textContent = last && last.buyer ? last.buyer.reason : "Hunting for setups...";
-  $("b2").textContent = last && last.seller ? last.seller.reason : "No objection.";
+  $("b2").textContent = "Stop-loss, trailing stop, daily loss cap.";
   $("b3").textContent = last && last.judge ? (last.judge.verdict === "APPROVE" ? "Approved: " : "Vetoed: ") + last.judge.reason : "Court is in session.";
 
   $("feed").innerHTML = cases.map(c => {

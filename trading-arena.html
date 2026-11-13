@@ -7,7 +7,6 @@
 <meta name="description" content="A live AI crypto trading bot you can watch like a game: levels, XP, streaks, badges and a play-money prediction game. Every trade is logged in public. Not investment advice.">
 <link rel="canonical" href="https://salarybit.in/trading-arena.html">
 <meta property="og:title" content="AI Trading Arena | SalaryBit">
-<meta name="twitter:image" content="https://salarybit.in/og-image.png">
 <meta property="og:description" content="Watch a live AI trading bot level up. Streaks, badges, daily quests and a play-money game. Not investment advice.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://salarybit.in/trading-arena.html">
@@ -118,7 +117,7 @@
   .tc .meta{color:var(--muted);font-size:.8rem}
   .stamp{position:absolute;right:10px;top:10px;font:400 .5rem var(--px);padding:5px 7px;border-radius:5px;border:2px solid}
   .stamp.win{color:var(--neon);border-color:var(--neon)} .stamp.loss{color:var(--red);border-color:var(--red)}
-  .stamp.open{color:var(--blue);border-color:var(--blue)} .stamp.vetoed{color:var(--muted);border-color:var(--muted)}
+  .stamp.open{color:var(--blue);border-color:var(--blue)} .stamp.vetoed,.stamp.manual{color:var(--muted);border-color:var(--muted)}
   details{margin-top:8px;font-size:.85rem;color:var(--muted)} summary{cursor:pointer;color:var(--blue)}
   .empty{color:var(--muted);padding:10px 2px}
   footer{margin-top:40px;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line);padding-top:14px}
@@ -281,6 +280,8 @@ function build(data){
   const base=150*Math.pow(level-1,2), next=150*Math.pow(level,2);
   const today=L.daily[istDay(Date.now())]||{pnl:0,wins:0};
   const open=cases.find(c=>c.outcome&&c.outcome.status==="open")||null;
+  // the bot holds one trade at a time: any older "open" card was closed outside the bot
+  cases.forEach(c=>{c._off=!!(open&&c!==open&&c.outcome&&c.outcome.status==="open")});
   const updated=toMs(data.updated)||Date.now();
   const stale=(Date.now()-updated)/60000>CFG.STALE_MIN;
   return {cases,L,wins,losses,trades,xp,level,base,next,today,open,updated,stale,
@@ -369,7 +370,7 @@ function closedAtMs(c){
 function resolveBet(){
   if(!G.bet)return null;
   const c=VIEW.cases.find(x=>x.ts===G.bet.ts);
-  if(!c){G.coins+=G.bet.stake;const m="The trade you bet on rolled off the board. Stake refunded.";G.bet=null;saveG();return m}
+  if(!c||c._off||(c.outcome&&c.outcome.status==="manual")){G.coins+=G.bet.stake;const m=c?"That trade was closed outside the bot, so your bet was cancelled and refunded.":"The trade you bet on rolled off the board. Stake refunded.";G.bet=null;saveG();return m}
   if(!c.outcome||c.outcome.status==="open")return null;
   const end=closedAtMs(c)||Date.now(), hrs=(end-c.ts*1000)/3600000;
   const win=BUCKETS[G.bet.bucket].test(hrs), msg=[];
@@ -439,11 +440,11 @@ function renderCards(){
   const list=VIEW.cases.slice(0,12);
   if(!list.length){$("cards").innerHTML=`<div class="empty">No battles yet.</div>`;return}
   $("cards").innerHTML=list.map(c=>{
-    const o=c.outcome||{}, st=o.status;
+    const o=c.outcome||{}, st=c._off?"manual":o.status;
     const p=num(o.pnl_usdt), cls=st==="closed"?(p>0?"win":"loss"):st==="open"?"open":"";
-    const label=st==="closed"?(p>0?"WIN":"LOSS"):st==="open"?"LIVE":"VETOED";
+    const label=st==="closed"?(p>0?"WIN":"LOSS"):st==="open"?"LIVE":st==="manual"?"SOLD BY HAND":"VETOED";
     const res=st==="closed"?`<b class="${p>0?"pos":"neg"}">${usd(p,1)} USDT</b> (${usd(num(o.pnl_pct),1)}%)`:
-              st==="open"?`<b>${usd(num(o.pnl_pct),1)}%</b> so far`:`would have been ${o.would_have_pct==null?"?":usd(num(o.would_have_pct),1)+"%"}`;
+              st==="manual"?`closed outside the bot, not counted`:st==="open"?`<b>${usd(num(o.pnl_pct),1)}%</b> so far`:`would have been ${o.would_have_pct==null?"?":usd(num(o.would_have_pct),1)+"%"}`;
     const cast=(c.buyer||c.seller||c.judge)?`<details><summary>The cast says</summary>`+
       (c.buyer?`🐂 ${esc(c.buyer.reason||"")}<br>`:"")+(c.seller?`🐻 ${esc(c.seller.reason||"")}<br>`:"")+(c.judge?`⚖️ ${esc(c.judge.verdict||"")}: ${esc(c.judge.reason||"")}`:"")+`</details>`:"";
     return `<div class="tc ${cls}"><span class="stamp ${st==="closed"?cls:st}">${label}</span><h3>${esc(c.symbol)}</h3>`+

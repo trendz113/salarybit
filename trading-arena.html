@@ -1,219 +1,490 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AI Trading Arena | SalaryBit</title>
-<style>
-:root{color-scheme:dark;--bg:#0b0a1a;--card:#15132b;--line:#2a2750;--txt:#eaeaff;--mut:#9a98c8;--green:#2ee59d;--red:#ff4d6d;--gold:#ffd166;--neon:#7c9cff;--pink:#ff7ce5}
-body{padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-body{max-width:760px;margin:0 auto;padding:14px 14px 40px;background:radial-gradient(circle at 50% -10%,#241f5c 0,var(--bg) 55%) no-repeat}
-h1{margin:6px 0 2px;font-size:26px;letter-spacing:.5px;text-shadow:0 0 18px var(--neon)}
-h2{margin:26px 0 10px;font-size:15px;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px}
-.sub{color:var(--mut);margin:0 0 10px;font-size:14px}
-.note{border:1px solid var(--line);background:#1b1840;color:var(--mut);font-size:12px;padding:8px 10px;border-radius:10px;margin:8px 0}
-.demo{display:none;background:#3a2a05;color:var(--gold);border-color:#6b4d0a}
-.score{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
-.stat b{display:block;font-size:19px}.stat span{font-size:11px;color:var(--mut)}
-.up{color:var(--green)}.down{color:var(--red)}
-.mood{display:flex;align-items:center;gap:10px;margin-top:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px}
-.mood .e{font-size:30px}.mood small{color:var(--mut)}
-.cast{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.char{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 8px;text-align:center}
-.av{font-size:40px;animation:bob 2.4s ease-in-out infinite}
-.char:nth-child(2) .av{animation-delay:.4s}.char:nth-child(3) .av{animation-delay:.8s}
-@keyframes bob{50%{transform:translateY(-5px)}}
-.char b{display:block;font-size:13px}
-.bub{margin-top:6px;font-size:11px;line-height:1.35;color:var(--mut);background:#0f0d24;border-radius:10px;padding:7px;min-height:58px}
-.case{position:relative;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;overflow:hidden}
-.meta{font-size:12px;color:var(--mut);margin-bottom:6px}
-.ln{font-size:13px;line-height:1.45;margin:4px 0}
-.stamp{position:absolute;top:10px;right:10px;font-weight:900;font-size:13px;padding:3px 9px;border:2px solid;border-radius:6px;transform:rotate(-8deg);animation:slam .5s ease-out}
-.stamp.ok{color:var(--green);border-color:var(--green)}.stamp.no{color:var(--red);border-color:var(--red)}
-@keyframes slam{0%{transform:scale(2.4) rotate(-8deg);opacity:0}100%{transform:scale(1) rotate(-8deg);opacity:1}}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.tc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;position:relative}
-.tc.win{border-color:var(--green);box-shadow:0 0 14px rgba(46,229,157,.25)}
-.tc.loss{border-color:var(--red);box-shadow:0 0 14px rgba(255,77,109,.25)}
-.tc .sym{font-weight:800}.tc .pnl{font-size:20px;font-weight:800;margin-top:4px}
-.tc .st{font-size:11px;color:var(--mut)}
-.pop{position:absolute;right:8px;top:6px;font-size:20px;animation:bob 1.6s infinite}
-.badges{display:flex;flex-wrap:wrap;gap:8px}
-.bd{background:var(--card);border:1px solid var(--gold);color:var(--gold);border-radius:20px;padding:6px 12px;font-size:12px}
-.bd.lock{border-color:var(--line);color:var(--mut);filter:grayscale(1);opacity:.6}
-footer{margin-top:28px;font-size:11px;color:var(--mut);text-align:center}
-</style>
-<meta property="og:type" content="website">
-<meta property="og:title" content="AI Trading Arena | SalaryBit">
-<meta property="og:description" content="An experimental AI crypto trading bot with every decision and result logged in public. Not investment advice.">
-<meta property="og:url" content="https://salarybit.in/trading-arena.html">
-<meta property="og:site_name" content="SalaryBit">
-<meta property="og:image" content="https://salarybit.in/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="AI Trading Arena | SalaryBit">
-<meta name="twitter:description" content="An experimental AI crypto trading bot with every decision and result logged in public. Not investment advice.">
-<meta name="twitter:image" content="https://salarybit.in/og-image.png">
+<meta name="description" content="A live AI crypto trading bot you can watch like a game: levels, XP, streaks, badges and a play-money prediction game. Every trade is logged in public. Not investment advice.">
 <link rel="canonical" href="https://salarybit.in/trading-arena.html">
+<meta property="og:title" content="AI Trading Arena | SalaryBit">
+<meta property="og:description" content="Watch a live AI trading bot level up. Streaks, badges, daily quests and a play-money game. Not investment advice.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://salarybit.in/trading-arena.html">
+<meta property="og:image" content="https://salarybit.in/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e1a; --bg2:#10162a; --card:#141b30; --line:#25305a; --text:#eaf0ff; --muted:#93a0c6;
+    --neon:#39ff9c; --pink:#ff4fd8; --blue:#4cc9ff; --gold:#ffd24a; --red:#ff5d6c;
+    --px:'Press Start 2P',ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;color:var(--text);font:16px/1.55 'Inter',-apple-system,Segoe UI,Roboto,sans-serif;
+    background:radial-gradient(1200px 600px at 10% -10%,#1b2a5e55,transparent),radial-gradient(900px 500px at 100% 0,#5a1b6a44,transparent),var(--bg);
+    min-height:100vh;padding-bottom:env(safe-area-inset-bottom)}
+  .wrap{max-width:980px;margin:0 auto;padding:22px 14px 60px}
+  h1{font:400 clamp(1.05rem,3.6vw,1.6rem)/1.5 var(--px);margin:0 0 8px;letter-spacing:.5px}
+  h1 span{color:var(--neon);text-shadow:0 0 14px #39ff9c88}
+  h2{font:400 .78rem/1.6 var(--px);color:var(--blue);margin:34px 0 12px;letter-spacing:.5px}
+  .tag{color:var(--muted);max-width:640px;margin:0 0 12px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .chip{font:600 .75rem var(--px);font-family:var(--px);font-size:.6rem;padding:7px 10px;border-radius:6px;border:2px solid var(--line);color:var(--muted);background:#0d1328}
+  .chip.live{color:var(--red);border-color:var(--red);animation:blink 1.6s infinite}
+  .chip.paper{color:var(--gold);border-color:var(--gold)}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--neon);margin-right:6px;box-shadow:0 0 8px var(--neon);animation:pulse 1.5s infinite}
+  .dot.stale{background:var(--red);box-shadow:0 0 8px var(--red);animation:none}
+  .banner{margin:14px 0;padding:10px 14px;border-radius:10px;border:1px dashed var(--gold);color:var(--gold);background:#2a220a66;font-size:.9rem}
+  .card{background:linear-gradient(180deg,var(--card),#10172b);border:2px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 6px 0 #070a14}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+
+  /* hero */
+  .hero{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+  .avatar{position:relative;width:110px;height:110px;border-radius:22px;background:linear-gradient(135deg,#1d2b66,#5a1b8a);border:3px solid var(--neon);
+    display:grid;place-items:center;font-size:3.4rem;cursor:pointer;user-select:none;box-shadow:0 0 22px #39ff9c44;transition:transform .15s}
+  .avatar:active{transform:scale(.94)}
+  .avatar.bounce{animation:bounce .6s}
+  .avatar .mood{position:absolute;right:-10px;bottom:-10px;font-size:1.7rem;background:var(--bg2);border:2px solid var(--line);border-radius:50%;width:42px;height:42px;display:grid;place-items:center}
+  .hero-main{flex:1;min-width:230px}
+  .rank{font:400 .62rem var(--px);color:var(--gold);margin-bottom:6px}
+  .lvl{font:400 1.05rem var(--px);margin-bottom:4px}
+  .bubble{margin-top:10px;display:inline-block;background:#0d1328;border:2px solid var(--line);border-radius:12px;padding:8px 12px;color:var(--text);font-size:.92rem}
+  .bar{height:16px;border-radius:8px;background:#0a0f20;border:2px solid var(--line);overflow:hidden;position:relative}
+  .bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--neon),var(--blue));transition:width .9s cubic-bezier(.2,.8,.2,1);
+    background-size:200% 100%;animation:shine 3s linear infinite}
+  .bar.gold>i{background:linear-gradient(90deg,var(--gold),#ff9a3d)}
+  .barlabel{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin:4px 0 0}
+
+  /* HUD */
+  .hud{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:14px}
+  .stat{background:#0d1328;border:2px solid var(--line);border-radius:12px;padding:12px}
+  .stat .k{font:400 .5rem var(--px);color:var(--muted);margin-bottom:8px;line-height:1.6}
+  .stat .v{font:800 1.35rem 'Inter',sans-serif}
+  .pos{color:var(--neon)} .neg{color:var(--red)}
+  .stat .s{font-size:.78rem;color:var(--muted)}
+
+  /* quest */
+  .chests{display:flex;gap:10px;margin-top:12px}
+  .chest{flex:1;text-align:center;padding:10px 4px;border:2px dashed var(--line);border-radius:12px;font-size:1.7rem;filter:grayscale(1);opacity:.55;transition:.4s}
+  .chest small{display:block;font:400 .5rem var(--px);margin-top:6px;color:var(--muted)}
+  .chest.on{filter:none;opacity:1;border:2px solid var(--gold);box-shadow:0 0 16px #ffd24a55;animation:bounce 1s}
+
+  /* mission */
+  .radar{width:70px;height:70px;border-radius:50%;border:2px solid var(--neon);position:relative;flex:none;
+    background:radial-gradient(circle,#39ff9c22 0,transparent 70%)}
+  .radar::after{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,#39ff9c88,transparent 35%);animation:spin 2.2s linear infinite}
+  .mission-row{display:flex;gap:14px;align-items:center}
+  .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+  .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:12px 0;font-size:.9rem}
+  .kv b{color:var(--muted);font-weight:600}
+
+  /* game */
+  .coins{font:400 .7rem var(--px);color:var(--gold)}
+  .bets{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+  @media(max-width:560px){.bets{grid-template-columns:1fr}}
+  button{font-family:inherit;cursor:pointer}
+  .bet{background:#0d1328;color:var(--text);border:2px solid var(--line);border-radius:12px;padding:12px 8px;text-align:center;transition:.15s}
+  .bet:hover:not(:disabled){border-color:var(--pink);transform:translateY(-2px)}
+  .bet:disabled{opacity:.4;cursor:not-allowed}
+  .bet.sel{border-color:var(--pink);box-shadow:0 0 16px #ff4fd855}
+  .bet b{display:block;font:400 .62rem var(--px);margin-bottom:6px}
+  .bet span{font-size:.82rem;color:var(--gold)}
+  .btn{background:var(--pink);color:#1a0716;border:none;border-radius:10px;padding:9px 14px;font:400 .6rem var(--px)}
+  .btn.ghost{background:transparent;color:var(--blue);border:2px solid var(--line)}
+  .gamelog{margin-top:10px;font-size:.88rem;color:var(--muted)}
+
+  /* badges */
+  .badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+  .badge{background:#0d1328;border:2px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+  .badge .ic{font-size:2rem;filter:grayscale(1);opacity:.4}
+  .badge.on{border-color:var(--gold)}
+  .badge.on .ic{filter:none;opacity:1;animation:bounce 1.2s}
+  .badge b{display:block;font:400 .56rem var(--px);line-height:1.7;margin:6px 0 4px}
+  .badge small{color:var(--muted);font-size:.78rem}
+
+  /* lists */
+  .log{list-style:none;margin:0;padding:0;max-height:300px;overflow:auto}
+  .log li{padding:8px 4px;border-bottom:1px solid #1d2850;font-size:.88rem}
+  .log time{color:var(--muted);font-size:.75rem;display:block}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+  .tc{background:#0d1328;border:2px solid var(--line);border-radius:12px;padding:12px;position:relative}
+  .tc.win{border-color:#39ff9c88} .tc.loss{border-color:#ff5d6c88} .tc.open{border-color:#4cc9ff88}
+  .tc h3{margin:0 0 4px;font-size:1rem}
+  .tc .meta{color:var(--muted);font-size:.8rem}
+  .stamp{position:absolute;right:10px;top:10px;font:400 .5rem var(--px);padding:5px 7px;border-radius:5px;border:2px solid}
+  .stamp.win{color:var(--neon);border-color:var(--neon)} .stamp.loss{color:var(--red);border-color:var(--red)}
+  .stamp.open{color:var(--blue);border-color:var(--blue)} .stamp.vetoed{color:var(--muted);border-color:var(--muted)}
+  details{margin-top:8px;font-size:.85rem;color:var(--muted)} summary{cursor:pointer;color:var(--blue)}
+  .empty{color:var(--muted);padding:10px 2px}
+  footer{margin-top:40px;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line);padding-top:14px}
+  #toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,40px);background:var(--gold);color:#201600;font:400 .62rem/1.7 var(--px);padding:12px 16px;border-radius:10px;opacity:0;pointer-events:none;transition:.4s;z-index:20;max-width:92vw;text-align:center}
+  #toast.show{opacity:1;transform:translate(-50%,0)}
+  #fx{position:fixed;inset:0;pointer-events:none;z-index:15}
+
+  @keyframes pulse{50%{opacity:.35}}
+  @keyframes blink{50%{opacity:.55}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes shine{to{background-position:-200% 0}}
+  @keyframes bounce{0%,100%{transform:translateY(0)}30%{transform:translateY(-12px)}60%{transform:translateY(0)}80%{transform:translateY(-4px)}}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
-<h1>⚖️ AI Trading Arena</h1>
-<p class="sub">A fast scanner picks the setup, Claude screens the news, the risk engine protects the money. Every call is logged, wins and vetoes included.</p>
-<div class="note" id="modenote">Paper-trading experiment for learning and fun. This is not investment advice and not a tip service.</div>
-<div class="note demo" id="demo">Showing demo data. Connect arena.json from the bot to go live.</div>
+<canvas id="fx"></canvas>
+<div id="toast"></div>
+<div class="wrap">
 
-<div class="score" id="score"></div>
-<div class="note" id="costs" style="display:none"></div>
-<div class="mood" id="mood"></div>
-<div class="note" id="status">Waiting for the bot...</div>
-<h2>Open Positions</h2><div id="positions"></div>
-<h2>Scanner Log</h2><div id="scanlog"></div>
+  <header>
+    <h1>⚔️ AI <span>TRADING</span> ARENA</h1>
+    <p class="tag">A real trading bot, played like a game. It hunts dips, takes profit, levels up and earns badges. Every trade is logged in public.</p>
+    <div class="chips" id="chips"></div>
+    <div id="banner"></div>
+  </header>
 
-<h2>The Cast</h2>
-<div class="cast">
-  <div class="char"><div class="av">🐂</div><b>Scanner</b><div class="bub" id="b1"></div></div>
-  <div class="char"><div class="av">🐻</div><b>Risk engine</b><div class="bub" id="b2"></div></div>
-  <div class="char"><div class="av">⚖️</div><b>Claude gate</b><div class="bub" id="b3"></div></div>
+  <section class="card" style="margin-top:16px">
+    <div class="hero">
+      <div class="avatar" id="avatar" title="Poke the bot">🤖<div class="mood" id="mood">🎯</div></div>
+      <div class="hero-main">
+        <div class="rank" id="rank">RANK</div>
+        <div class="lvl" id="lvl">LV 1</div>
+        <div class="bar"><i id="xpfill"></i></div>
+        <div class="barlabel"><span id="xptxt">0 XP</span><span id="xpnext"></span></div>
+        <div class="bubble" id="bubble">Waking up...</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="hud" id="hud"></div>
+
+  <h2>🎯 DAILY QUEST &nbsp;·&nbsp; 🛰️ LIVE MISSION</h2>
+  <div class="grid2">
+    <div class="card" id="quest"></div>
+    <div class="card" id="mission"></div>
+  </div>
+
+  <h2>🎮 BEAT THE BOT (play money)</h2>
+  <div class="card" id="game"></div>
+
+  <h2>🏅 BADGES</h2>
+  <div class="badges" id="badges"></div>
+
+  <h2>📜 QUEST LOG</h2>
+  <div class="card"><ul class="log" id="activity"></ul></div>
+
+  <h2>🃏 BATTLE CARDS</h2>
+  <div class="cards" id="cards"></div>
+
+  <footer>
+    This is an experiment, not a tip service and not investment advice. The bot may trade real money and can lose it. The "Beat the Bot" game uses play coins only and nothing here involves real stakes for visitors. Page refreshes by itself every minute.
+  </footer>
 </div>
 
-<h2>Courtroom Feed</h2><div id="feed"></div>
-<h2>Trade Cards</h2><div class="grid" id="cards"></div>
-<h2>Badges</h2><div class="badges" id="badges"></div>
-<footer>Updates when the bot pushes new data (every few minutes). Not financial advice. Crypto is risky and you can lose money.</footer>
-
 <script>
-const DATA_URL = "arena.json";
-/* arena.json shape:
-{"updated":"ISO","start_equity":600,"equity":612.4,
- "mood":{"fear_greed":"38 (Fear)","text":"Cautious market, BTC flat"},
- "cases":[{"time":"10:15","symbol":"SOL/USDT","side":"BUY",
-   "buyer":{"confidence":78,"reason":"..."},"seller":{"reason":"..."},
-   "judge":{"verdict":"APPROVE|REJECT","reason":"..."},
-   "outcome":{"status":"open|closed|vetoed","pnl_pct":1.4,"pnl_usdt":2.1,"would_have_pct":-2.0}}]} */
-const DEMO = {updated:"demo",start_equity:600,equity:608.7,
- mood:{fear_greed:"38 (Fear)",text:"Cautious market, BTC flat. Judge is picky today."},
- cases:[
- {time:"14:30",symbol:"SUI/USDT",side:"BUY",buyer:{confidence:81,reason:"Volume spike with a clean breakout above resistance."},seller:{reason:"RSI already high, could be a late entry."},judge:{verdict:"APPROVE",reason:"BTC steady and no negative news. Small size is fine."},outcome:{status:"open",pnl_pct:0.6,pnl_usdt:0.9}},
- {time:"12:05",symbol:"DOGE/USDT",side:"BUY",buyer:{confidence:72,reason:"Social hype and a sharp 1h pump."},seller:null,judge:{verdict:"REJECT",reason:"Hype-only pump in a fearful market. Passing."},outcome:{status:"vetoed",would_have_pct:-2.4}},
- {time:"10:40",symbol:"SOL/USDT",side:"BUY",buyer:{confidence:78,reason:"EMA cross-up with rising volume."},seller:{reason:"No objection."},judge:{verdict:"APPROVE",reason:"Trend and news both supportive."},outcome:{status:"closed",pnl_pct:2.8,pnl_usdt:4.2}},
- {time:"09:10",symbol:"LINK/USDT",side:"BUY",buyer:{confidence:74,reason:"Bounce from support."},seller:{reason:"Downtrend still intact."},judge:{verdict:"APPROVE",reason:"Risk is capped by the stop-loss."},outcome:{status:"closed",pnl_pct:-0.9,pnl_usdt:-1.4}},
- {time:"Yesterday",symbol:"XRP/USDT",side:"BUY",buyer:{confidence:76,reason:"Breakout on news rumor."},seller:null,judge:{verdict:"REJECT",reason:"Rumor only, no confirmation."},outcome:{status:"vetoed",would_have_pct:-1.6}},
- {time:"Yesterday",symbol:"ETH/USDT",side:"BUY",buyer:{confidence:80,reason:"Strong momentum with BTC leading."},seller:{reason:"Fine, but watch the spread."},judge:{verdict:"APPROVE",reason:"Liquid and trending."},outcome:{status:"closed",pnl_pct:1.9,pnl_usdt:3.0}}
-]};
+/* ============ SETTINGS: change these freely ============ */
+const CFG = {
+  DATA_URLS: ["arena.json", "https://raw.githubusercontent.com/trendz113/salarybit/main/arena.json"],
+  REFRESH_SEC: 60,
+  DAILY_GOAL: 20,        // USDT per day for the final chest
+  CHEST_STEPS: [6, 12, 20],
+  TARGET_PCT: 1.2,       // used for the progress bar when the feed has no target
+  STALE_MIN: 90,         // minutes without an update before the bot looks "asleep"
+  START_COINS: 500, STAKE: 50
+};
+const RANKS = ["Rookie","Dip Sniper","Target Hunter","Profit Ranger","Chart Samurai","Whale Whisperer","Arena Legend"];
+const BUCKETS = [
+  {name:"UNDER 1 HOUR", mult:3, test:h=>h<1},
+  {name:"1 TO 3 HOURS", mult:2, test:h=>h>=1&&h<3},
+  {name:"OVER 3 HOURS", mult:2, test:h=>h>=3}
+];
 
+/* ============ helpers ============ */
 const $ = id => document.getElementById(id);
-const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const sgn = n => (n >= 0 ? "+" : "") + n.toFixed(1);
-
-async function load(){
-  try{ const r = await fetch(DATA_URL + "?t=" + Date.now()); if(!r.ok) throw 0; return {d:await r.json(), demo:false}; }
-  catch(e){ return {d:DEMO, demo:true}; }
+const esc = s => String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const num = x => (typeof x==="number"&&isFinite(x))?x:0;
+const usd = (x,sign) => (sign&&x>0?"+":"")+x.toFixed(2);
+const istDay = ms => new Date(ms).toLocaleDateString("en-CA",{timeZone:"Asia/Kolkata"});
+function ago(ms){
+  const m=Math.max(0,Math.round((Date.now()-ms)/60000));
+  if(m<1)return"just now"; if(m<60)return m+" min ago";
+  const h=Math.floor(m/60); if(h<24)return h+"h "+(m%60)+"m ago";
+  return Math.floor(h/24)+" days ago";
 }
+function dur(ms){const m=Math.round(ms/60000);return m<60?m+" min":Math.floor(m/60)+"h "+(m%60)+"m"}
+function toMs(v){ if(v==null)return null; if(typeof v==="number")return v>1e12?v:v*1000; const t=Date.parse(v); return isNaN(t)?null:t; }
+function toast(t){const el=$("toast");el.textContent=t;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),3800)}
 
-function renderExtras(d, demo){
-  var upd = d.updated ? new Date(d.updated) : null;
-  var mins = upd && !isNaN(upd) ? Math.round((Date.now() - upd.getTime()) / 60000) : null;
-  var t = upd && !isNaN(upd) ? upd.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"}) : "?";
-  var h;
-  if (demo) { h = "Demo data. The bot is not connected yet."; }
-  else {
-    h = (mins !== null && mins <= 25 ? "🟢 Bot online" : "🔴 No update for " + mins + " min") +
-        " · last check " + t + (mins !== null ? " (" + mins + " min ago)" : "") + " · it scans every 2 minutes, the page refreshes when new data is pushed";
-    if (d.daily_goal) h += "<br>Trades opened today: " + esc(d.daily_goal.entries_today) + " (daily goal " + esc(d.daily_goal.min_trades) + ")";
-    if (d.daily) h += "<br>Today after all costs: <b class='" + (d.daily.net_usdt >= 0 ? "up" : "down") + "'>" + (d.daily.net_usdt >= 0 ? "+" : "") + esc(d.daily.net_usdt) + " USDT</b> (goal +" + esc(d.daily.target) + ", stops at +" + esc(d.daily.stretch) + " or -" + esc(d.daily.max_loss) + ")";
-    if (d.tuning) h += "<br>Self-tuning: confidence bar " + esc(d.tuning.min_conf) + ", trade size " + Math.round(d.tuning.trade_pct * 100) + "% of balance. " + esc(d.tuning.note || "");
+/* ============ saved game state (this browser only) ============ */
+const GKEY="arena_game_v1";
+function loadG(){try{return Object.assign({coins:CFG.START_COINS,bet:null,streak:0,best:0,played:0,won:0,lastWins:null,seen:{},refill:""},JSON.parse(localStorage.getItem(GKEY)||"{}"))}catch(e){return{coins:CFG.START_COINS,bet:null,streak:0,best:0,played:0,won:0,lastWins:null,seen:{},refill:""}}}
+function saveG(){try{localStorage.setItem(GKEY,JSON.stringify(G))}catch(e){}}
+let G=loadG(), DATA=null, VIEW=null;
+
+/* ============ data loading ============ */
+async function fetchData(){
+  for(const u of CFG.DATA_URLS){
+    try{
+      const r=await fetch(u+(u.includes("?")?"&":"?")+"t="+Date.now(),{cache:"no-store"});
+      if(!r.ok)continue;
+      const j=await r.json();
+      if(j&&typeof j==="object")return {data:j,demo:false};
+    }catch(e){}
   }
-  document.getElementById("status").innerHTML = h;
-  var ps = d.positions || [];
-  document.getElementById("positions").innerHTML = ps.length ? ps.map(function(p){
-    var up = p.pnl_pct >= 0;
-    return '<div class="case"><div class="meta">' + esc(p.symbol) + ' · held ' + esc(p.held_min) + ' min</div>' +
-      '<div class="ln">Entry ' + esc(p.entry) + ' · now ' + esc(p.price) + ' · <b class="' + (up ? "up" : "down") + '">' + (up ? "+" : "") + esc(p.pnl_pct) + '%</b></div>' +
-      '<div class="ln">Stop-loss -' + esc(p.sl_pct) + '% · target +' + esc(p.tp_pct) + '%</div></div>';
-  }).join("") : '<div class="note">No open positions right now.</div>';
-  var ac = d.activity || [];
-  document.getElementById("scanlog").innerHTML = ac.length ? ac.slice(0, 12).map(function(a){
-    var btc = (a.btc_1h === null || a.btc_1h === undefined) ? "n/a" : a.btc_1h + "%";
-    var s = esc(a.t) + " UTC · scanned " + esc(a.scanned) + " coins · BTC 1h " + esc(btc) + " · " + esc(a.fg || "") +
-      " · ideas " + esc(a.ideas) + " · debates " + esc(a.debated || 0);
-    if (a.bought) s += " · ✅ bought " + esc(a.bought);
-    if (a.vetoed) s += " · 🚫 vetoed " + esc(a.vetoed);
-    if (a.quota) s += " · daily-goal mode";
-    if (a.movers && a.movers.length) s += "<br>Movers watched: " + esc(a.movers.join(", "));
-    if (a.note) s += "<br>" + esc(a.note);
-    if (a.best && a.best.symbol) s += "<br>Closest idea: " + esc(a.best.symbol) + " (confidence " + esc(a.best.confidence) + ")";
-    if (a.error) s += '<br><span class="down">Error: ' + esc(a.error) + "</span>";
-    return '<div class="note">' + s + "</div>";
-  }).join("") : '<div class="note">No checks recorded yet.</div>';
+  return {data:demoData(),demo:true};
+}
+function demoData(){
+  const now=Date.now()/1000, cases=[];
+  const px=[2016.31,2000.33,1996.22,2010.4,1990.1,2022.8];
+  const hrs=[2.1,1.2,0.6,3.6,1.8];
+  for(let i=0;i<5;i++){
+    cases.push({ts:now-3600*(6+i*4),time:"demo",symbol:"ETH/USDT",side:"BUY",price:px[i],size_usdt:600,
+      buyer:{confidence:70,reason:"Dip order filled below market."},seller:null,
+      judge:{verdict:"APPROVE",reason:"Within risk limits."},
+      outcome:{status:"closed",pnl_pct:1.2,pnl_usdt:6,closed_by:"take_profit",closed_at:now-3600*(6+i*4)+hrs[i]*3600}});
+  }
+  cases.unshift({ts:now-1500,time:"demo",symbol:"ETH/USDT",side:"BUY",price:px[5],size_usdt:600,
+    buyer:{confidence:68,reason:"Resting dip buy filled."},seller:null,judge:{verdict:"APPROVE",reason:"Within risk limits."},
+    outcome:{status:"open",pnl_pct:0.55,pnl_usdt:3.3}});
+  const today=istDay(Date.now());
+  return {updated:new Date().toISOString(),mode:"live",start_equity:587.08,equity:611.4,mood:{fear_greed:"52",text:"Demo data"},
+    cases,activity:[
+      {text:"Dip buy filled, sell order resting at target"},{text:"Re-priced the buy order 0.5% below market"},
+      {text:"Take profit hit, +6.00 USDT"}],
+    lifetime:{trades:18,wins:17,losses:1,pnl_usdt:94.5,streak:6,best_streak:9,daily:{[today]:{pnl:12,wins:2}}}};
 }
 
-function render(d, demo){
-  try { renderExtras(d, demo); } catch (e) {}
-  const isLive = !demo && d.mode === "live";
-  $("modenote").textContent = isLive
-    ? "💰 Real-money experiment: this bot trades a small amount of its owner’s own money on Bitget. Every result here is real, wins and losses included. This is not investment advice and not a tip service."
-    : "Paper-trading experiment for learning and fun. This is not investment advice and not a tip service.";
-  $("demo").style.display = demo ? "block" : "none";
-  const cases = d.cases || [];
-  const closed = cases.filter(c => c.outcome && c.outcome.status === "closed");
-  const wins = closed.filter(c => c.outcome.pnl_pct > 0).length;
-  let streak = 0;
-  for(const c of closed){ if(c.outcome.pnl_pct > 0) streak++; else break; }
-  const vetoes = cases.filter(c => c.judge && c.judge.verdict === "REJECT");
-  const saves = vetoes.filter(c => c.outcome && c.outcome.would_have_pct < 0).length;
-  const pnl = (d.equity / d.start_equity - 1) * 100;
-  const st = d.stats, tot = st ? st.wins + st.losses : closed.length;
-  const rate = tot ? Math.round((st ? st.wins : wins) / tot * 100) + "%" : "-";
-
-  $("score").innerHTML =
-    `<div class="stat"><b>${d.equity.toFixed(1)}</b><span>Equity USDT</span></div>
-     <div class="stat"><b class="${pnl >= 0 ? "up" : "down"}">${sgn(pnl)}%</b><span>Total P&amp;L</span></div>
-     <div class="stat"><b>${rate}</b><span>Win rate (${tot})</span></div>
-     <div class="stat"><b>🔥 ${streak}</b><span>Win streak</span></div>
-     <div class="stat"><b>🛡️ ${saves}</b><span>Judge saves</span></div>
-     <div class="stat"><b>⚖️ ${vetoes.length}</b><span>Vetoes</span></div>`;
-
-  const k = d.costs, kc = $("costs");
-  if(k){ const nt = k.net_after_all_costs_usdt; kc.style.display = "block";
-    kc.innerHTML = `💸 Running costs: Claude API $${k.api_total_usd.toFixed(2)} · Bitget fees ${k.fees_total_usdt.toFixed(2)} USDT<br><b class="${nt >= 0 ? "up" : "down"}">${k.costs_recovered ? "✅ Costs recovered" : "⏳ Costs not recovered yet"}: net ${(nt >= 0 ? "+" : "") + nt.toFixed(2)} USDT after all costs</b>`;
-  } else { kc.style.display = "none"; }
-  const m = d.mood || {}, n = parseInt(m.fear_greed, 10);
-  const em = isNaN(n) ? "🤔" : n < 25 ? "😱" : n < 45 ? "😟" : n < 55 ? "😐" : n < 75 ? "😀" : "🤑";
-  $("mood").innerHTML = `<div class="e">${em}</div><div><b>Market mood: ${esc(m.fear_greed || "unknown")}</b><br><small>${esc(m.text || "")}</small></div>`;
-
-  const last = cases[0];
-  $("b1").textContent = last && last.buyer ? last.buyer.reason : "Hunting for setups...";
-  $("b2").textContent = "Stop-loss, trailing stop, daily loss cap.";
-  $("b3").textContent = last && last.judge ? (last.judge.verdict === "APPROVE" ? "Approved: " : "Vetoed: ") + last.judge.reason : "Court is in session.";
-
-  $("feed").innerHTML = cases.map(c => {
-    const ok = c.judge.verdict === "APPROVE";
-    return `<div class="case"><div class="stamp ${ok ? "ok" : "no"}">${ok ? "APPROVED" : "VETOED"}</div>
-      <div class="meta">${esc(c.time)} · ${esc(c.side)} ${esc(c.symbol)}</div>
-      ${c.buyer ? `<div class="ln">🐂 <b>Buyer</b> (${esc(c.buyer.confidence)}%): ${esc(c.buyer.reason)}</div>` : ""}
-      ${c.seller ? `<div class="ln">🐻 <b>Seller</b>: ${esc(c.seller.reason)}</div>` : ""}
-      <div class="ln">⚖️ <b>Judge</b>: ${esc(c.judge.reason)}</div></div>`;
-  }).join("") || '<div class="note">No cases yet. The court is empty.</div>';
-
-  $("cards").innerHTML = cases.filter(c => c.judge.verdict === "APPROVE" && c.outcome).map(c => {
-    const o = c.outcome, done = o.status === "closed";
-    const cls = done ? (o.pnl_pct > 0 ? "win" : "loss") : "";
-    return `<div class="tc ${cls}">${done ? `<div class="pop">${o.pnl_pct > 0 ? "🎉" : "💥"}</div>` : ""}
-      <div class="sym">${esc(c.symbol)}</div><div class="st">${done ? "Closed" : "Open now"} · ${esc(c.time)}</div>
-      <div class="pnl ${o.pnl_pct >= 0 ? "up" : "down"}">${sgn(o.pnl_pct)}%</div>
-      <div class="st">${sgn(o.pnl_usdt)} USDT</div></div>`;
-  }).join("") || '<div class="note">No trades yet.</div>';
-
-  const bd = [["🏆 First Win", wins >= 1], ["🔥 5-Win Streak", streak >= 5], ["🛡️ Judge Saved Me", saves >= 1], ["⚖️ Iron Judge (3 vetoes)", vetoes.length >= 3], ["📈 In The Green", pnl > 0]];
-  $("badges").innerHTML = bd.map(b => `<span class="bd ${b[1] ? "" : "lock"}">${b[0]}</span>`).join("");
+/* ============ stats ============ */
+function derive(cases){
+  const closed=cases.filter(c=>c.outcome&&c.outcome.status==="closed").sort((a,b)=>a.ts-b.ts);
+  const L={trades:closed.length,wins:0,losses:0,pnl_usdt:0,streak:0,best_streak:0,daily:{}};
+  let run=0;
+  closed.forEach(c=>{
+    const p=num(c.outcome.pnl_usdt), d=istDay(c.ts*1000);
+    L.daily[d]=L.daily[d]||{pnl:0,wins:0};
+    L.daily[d].pnl+=p;
+    if(p>0){L.wins++;L.daily[d].wins++;run++;L.best_streak=Math.max(L.best_streak,run)}else{L.losses++;run=0}
+    L.pnl_usdt+=p;
+  });
+  L.streak=run; return L;
+}
+function build(data){
+  const cases=Array.isArray(data.cases)?data.cases:[];
+  const L=data.lifetime&&typeof data.lifetime==="object"?data.lifetime:derive(cases);
+  L.daily=L.daily||{};
+  const wins=num(L.wins), losses=num(L.losses), trades=num(L.trades)||wins+losses;
+  const xp=Math.max(0,Math.round(wins*100+Math.max(0,num(L.pnl_usdt))*5-losses*60));
+  const level=Math.floor(Math.sqrt(xp/150))+1;
+  const base=150*Math.pow(level-1,2), next=150*Math.pow(level,2);
+  const today=L.daily[istDay(Date.now())]||{pnl:0,wins:0};
+  const open=cases.find(c=>c.outcome&&c.outcome.status==="open")||null;
+  const updated=toMs(data.updated)||Date.now();
+  const stale=(Date.now()-updated)/60000>CFG.STALE_MIN;
+  return {cases,L,wins,losses,trades,xp,level,base,next,today,open,updated,stale,
+    winrate:trades?Math.round(wins/trades*100):0};
 }
 
-const go = () => load().then(r => render(r.d, r.demo));
-go(); setInterval(go, 60000);
+/* ============ rendering ============ */
+function render(){
+  const d=DATA, V=VIEW=build(d), L=V.L;
+  const live=d.mode==="live";
+  $("chips").innerHTML=
+    `<span class="chip ${live?"live":"paper"}">${live?"LIVE":"PAPER"}</span>`+
+    `<span class="chip"><span class="dot ${V.stale?"stale":""}"></span>${V.stale?"BOT QUIET":"ONLINE"} · ${esc(ago(V.updated))}</span>`+
+    (d.mood&&d.mood.fear_greed&&d.mood.fear_greed!=="unknown"?`<span class="chip">MARKET MOOD ${esc(d.mood.fear_greed)}</span>`:"");
+
+  // hero
+  $("rank").textContent=RANKS[Math.min(V.level-1,RANKS.length-1)].toUpperCase();
+  $("lvl").textContent="LV "+V.level;
+  $("xpfill").style.width=Math.min(100,(V.xp-V.base)/(V.next-V.base)*100)+"%";
+  $("xptxt").textContent=V.xp+" XP";
+  $("xpnext").textContent=(V.next-V.xp)+" XP to LV "+(V.level+1);
+  let mood="🎯", say="Hunting for a dip. Buy order is resting just under the market.";
+  const lastClosed=V.cases.filter(c=>c.outcome&&c.outcome.status==="closed").sort((a,b)=>b.ts-a.ts)[0];
+  if(V.stale){mood="😴";say="The bot has been quiet for a while. It may be restarting."}
+  else if(V.open){mood="🧘";say=`In a trade on ${V.open.symbol}. Sitting calmly, sell order waiting at the target.`}
+  else if(lastClosed&&num(lastClosed.outcome.pnl_usdt)>0&&Date.now()-toMs(lastClosed.outcome.closed_at||lastClosed.ts)<1800000){mood="🎉";say="Target hit! Profit banked. Looking for the next dip."}
+  $("mood").textContent=mood; $("bubble").textContent=say;
+
+  // HUD
+  const eq=num(d.equity), st=num(d.start_equity), gain=eq-st, gp=st?gain/st*100:0;
+  const stats=[
+    ["BANK",eq?eq.toFixed(2):"--","USDT"],
+    ["PROFIT",eq&&st?usd(gain,1):"--",`<span class="${gain>=0?"pos":"neg"}">${eq&&st?usd(gp,1)+"%":""}</span> since baseline`,gain>=0?"pos":"neg"],
+    ["TODAY",usd(num(V.today.pnl),1),V.today.wins+" win"+(V.today.wins===1?"":"s")+" today",num(V.today.pnl)>=0?"pos":"neg"],
+    ["WIN STREAK","🔥 "+num(L.streak),"best "+num(L.best_streak)],
+    ["WIN RATE",V.winrate+"%",V.wins+" W / "+V.losses+" L"],
+    ["TRADES",V.trades,"closed so far"]
+  ];
+  $("hud").innerHTML=stats.map(s=>`<div class="stat"><div class="k">${s[0]}</div><div class="v ${s[3]||""}">${s[1]}</div><div class="s">${s[2]}</div></div>`).join("");
+
+  // quest
+  const steps=CFG.CHEST_STEPS, pnl=Math.max(0,num(V.today.pnl)), goal=steps[steps.length-1];
+  $("quest").innerHTML=
+    `<div style="font-weight:800;margin-bottom:8px">Earn +${goal} USDT today</div>`+
+    `<div class="bar gold"><i style="width:${Math.min(100,pnl/goal*100)}%"></i></div>`+
+    `<div class="barlabel"><span>${pnl.toFixed(2)} earned</span><span>${Math.max(0,goal-pnl).toFixed(2)} to go</span></div>`+
+    `<div class="chests">`+steps.map(s=>`<div class="chest ${pnl>=s?"on":""}">${pnl>=s?"🎁":"📦"}<small>+${s}</small></div>`).join("")+`</div>`+
+    `<div class="s" style="color:var(--muted);font-size:.8rem;margin-top:10px">Day resets at midnight India time.</div>`;
+
+  // mission
+  const o=V.open;
+  if(o){
+    const tp=num(o.target_pct)||CFG.TARGET_PCT, pc=num(o.outcome.pnl_pct), pr=Math.max(0,Math.min(100,pc/tp*100));
+    $("mission").innerHTML=
+      `<div class="mission-row"><div style="font-size:2.4rem">🧘</div><div><div style="font-weight:800">Holding ${esc(o.symbol)}</div>`+
+      `<div style="color:var(--muted);font-size:.85rem">opened ${esc(ago(o.ts*1000))}</div></div></div>`+
+      `<div class="kv mono"><b>Buy price</b><span>${esc(o.price)}</span>`+
+      (o.size_usdt?`<b>Size</b><span>${num(o.size_usdt).toFixed(2)} USDT</span>`:"")+
+      `<b>Move so far</b><span class="${pc>=0?"pos":"neg"}">${pc>=0?"+":""}${pc.toFixed(2)}%</span>`+
+      `<b>Target</b><span>about +${tp.toFixed(2)}%</span></div>`+
+      `<div class="bar ${pc<0?"":"gold"}"><i style="width:${pr}%"></i></div>`+
+      `<div class="barlabel"><span>entry</span><span>🏁 target</span></div>`;
+  }else{
+    const a=(d.activity||[])[0];
+    $("mission").innerHTML=
+      `<div class="mission-row"><div class="radar"></div><div><div style="font-weight:800">Scanning for a dip</div>`+
+      `<div style="color:var(--muted);font-size:.88rem">No open trade. A buy order waits just under the market price.</div></div></div>`+
+      (a?`<div class="bubble" style="margin-top:14px">${esc(actText(a))}</div>`:"");
+  }
+
+  renderGame(); renderBadges(); renderActivity(); renderCards();
+  checkNewWin();
+}
+function actText(a){
+  if(typeof a==="string")return a;
+  if(a&&typeof a==="object")return a.text||a.msg||a.message||a.summary||a.decision||Object.values(a).filter(v=>typeof v==="string").join(" · ");
+  return "";
+}
+
+/* ---- Beat the Bot ---- */
+function closedAtMs(c){
+  const t=toMs(c.outcome&&c.outcome.closed_at);
+  if(t)return t;
+  return G.seen[c.ts]||null;
+}
+function resolveBet(){
+  if(!G.bet)return null;
+  const c=VIEW.cases.find(x=>x.ts===G.bet.ts);
+  if(!c){G.coins+=G.bet.stake;const m="The trade you bet on rolled off the board. Stake refunded.";G.bet=null;saveG();return m}
+  if(!c.outcome||c.outcome.status==="open")return null;
+  const end=closedAtMs(c)||Date.now(), hrs=(end-c.ts*1000)/3600000;
+  const win=BUCKETS[G.bet.bucket].test(hrs), msg=[];
+  G.played++;
+  if(win){const pay=G.bet.stake*BUCKETS[G.bet.bucket].mult;G.coins+=pay;G.won++;G.streak++;G.best=Math.max(G.best,G.streak);
+    msg.push(`You called it! Trade closed in ${dur(hrs*3600000)}. +${pay} coins`)}
+  else{G.streak=0;msg.push(`Not this time. Trade closed in ${dur(hrs*3600000)}. -${G.bet.stake} coins`)}
+  G.bet=null;saveG();toast(msg[0]);return msg[0];
+}
+let lastGameMsg="";
+function renderGame(){
+  // remember when we first saw a trade closed (when the feed has no close time)
+  VIEW.cases.forEach(c=>{if(c.outcome&&c.outcome.status==="closed"&&!G.seen[c.ts])G.seen[c.ts]=VIEW.updated});
+  const r=resolveBet(); if(r)lastGameMsg=r;
+  const o=VIEW.open, canBet=o&&!G.bet&&G.coins>=CFG.STAKE;
+  const today=istDay(Date.now());
+  let h=`<div style="display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center">`+
+    `<div><div class="coins">🪙 ${G.coins} COINS</div><div class="gamelog">Streak ${G.streak} · Best ${G.best} · Won ${G.won}/${G.played}</div></div>`+
+    `<div style="max-width:430px;color:var(--muted);font-size:.88rem">Guess how long the bot's current trade takes to hit its target. Bets cost ${CFG.STAKE} play coins. Harder guesses pay more.</div></div>`;
+  if(G.bet){
+    h+=`<div class="bets">`+BUCKETS.map((b,i)=>`<button class="bet ${i===G.bet.bucket?"sel":""}" disabled><b>${b.name}</b><span>x${b.mult}</span></button>`).join("")+`</div>`+
+       `<div class="gamelog">Bet placed: <b>${BUCKETS[G.bet.bucket].name}</b>. Come back when the trade closes to see the result. This page saves your bet in this browser.</div>`;
+  }else{
+    h+=`<div class="bets">`+BUCKETS.map((b,i)=>`<button class="bet" data-b="${i}" ${canBet?"":"disabled"}><b>${b.name}</b><span>win x${b.mult}</span></button>`).join("")+`</div>`;
+    if(!o)h+=`<div class="gamelog">No open trade right now. A new round opens when the bot buys.</div>`;
+    else if(G.coins<CFG.STAKE)h+=`<div class="gamelog">Out of coins. <button class="btn ghost" id="refill" ${G.refill===today?"disabled":""}>${G.refill===today?"Refill used today":"Refill 200 coins"}</button></div>`;
+  }
+  if(lastGameMsg)h+=`<div class="gamelog" style="margin-top:6px">Last result: ${esc(lastGameMsg)}</div>`;
+  $("game").innerHTML=h;
+  document.querySelectorAll(".bet[data-b]").forEach(b=>b.onclick=()=>{
+    if(!VIEW.open||G.bet||G.coins<CFG.STAKE)return;
+    G.coins-=CFG.STAKE; G.bet={ts:VIEW.open.ts,bucket:+b.dataset.b,stake:CFG.STAKE}; saveG(); renderGame(); toast("Bet placed! Good luck 🍀");
+  });
+  const rf=$("refill"); if(rf)rf.onclick=()=>{if(G.refill!==today){G.coins+=200;G.refill=today;saveG();renderGame()}};
+}
+
+/* ---- Badges ---- */
+function renderBadges(){
+  const V=VIEW, L=V.L, days=Object.values(L.daily||{});
+  const maxWins=Math.max(0,...days.map(x=>num(x.wins))), maxDay=Math.max(0,...days.map(x=>num(x.pnl)));
+  const wins=V.cases.filter(c=>c.outcome&&c.outcome.status==="closed"&&num(c.outcome.pnl_usdt)>0);
+  const hold=c=>{const e=toMs(c.outcome.closed_at);return e?(e-c.ts*1000)/3600000:null};
+  const quick=wins.some(c=>{const h=hold(c);return h!==null&&h<0.5});
+  const slow=wins.some(c=>{const h=hold(c);return h!==null&&h>=6});
+  const B=[
+    ["🩸","First Blood","Bank your first win",V.wins>=1],
+    ["🎩","Hat-trick","3 wins in one day",maxWins>=3],
+    ["🔥","On Fire","5 wins in a row",num(L.best_streak)>=5],
+    ["⚡","Lightning","A win in under 30 min",quick],
+    ["🧘","Diamond Hands","A win after holding 6h+",slow],
+    ["🎁","Daily Chest","Hit the daily goal (+"+CFG.DAILY_GOAL+")",maxDay>=CFG.DAILY_GOAL],
+    ["💯","Century","100 USDT total profit",num(L.pnl_usdt)>=100],
+    ["🛡️","Veteran","25 closed trades",V.trades>=25],
+    ["🏆","Perfect 10","10 trades, no losses",V.trades>=10&&V.losses===0]
+  ];
+  $("badges").innerHTML=B.map(b=>`<div class="badge ${b[3]?"on":""}"><div class="ic">${b[0]}</div><b>${b[1]}</b><small>${b[3]?"Unlocked":esc(b[2])}</small></div>`).join("");
+}
+
+/* ---- logs and cards ---- */
+function renderActivity(){
+  const a=(DATA.activity||[]).slice(0,25);
+  $("activity").innerHTML=a.length?a.map(x=>{
+    const t=typeof x==="object"&&x?(x.time||x.ts&&new Date(toMs(x.ts)).toLocaleTimeString()):"";
+    return `<li>${t?`<time>${esc(t)}</time>`:""}${esc(actText(x))}</li>`}).join(""):`<li class="empty">Nothing logged yet. The bot is warming up.</li>`;
+}
+function renderCards(){
+  const list=VIEW.cases.slice(0,12);
+  if(!list.length){$("cards").innerHTML=`<div class="empty">No battles yet.</div>`;return}
+  $("cards").innerHTML=list.map(c=>{
+    const o=c.outcome||{}, st=o.status;
+    const p=num(o.pnl_usdt), cls=st==="closed"?(p>0?"win":"loss"):st==="open"?"open":"";
+    const label=st==="closed"?(p>0?"WIN":"LOSS"):st==="open"?"LIVE":"VETOED";
+    const res=st==="closed"?`<b class="${p>0?"pos":"neg"}">${usd(p,1)} USDT</b> (${usd(num(o.pnl_pct),1)}%)`:
+              st==="open"?`<b>${usd(num(o.pnl_pct),1)}%</b> so far`:`would have been ${o.would_have_pct==null?"?":usd(num(o.would_have_pct),1)+"%"}`;
+    const cast=(c.buyer||c.seller||c.judge)?`<details><summary>The cast says</summary>`+
+      (c.buyer?`🐂 ${esc(c.buyer.reason||"")}<br>`:"")+(c.seller?`🐻 ${esc(c.seller.reason||"")}<br>`:"")+(c.judge?`⚖️ ${esc(c.judge.verdict||"")}: ${esc(c.judge.reason||"")}`:"")+`</details>`:"";
+    return `<div class="tc ${cls}"><span class="stamp ${st==="closed"?cls:st}">${label}</span><h3>${esc(c.symbol)}</h3>`+
+      `<div class="meta">${esc(c.time||new Date(c.ts*1000).toLocaleString())} · ${esc(c.side||"")} at ${esc(c.price)}${c.size_usdt?" · "+num(c.size_usdt).toFixed(0)+" USDT":""}</div>`+
+      `<div style="margin-top:6px">${res}</div>${cast}</div>`}).join("");
+}
+
+/* ============ fun: confetti, poke, new wins ============ */
+const cv=$("fx"), cx=cv.getContext("2d"); let parts=[], raf=0;
+function fit(){cv.width=innerWidth;cv.height=innerHeight} addEventListener("resize",fit); fit();
+function confetti(n=140){
+  if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;
+  const cols=["#39ff9c","#ff4fd8","#4cc9ff","#ffd24a"];
+  for(let i=0;i<n;i++)parts.push({x:innerWidth/2,y:innerHeight/3,vx:(Math.random()-.5)*14,vy:-Math.random()*13-3,s:4+Math.random()*5,c:cols[i%4],r:Math.random()*6});
+  if(!raf)raf=requestAnimationFrame(tick);
+}
+function tick(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.35;p.r+=.2;cx.fillStyle=p.c;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);cx.restore()});
+  parts=parts.filter(p=>p.y<cv.height+20);
+  raf=parts.length?requestAnimationFrame(tick):0; if(!raf)cx.clearRect(0,0,cv.width,cv.height);
+}
+function checkNewWin(){
+  const w=VIEW.wins;
+  if(G.lastWins!==null&&w>G.lastWins){confetti();toast("🎉 NEW WIN! The bot just banked a profit.")}
+  if(G.lastWins!==w){G.lastWins=w;saveG()}
+}
+let pokes=0;
+$("avatar").addEventListener("click",()=>{
+  const a=$("avatar");a.classList.remove("bounce");void a.offsetWidth;a.classList.add("bounce");pokes++;
+  const lines=["Ow! I'm working here.","Beep boop. Still waiting for the dip.","I don't do stop-losses. I do patience.","Stop poking me and go play Beat the Bot!"];
+  $("bubble").textContent=lines[pokes%lines.length];
+  if(pokes%5===0){confetti(80);toast("SECRET: you poked the bot 5 times 🤖")}
+});
+
+/* ============ boot ============ */
+async function refresh(){
+  const r=await fetchData(); DATA=r.data;
+  $("banner").innerHTML=r.demo?`<div class="banner">Showing demo data because the live feed could not be loaded. Real numbers appear as soon as arena.json is reachable.</div>`:"";
+  render();
+}
+refresh(); setInterval(refresh,CFG.REFRESH_SEC*1000);
 </script>
 </body>
 </html>

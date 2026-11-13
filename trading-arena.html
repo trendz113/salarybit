@@ -7,7 +7,6 @@
 <meta name="description" content="A live AI crypto trading bot you can watch like a game: levels, XP, streaks, badges and a play-money prediction game. Every trade is logged in public. Not investment advice.">
 <link rel="canonical" href="https://salarybit.in/trading-arena.html">
 <meta property="og:title" content="AI Trading Arena | SalaryBit">
-<meta name="twitter:image" content="https://salarybit.in/og-image.png">
 <meta property="og:description" content="Watch a live AI trading bot level up. Streaks, badges, daily quests and a play-money game. Not investment advice.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://salarybit.in/trading-arena.html">
@@ -218,6 +217,9 @@ function dur(ms){const m=Math.round(ms/60000);return m<60?m+" min":Math.floor(m/
 function toMs(v){ if(v==null)return null; if(typeof v==="number")return v>1e12?v:v*1000; const t=Date.parse(v); return isNaN(t)?null:t; }
 function toast(t){const el=$("toast");el.textContent=t;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),3800)}
 
+function fmtIst(ts){return new Date(ts*1000).toLocaleString("en-IN",{timeZone:"Asia/Kolkata",day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit",hour12:false})+" IST"}
+function hmToIst(t){const m=String(t).match(/^(\d{1,2}):(\d{2})$/);if(!m)return String(t);const x=(+m[1]*60+ +m[2]+330)%1440;return String(Math.floor(x/60)).padStart(2,"0")+":"+String(x%60).padStart(2,"0")+" IST"}
+
 /* ============ saved game state (this browser only) ============ */
 const GKEY="arena_game_v1";
 function loadG(){try{return Object.assign({coins:CFG.START_COINS,bet:null,streak:0,best:0,played:0,won:0,lastWins:null,seen:{},refill:""},JSON.parse(localStorage.getItem(GKEY)||"{}"))}catch(e){return{coins:CFG.START_COINS,bet:null,streak:0,best:0,played:0,won:0,lastWins:null,seen:{},refill:""}}}
@@ -273,19 +275,30 @@ function derive(cases){
 }
 function build(data){
   const cases=Array.isArray(data.cases)?data.cases:[];
-  const L=data.lifetime&&typeof data.lifetime==="object"?data.lifetime:derive(cases);
+  const L=Object.assign({},data.lifetime&&typeof data.lifetime==="object"?data.lifetime:derive(cases));
   L.daily=L.daily||{};
-  const wins=num(L.wins), losses=num(L.losses), trades=num(L.trades)||wins+losses;
-  const xp=Math.max(0,Math.round(wins*100+Math.max(0,num(L.pnl_usdt))*5-losses*60));
+  // the bot's own saved totals are the fullest record, so prefer them when the feed has them
+  const S=data.stats&&typeof data.stats==="object"?data.stats:null;
+  const eq=num(data.equity), st0=num(data.start_equity);
+  const wins=S?num(S.wins):num(L.wins), losses=S?num(S.losses):num(L.losses);
+  const trades=S?(num(S.trades)||wins+losses):(num(L.trades)||wins+losses);
+  const pnlTot=(S&&eq&&st0)?eq-st0:num(L.pnl_usdt);
+  const xp=Math.max(0,Math.round(wins*100+Math.max(0,pnlTot)*5-losses*60));
   const level=Math.floor(Math.sqrt(xp/150))+1;
   const base=150*Math.pow(level-1,2), next=150*Math.pow(level,2);
-  const today=L.daily[istDay(Date.now())]||{pnl:0,wins:0};
-  const open=cases.find(c=>c.outcome&&c.outcome.status==="open")||null;
-  // the bot holds one trade at a time: any older "open" card was closed outside the bot
-  cases.forEach(c=>{c._off=!!(open&&c!==open&&c.outcome&&c.outcome.status==="open")});
+  const dl=L.daily[istDay(Date.now())]||{pnl:0,wins:0};
+  const today={pnl:(data.daily&&typeof data.daily.net_usdt==="number")?data.daily.net_usdt:num(dl.pnl),wins:num(dl.wins)};
+  // the bot's own "positions" list says whether it holds something right now
+  const plist=Array.isArray(data.positions)?data.positions:null;
+  const pos=plist&&plist.length?plist[0]:null;
+  let open=cases.find(c=>c.outcome&&c.outcome.status==="open"&&(!pos||c.symbol===pos.symbol))||null;
+  if(plist&&!plist.length)open=null;
+  // any other "open" card was closed outside the bot (for example sold by hand)
+  cases.forEach(c=>{c._off=!!(c.outcome&&c.outcome.status==="open"&&c!==open)});
+  const holding=plist?plist.length>0:!!open;
   const updated=toMs(data.updated)||Date.now();
   const stale=(Date.now()-updated)/60000>CFG.STALE_MIN;
-  return {cases,L,wins,losses,trades,xp,level,base,next,today,open,updated,stale,
+  return {cases,L,wins,losses,trades,xp,level,base,next,today,open,pos,holding,updated,stale,
     winrate:trades?Math.round(wins/trades*100):0};
 }
 
@@ -307,7 +320,7 @@ function render(){
   let mood="🎯", say="Hunting for a dip. Buy order is resting just under the market.";
   const lastClosed=V.cases.filter(c=>c.outcome&&c.outcome.status==="closed").sort((a,b)=>b.ts-a.ts)[0];
   if(V.stale){mood="😴";say="The bot has been quiet for a while. It may be restarting."}
-  else if(V.open){mood="🧘";say=`In a trade on ${V.open.symbol}. Sitting calmly, sell order waiting at the target.`}
+  else if(V.holding){mood="🧘";say=`In a trade on ${(V.pos||V.open||{}).symbol||"the coin"}. Sitting calmly, sell order waiting at the target.`}
   else if(lastClosed&&num(lastClosed.outcome.pnl_usdt)>0&&Date.now()-toMs(lastClosed.outcome.closed_at||lastClosed.ts)<1800000){mood="🎉";say="Target hit! Profit banked. Looking for the next dip."}
   $("mood").textContent=mood; $("bubble").textContent=say;
 
@@ -333,14 +346,20 @@ function render(){
     `<div class="s" style="color:var(--muted);font-size:.8rem;margin-top:10px">Day resets at midnight India time.</div>`;
 
   // mission
-  const o=V.open;
-  if(o){
-    const tp=num(o.target_pct)||CFG.TARGET_PCT, pc=num(o.outcome.pnl_pct), pr=Math.max(0,Math.min(100,pc/tp*100));
+  const o=V.open, pz=V.pos;
+  if(V.holding){
+    const sym=(pz&&pz.symbol)||(o&&o.symbol)||"the coin";
+    const tp=num(pz&&pz.tp_pct)||num(o&&o.target_pct)||CFG.TARGET_PCT;
+    const pc=pz?num(pz.pnl_pct):num(o&&o.outcome&&o.outcome.pnl_pct);
+    const pr=Math.max(0,Math.min(100,pc/tp*100));
+    const entry=pz?pz.entry:(o&&o.price);
+    const heldMs=(pz&&pz.held_min!=null)?num(pz.held_min)*60000:(o?Date.now()-o.ts*1000:0);
     $("mission").innerHTML=
-      `<div class="mission-row"><div style="font-size:2.4rem">🧘</div><div><div style="font-weight:800">Holding ${esc(o.symbol)}</div>`+
-      `<div style="color:var(--muted);font-size:.85rem">opened ${esc(ago(o.ts*1000))}</div></div></div>`+
-      `<div class="kv mono"><b>Buy price</b><span>${esc(o.price)}</span>`+
-      (o.size_usdt?`<b>Size</b><span>${num(o.size_usdt).toFixed(2)} USDT</span>`:"")+
+      `<div class="mission-row"><div style="font-size:2.4rem">🧘</div><div><div style="font-weight:800">Holding ${esc(sym)}</div>`+
+      `<div style="color:var(--muted);font-size:.85rem">held for ${esc(dur(heldMs))}</div></div></div>`+
+      `<div class="kv mono"><b>Buy price</b><span>${esc(entry)}</span>`+
+      (pz&&pz.price?`<b>Price now</b><span>${esc(pz.price)}</span>`:"")+
+      (o&&o.size_usdt?`<b>Size</b><span>${num(o.size_usdt).toFixed(2)} USDT</span>`:"")+
       `<b>Move so far</b><span class="${pc>=0?"pos":"neg"}">${pc>=0?"+":""}${pc.toFixed(2)}%</span>`+
       `<b>Target</b><span>about +${tp.toFixed(2)}%</span></div>`+
       `<div class="bar ${pc<0?"":"gold"}"><i style="width:${pr}%"></i></div>`+
@@ -358,7 +377,7 @@ function render(){
 }
 function actText(a){
   if(typeof a==="string")return a;
-  if(a&&typeof a==="object")return a.text||a.msg||a.message||a.summary||a.decision||Object.values(a).filter(v=>typeof v==="string").join(" · ");
+  if(a&&typeof a==="object")return a.note||a.text||a.msg||a.message||a.summary||a.decision||Object.values(a).filter(v=>typeof v==="string").join(" · ");
   return "";
 }
 
@@ -434,7 +453,7 @@ function renderBadges(){
 function renderActivity(){
   const a=(DATA.activity||[]).slice(0,25);
   $("activity").innerHTML=a.length?a.map(x=>{
-    const t=typeof x==="object"&&x?(x.time||x.ts&&new Date(toMs(x.ts)).toLocaleTimeString()):"";
+    const t=typeof x==="object"&&x?(x.t?hmToIst(x.t):(x.time||x.ts&&new Date(toMs(x.ts)).toLocaleTimeString())):"";
     return `<li>${t?`<time>${esc(t)}</time>`:""}${esc(actText(x))}</li>`}).join(""):`<li class="empty">Nothing logged yet. The bot is warming up.</li>`;
 }
 function renderCards(){
@@ -449,7 +468,7 @@ function renderCards(){
     const cast=(c.buyer||c.seller||c.judge)?`<details><summary>The cast says</summary>`+
       (c.buyer?`🐂 ${esc(c.buyer.reason||"")}<br>`:"")+(c.seller?`🐻 ${esc(c.seller.reason||"")}<br>`:"")+(c.judge?`⚖️ ${esc(c.judge.verdict||"")}: ${esc(c.judge.reason||"")}`:"")+`</details>`:"";
     return `<div class="tc ${cls}"><span class="stamp ${st==="closed"?cls:st}">${label}</span><h3>${esc(c.symbol)}</h3>`+
-      `<div class="meta">${esc(c.time||new Date(c.ts*1000).toLocaleString())} · ${esc(c.side||"")} at ${esc(c.price)}${c.size_usdt?" · "+num(c.size_usdt).toFixed(0)+" USDT":""}</div>`+
+      `<div class="meta">${esc(c.ts?fmtIst(c.ts):c.time)} · ${esc(c.side||"")} at ${esc(c.price)}${c.size_usdt?" · "+num(c.size_usdt).toFixed(0)+" USDT":""}</div>`+
       `<div style="margin-top:6px">${res}</div>${cast}</div>`}).join("");
 }
 
